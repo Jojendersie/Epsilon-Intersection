@@ -3,6 +3,7 @@ dependencies/
 Debug/
 Release/
 ipch/
+vcprojectfiles/
 *.suo
 *.user
 *.opensdf
