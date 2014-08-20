@@ -1,4 +1,4 @@
-﻿#include "elementarytypes.hpp"
+﻿#include "gam/elementarytypes.hpp"
 
 bool test_elementaries()
 {
