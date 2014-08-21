@@ -5,7 +5,7 @@
 
 
 /// \brief All types from elementarytypes.hpp are without namespace.
-/// \details The deafult is on.
+/// \details The default is on.
 //#define USE_ELEMENTARIES_WITHOUT_NAMESPACE
 
 /// \brief Using this option changes the namespace gam:: to γ::.

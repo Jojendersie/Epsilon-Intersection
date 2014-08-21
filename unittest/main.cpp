@@ -1,6 +1,12 @@
-#include "elementarytypes.cpp"
+#include <iostream>
+using namespace std;
+
+bool test_elementaries();
 
 int main()
 {
-    test_elementaries();
+    if( test_elementaries() )
+		cerr << "Successfully completed: Elementary types." << std::endl;
+
+	return 0;
 }
