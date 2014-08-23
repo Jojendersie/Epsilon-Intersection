@@ -15,4 +15,4 @@
 ///    The default is off.
 #define USE_UTF8_NAMESPACES
 
-#include "config.inl"
+#include "details/config.inl"
