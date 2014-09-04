@@ -15,4 +15,15 @@
 ///    The default is off.
 #define USE_UTF8_NAMESPACES
 
+
+/// \brief Enable a bunch of debug assertions in the vector code.
+/// \details As usual the assertions are not contained in release mode. This
+///    macro lets you further disable the assertions in debug mode to speed
+///    up the application.
+///
+///    Level 0: Deactivate all assertions. Not recommended.
+///    Level 1: Use assertions where errors are likely. Default option.
+///    Level 2: Maximum. Permanent tests everywhere.
+#define ASSERTION_LEVEL		2
+
 #include "details/config.inl"

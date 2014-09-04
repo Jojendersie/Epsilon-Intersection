@@ -10,6 +10,7 @@ bool test_matrix()
 {
 	bool result = true;
 
+	// ********************************************************************* //
 	// Test type size
 	TEST( sizeof(Matrix<byte, 1, 2>) == 2,
 		"sizeof(Matrix<byte, 1, 2>) is " << sizeof(Matrix<byte, 1, 2>) << " instead of 2\n"
@@ -42,8 +43,24 @@ bool test_matrix()
 		"sizeof(Matrix<float, 10, 10>) is " << sizeof(Matrix<float, 10, 10>) << " instead of 400\n"
 	);
 
+	// ********************************************************************* //
 	// When included the following line must cause a static assertion.
 	// Matrix<int, 1, 1> errorMatrix;
+
+	// ********************************************************************* //
+	// Test of access operators and element constructors (2-4 elements)
+	{
+		Matrix<int, 2, 1> m0(1, 2);
+		Matrix<int, 1, 3> m1(1, 2, 3);
+		Matrix<int, 2, 2> m2(1, 2, 3, 4);
+		m1(0,2) = 5;
+		m2[2] = 5;
+		TEST( m0[0] == 1 && m0[1] == 2, "Operator or constructor wrong!" );
+		TEST( m1(0,0) == 1 && m1(0,1) == 2 && m1[2] == 5, "Operator or constructor wrong!" );
+		TEST( m2(0,1) == 2 && m2(1,0) == 5 && m2(1,1) == 4, "Operator or constructor wrong!" );
+		TEST( (const_cast<const Matrix<int, 2, 2>&>(m2))[1] == 2, "Read-only operator wrong!" );
+		TEST( (const_cast<const Matrix<int, 2, 2>&>(m2))(1,0) == 5, "Read-only operator wrong!" );
+	}
 
 	return result;
 }
