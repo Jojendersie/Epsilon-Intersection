@@ -77,12 +77,35 @@ T Matrix<T, M, N>::operator[] (uint _index) const
 }
 
 // ************************************************************************* //
+template<typename T, uint M, uint N>
+template<typename T1>
+Matrix<RESULT_TYPE(+), M, N> Matrix<T, M, N>::operator+ (const Matrix<T1,M,N>& _mat1)
+{
+	Matrix<RESULT_TYPE(+), M, N> result;
+	for(int i = 0; i < N * M; ++i)
+		result[i] = (*this)[i] + _mat1[i];
+	return result;
+}
+
+// ************************************************************************* //
+template<typename T, uint M, uint N>
+bool Matrix<T, M, N>::operator== (const Matrix<T,M,N>& _mat1)
+{
+	for(int i = 0; i < N * M; ++i)
+		if((*this)[i] != _mat1[i]) return false;
+	return true;
+}
+
+
+// ************************************************************************* //
 //								 FUNCTIONS								     //
 // ************************************************************************* //
 
 // ************************************************************************* //
 template<typename T, uint M, uint N>
-inline bool approx(const Matrix<T,M,N>& _mat0, const Matrix<T,M,N>& _mat1, float _epsilon)
+inline bool approx(const Matrix<T,M,N>& _mat0,
+				   const Matrix<T,M,N>& _mat1,
+				   float _epsilon)
 {
 	for(int i = 0; i < N * M; ++i)
 		if(abs(_mat1[i] - _mat0[i]) > _epsilon) return false;

@@ -62,5 +62,14 @@ bool test_matrix()
 		TEST( (const_cast<const Matrix<int, 2, 2>&>(m2))(1,0) == 5, "Read-only operator wrong!" );
 	}
 
+	// ********************************************************************* //
+	// Test + and -
+	{
+		Matrix<int, 2, 2> m0(1, 2, 3, 4);
+		Matrix<int, 2, 2> m1(5, 6, 7, 7);
+		Matrix<int, 2, 2> m2(6, 8, 10, 11);
+		TEST( m0 + m1 == m2, "Component wise addition failed!" );
+	}
+
 	return result;
 }

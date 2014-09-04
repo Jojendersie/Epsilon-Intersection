@@ -66,13 +66,19 @@ namespace gam {
 		// operation without the need of a constructor. This type deduction
 		// construct inherits rules as [int + float -> float] from the
 		// elementary types.
-#		define RESULT_TYPE(Op) typename std::enable_if<							\
-			!std::is_base_of<MatrixType, Data2>::value &&						\
-			!std::is_base_of<MatrixType, Data>::value,							\
-			Matrix<N, decltype(std::declval<Data>() Op std::declval<Data2>())>	\
+#		define RESULT_TYPE(Op) typename std::enable_if<					\
+			!std::is_base_of<details::MatrixType, T1>::value &&			\
+			!std::is_base_of<details::MatrixType, T>::value,			\
+			decltype(std::declval<T>() Op std::declval<T1>())           \
 		>::type
 
-#		undef RESULT_TYPE
+
+		/// \brief Add two matrices component wise.
+		template<typename T1>
+		Matrix<RESULT_TYPE(+), M, N> operator+ (const Matrix<T1,M,N>& _mat1);  // TESTED
+
+		/// \brief Compare if two matrices are identical (using elementary !=).
+		bool operator== (const Matrix<T,M,N>& _mat1);                          // TESTED
 	};
 
 	// ********************************************************************* //
@@ -137,7 +143,9 @@ namespace gam {
 	///    components. The default value is 1e-6f.
 	/// \returns true if all differences are less or equal than _epsilon.
 	template<typename T, unsigned M, unsigned N>
-	bool approx(const Matrix<T,M,N>& _mat0, const Matrix<T,M,N>& _mat1, float _epsilon = 1e-6f);
+	bool approx(const Matrix<T,M,N>& _mat0,
+		        const Matrix<T,M,N>& _mat1,
+				float _epsilon = 1e-6f);
 
 
 
@@ -145,4 +153,7 @@ namespace gam {
 
 	// Include implementation.
 #	include "details/matrix.inl"
+
+	// Remove helper macro.
+#	undef RESULT_TYPE
 }
