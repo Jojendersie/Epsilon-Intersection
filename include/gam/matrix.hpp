@@ -20,6 +20,30 @@ namespace gam {
 	public:
 		static_assert(M * N > 1, "A matrix must have at least 1x2 or 2x1 components.");
 
+		// There are two types of methods:
+		// matrix <-> matrix: template<N0,M0,T0,N1,M1,T1> and
+		// matrix <-> scalar: template<N0,M0,T0,T1>
+		// Now, the problem with template type deduction is that the second
+		// variant is used for matrices too (T1 = <N,M,T>). The following macro
+		// forbids this wrong deduction. The enable if avoids operator-
+		// instantiations with of Data2 = Matrix<X>.
+		// declval is a standard conform way to find the resulting type of an
+		// operation without the need of a constructor. This type deduction
+		// construct inherits rules as [int + float -> float] from the
+		// elementary types.
+#		define RESULT_TYPE(op) typename std::enable_if<					\
+            !std::is_base_of<details::MatrixType, T1>::value &&			\
+            !std::is_base_of<details::MatrixType, T>::value,			\
+            decltype(std::declval<T>() op std::declval<T1>())           \
+        >::type
+
+		// Enable a function on a condition via template list.
+		// This macro allows conditional compilation even for methods without
+		// parameters and return value.
+		// Therefore if must be inserted in the template list and `class` at
+		// the same position in the implementation.
+#       define ENABLE_IF(condition) class = typename std::enable_if<(condition), class Dummy>::type
+
 		// The new variadic templates allow a more generic definition of all
 		// those constructors but compiler support is lagging.
 
@@ -29,12 +53,22 @@ namespace gam {
 		/// \brief Construction from N * M scalar values (up to 16 elements).
 		/// \details The template meta programming trick allows only the
 		///    compilation of the matching constructor.
-		template<class = typename std::enable_if<N * M == 2, class Dummy>::type>
-		Matrix(T _v0, T _v1);                                                  // TESTED
-		template<class = typename std::enable_if<N * M == 3, class Dummy>::type>
-		Matrix(T _v0, T _v1, T _v2);                                           // TESTED
-		template<class = typename std::enable_if<N * M == 4, class Dummy>::type>
-		Matrix(T _v0, T _v1, T _v2, T _v3);                                    // TESTED
+		template<ENABLE_IF(N * M == 2)>
+		Matrix(T _s0, T _s1);                                                  // TESTED
+		template<ENABLE_IF(N * M == 3)>
+		Matrix(T _s0, T _s1, T _s2);                                           // TESTED
+		template<ENABLE_IF(N * M == 4)>
+		Matrix(T _s0, T _s1, T _s2, T _s3);                                    // TESTED
+		template<ENABLE_IF(N * M == 6)>
+		Matrix(T _s0, T _s1, T _s2, T _s3, T _s4, T _s5);
+		template<ENABLE_IF(N * M == 8)>
+		Matrix(T _s0, T _s1, T _s2, T _s3, T _s4, T _s5, T _s6, T _s7);
+		template<ENABLE_IF(N * M == 9)>
+		Matrix(T _s0, T _s1, T _s2, T _s3, T _s4, T _s5, T _s6, T _s7, T _s8);
+		template<ENABLE_IF(N * M == 12)>
+		Matrix(T _s0, T _s1, T _s2, T _s3, T _s4, T _s5, T _s6, T _s7, T _s8, T _s9, T _s10, T _s11);
+		template<ENABLE_IF(N * M == 16)>
+		Matrix(T _s0, T _s1, T _s2, T _s3, T _s4, T _s5, T _s6, T _s7, T _s8, T _s9, T _s10, T _s11, T _s12, T _s13, T _s14, T _s15);
 
 		/// \brief Access a single element with two indices.
 		/// \details Computes the data index _row * N + _col. Therefore
@@ -55,27 +89,30 @@ namespace gam {
 		T& operator[] (uint _index);                                           // TESTED
 		T operator[] (uint _index) const;                                      // TESTED
 
-		// There are two types of methods:
-		// matrix <-> matrix: template<N0,M0,T0,N1,M1,T1> and
-		// matrix <-> scalar: template<N0,M0,T0,T1>
-		// Now, the problem with template type deduction is that the second
-		// variant is used for matrices too (T1 = <N,M,T>). The following macro
-		// forbids this wrong deduction. The enable if avoids operator-
-		// instantiations with of Data2 = Matrix<X>.
-		// declval is a standard conform way to find the resulting type of an
-		// operation without the need of a constructor. This type deduction
-		// construct inherits rules as [int + float -> float] from the
-		// elementary types.
-#		define RESULT_TYPE(Op) typename std::enable_if<					\
-			!std::is_base_of<details::MatrixType, T1>::value &&			\
-			!std::is_base_of<details::MatrixType, T>::value,			\
-			decltype(std::declval<T>() Op std::declval<T1>())           \
-		>::type
-
-
 		/// \brief Add two matrices component wise.
+		/// \details Addition is commutative.
 		template<typename T1>
 		Matrix<RESULT_TYPE(+), M, N> operator+ (const Matrix<T1,M,N>& _mat1);  // TESTED
+		/// \brief Subtract two matrices component wise.
+		/// \details Subtraction is not commutative.
+		template<typename T1>
+		Matrix<RESULT_TYPE(-), M, N> operator- (const Matrix<T1,M,N>& _mat1);  // TESTED
+		/// \brief Unary minus on all components.
+		Matrix<T, M, N> operator- ();                                          // TESTED
+		/// \brief Add a scalar value to all components.
+
+		/// \brief Matrix multiplication.
+		/// \details Matrix multiplication is not commutative.
+		/// \returns Matrix product with dimensions MxO = MxN * NxO. The result
+		///    is a scalar if M = N = 1.
+		template<typename T1, uint O>
+		typename std::conditional<M * O == 1, RESULT_TYPE(*), Matrix<RESULT_TYPE(*), M, O>>::type
+		operator* (const Matrix<T1,N,O>& _mat1);                               // TESTED
+		/// \brief Component wise multiplication for vectors of the same size.
+		template<typename T1, ENABLE_IF(N == 1)>
+		Matrix<RESULT_TYPE(*), M, 1> operator* (const Matrix<T1,M,1>& _mat1);  // TESTED
+		template<typename T1, ENABLE_IF(M == 1)>
+		Matrix<RESULT_TYPE(*), 1, N> operator* (const Matrix<T1,1,N>& _mat1);  // TESTED
 
 		/// \brief Compare if two matrices are identical (using elementary !=).
 		bool operator== (const Matrix<T,M,N>& _mat1);                          // TESTED
@@ -154,6 +191,7 @@ namespace gam {
 	// Include implementation.
 #	include "details/matrix.inl"
 
-	// Remove helper macro.
+	// Remove helper macros.
 #	undef RESULT_TYPE
+#   undef ENABLE_IF
 }

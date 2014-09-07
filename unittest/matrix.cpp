@@ -55,20 +55,45 @@ bool test_matrix()
 		Matrix<int, 2, 2> m2(1, 2, 3, 4);
 		m1(0,2) = 5;
 		m2[2] = 5;
-		TEST( m0[0] == 1 && m0[1] == 2, "Operator or constructor wrong!" );
-		TEST( m1(0,0) == 1 && m1(0,1) == 2 && m1[2] == 5, "Operator or constructor wrong!" );
-		TEST( m2(0,1) == 2 && m2(1,0) == 5 && m2(1,1) == 4, "Operator or constructor wrong!" );
-		TEST( (const_cast<const Matrix<int, 2, 2>&>(m2))[1] == 2, "Read-only operator wrong!" );
-		TEST( (const_cast<const Matrix<int, 2, 2>&>(m2))(1,0) == 5, "Read-only operator wrong!" );
+		TEST( m0[0] == 1 && m0[1] == 2, "Operator or constructor wrong!\n" );
+		TEST( m1(0,0) == 1 && m1(0,1) == 2 && m1[2] == 5, "Operator or constructor wrong!\n" );
+		TEST( m2(0,1) == 2 && m2(1,0) == 5 && m2(1,1) == 4, "Operator or constructor wrong!\n" );
+		TEST( (const_cast<const Matrix<int, 2, 2>&>(m2))[1] == 2, "Read-only operator wrong!\n" );
+		TEST( (const_cast<const Matrix<int, 2, 2>&>(m2))(1,0) == 5, "Read-only operator wrong!\n" );
 	}
 
 	// ********************************************************************* //
 	// Test + and -
 	{
 		Matrix<int, 2, 2> m0(1, 2, 3, 4);
-		Matrix<int, 2, 2> m1(5, 6, 7, 7);
-		Matrix<int, 2, 2> m2(6, 8, 10, 11);
-		TEST( m0 + m1 == m2, "Component wise addition failed!" );
+		Matrix<int, 2, 2> m1(5, 6, 7, 8);
+		Matrix<int, 2, 2> m2(6, 8, 10, 12);
+		Matrix<float, 2, 2> m3(3.0f, 1.0f, 4.0f, 1.0f);
+		Matrix<float, 2, 2> m4(4.0f, 3.0f, 7.0f, 5.0f);
+		TEST( m0 + m1 == m2, "Component wise addition failed!\n" );
+		TEST( m0 + m3 == m4, "Component wise addition failed!\n" );
+		TEST( m2 - m1 == m0, "Component wise subtraction failed!\n" );
+		TEST( m0 - m4 == -m3, "Component wise subtraction or unary minus failed!\n" );
+	}
+
+	// ********************************************************************* //
+	// Test * and element constructors (3,9 elements)
+	{
+		Matrix<int, 3, 1> v0(1, 2, 3);
+		Matrix<int, 3, 1> v4(2, 1, 4);
+		Matrix<int, 3, 1> v5(2, 2, 12);
+		Matrix<float, 1, 3> v1(1.0f, 0.0f, -1.0f);
+		Matrix<float, 1, 3> v2(0.5f, 2.0f, 0.0f);
+		Matrix<float, 1, 3> v3(0.5f, 0.0f, 0.0f);
+		Matrix<float, 3, 3> m0(1.0f, 0.0f, -1.0f, 2.0f, 0.0f, -2.0f, 3.0f, 0.0f, -3.0f);
+		Matrix<float, 3, 3> m1(1.0f, 4.0f, 0.0f, 0.5f, 2.0f, 0.0f, 2.0f, 8.0f, 0.0f);
+		Matrix<float, 3, 3> m2(-1.0f, -4.0f, 0.0f, -2.0f, -8.0f, 0.0f, -3.0f, -12.0f, 0.0f);
+		TEST( v1 * v2 == v3, "Component wise multiplication failed!\n" );
+		TEST( v0 * v4 == v5, "Component wise multiplication failed!\n" );
+		TEST( v1 * v0 == -2.0f, "Row times column vector should be a scalar!\n" );
+		TEST( v0 * v1 == m0, "Column times row vector should be a matrix!\n" );
+		TEST( v4 * v2 == m1, "Column times row vector should be a matrix!\n" );
+		TEST( m0 * m1 == m2, "Matrix multiplication wrong!\n" );
 	}
 
 	return result;
