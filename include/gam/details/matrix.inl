@@ -208,13 +208,50 @@ Matrix<RESULT_TYPE(*), 1, N> Matrix<T, M, N>::operator* (const Matrix<T1,1,N>& _
 
 // ************************************************************************* //
 template<typename T, uint M, uint N>
-bool Matrix<T, M, N>::operator== (const Matrix<T,M,N>& _mat1)
+inline bool Matrix<T, M, N>::operator== (const Matrix<T,M,N>& _mat1)
 {
 	for(int i = 0; i < N * M; ++i)
 		if((*this)[i] != _mat1[i]) return false;
 	return true;
 }
 
+// ********************************************************************* //
+template<typename T, uint M, uint N, typename T1>
+inline Matrix<RESULT_TYPE(+), M, N> operator+ (const Matrix<T,M,N>& _mat, T1 _s)
+{
+	Matrix<RESULT_TYPE(+), M, N> result;
+	for(int i = 0; i < N * M; ++i)
+		result[i] = _mat[i] + _s;
+	return result;
+}
+
+template<typename T1, typename T, uint M, uint N>
+inline Matrix<RESULT_TYPE(+), M, N> operator+ (T1 _s, const Matrix<T,M,N>& _mat)
+{
+	Matrix<RESULT_TYPE(+), M, N> result;
+	for(int i = 0; i < N * M; ++i)
+		result[i] = _s + _mat[i];
+	return result;
+}
+
+// ********************************************************************* //
+template<typename T, uint M, uint N, typename T1>
+inline Matrix<RESULT_TYPE(*), M, N> operator* (const Matrix<T,M,N>& _mat, T1 _s)
+{
+	Matrix<RESULT_TYPE(*), M, N> result;
+	for(int i = 0; i < N * M; ++i)
+		result[i] = _mat[i] * _s;
+	return result;
+}
+
+template<typename T1, typename T, uint M, uint N>
+inline Matrix<RESULT_TYPE(*), M, N> operator* (T1 _s, const Matrix<T,M,N>& _mat)
+{
+	Matrix<RESULT_TYPE(*), M, N> result;
+	for(int i = 0; i < N * M; ++i)
+		result[i] = _s * _mat[i];
+	return result;
+}
 
 // ************************************************************************* //
 //								 FUNCTIONS								     //

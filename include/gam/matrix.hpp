@@ -119,6 +119,20 @@ namespace gam {
 	};
 
 	// ********************************************************************* //
+	// Scalar operators
+
+	/// \brief Add a scalar to all components
+	template<typename T, uint M, uint N, typename T1>
+	Matrix<RESULT_TYPE(+), M, N> operator+ (const Matrix<T,M,N>& _mat, T1 _s); // TESTED
+	template<typename T1, typename T, uint M, uint N>
+	Matrix<RESULT_TYPE(+), M, N> operator+ (T1 _s, const Matrix<T,M,N>& _mat); // TESTED
+	/// \brief Multiply a scalar to all components
+	template<typename T, uint M, uint N, typename T1>
+	Matrix<RESULT_TYPE(*), M, N> operator* (const Matrix<T,M,N>& _mat, T1 _s); // TESTED
+	template<typename T1, typename T, uint M, uint N>
+	Matrix<RESULT_TYPE(*), M, N> operator* (T1 _s, const Matrix<T,M,N>& _mat); // TESTED
+
+	// ********************************************************************* //
 	// Predefined float vector and matrix types.
 
 	/// \brief 2D column-vector of type float.
