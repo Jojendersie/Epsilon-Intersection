@@ -97,7 +97,7 @@ bool test_matrix()
 	}
 
 	// ********************************************************************* //
-	// Test scalar operators +, *, -
+	// Test scalar operators +, *, -, /
 	{
 		Matrix<int, 2, 2> m0(1, 2, 3, 4);
 		Matrix<int, 2, 2> m1(3, 4, 5, 6);
@@ -108,6 +108,11 @@ bool test_matrix()
 		TEST( 2 + m0 * 1 == m1, "Multiplying or adding a scalar failed!" );
 		TEST( 2.0f * v0 * 2.0f * v1 + 0.5f == 4.5f, "Multiplying a scalar failed!" );
 		TEST( (v1 + 1.0f) * 2.0f * v0 == m2, "Mixed scalar vector operation failed!" );
+		TEST( m0 == m1 - 2, "Scalar subtraction failed!" );
+		TEST( 2 + m0 / 1 == m1, "Scalar addition or division failed!" );
+		TEST( (2.0f / v0 / 2.0f) * v1 - 0.5f == 0.5f, "Mixed scalar vector operation (/,*,-) failed!" );
+		TEST( (v1 - 0.5f) * 2.0f * v0 + 3 == m2, "Mixed scalar vector operation (-, *) failed!" );
+		TEST( (4.0f - m2) / 2.0f == (1.0f - v1) * v0, "Mixed scalar vector operation (/,*,-) failed!" );
 	}
 
 	return result;
