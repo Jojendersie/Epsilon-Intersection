@@ -327,3 +327,28 @@ inline bool approx(const Matrix<T,M,N>& _mat0,
 		if(abs(_mat1[i] - _mat0[i]) > _epsilon) return false;
 	return true;
 }
+
+// ********************************************************************* //
+template<typename T, unsigned M, unsigned N, typename T1>
+inline RESULT_TYPE(*) dot(const Matrix<T,M,N>& _mat0,
+		                  const Matrix<T1,M,N>& _mat1)
+{
+	RESULT_TYPE(*) sum = _mat0[0] * _mat1[0];
+	for(int i = 1; i < N * M; ++i)
+		sum += _mat0[i] * _mat1[i];
+	return sum;
+}
+
+// ************************************************************************* //
+template<typename T, uint M, uint N>
+inline T lensq(const Matrix<T,M,N>& _mat0)
+{
+	return dot(_mat0, _mat0);
+}
+
+// ************************************************************************* //
+template<typename T, uint M, uint N>
+inline decltype(sqrt(std::declval<T>())) len(const Matrix<T,M,N>& _mat0)
+{
+	return sqrt(dot(_mat0, _mat0));
+}

@@ -34,3 +34,17 @@ namespace gam {
 #ifndef USE_ELEMENTARIES_WITHOUT_NAMESPACE
 }
 #endif
+
+namespace gam {
+	// ********************************************************************* //
+	//								 FUNCTIONS								 //
+	// ********************************************************************* //
+
+	// ********************************************************************* //
+	/// \brief Compute the squre x*x.
+	template<typename T>
+	T sq(T _x);
+
+	// Include implementation.
+#	include "details/elementary.inl"
+}

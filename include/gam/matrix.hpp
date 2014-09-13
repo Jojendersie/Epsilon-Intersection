@@ -215,6 +215,28 @@ namespace gam {
 		        const Matrix<T,M,N>& _mat1,
 				float _epsilon = 1e-6f);
 
+	// ********************************************************************* //
+	/// \brief Computes the sum of component wise products.
+	/// \returns Scalar value of the sum of component products.
+	template<typename T, unsigned M, unsigned N, typename T1>
+	RESULT_TYPE(*) dot(const Matrix<T,M,N>& _mat0,
+		               const Matrix<T1,M,N>& _mat1);                           // TESTED
+
+	// ********************************************************************* //
+	/// \brief Computes the sum of squared components.
+	/// \details This is equivalent to dot(_mat0, _mat0).
+	/// \returns Squared euclidean length (scalar).
+	template<typename T, unsigned M, unsigned N>
+	T lensq(const Matrix<T,M,N>& _mat0);                                       // TESTED
+
+	// ********************************************************************* //
+	/// \brief Computes the root of the sum of squared components.
+	/// \details This is the euclidean length for vectors and the Frobenius
+	///    norm for matrices.
+	/// \returns Euclidean length (scalar).
+	template<typename T, unsigned M, unsigned N>
+	decltype(sqrt(std::declval<T>())) len(const Matrix<T,M,N>& _mat0);         // TESTED
+
 
 
 

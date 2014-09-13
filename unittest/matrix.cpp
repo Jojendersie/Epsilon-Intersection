@@ -119,5 +119,24 @@ bool test_matrix()
 		TEST( (4.0f - m2) / 2.0f == (1.0f - v1) * v0, "Mixed scalar vector operation (/,*,-) failed!" );
 	}
 
+	// ********************************************************************* //
+	// Test len, lensq, dot
+	{
+		Vec3 v0(1.0f, 2.0f, 0.0f);
+		Vec3 v1(0.0f, 0.0f, 0.5f);
+		IVec3 v2(-1, 0, -4);
+		Mat3x3 m0(1.0f, 1.0f, 2.0f,
+			      0.5f, 0.5f, 0.5f,
+				  0.5f, 1.0f, 1.0f);
+		TEST( dot(v0, v1) == 0.0f, "Dot product wrong!" );
+		TEST( dot(v0, v0) == 5.0f, "Dot product wrong!" );
+		TEST( dot(v1, v2) == -2.0f, "Dot product of a mixed vector types wrong!" );
+		TEST( lensq(v2) == 17, "Squared length of an integer vector wrong!" );
+		TEST( lensq(v1) == 0.25f, "Squared length wrong!" );
+		TEST( lensq(m0) == 9.0f, "Squared length of a matrix wrong!" );
+		TEST( len(v2) == 4.1231056256176606, "Length of an integer vector wrong!" );
+		TEST( len(v1) == 0.5f, "Length wrong!" );
+		TEST( len(m0) == 3.0f, "Length of a matrix wrong!" );
+	}
 	return result;
 }
