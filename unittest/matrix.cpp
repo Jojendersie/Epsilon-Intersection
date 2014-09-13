@@ -77,7 +77,7 @@ bool test_matrix()
 	}
 
 	// ********************************************************************* //
-	// Test * and element constructors (3,9 elements)
+	// Test *, / and element constructors (3,9 elements)
 	{
 		Matrix<int, 3, 1> v0(1, 2, 3);
 		Matrix<int, 3, 1> v4(2, 1, 4);
@@ -85,11 +85,15 @@ bool test_matrix()
 		Matrix<float, 1, 3> v1(1.0f, 0.0f, -1.0f);
 		Matrix<float, 1, 3> v2(0.5f, 2.0f, 0.0f);
 		Matrix<float, 1, 3> v3(0.5f, 0.0f, 0.0f);
+		Matrix<float, 1, 3> v6(2.0f, 3.0f, 4.0f);
+		Matrix<float, 1, 3> v7(0.5f, 0.0f, -0.25f);
 		Matrix<float, 3, 3> m0(1.0f, 0.0f, -1.0f, 2.0f, 0.0f, -2.0f, 3.0f, 0.0f, -3.0f);
 		Matrix<float, 3, 3> m1(1.0f, 4.0f, 0.0f, 0.5f, 2.0f, 0.0f, 2.0f, 8.0f, 0.0f);
 		Matrix<float, 3, 3> m2(-1.0f, -4.0f, 0.0f, -2.0f, -8.0f, 0.0f, -3.0f, -12.0f, 0.0f);
 		TEST( v1 * v2 == v3, "Component wise multiplication failed!\n" );
 		TEST( v0 * v4 == v5, "Component wise multiplication failed!\n" );
+		TEST( v1 / v6 == v7, "Component wise division failed!\n" );
+		TEST( v0 == v5 / v4, "Component wise division failed!\n" );
 		TEST( v1 * v0 == -2.0f, "Row times column vector should be a scalar!\n" );
 		TEST( v0 * v1 == m0, "Column times row vector should be a matrix!\n" );
 		TEST( v4 * v2 == m1, "Column times row vector should be a matrix!\n" );

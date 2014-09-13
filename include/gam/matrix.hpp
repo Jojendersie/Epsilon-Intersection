@@ -113,6 +113,11 @@ namespace gam {
 		Matrix<RESULT_TYPE(*), M, 1> operator* (const Matrix<T1,M,1>& _mat1);  // TESTED
 		template<typename T1, ENABLE_IF(M == 1)>
 		Matrix<RESULT_TYPE(*), 1, N> operator* (const Matrix<T1,1,N>& _mat1);  // TESTED
+		/// \brief Component wise division for vectors of the same size.
+		template<typename T1, ENABLE_IF(N == 1)>
+		Matrix<RESULT_TYPE(/), M, 1> operator/ (const Matrix<T1,M,1>& _mat1);  // TESTED
+		template<typename T1, ENABLE_IF(M == 1)>
+		Matrix<RESULT_TYPE(/), 1, N> operator/ (const Matrix<T1,1,N>& _mat1);  // TESTED
 
 		/// \brief Compare if two matrices are identical (using elementary !=).
 		bool operator== (const Matrix<T,M,N>& _mat1);                          // TESTED

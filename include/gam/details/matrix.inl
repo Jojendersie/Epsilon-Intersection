@@ -208,6 +208,28 @@ Matrix<RESULT_TYPE(*), 1, N> Matrix<T, M, N>::operator* (const Matrix<T1,1,N>& _
 
 // ************************************************************************* //
 template<typename T, uint M, uint N>
+template<typename T1, class>
+Matrix<RESULT_TYPE(/), M, 1> Matrix<T, M, N>::operator/ (const Matrix<T1,M,1>& _mat1)
+{
+	Matrix<RESULT_TYPE(*), M, 1> result;
+	for(int i = 0; i < M; ++i)
+		result[i] = (*this)[i] / _mat1[i];
+	return result;
+}
+
+// ************************************************************************* //
+template<typename T, uint M, uint N>
+template<typename T1, class>
+Matrix<RESULT_TYPE(/), 1, N> Matrix<T, M, N>::operator/ (const Matrix<T1,1,N>& _mat1)
+{
+	Matrix<RESULT_TYPE(*), 1, N> result;
+	for(int i = 0; i < N; ++i)
+		result[i] = (*this)[i] / _mat1[i];
+	return result;
+}
+
+// ************************************************************************* //
+template<typename T, uint M, uint N>
 inline bool Matrix<T, M, N>::operator== (const Matrix<T,M,N>& _mat1)
 {
 	for(int i = 0; i < N * M; ++i)
