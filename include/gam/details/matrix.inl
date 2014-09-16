@@ -352,3 +352,92 @@ inline decltype(sqrt(std::declval<T>())) len(const Matrix<T,M,N>& _mat0)
 {
 	return sqrt(dot(_mat0, _mat0));
 }
+
+// ************************************************************************* //
+template<typename T, unsigned M, unsigned N>
+inline Matrix<T,M,N> max(const Matrix<T,M,N>& _mat0,
+		                 const Matrix<T,M,N>& _mat1)
+{
+	Matrix<T,M,N> result;
+	for(int i = 0; i < N * M; ++i)
+		result[i] = max(_mat0[i], _mat1[i]);
+	return result;
+}
+
+// ************************************************************************* //
+template<typename T, unsigned M, unsigned N>
+inline Matrix<T,M,N> min(const Matrix<T,M,N>& _mat0,
+		                 const Matrix<T,M,N>& _mat1)
+{
+	Matrix<T,M,N> result;
+	for(int i = 0; i < N * M; ++i)
+		result[i] = min(_mat0[i], _mat1[i]);
+	return result;
+}
+
+// ************************************************************************* //
+template<typename T, unsigned M, unsigned N>
+inline T max(const Matrix<T,M,N>& _mat0)
+{
+	T result = _mat0[0];
+	for(int i = 1; i < N * M; ++i)
+		result = max(_mat0[i], result);
+	return result;
+}
+
+// ************************************************************************* //
+template<typename T, unsigned M, unsigned N>
+inline T min(const Matrix<T,M,N>& _mat0)
+{
+	T result = _mat0[0];
+	for(int i = 1; i < N * M; ++i)
+		result = min(_mat0[i], result);
+	return result;
+}
+
+// ************************************************************************* //
+template<typename T, unsigned M, unsigned N>
+inline T sum(const Matrix<T,M,N>& _mat0)
+{
+	T result = _mat0[0];
+	for(int i = 1; i < N * M; ++i)
+		result += _mat0[i];
+	return result;
+}
+
+// ************************************************************************* //
+template<typename T, unsigned M, unsigned N>
+inline T avg(const Matrix<T,M,N>& _mat0)
+{
+	return sum(_mat0) / T(M * N);
+}
+
+// ************************************************************************* //
+template<typename T, unsigned M, unsigned N>
+inline Matrix<T,M,N> abs(const Matrix<T,M,N>& _mat0)
+{
+	Matrix<T,M,N> result;
+	for(int i = 0; i < N * M; ++i)
+		result[i] = abs(_mat0[i]);
+	return result;
+}
+
+// ************************************************************************* //
+template<typename T, unsigned M, unsigned N>
+inline Matrix<T,M,N> sign(const Matrix<T,M,N>& _mat0)
+{
+	Matrix<T,M,N> result;
+	for(int i = 0; i < N * M; ++i)
+		result[i] = sign(_mat0[i]);
+	return result;
+}
+
+// ************************************************************************* //
+template<typename T, unsigned M, unsigned N>
+inline Matrix<T,M,N> sgn(const Matrix<T,M,N>& _mat0)
+{
+	Matrix<T,M,N> result;
+	for(int i = 0; i < N * M; ++i)
+		result[i] = sgn(_mat0[i]);
+	return result;
+}

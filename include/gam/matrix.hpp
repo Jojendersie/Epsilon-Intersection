@@ -237,6 +237,66 @@ namespace gam {
 	template<typename T, unsigned M, unsigned N>
 	decltype(sqrt(std::declval<T>())) len(const Matrix<T,M,N>& _mat0);         // TESTED
 
+	// ********************************************************************* //
+	/// \brief Component wise maximum.
+	/// \returns A matrix with the maximum values from both inputs.
+	template<typename T, unsigned M, unsigned N>
+	Matrix<T,M,N> max(const Matrix<T,M,N>& _mat0,
+		              const Matrix<T,M,N>& _mat1);                             // TESTED
+
+	// ********************************************************************* //
+	/// \brief Component wise minimum.
+	/// \returns A matrix with the minimum values from both inputs.
+	template<typename T, unsigned M, unsigned N>
+	Matrix<T,M,N> min(const Matrix<T,M,N>& _mat0,
+		              const Matrix<T,M,N>& _mat1);                             // TESTED
+
+	// ********************************************************************* //
+	/// \brief Maximum element from a matrix.
+	/// \returns Scalar maximum value.
+	template<typename T, unsigned M, unsigned N>
+	T max(const Matrix<T,M,N>& _mat0);                                         // TESTED
+
+	// ********************************************************************* //
+	/// \brief Minimum element from a matrix.
+	/// \returns Scalar minimum value.
+	template<typename T, unsigned M, unsigned N>
+	T min(const Matrix<T,M,N>& _mat0);                                         // TESTED
+
+	// ********************************************************************* //
+	/// \brief Signed sum of all components.
+	/// \returns Scalar sum of all values.
+	template<typename T, unsigned M, unsigned N>
+	T sum(const Matrix<T,M,N>& _mat0);                                         // TESTED
+
+	// ********************************************************************* //
+	/// \brief Average of all values from a matrix.
+	/// \returns Scalar average value.
+	template<typename T, unsigned M, unsigned N>
+	T avg(const Matrix<T,M,N>& _mat0);                                         // TESTED
+
+	// ********************************************************************* //
+	/// \brief Absolute values for all components.
+	/// \returns Matrix with component wise absolute values.
+	template<typename T, unsigned M, unsigned N>
+	Matrix<T,M,N> abs(const Matrix<T,M,N>& _mat0);                             // TESTED
+
+	// ********************************************************************* //
+	/// \brief Get the component wise sign.
+	/// \details There is a faster version sgn(), if you don't need to 
+	///    know about zero.
+	/// \returns -1 (_x < 0), 0 (_x == 0) or 1 (_x > 0) for each component _x.
+	template<typename T, unsigned M, unsigned N>
+	Matrix<T,M,N> sign(const Matrix<T,M,N>& _mat0);                            // TESTED
+
+	// ********************************************************************* //
+	/// \brief Get the component wise sign where 0 is counted as positive.
+	/// \details This function is faster than sign(). Use it if you don't need
+	///    to know about zero.
+	/// \returns -1 (_x < 0) or 1 (_x >= 0) for each component _x.
+	template<typename T, unsigned M, unsigned N>
+	Matrix<T,M,N> sgn(const Matrix<T,M,N>& _mat0);                             // TESTED
+
 
 
 
