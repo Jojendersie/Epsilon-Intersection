@@ -50,6 +50,13 @@ namespace gam {
 		/// \brief Construction without initialization. The values are undefined!
 		Matrix();
 
+		/// \brief Set all values to the same constant value.
+		explicit Matrix(T _s);                                                 // TESTED
+
+		/// \brief Convert a matrix/vector with a different elementary type.
+		template<typename T1>
+		explicit Matrix(const Matrix<T1,M,N>& _mat1);                          // TESTED
+
 		/// \brief Construction from N * M scalar values (up to 16 elements).
 		/// \details The template meta programming trick allows only the
 		///    compilation of the matching constructor.

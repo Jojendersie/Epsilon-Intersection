@@ -48,6 +48,17 @@ bool test_matrix()
 	// Matrix<int, 1, 1> errorMatrix;
 
 	// ********************************************************************* //
+	// Test type conversion constructors
+	{
+		Vec2 v0(0);  // vector with zeros
+//		Vec2 v1 = 1; // This line should not compile (no accidentally conversion)
+		Vec2 v2(-1); // Test a scalar of a different type (should yield the standard warning)
+		Vec2 v3 = static_cast<Vec2>(-1); // Test a scalar of a different type without warning
+		IVec2 v4(v3); // Convert to other vector
+//		v4 = v0;      // This line should not compile (no accidentally conversion)
+	}
+
+	// ********************************************************************* //
 	// Test of access operators and element constructors (2-4 elements)
 	{
 		Matrix<int, 2, 1> m0(1, 2);

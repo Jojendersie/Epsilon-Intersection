@@ -10,6 +10,23 @@ Matrix<T, M, N>::Matrix()
 
 // ************************************************************************* //
 template<typename T, uint M, uint N>
+Matrix<T, M, N>::Matrix(T _s)
+{
+	for(int i = 0; i < N * M; ++i)
+		m_data[i] = _s;
+}
+
+// ************************************************************************* //
+template<typename T, uint M, uint N>
+template<typename T1>
+Matrix<T, M, N>::Matrix(const Matrix<T1,M,N>& _mat1)
+{
+	for(int i = 0; i < N * M; ++i)
+		m_data[i] = static_cast<T>(_mat1[i]);
+}
+
+// ************************************************************************* //
+template<typename T, uint M, uint N>
 template<class>
 Matrix<T, M, N>::Matrix(T _s0, T _s1)
 {
