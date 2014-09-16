@@ -222,87 +222,106 @@ namespace gam {
 		        const Matrix<T,M,N>& _mat1,
 				float _epsilon = 1e-6f);
 
-	// ********************************************************************* //
-	/// \brief Computes the sum of component wise products.
-	/// \returns Scalar value of the sum of component products.
-	template<typename T, unsigned M, unsigned N, typename T1>
-	RESULT_TYPE(*) dot(const Matrix<T,M,N>& _mat0,
-		               const Matrix<T1,M,N>& _mat1);                           // TESTED
+    // ********************************************************************* //
+    /// \brief Computes the sum of component wise products.
+    /// \returns Scalar value of the sum of component products.
+    template<typename T, unsigned M, unsigned N, typename T1>
+    RESULT_TYPE(*) dot(const Matrix<T,M,N>& _mat0,
+                       const Matrix<T1,M,N>& _mat1);                           // TESTED
 
-	// ********************************************************************* //
-	/// \brief Computes the sum of squared components.
-	/// \details This is equivalent to dot(_mat0, _mat0).
-	/// \returns Squared euclidean length (scalar).
-	template<typename T, unsigned M, unsigned N>
-	T lensq(const Matrix<T,M,N>& _mat0);                                       // TESTED
+    // ********************************************************************* //
+    /// \brief Computes the sum of squared components.
+    /// \details This is equivalent to dot(_mat0, _mat0).
+    /// \returns Squared euclidean length (scalar).
+    template<typename T, unsigned M, unsigned N>
+    T lensq(const Matrix<T,M,N>& _mat0);                                       // TESTED
 
-	// ********************************************************************* //
-	/// \brief Computes the root of the sum of squared components.
-	/// \details This is the euclidean length for vectors and the Frobenius
-	///    norm for matrices.
-	/// \returns Euclidean length (scalar).
-	template<typename T, unsigned M, unsigned N>
-	decltype(sqrt(std::declval<T>())) len(const Matrix<T,M,N>& _mat0);         // TESTED
+    // ********************************************************************* //
+    /// \brief Computes the root of the sum of squared components.
+    /// \details This is the euclidean length for vectors and the Frobenius
+    ///    norm for matrices.
+    /// \returns Euclidean length (scalar).
+    template<typename T, unsigned M, unsigned N>
+    decltype(sqrt(std::declval<T>())) len(const Matrix<T,M,N>& _mat0);         // TESTED
 
-	// ********************************************************************* //
-	/// \brief Component wise maximum.
-	/// \returns A matrix with the maximum values from both inputs.
-	template<typename T, unsigned M, unsigned N>
-	Matrix<T,M,N> max(const Matrix<T,M,N>& _mat0,
-		              const Matrix<T,M,N>& _mat1);                             // TESTED
+    // ********************************************************************* //
+    /// \brief Component wise maximum.
+    /// \returns A matrix with the maximum values from both inputs.
+    template<typename T, unsigned M, unsigned N>
+    Matrix<T,M,N> max(const Matrix<T,M,N>& _mat0,
+                      const Matrix<T,M,N>& _mat1);                             // TESTED
 
-	// ********************************************************************* //
-	/// \brief Component wise minimum.
-	/// \returns A matrix with the minimum values from both inputs.
-	template<typename T, unsigned M, unsigned N>
-	Matrix<T,M,N> min(const Matrix<T,M,N>& _mat0,
-		              const Matrix<T,M,N>& _mat1);                             // TESTED
+    // ********************************************************************* //
+    /// \brief Component wise minimum.
+    /// \returns A matrix with the minimum values from both inputs.
+    template<typename T, unsigned M, unsigned N>
+    Matrix<T,M,N> min(const Matrix<T,M,N>& _mat0,
+                      const Matrix<T,M,N>& _mat1);                             // TESTED
 
-	// ********************************************************************* //
-	/// \brief Maximum element from a matrix.
-	/// \returns Scalar maximum value.
-	template<typename T, unsigned M, unsigned N>
-	T max(const Matrix<T,M,N>& _mat0);                                         // TESTED
+    // ********************************************************************* //
+    /// \brief Maximum element from a matrix.
+    /// \returns Scalar maximum value.
+    template<typename T, unsigned M, unsigned N>
+    T max(const Matrix<T,M,N>& _mat0);                                         // TESTED
 
-	// ********************************************************************* //
-	/// \brief Minimum element from a matrix.
-	/// \returns Scalar minimum value.
-	template<typename T, unsigned M, unsigned N>
-	T min(const Matrix<T,M,N>& _mat0);                                         // TESTED
+    // ********************************************************************* //
+    /// \brief Minimum element from a matrix.
+    /// \returns Scalar minimum value.
+    template<typename T, unsigned M, unsigned N>
+    T min(const Matrix<T,M,N>& _mat0);                                         // TESTED
 
-	// ********************************************************************* //
-	/// \brief Signed sum of all components.
-	/// \returns Scalar sum of all values.
-	template<typename T, unsigned M, unsigned N>
-	T sum(const Matrix<T,M,N>& _mat0);                                         // TESTED
+    // ********************************************************************* //
+    /// \brief Signed sum of all components.
+    /// \returns Scalar sum of all values.
+    template<typename T, unsigned M, unsigned N>
+    T sum(const Matrix<T,M,N>& _mat0);                                         // TESTED
 
-	// ********************************************************************* //
-	/// \brief Average of all values from a matrix.
-	/// \returns Scalar average value.
-	template<typename T, unsigned M, unsigned N>
-	T avg(const Matrix<T,M,N>& _mat0);                                         // TESTED
+    // ********************************************************************* //
+    /// \brief Average of all values from a matrix.
+    /// \returns Scalar average value.
+    template<typename T, unsigned M, unsigned N>
+    T avg(const Matrix<T,M,N>& _mat0);                                         // TESTED
 
-	// ********************************************************************* //
-	/// \brief Absolute values for all components.
-	/// \returns Matrix with component wise absolute values.
-	template<typename T, unsigned M, unsigned N>
-	Matrix<T,M,N> abs(const Matrix<T,M,N>& _mat0);                             // TESTED
+    // ********************************************************************* //
+    /// \brief Absolute values for all components.
+    /// \returns Matrix with component wise absolute values.
+    template<typename T, unsigned M, unsigned N>
+    Matrix<T,M,N> abs(const Matrix<T,M,N>& _mat0);                             // TESTED
 
-	// ********************************************************************* //
-	/// \brief Get the component wise sign.
-	/// \details There is a faster version sgn(), if you don't need to 
-	///    know about zero.
-	/// \returns -1 (_x < 0), 0 (_x == 0) or 1 (_x > 0) for each component _x.
-	template<typename T, unsigned M, unsigned N>
-	Matrix<T,M,N> sign(const Matrix<T,M,N>& _mat0);                            // TESTED
+    // ********************************************************************* //
+    /// \brief Get the component wise sign.
+    /// \details There is a faster version sgn(), if you don't need to 
+    ///    know about zero.
+    /// \returns -1 (_x < 0), 0 (_x == 0) or 1 (_x > 0) for each component _x.
+    template<typename T, unsigned M, unsigned N>
+    Matrix<T,M,N> sign(const Matrix<T,M,N>& _mat0);                            // TESTED
 
-	// ********************************************************************* //
-	/// \brief Get the component wise sign where 0 is counted as positive.
-	/// \details This function is faster than sign(). Use it if you don't need
-	///    to know about zero.
-	/// \returns -1 (_x < 0) or 1 (_x >= 0) for each component _x.
-	template<typename T, unsigned M, unsigned N>
-	Matrix<T,M,N> sgn(const Matrix<T,M,N>& _mat0);                             // TESTED
+    // ********************************************************************* //
+    /// \brief Get the component wise sign where 0 is counted as positive.
+    /// \details This function is faster than sign(). Use it if you don't need
+    ///    to know about zero.
+    /// \returns -1 (_x < 0) or 1 (_x >= 0) for each component _x.
+    template<typename T, unsigned M, unsigned N>
+    Matrix<T,M,N> sgn(const Matrix<T,M,N>& _mat0);                             // TESTED
+
+    // ********************************************************************* //
+    /// \brief Bilinear interpolation optimized for vectors.
+    /// \param _x00 [in] Vector or matrix value. This is returned when
+    ///    _t0 is zero and _t1 is zero.
+    /// \param _x01 [in] Vector or matrix value. This is returned when
+    ///    _t0 is one and _t1 is zero.
+    /// \param _x10 [in] Vector or matrix value. This is returned when
+    ///    _t0 is zero and _t1 is one.
+    /// \param _x11 [in] Vector or matrix value. This is returned when
+    ///    _t0 is one and _t1 is one.
+    /// \param _t0 [in] Scalar interpolation parameter ("x-direction").
+    /// \param _t1 [in] Scalar interpolation parameter ("y-direction").
+    /// \returns lerp(lerp(_x00, _x01, _t0), lerp(_x10, _x11, _t0), _t1).
+    template<typename T0, typename T1, unsigned M, unsigned N>
+    Matrix<decltype(std::declval<T0>() * std::declval<T1>()),M,N>
+        bilerp(Matrix<T0,M,N> _x00, Matrix<T0,M,N> _x01,
+               Matrix<T0,M,N> _x10, Matrix<T0,M,N> _x11,
+               T1 _t0, T1 _t1);                                                // TESTED
 
 
 
