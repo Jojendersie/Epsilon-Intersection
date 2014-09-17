@@ -1,4 +1,4 @@
-﻿#include "gam/elementarytypes.hpp"
+﻿#include "ei/elementarytypes.hpp"
 #include "unittest.hpp"
 
 #include <iostream>

@@ -1,4 +1,4 @@
-#include "gam/matrix.hpp"
+#include "ei/matrix.hpp"
 #include "unittest.hpp"
 
 #include <iostream>
