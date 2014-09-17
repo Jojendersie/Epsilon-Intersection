@@ -81,10 +81,10 @@ bool test_matrix()
         Matrix<int, 2, 2> m2(6, 8, 10, 12);
         Matrix<float, 2, 2> m3(3.0f, 1.0f, 4.0f, 1.0f);
         Matrix<float, 2, 2> m4(4.0f, 3.0f, 7.0f, 5.0f);
-        TEST( m0 + m1 == m2, "Component wise addition failed!\n" );
-        TEST( m0 + m3 == m4, "Component wise addition failed!\n" );
-        TEST( m2 - m1 == m0, "Component wise subtraction failed!\n" );
-        TEST( m0 - m4 == -m3, "Component wise subtraction or unary minus failed!\n" );
+        TEST( all(m0 + m1 == m2), "Component wise addition failed!\n" );
+        TEST( all(m0 + m3 == m4), "Component wise addition failed!\n" );
+        TEST( all(m2 - m1 == m0), "Component wise subtraction failed!\n" );
+        TEST( all(m0 - m4 == -m3), "Component wise subtraction or unary minus failed!\n" );
     }
 
     // ********************************************************************* //
@@ -101,14 +101,14 @@ bool test_matrix()
         Matrix<float, 3, 3> m0(1.0f, 0.0f, -1.0f, 2.0f, 0.0f, -2.0f, 3.0f, 0.0f, -3.0f);
         Matrix<float, 3, 3> m1(1.0f, 4.0f, 0.0f, 0.5f, 2.0f, 0.0f, 2.0f, 8.0f, 0.0f);
         Matrix<float, 3, 3> m2(-1.0f, -4.0f, 0.0f, -2.0f, -8.0f, 0.0f, -3.0f, -12.0f, 0.0f);
-        TEST( v1 * v2 == v3, "Component wise multiplication failed!\n" );
-        TEST( v0 * v4 == v5, "Component wise multiplication failed!\n" );
-        TEST( v1 / v6 == v7, "Component wise division failed!\n" );
-        TEST( v0 == v5 / v4, "Component wise division failed!\n" );
+        TEST( all(v1 * v2 == v3), "Component wise multiplication failed!\n" );
+        TEST( all(v0 * v4 == v5), "Component wise multiplication failed!\n" );
+        TEST( all(v1 / v6 == v7), "Component wise division failed!\n" );
+        TEST( all(v0 == v5 / v4), "Component wise division failed!\n" );
         TEST( v1 * v0 == -2.0f, "Row times column vector should be a scalar!\n" );
-        TEST( v0 * v1 == m0, "Column times row vector should be a matrix!\n" );
-        TEST( v4 * v2 == m1, "Column times row vector should be a matrix!\n" );
-        TEST( m0 * m1 == m2, "Matrix multiplication wrong!\n" );
+        TEST( all(v0 * v1 == m0), "Column times row vector should be a matrix!\n" );
+        TEST( all(v4 * v2 == m1), "Column times row vector should be a matrix!\n" );
+        TEST( all(m0 * m1 == m2), "Matrix multiplication wrong!\n" );
     }
 
     // ********************************************************************* //
@@ -119,15 +119,15 @@ bool test_matrix()
         Matrix<float, 1, 2> v0(1.0f, 1.0f);
         Matrix<float, 2, 1> v1(0.0f, 1.0f);
         Matrix<float, 2, 2> m2(2.0f, 2.0f, 4.0f, 4.0f);
-        TEST( m0 + 2 == m1, "Adding a scalar failed!" );
-        TEST( 2 + m0 * 1 == m1, "Multiplying or adding a scalar failed!" );
+        TEST( all(m0 + 2 == m1), "Adding a scalar failed!" );
+        TEST( all(2 + m0 * 1 == m1), "Multiplying or adding a scalar failed!" );
         TEST( 2.0f * v0 * 2.0f * v1 + 0.5f == 4.5f, "Multiplying a scalar failed!" );
-        TEST( (v1 + 1.0f) * 2.0f * v0 == m2, "Mixed scalar vector operation failed!" );
-        TEST( m0 == m1 - 2, "Scalar subtraction failed!" );
-        TEST( 2 + m0 / 1 == m1, "Scalar addition or division failed!" );
+        TEST( all((v1 + 1.0f) * 2.0f * v0 == m2), "Mixed scalar vector operation failed!" );
+        TEST( all(m0 == m1 - 2), "Scalar subtraction failed!" );
+        TEST( all(2 + m0 / 1 == m1), "Scalar addition or division failed!" );
         TEST( (2.0f / v0 / 2.0f) * v1 - 0.5f == 0.5f, "Mixed scalar vector operation (/,*,-) failed!" );
-        TEST( (v1 - 0.5f) * 2.0f * v0 + 3 == m2, "Mixed scalar vector operation (-, *) failed!" );
-        TEST( (4.0f - m2) / 2.0f == (1.0f - v1) * v0, "Mixed scalar vector operation (/,*,-) failed!" );
+        TEST( all((v1 - 0.5f) * 2.0f * v0 + 3 == m2), "Mixed scalar vector operation (-, *) failed!" );
+        TEST( all((4.0f - m2) / 2.0f == (1.0f - v1) * v0), "Mixed scalar vector operation (/,*,-) failed!" );
     }
 
     // ********************************************************************* //
@@ -158,17 +158,17 @@ bool test_matrix()
         Vec4 v2(-1.0f, -0.5f, 0.25f, 0.0f);
         Vec4 v3(0.5f, 2.5f, 1.0f, 0.5f);
         Vec4 v4(1.0f, 0.5f, 0.25f, 0.5f);
-        TEST( min(v0, v1) == v2, "Component wise minimum wrong!" );
-        TEST( max(v0, v1) == v3, "Component wise maximum wrong!" );
+        TEST( all(min(v0, v1) == v2), "Component wise minimum wrong!" );
+        TEST( all(max(v0, v1) == v3), "Component wise maximum wrong!" );
         TEST( min(v0) == -1.0f, "Minimum of a vector wrong!" );
         TEST( min(v1) == 0.0f, "Minimum of a vector wrong!" );
         TEST( max(v2) == 0.25f, "Maximum of a vector wrong!" );
         TEST( max(v3) == 2.5f, "Maximum of a vector wrong!" );
         TEST( sum(v1) == 4.0f, "Sum of a vector wrong!" );
         TEST( avg(v3) == 1.125f, "Average of a vector wrong!" );
-        TEST( abs(v0) == v4, "Absolute value of a vector wrong!" );
-        TEST( sign(v1) == Vec4(1.0f, 1.0f, 1.0f, 0.0f), "Sign values of a vector wrong!" );
-        TEST( sgn(v2) == Vec4(-1.0f, -1.0f, 1.0f, 1.0f), "Sgn values of a vector wrong!" );
+        TEST( all(abs(v0) == v4), "Absolute value of a vector wrong!" );
+        TEST( all(sign(v1) == Vec4(1.0f, 1.0f, 1.0f, 0.0f)), "Sign values of a vector wrong!" );
+        TEST( all(sgn(v2) == Vec4(-1.0f, -1.0f, 1.0f, 1.0f)), "Sgn values of a vector wrong!" );
     }
 
     // ********************************************************************* //
@@ -177,8 +177,8 @@ bool test_matrix()
         Vec3 v0(0.0f);
         Vec3 v1(1.0f);
         Vec3 v2(2.0f);
-        TEST( lerp(v0, v2, 0.5f) == v1, "Linear interpolation failed." );
-        TEST( bilerp(v0, v1, v1, v2, 0.5f, 0.5f) == v1, "Bilinear interpolation failed." );
+        TEST( all(lerp(v0, v2, 0.5f) == v1), "Linear interpolation failed." );
+        TEST( all(bilerp(v0, v1, v1, v2, 0.5f, 0.5f) == v1), "Bilinear interpolation failed." );
         TEST( lerp(1, 4, 0.5f) == 2.5f, "Linear interpolation failed." );
         TEST( bilerp(1, 3, 5, 7, 0.5f, 0.5f) == 4.0f, "Bilinear interpolation failed." );
     }

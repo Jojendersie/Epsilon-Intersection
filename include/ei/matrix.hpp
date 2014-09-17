@@ -99,13 +99,13 @@ namespace ei {
         /// \brief Add two matrices component wise.
         /// \details Addition is commutative.
         template<typename T1>
-        Matrix<RESULT_TYPE(+), M, N> operator+ (const Matrix<T1,M,N>& _mat1);  // TESTED
+        Matrix<RESULT_TYPE(+), M, N> operator+ (const Matrix<T1,M,N>& _mat1) const;  // TESTED
         /// \brief Subtract two matrices component wise.
         /// \details Subtraction is not commutative.
         template<typename T1>
-        Matrix<RESULT_TYPE(-), M, N> operator- (const Matrix<T1,M,N>& _mat1);  // TESTED
+        Matrix<RESULT_TYPE(-), M, N> operator- (const Matrix<T1,M,N>& _mat1) const;  // TESTED
         /// \brief Unary minus on all components.
-        Matrix<T, M, N> operator- ();                                          // TESTED
+        Matrix<T, M, N> operator- () const;                                    // TESTED
         /// \brief Add a scalar value to all components.
 
         /// \brief Matrix multiplication.
@@ -114,20 +114,28 @@ namespace ei {
         ///    is a scalar if M = N = 1.
         template<typename T1, uint O>
         typename std::conditional<M * O == 1, RESULT_TYPE(*), Matrix<RESULT_TYPE(*), M, O>>::type
-        operator* (const Matrix<T1,N,O>& _mat1);                               // TESTED
+        operator* (const Matrix<T1,N,O>& _mat1) const;                               // TESTED
         /// \brief Component wise multiplication for vectors of the same size.
         template<typename T1, ENABLE_IF(N == 1)>
-        Matrix<RESULT_TYPE(*), M, 1> operator* (const Matrix<T1,M,1>& _mat1);  // TESTED
+        Matrix<RESULT_TYPE(*), M, 1> operator* (const Matrix<T1,M,1>& _mat1) const;  // TESTED
         template<typename T1, ENABLE_IF(M == 1)>
-        Matrix<RESULT_TYPE(*), 1, N> operator* (const Matrix<T1,1,N>& _mat1);  // TESTED
+        Matrix<RESULT_TYPE(*), 1, N> operator* (const Matrix<T1,1,N>& _mat1) const;  // TESTED
         /// \brief Component wise division for vectors of the same size.
         template<typename T1, ENABLE_IF(N == 1)>
-        Matrix<RESULT_TYPE(/), M, 1> operator/ (const Matrix<T1,M,1>& _mat1);  // TESTED
+        Matrix<RESULT_TYPE(/), M, 1> operator/ (const Matrix<T1,M,1>& _mat1) const;  // TESTED
         template<typename T1, ENABLE_IF(M == 1)>
-        Matrix<RESULT_TYPE(/), 1, N> operator/ (const Matrix<T1,1,N>& _mat1);  // TESTED
+        Matrix<RESULT_TYPE(/), 1, N> operator/ (const Matrix<T1,1,N>& _mat1) const;  // TESTED
 
-        /// \brief Compare if two matrices are identical (using elementary !=).
-        bool operator== (const Matrix<T,M,N>& _mat1);                          // TESTED
+        /// \brief Compare component wise, if two matrices are identical.
+        Matrix<bool,M,N> operator== (const Matrix<T,M,N>& _mat1) const;
+        /// \brief Compare component wise, if elements are smaller or equal.
+        Matrix<bool,M,N> operator<= (const Matrix<T,M,N>& _mat1) const;
+        /// \brief Compare component wise, if elements are smaller.
+        Matrix<bool,M,N> operator< (const Matrix<T,M,N>& _mat1) const;
+        /// \brief Compare component wise, if elements are greater.
+        Matrix<bool,M,N> operator> (const Matrix<T,M,N>& _mat1) const;
+        /// \brief Compare component wise, if elements are greater or equal.
+        Matrix<bool,M,N> operator>= (const Matrix<T,M,N>& _mat1) const;
     };
 
     // ********************************************************************* //
@@ -155,6 +163,7 @@ namespace ei {
     /// \brief Divide a scalar by each component.
     template<typename T1, typename T, uint M, uint N>
     Matrix<RESULT_TYPE(/), M, N> operator/ (T1 _s, const Matrix<T,M,N>& _mat); // TESTED
+    // TODO scalar comparision
 
     // ********************************************************************* //
     // Predefined float vector and matrix types.
@@ -324,6 +333,23 @@ namespace ei {
                T1 _t0, T1 _t1);                                                // TESTED
 
 
+    // ********************************************************************* //
+    /// \brief Test if at least one element of the matrix is true.
+    /// \return false, if all elements off the matrix are false.
+    template<unsigned M, unsigned N>
+    bool any(const Matrix<bool,M,N>& _mat0);
+
+    // ********************************************************************* //
+    /// \brief Test if no element of the matrix is true.
+    /// \return true, if all elements off the matrix are false.
+    template<unsigned M, unsigned N>
+    bool none(const Matrix<bool,M,N>& _mat0);
+
+    // ********************************************************************* //
+    /// \brief Test if all elements of the matrix are true.
+    /// \return true, if all elements off the matrix are true.
+    template<unsigned M, unsigned N>
+    bool all(const Matrix<bool,M,N>& _mat0);
 
 
 

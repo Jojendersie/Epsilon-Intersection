@@ -3,6 +3,9 @@
 #include "config.hpp"
 #include "details/inttemplate.hpp"
 
+// Ugly to include this here but you will miss sqrt,sin,... otherwise
+#include <cmath>
+
 #ifndef USE_ELEMENTARIES_WITHOUT_NAMESPACE
 namespace ei {
 #endif
