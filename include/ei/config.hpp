@@ -8,8 +8,8 @@
 /// \details The default is on.
 //#define USE_ELEMENTARIES_WITHOUT_NAMESPACE
 
-/// \brief Using this option changes the namespace gam:: to γ::.
-/// \details Do not use this if the symbol gamma above is not shown correctly,
+/// \brief Using this option changes the namespace ei:: to ε::.
+/// \details Do not use this if the symbol epsilon above is not shown correctly,
 ///    or enable utf8 in all your files.
 ///
 ///    The default is off.

@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-using namespace gam;
+using namespace ei;
 using namespace std;
 
 bool test_matrix()

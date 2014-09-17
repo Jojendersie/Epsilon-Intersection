@@ -5,7 +5,7 @@
 #include "elementarytypes.hpp"
 #include "details/matrixcomponents.hpp"
 
-namespace gam {
+namespace ei {
 
     /// \brief MxN row-major matrix class.
     /// \details The matrix is the basis for all matrix and vector types. It

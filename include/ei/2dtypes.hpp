@@ -2,7 +2,7 @@
 
 #include "matrix.hpp"
 
-namespace gam {
+namespace ei {
 
     // Predeclarations for all types to enable conversion operators.
     struct Circle2D;

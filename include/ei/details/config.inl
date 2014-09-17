@@ -1,10 +1,12 @@
 ﻿#pragma once
 
 // Just show the namespace once to make sure it exists when aliasing.
-namespace gam {}
+namespace ei {}
 #ifdef USE_UTF8_NAMESPACES
-    namespace γ = gam;
+    namespace ε = ei;
 #endif
+// An easter egg for german speaking people ;-).
+namespace egg = ei;
 
 
 // Define the assertions depending on the option level.

@@ -4,7 +4,7 @@
 #include "details/inttemplate.hpp"
 
 #ifndef USE_ELEMENTARIES_WITHOUT_NAMESPACE
-namespace gam {
+namespace ei {
 #endif
 
     /// \brief Short name for unsigned / unsigned int.
@@ -35,7 +35,7 @@ namespace gam {
 }
 #endif
 
-namespace gam {
+namespace ei {
     // ********************************************************************* //
     //                               FUNCTIONS                               //
     // ********************************************************************* //
