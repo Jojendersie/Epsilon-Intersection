@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <type_traits>
 
@@ -67,15 +67,15 @@ namespace ei {
         template<ENABLE_IF(N * M == 4)>
         Matrix(T _s0, T _s1, T _s2, T _s3);                                    // TESTED
         template<ENABLE_IF(N * M == 6)>
-        Matrix(T _s0, T _s1, T _s2, T _s3, T _s4, T _s5);
+        Matrix(T _s0, T _s1, T _s2, T _s3, T _s4, T _s5);                      // TESTED
         template<ENABLE_IF(N * M == 8)>
-        Matrix(T _s0, T _s1, T _s2, T _s3, T _s4, T _s5, T _s6, T _s7);
+        Matrix(T _s0, T _s1, T _s2, T _s3, T _s4, T _s5, T _s6, T _s7);        // TESTED
         template<ENABLE_IF(N * M == 9)>
-        Matrix(T _s0, T _s1, T _s2, T _s3, T _s4, T _s5, T _s6, T _s7, T _s8);
+        Matrix(T _s0, T _s1, T _s2, T _s3, T _s4, T _s5, T _s6, T _s7, T _s8); // TESTED
         template<ENABLE_IF(N * M == 12)>
-        Matrix(T _s0, T _s1, T _s2, T _s3, T _s4, T _s5, T _s6, T _s7, T _s8, T _s9, T _s10, T _s11);
+        Matrix(T _s0, T _s1, T _s2, T _s3, T _s4, T _s5, T _s6, T _s7, T _s8, T _s9, T _s10, T _s11); // TESTED
         template<ENABLE_IF(N * M == 16)>
-        Matrix(T _s0, T _s1, T _s2, T _s3, T _s4, T _s5, T _s6, T _s7, T _s8, T _s9, T _s10, T _s11, T _s12, T _s13, T _s14, T _s15);
+        Matrix(T _s0, T _s1, T _s2, T _s3, T _s4, T _s5, T _s6, T _s7, T _s8, T _s9, T _s10, T _s11, T _s12, T _s13, T _s14, T _s15); // TESTED
 
         /// \brief Access a single element with two indices.
         /// \details Computes the data index _row * N + _col. Therefore
@@ -127,15 +127,15 @@ namespace ei {
         Matrix<RESULT_TYPE(/), 1, N> operator/ (const Matrix<T1,1,N>& _mat1) const;  // TESTED
 
         /// \brief Compare component wise, if two matrices are identical.
-        Matrix<bool,M,N> operator== (const Matrix<T,M,N>& _mat1) const;
+        Matrix<bool,M,N> operator== (const Matrix<T,M,N>& _mat1) const;        // TESTED
         /// \brief Compare component wise, if elements are smaller or equal.
-        Matrix<bool,M,N> operator<= (const Matrix<T,M,N>& _mat1) const;
+        Matrix<bool,M,N> operator<= (const Matrix<T,M,N>& _mat1) const;        // TESTED
         /// \brief Compare component wise, if elements are smaller.
-        Matrix<bool,M,N> operator< (const Matrix<T,M,N>& _mat1) const;
+        Matrix<bool,M,N> operator< (const Matrix<T,M,N>& _mat1) const;         // TESTED
         /// \brief Compare component wise, if elements are greater.
-        Matrix<bool,M,N> operator> (const Matrix<T,M,N>& _mat1) const;
+        Matrix<bool,M,N> operator> (const Matrix<T,M,N>& _mat1) const;         // TESTED
         /// \brief Compare component wise, if elements are greater or equal.
-        Matrix<bool,M,N> operator>= (const Matrix<T,M,N>& _mat1) const;
+        Matrix<bool,M,N> operator>= (const Matrix<T,M,N>& _mat1) const;        // TESTED
     };
 
     // ********************************************************************* //
@@ -163,7 +163,24 @@ namespace ei {
     /// \brief Divide a scalar by each component.
     template<typename T1, typename T, uint M, uint N>
     Matrix<RESULT_TYPE(/), M, N> operator/ (T1 _s, const Matrix<T,M,N>& _mat); // TESTED
-    // TODO scalar comparision
+   
+    /// \brief Test all components with respect to a scalar.
+    template<typename T, uint M, uint N, typename T1>
+    Matrix<bool, M, N> operator< (const Matrix<T,M,N>& _mat, T1 _s);           // TESTED
+    template<typename T1, typename T, uint M, uint N>
+    Matrix<bool, M, N> operator< (T1 _s, const Matrix<T,M,N>& _mat);
+    template<typename T, uint M, uint N, typename T1>
+    Matrix<bool, M, N> operator<= (const Matrix<T,M,N>& _mat, T1 _s);          // TESTED
+    template<typename T1, typename T, uint M, uint N>
+    Matrix<bool, M, N> operator<= (T1 _s, const Matrix<T,M,N>& _mat);
+    template<typename T, uint M, uint N, typename T1>
+    Matrix<bool, M, N> operator>= (const Matrix<T,M,N>& _mat, T1 _s);          // TESTED
+    template<typename T1, typename T, uint M, uint N>
+    Matrix<bool, M, N> operator>= (T1 _s, const Matrix<T,M,N>& _mat);
+    template<typename T, uint M, uint N, typename T1>
+    Matrix<bool, M, N> operator> (const Matrix<T,M,N>& _mat, T1 _s);           // TESTED
+    template<typename T1, typename T, uint M, uint N>
+    Matrix<bool, M, N> operator> (T1 _s, const Matrix<T,M,N>& _mat);
 
     // ********************************************************************* //
     // Predefined float vector and matrix types.
@@ -239,6 +256,26 @@ namespace ei {
                        const Matrix<T1,M,N>& _mat1);                           // TESTED
 
     // ********************************************************************* //
+    /// \brief Computes the cross product of two 3d vectors (RHS).
+    /// \returns Perpendicular vector with length |v0|·|v1|·sin(∡(v0,v1)).
+    template<typename T, typename T1>
+    Matrix<RESULT_TYPE(*),1,3> cross(const Matrix<T,1,3>& _v0,
+                                     const Matrix<T1,1,3>& _v1);
+    template<typename T, typename T1>
+    Matrix<RESULT_TYPE(*),3,1> cross(const Matrix<T,3,1>& _v0,
+                                     const Matrix<T1,3,1>& _v1);
+
+    // ********************************************************************* //
+    /// \brief Computes the cross product of two 2d vectors.
+    /// \returns The determinant of the 2x2 matrix: v0.x·v1.y - v0.y·v1.x.
+    template<typename T, typename T1>
+    RESULT_TYPE(*) cross(const Matrix<T,1,2>& _v0,
+                         const Matrix<T1,1,2>& _v1);
+    template<typename T, typename T1>
+    RESULT_TYPE(*) cross(const Matrix<T,2,1>& _v0,
+                         const Matrix<T1,2,1>& _v1);
+
+    // ********************************************************************* //
     /// \brief Computes the sum of squared components.
     /// \details This is equivalent to dot(_mat0, _mat0).
     /// \returns Squared euclidean length (scalar).
@@ -283,7 +320,7 @@ namespace ei {
     /// \brief Signed sum of all components.
     /// \returns Scalar sum of all values.
     template<typename T, unsigned M, unsigned N>
-    T sum(const Matrix<T,M,N>& _mat0);                                         // TESTED
+    decltype(std::declval<T>() + std::declval<T>()) sum(const Matrix<T,M,N>& _mat0);    // TESTED
 
     // ********************************************************************* //
     /// \brief Average of all values from a matrix.
@@ -304,6 +341,7 @@ namespace ei {
     /// \returns -1 (_x < 0), 0 (_x == 0) or 1 (_x > 0) for each component _x.
     template<typename T, unsigned M, unsigned N>
     Matrix<T,M,N> sign(const Matrix<T,M,N>& _mat0);                            // TESTED
+
 
     // ********************************************************************* //
     /// \brief Get the component wise sign where 0 is counted as positive.
@@ -337,19 +375,19 @@ namespace ei {
     /// \brief Test if at least one element of the matrix is true.
     /// \return false, if all elements off the matrix are false.
     template<unsigned M, unsigned N>
-    bool any(const Matrix<bool,M,N>& _mat0);
+    bool any(const Matrix<bool,M,N>& _mat0);                                   // TESTED
 
     // ********************************************************************* //
     /// \brief Test if no element of the matrix is true.
     /// \return true, if all elements off the matrix are false.
     template<unsigned M, unsigned N>
-    bool none(const Matrix<bool,M,N>& _mat0);
+    bool none(const Matrix<bool,M,N>& _mat0);                                  // TESTED
 
     // ********************************************************************* //
     /// \brief Test if all elements of the matrix are true.
     /// \return true, if all elements off the matrix are true.
     template<unsigned M, unsigned N>
-    bool all(const Matrix<bool,M,N>& _mat0);
+    bool all(const Matrix<bool,M,N>& _mat0);                                   // TESTED
 
 
 

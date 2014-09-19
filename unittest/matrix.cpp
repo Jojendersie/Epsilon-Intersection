@@ -13,34 +13,34 @@ bool test_matrix()
     // ********************************************************************* //
     // Test type size
     TEST( sizeof(Matrix<byte, 1, 2>) == 2,
-        "sizeof(Matrix<byte, 1, 2>) is " << sizeof(Matrix<byte, 1, 2>) << " instead of 2\n"
+        "sizeof(Matrix<byte, 1, 2>) is " << sizeof(Matrix<byte, 1, 2>) << " instead of 2."
     );
     TEST( sizeof(Matrix<double, 2, 1>) == 16,
-        "sizeof(Matrix<double, 2, 1>) is " << sizeof(Matrix<double, 2, 1>) << " instead of 16\n"
+        "sizeof(Matrix<double, 2, 1>) is " << sizeof(Matrix<double, 2, 1>) << " instead of 16."
     );
     TEST( sizeof(Matrix<float, 1, 3>) == 12,
-        "sizeof(Matrix<float, 1, 3>) is " << sizeof(Matrix<float, 1, 3>) << " instead of 12\n"
+        "sizeof(Matrix<float, 1, 3>) is " << sizeof(Matrix<float, 1, 3>) << " instead of 12."
     );
     TEST( sizeof(Matrix<byte, 3, 1>) == 3,
-        "sizeof(Matrix<byte, 3, 1>) is " << sizeof(Matrix<byte, 3, 1>) << " instead of 3\n"
+        "sizeof(Matrix<byte, 3, 1>) is " << sizeof(Matrix<byte, 3, 1>) << " instead of 3."
     );
     TEST( sizeof(Matrix<float, 4, 1>) == 16,
-        "sizeof(Matrix<float, 4, 1>) is " << sizeof(Matrix<float, 4, 1>) << " instead of 16\n"
+        "sizeof(Matrix<float, 4, 1>) is " << sizeof(Matrix<float, 4, 1>) << " instead of 16."
     );
     TEST( sizeof(Matrix<int16, 1, 4>) == 8,
-        "sizeof(Matrix<int16, 1, 4>) is " << sizeof(Matrix<int16, 1, 4>) << " instead of 8\n"
+        "sizeof(Matrix<int16, 1, 4>) is " << sizeof(Matrix<int16, 1, 4>) << " instead of 8."
     );
     TEST( sizeof(Matrix<uint16, 2, 2>) == 8,
-        "sizeof(Matrix<uint16, 2, 2>) is " << sizeof(Matrix<uint16, 2, 2>) << " instead of 8\n"
+        "sizeof(Matrix<uint16, 2, 2>) is " << sizeof(Matrix<uint16, 2, 2>) << " instead of 8."
     );
     TEST( sizeof(Matrix<byte, 3, 3>) == 9,
-        "sizeof(Matrix<byte, 3, 3>) is " << sizeof(Matrix<byte, 3, 3>) << " instead of 9\n"
+        "sizeof(Matrix<byte, 3, 3>) is " << sizeof(Matrix<byte, 3, 3>) << " instead of 9."
     );
     TEST( sizeof(Matrix<float, 4, 4>) == 64,
-        "sizeof(Matrix<float, 4, 4>) is " << sizeof(Matrix<float, 4, 4>) << " instead of 64\n"
+        "sizeof(Matrix<float, 4, 4>) is " << sizeof(Matrix<float, 4, 4>) << " instead of 64."
     );
     TEST( sizeof(Matrix<float, 10, 10>) == 400,
-        "sizeof(Matrix<float, 10, 10>) is " << sizeof(Matrix<float, 10, 10>) << " instead of 400\n"
+        "sizeof(Matrix<float, 10, 10>) is " << sizeof(Matrix<float, 10, 10>) << " instead of 400."
     );
 
     // ********************************************************************* //
@@ -59,6 +59,27 @@ bool test_matrix()
     }
 
     // ********************************************************************* //
+    // Test of boolean operators
+    {
+		Matrix<int, 2, 2> m0(1, 2, 3, 4);
+		Matrix<int, 2, 2> m1(2, 2, 0, 4);
+		TEST( any(m0 < 2) , "Scalar operator < or any() wrong!" );
+		TEST( !any(m0 < 0) , "Scalar operator < or any() wrong!" );
+		TEST( !none(m0 <= 2) , "Scalar operator <= or none() wrong!" );
+		TEST( none(m0 <= 0) , "Scalar operator <= or none() wrong!" );
+		TEST( all(m0 >= 1) , "Scalar operator >= or all() wrong!" );
+		TEST( !all(m1 >= 2) , "Scalar operator >= or all() wrong!" );
+		TEST( any(m0 > 2) , "Scalar operator > or all() wrong!" );
+		TEST( none(m0 > 4) , "Scalar operator > or all() wrong!" );
+		TEST( sum(m0 < m1) == 1 , "Matrix operator < or sum() wrong!" );
+		TEST( sum(m0 <= m1) == 3 , "Matrix operator <= or sum() wrong!" );
+		TEST( sum(m0 >= m1) == 3 , "Matrix operator >= or sum() wrong!" );
+		TEST( sum(m0 > m1) == 1 , "Matrix operator > or sum() wrong!" );
+		TEST( sum(m0 == m1) == 2 , "Matrix operator > or sum() wrong!" );
+	}
+
+
+    // ********************************************************************* //
     // Test of access operators and element constructors (2-4 elements)
     {
         Matrix<int, 2, 1> m0(1, 2);
@@ -66,11 +87,11 @@ bool test_matrix()
         Matrix<int, 2, 2> m2(1, 2, 3, 4);
         m1(0,2) = 5;
         m2[2] = 5;
-        TEST( m0[0] == 1 && m0[1] == 2, "Operator or constructor wrong!\n" );
-        TEST( m1(0,0) == 1 && m1(0,1) == 2 && m1[2] == 5, "Operator or constructor wrong!\n" );
-        TEST( m2(0,1) == 2 && m2(1,0) == 5 && m2(1,1) == 4, "Operator or constructor wrong!\n" );
-        TEST( (const_cast<const Matrix<int, 2, 2>&>(m2))[1] == 2, "Read-only operator wrong!\n" );
-        TEST( (const_cast<const Matrix<int, 2, 2>&>(m2))(1,0) == 5, "Read-only operator wrong!\n" );
+        TEST( m0[0] == 1 && m0[1] == 2, "Operator or constructor wrong!" );
+        TEST( m1(0,0) == 1 && m1(0,1) == 2 && m1[2] == 5, "Operator or constructor wrong!" );
+        TEST( m2(0,1) == 2 && m2(1,0) == 5 && m2(1,1) == 4, "Operator or constructor wrong!" );
+        TEST( (const_cast<const Matrix<int, 2, 2>&>(m2))[1] == 2, "Read-only operator wrong!" );
+        TEST( (const_cast<const Matrix<int, 2, 2>&>(m2))(1,0) == 5, "Read-only operator wrong!" );
     }
 
     // ********************************************************************* //
@@ -81,10 +102,10 @@ bool test_matrix()
         Matrix<int, 2, 2> m2(6, 8, 10, 12);
         Matrix<float, 2, 2> m3(3.0f, 1.0f, 4.0f, 1.0f);
         Matrix<float, 2, 2> m4(4.0f, 3.0f, 7.0f, 5.0f);
-        TEST( all(m0 + m1 == m2), "Component wise addition failed!\n" );
-        TEST( all(m0 + m3 == m4), "Component wise addition failed!\n" );
-        TEST( all(m2 - m1 == m0), "Component wise subtraction failed!\n" );
-        TEST( all(m0 - m4 == -m3), "Component wise subtraction or unary minus failed!\n" );
+        TEST( all(m0 + m1 == m2), "Component wise addition failed!" );
+        TEST( all(m0 + m3 == m4), "Component wise addition failed!" );
+        TEST( all(m2 - m1 == m0), "Component wise subtraction failed!" );
+        TEST( all(m0 - m4 == -m3), "Component wise subtraction or unary minus failed!" );
     }
 
     // ********************************************************************* //
@@ -101,14 +122,47 @@ bool test_matrix()
         Matrix<float, 3, 3> m0(1.0f, 0.0f, -1.0f, 2.0f, 0.0f, -2.0f, 3.0f, 0.0f, -3.0f);
         Matrix<float, 3, 3> m1(1.0f, 4.0f, 0.0f, 0.5f, 2.0f, 0.0f, 2.0f, 8.0f, 0.0f);
         Matrix<float, 3, 3> m2(-1.0f, -4.0f, 0.0f, -2.0f, -8.0f, 0.0f, -3.0f, -12.0f, 0.0f);
-        TEST( all(v1 * v2 == v3), "Component wise multiplication failed!\n" );
-        TEST( all(v0 * v4 == v5), "Component wise multiplication failed!\n" );
-        TEST( all(v1 / v6 == v7), "Component wise division failed!\n" );
-        TEST( all(v0 == v5 / v4), "Component wise division failed!\n" );
-        TEST( v1 * v0 == -2.0f, "Row times column vector should be a scalar!\n" );
-        TEST( all(v0 * v1 == m0), "Column times row vector should be a matrix!\n" );
-        TEST( all(v4 * v2 == m1), "Column times row vector should be a matrix!\n" );
-        TEST( all(m0 * m1 == m2), "Matrix multiplication wrong!\n" );
+        TEST( all(v1 * v2 == v3), "Component wise multiplication failed!" );
+        TEST( all(v0 * v4 == v5), "Component wise multiplication failed!" );
+        TEST( all(v1 / v6 == v7), "Component wise division failed!" );
+        TEST( all(v0 == v5 / v4), "Component wise division failed!" );
+        TEST( v1 * v0 == -2.0f, "Row times column vector should be a scalar!" );
+        TEST( all(v0 * v1 == m0), "Column times row vector should be a matrix!" );
+        TEST( all(v4 * v2 == m1), "Column times row vector should be a matrix!" );
+        TEST( all(m0 * m1 == m2), "Matrix multiplication wrong!" );
+    }
+
+    // ********************************************************************* //
+    // Test * and element constructors (6,8,9,12,16 elements)
+    {
+        Matrix<int, 2, 3> m0(1, 2, 3,
+                             2, 3, 4);
+        Matrix<int, 3, 2> m1(1, 2,
+                             2, 3,
+                             3, 4);
+        Matrix<int, 3, 3> m2(5, 8, 11,
+                             8, 13, 18,
+                             11, 18, 25);
+        TEST( all(m1 * m0 == m2), "Constructor or matrix multiplication wrong!" );
+        Matrix<int, 2, 4> m3(1, 2, 3, 4,
+                             2, 3, 4, 5);
+        Matrix<int, 4, 2> m4(1, 2,
+                             2, 3,
+                             3, 4,
+                             4, 5);
+        Matrix<int, 4, 4> m5(5, 8, 11, 14,
+                             8, 13, 18, 23,
+                             11, 18, 25, 32,
+                             14, 23, 32, 41);
+        TEST( all(m4 * m3 == m5), "Constructor or matrix multiplication wrong!" );
+        Matrix<int, 3, 4> m6(1, 2, 3, 4,
+                             2, 3, 4, 5,
+                             0, 0, 0, 0);
+        Matrix<int, 4, 3> m7(1, 2, 3,
+                             2, 3, 4,
+                             3, 4, 5,
+                             4, 5, 6);
+        TEST( all(m7 * m6 == m5), "Constructor or matrix multiplication wrong!" );
     }
 
     // ********************************************************************* //
@@ -181,6 +235,25 @@ bool test_matrix()
         TEST( all(bilerp(v0, v1, v1, v2, 0.5f, 0.5f) == v1), "Bilinear interpolation failed." );
         TEST( lerp(1, 4, 0.5f) == 2.5f, "Linear interpolation failed." );
         TEST( bilerp(1, 3, 5, 7, 0.5f, 0.5f) == 4.0f, "Bilinear interpolation failed." );
+    }
+
+    // ********************************************************************* //
+    // Test crossproduct, unary minus
+    {
+        Vec3 v0(1.0f, 0.0f, 0.0f);
+        Vec3 v1(0.0f, 1.0f, 0.0f);
+        Vec3 v2(0.0f, 0.0f, 1.0f);
+        Matrix<float,1,3> v5(1.0f, 0.0f, 0.0f);
+        Matrix<float,1,3> v6(0.0f, 1.0f, 0.0f);
+        Matrix<float,1,3> v7(0.0f, 0.0f, 1.0f);
+        TEST( all(cross(v0, v1) == v2), "3D crossproduct wrong." );
+        TEST( all(cross(v1, v0) == -v2), "3D crossproduct wrong." );
+        TEST( all(cross(v5, v6) == v7), "3D crossproduct wrong." );
+        TEST( all(cross(v6, v5) == -v7), "3D crossproduct wrong." );
+        Vec2 v3(1.0f, 0.0f);
+        Vec2 v4(0.0f, 1.0f);
+        TEST( cross(v3, v4) == 1.0f, "2D crossproduct wrong." );
+        TEST( cross(v4, v3) == -1.0f, "2D crossproduct wrong." );
     }
 
     return result;

@@ -3,6 +3,6 @@
 #define TEST(expression, message) \
 	if( !(expression) )           \
 	{                             \
-		cerr << message;          \
+		cerr << message << '\n';  \
 		result = false;           \
 	}
