@@ -5,7 +5,7 @@
 namespace ei {
 
     // Predeclarations for all types to enable conversion operators.
-    struct Circle2D;
+    struct Disc2D;
     struct Rect2D;
     struct ORect2D;
     struct Triangle2D;
@@ -15,51 +15,51 @@ namespace ei {
     struct Line2D;
     struct Ray2D;
 
-    /// \brief Standard circle
+    /// \brief Standard disc (solid filled circle)
     /// \details You may change the position and radius arbitrary.
     ///
     ///    The radius should never be negative.
     ///    A radius can be zero.
-    struct Circle2D
+    struct Disc2D
     {
         Vec2 center;
         float radius;
 
         /// \brief Create uninitialized circle.
-        Circle2D() {}
+        Disc2D() {}
 
         /// \brief Create from center and radius
-        Circle2D( Vec2 _center, float _radius );                               // TESTED
+        Disc2D( Vec2 _center, float _radius );                                 // TESTED
 
         /// \brief Create a circle which encloses two points
-        Circle2D( Vec2 _p0, Vec2 _p1 );                                        // TESTED
+        Disc2D( Vec2 _p0, Vec2 _p1 );                                          // TESTED
 
         /// \brief Create a circle which encloses three points
-        Circle2D( Vec2 _p0, Vec2 _p1, Vec2 _p2 );                              // TESTED
+        Disc2D( Vec2 _p0, Vec2 _p1, Vec2 _p2 );                                // TESTED
 
         /// \brief Create circumcircle of a rect
-        explicit Circle2D( const Rect2D& _rect );                              // TESTED
+        explicit Disc2D( const Rect2D& _rect );                                // TESTED
 
         /// \brief Create circumcircle of a oriented rect
-        explicit Circle2D( const ORect2D& _rect );                             // TESTED
+        explicit Disc2D( const ORect2D& _rect );                               // TESTED
 
         /// \brief Create circumcircle of a triangle
-        explicit Circle2D( const Triangle2D& _triangle );                      // TESTED
+        explicit Disc2D( const Triangle2D& _triangle );                        // TESTED
 
         /// \brief Create circumcircle of an ellipse
-        explicit Circle2D( const Ellipse2D& _ellipse );                        // TESTED
+        explicit Disc2D( const Ellipse2D& _ellipse );                          // TESTED
 
         /// \brief Create circumcircle of an oriented ellipse
-        explicit Circle2D( const OEllipse2D& _ellipse );                       // TESTED
+        explicit Disc2D( const OEllipse2D& _ellipse );                         // TESTED
 
         /// \brief Create circumcircle of a capsule
-        explicit Circle2D( const Capsule2D& _capsule );                        // TESTED
+        explicit Disc2D( const Capsule2D& _capsule );                          // TESTED
 
         /// \brief Create circumcircle of a line
-        explicit Circle2D( const Line2D& _line );                              // TESTED
+        explicit Disc2D( const Line2D& _line );                                // TESTED
 
         /// \brief Compare on binary identity
-        bool operator== ( const Circle2D& _circle ) const;                     // TESTED
+        bool operator== ( const Disc2D& _circle ) const;                       // TESTED
     };
 
     struct Rect2D
@@ -168,4 +168,4 @@ namespace ei {
 
     // Include implementation of short constructors.
 #   include "details/2dtypes.inl"
-};
+}

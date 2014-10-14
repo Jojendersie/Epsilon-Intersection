@@ -2,8 +2,8 @@
 
 namespace ei {
 
-    // ************************************************************************* //
-    Circle2D::Circle2D( Vec2 _p0, Vec2 _p1, Vec2 _p2 )
+    // ********************************************************************* //
+    Disc2D::Disc2D( Vec2 _p0, Vec2 _p1, Vec2 _p2 )
     {
         // The center of the circumscribed circle is at (barycentric coords)
         // v0*sin(2 alpha) + v1*sin(2 beta) + v2*sin(2 gamma) and has the radius
@@ -15,9 +15,9 @@ namespace ei {
         // One of the sides could be the longest side - the minimum sphere is
         // defined through only two points.
         // This can also handle the coplanar case.
-        if( csq + bsq <= asq ) *this = Circle2D(_p1, _p2);
-        else if( asq + bsq <= csq ) *this = Circle2D(_p1, _p0);
-        else if( asq + csq <= bsq ) *this = Circle2D(_p2, _p0);
+        if( csq + bsq <= asq ) *this = Disc2D(_p1, _p2);
+        else if( asq + bsq <= csq ) *this = Disc2D(_p1, _p0);
+        else if( asq + csq <= bsq ) *this = Disc2D(_p2, _p0);
         else {
             float area2Sq = 2;// * lensq(cross(a, c));
             center = 

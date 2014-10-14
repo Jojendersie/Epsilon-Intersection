@@ -1,25 +1,25 @@
 // ************************************************************************* //
-inline Circle2D::Circle2D( Vec2 _center, float _radius ) :
+inline Disc2D::Disc2D( Vec2 _center, float _radius ) :
     center(_center),
     radius(_radius)
 {
 }
 
 // ************************************************************************* //
-inline Circle2D::Circle2D( Vec2 _p0, Vec2 _p1 )
+inline Disc2D::Disc2D( Vec2 _p0, Vec2 _p1 )
 {
     center = (_p0 + _p1) * 0.5f;
     radius = len(_p0 - _p1) * 0.5f;
 }
 
 // ********************************************************************* //
-inline Circle2D::Circle2D( const Triangle2D& _triangle ) :
-    Circle2D( _triangle.v0, _triangle.v1, _triangle.v2 )
+inline Disc2D::Disc2D( const Triangle2D& _triangle ) :
+    Disc2D( _triangle.v0, _triangle.v1, _triangle.v2 )
 {
 }
 
 // ************************************************************************* //
-inline Circle2D::Circle2D( const Rect2D& _rect )
+inline Disc2D::Disc2D( const Rect2D& _rect )
 {
     assertlvl1( all(_rect.max > _rect.min),
         "The input rect is degenerated! All components of max should be larger than in min." );
@@ -30,7 +30,7 @@ inline Circle2D::Circle2D( const Rect2D& _rect )
 }
 
 // ************************************************************************* //
-inline Circle2D::Circle2D( const ORect2D& _rect )
+inline Disc2D::Disc2D( const ORect2D& _rect )
 {
     assertlvl1( all(_rect.size >= 0),
         "Side lengths of a rectangle should never be negative." );
@@ -40,7 +40,7 @@ inline Circle2D::Circle2D( const ORect2D& _rect )
 }
 
 // ************************************************************************* //
-inline Circle2D::Circle2D( const Ellipse2D& _ellipse )
+inline Disc2D::Disc2D( const Ellipse2D& _ellipse )
 {
     assertlvl1( all(_ellipse.radii >= 0),
         "Radii of an ellipse should never be negative." );
@@ -49,7 +49,7 @@ inline Circle2D::Circle2D( const Ellipse2D& _ellipse )
 }
 
 // ************************************************************************* //
-inline Circle2D::Circle2D( const OEllipse2D& _ellipse )
+inline Disc2D::Disc2D( const OEllipse2D& _ellipse )
 {
     assertlvl1( all(_ellipse.radii >= 0),
         "Radii of an ellipse should never be negative." );
@@ -59,21 +59,21 @@ inline Circle2D::Circle2D( const OEllipse2D& _ellipse )
 }
 
 // ************************************************************************* //
-inline Circle2D::Circle2D( const Capsule2D& _capsule )
+inline Disc2D::Disc2D( const Capsule2D& _capsule )
 {
     center = (_capsule.p0 + _capsule.p1) * 0.5f;
     radius = len(_capsule.p0 - _capsule.p1) * 0.5f + _capsule.radius;
 }
 
 // ************************************************************************* //
-inline Circle2D::Circle2D( const Line2D& _line )
+inline Disc2D::Disc2D( const Line2D& _line )
 {
     center = (_line.p0 + _line.p1) * 0.5f;
     radius = len(_line.p0 - _line.p1) * 0.5f;
 }
 
 // ************************************************************************* //
-inline bool Circle2D::operator== ( const Circle2D& _circle ) const
+inline bool Disc2D::operator== ( const Disc2D& _circle ) const
 {
     return all( center == _circle.center ) && radius == _circle.radius;
 }
