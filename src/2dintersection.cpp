@@ -54,9 +54,26 @@ namespace ei {
     // ********************************************************************* //
     bool intersects( const Disc2D& _disc, const Rect2D& _rect )
     {
-        return (_disc.center.x + _disc.radius >= _rect.min.x)
-            && (_disc.center.x - _disc.radius <= _rect.max.x)
-            && (_disc.center.y + _disc.radius >= _rect.min.y)
-            && (_disc.center.y - _disc.radius <= _rect.max.y);
+        return all( _disc.center + _disc.radius >= _rect.min )
+            && all( _disc.center - _disc.radius <= _rect.max );
+    }
+
+    // ********************************************************************* //
+    bool intersects( const Line2D& _line0, const Line2D& _line1 )
+    {
+        Vec2 dir0 = _line0.p1 - _line0.p0;
+        Vec2 dir1 = _line1.p1 - _line1.p0;
+        // Solve _line0.p0 + s * dir0 == _line1.p0 + t * dir1
+        float den = dot( dir0, Vec2(-dir1.y, dir1.x) );
+        if( den == 0.0f ) // Parallel or identical?
+            return dot(_line0.p0 - _line1.p0, Vec2(-dir1.y, dir1.x)) == 0.0f;
+
+        // Compute and check first ray parameter
+        float s = dot(_line1.p0 - _line0.p0, Vec2(-dir1.y, dir1.x)) / den;
+        if( s > 1.0f || s < 0.0f ) return false;
+
+        // Compute and check second ray parameter
+        float t = dot(_line1.p0 - _line0.p0, Vec2(-dir0.y, dir0.x)) / den;
+        return t >= 0.0f && t <= 1.0f;
     }
 }
