@@ -41,4 +41,13 @@ namespace ei {
             return true;
         } else return false;
     }
+
+    // ********************************************************************* //
+    bool intersects( const Rect2D& _rect0, const Rect2D& _rect1 )
+    {
+        // There must be an intersection if the sum of side length is larger
+        // than that of the bounding rectangle.
+        return all((max(_rect0.max, _rect1.max) - min(_rect0.min, _rect1.min))
+            <= ((_rect0.max - _rect0.min) + (_rect1.max - _rect1.min)));
+    }
 }

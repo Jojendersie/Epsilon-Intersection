@@ -1,4 +1,4 @@
-#include "ei/2dintersection.hpp"
+﻿#include "ei/2dintersection.hpp"
 #include "unittest.hpp"
 
 #include <iostream>
@@ -39,6 +39,25 @@ bool test_2dintersections()
         TEST( intersects(dis0, dis3, location), "dis0, dis3 intersection not detected!" );
         TEST( all(location == Vec2(0.0f, -0.5f)), "dis0, dis3 central intersection point wrong!" );
         TEST( !intersects(dis1, dis2, location), "dis1, dis2 false intersection detected!" );
+    }
+
+    // ********************************************************************* //
+    // Test rect <-> rect
+    {
+        Rect2D rec0( Vec2(0.0f, 0.0f), Vec2(1.0f, 1.0f) );
+        Rect2D rec1( Vec2(0.5f, 0.5f), Vec2(0.75f, 0.75f) );
+        Rect2D rec2( Vec2(0.25f, -1.0f), Vec2(2.0f, 2.0f) );
+        Rect2D rec3( Vec2(0.5f, 0.5f), Vec2(1.5f, 1.5f) );
+        Rect2D rec4( Vec2(1.0f, 1.0f), Vec2(2.0f, 2.0f) );
+        Rect2D rec5( Vec2(2.0f, 2.0f), Vec2(3.0f, 3.0f) );
+        Rect2D rec6( Vec2(-1.0f, 0.25f), Vec2(-0.5f, 0.75f) );
+
+        TEST( intersects(rec0, rec1), "rec0, rec1 intersection not detected!" );
+        TEST( intersects(rec0, rec2), "rec0, rec2 intersection not detected!" );
+        TEST( intersects(rec0, rec3), "rec0, rec3 intersection not detected!" );
+        TEST( intersects(rec0, rec4), "rec0, rec4 intersection not detected!" );
+        TEST( !intersects(rec0, rec5), "rec0, rec5 false intersection detected!" );
+        TEST( !intersects(rec0, rec6), "rec0, rec6 false intersection detected!" );
     }
 
     return result;

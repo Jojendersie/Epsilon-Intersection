@@ -24,4 +24,10 @@ namespace ei {
     /// \return true if the discs intersect in two or one point or one lies
     ///    fully inside the other one.
     bool intersects( const Disc2D& _disc0, const Disc2D& _disc1, Vec2& _outInfo ); // TESTED
+
+    /// \brief Does two rectangles intersect?
+    /// \details Performance index: TODO
+    /// \return true if the rectangles intersect or one lies
+    ///    fully inside the other one.
+    bool intersects( const Rect2D& _rect0, const Rect2D& _rect1 );
 }
