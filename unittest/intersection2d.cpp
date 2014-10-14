@@ -11,6 +11,15 @@ bool test_2dintersections()
     bool result = true;
 
     // ********************************************************************* //
+    // Test point <-> disc
+    {
+        Disc2D disc( Vec2(0.0f, 0.0f), 1.0f );
+
+        TEST( intersects(disc, Vec2(0.5f, 0.0f)), "Disc-point intersection not detected." );
+        TEST( !intersects(disc, Vec2(0.75f, 0.75f)), "Wrong disc-point intersection not detected." );
+    }
+
+    // ********************************************************************* //
     // Test disc <-> disc
     {
         Disc2D dis0( Vec2(0.0f, 0.0f), 1.0f );
