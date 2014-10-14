@@ -45,12 +45,12 @@ bool test_2dintersections()
     // Test rect <-> rect
     {
         Rect2D rec0( Vec2(0.0f, 0.0f), Vec2(1.0f, 1.0f) );
-        Rect2D rec1( Vec2(0.5f, 0.5f), Vec2(0.75f, 0.75f) );
-        Rect2D rec2( Vec2(0.25f, -1.0f), Vec2(2.0f, 2.0f) );
-        Rect2D rec3( Vec2(0.5f, 0.5f), Vec2(1.5f, 1.5f) );
-        Rect2D rec4( Vec2(1.0f, 1.0f), Vec2(2.0f, 2.0f) );
-        Rect2D rec5( Vec2(2.0f, 2.0f), Vec2(3.0f, 3.0f) );
-        Rect2D rec6( Vec2(-1.0f, 0.25f), Vec2(-0.5f, 0.75f) );
+        Rect2D rec1( Vec2(0.5f, 0.5f), Vec2(0.75f, 0.75f) );    // fully inside rec0
+        Rect2D rec2( Vec2(0.25f, -1.0f), Vec2(2.0f, 2.0f) );    // left side crosses rec0
+        Rect2D rec3( Vec2(0.5f, 0.5f), Vec2(1.5f, 1.5f) );      // corner overlap
+        Rect2D rec4( Vec2(1.0f, 1.0f), Vec2(2.0f, 2.0f) );      // corner touches
+        Rect2D rec5( Vec2(2.0f, 2.0f), Vec2(3.0f, 3.0f) );      // no intersection in any projection
+        Rect2D rec6( Vec2(-1.0f, 0.25f), Vec2(-0.5f, 0.75f) );  // no intersection but in projection
 
         TEST( intersects(rec0, rec1), "rec0, rec1 intersection not detected!" );
         TEST( intersects(rec0, rec2), "rec0, rec2 intersection not detected!" );
@@ -58,6 +58,25 @@ bool test_2dintersections()
         TEST( intersects(rec0, rec4), "rec0, rec4 intersection not detected!" );
         TEST( !intersects(rec0, rec5), "rec0, rec5 false intersection detected!" );
         TEST( !intersects(rec0, rec6), "rec0, rec6 false intersection detected!" );
+    }
+
+    // ********************************************************************* //
+    // Test rect <-> disc
+    {
+        Rect2D rec0( Vec2(0.0f, 0.0f), Vec2(1.0f, 1.0f) );
+        Disc2D dic0( Vec2(0.5f, 0.5f), 0.25f );                 // fully inside rec0
+        Disc2D dic1( Vec2(1.5f, -0.5f), 10.0f );                // rec0 inside
+        Disc2D dic2( Vec2(-0.25f, 1.0f), 1.0f );                // intersect
+        Disc2D dic3( Vec2(-1.0f, -1.0f), 1.0f );                // touches corner
+        Disc2D dic4( Vec2(-1.0f, -1.0f), 0.5f );                // no intersection in any projection
+        Disc2D dic5( Vec2(-1.0f, 0.5f), 0.5f );                 // no intersection but in projection
+
+        TEST( intersects(rec0, dic0), "rec0, dic0 intersection not detected!" );
+        TEST( intersects(rec0, dic1), "rec0, dic1 intersection not detected!" );
+        TEST( intersects(rec0, dic2), "rec0, dic2 intersection not detected!" );
+        TEST( intersects(rec0, dic3), "rec0, dic3 intersection not detected!" );
+        TEST( !intersects(rec0, dic4), "rec0, dic4 false intersection detected!" );
+        TEST( !intersects(rec0, dic5), "rec0, dic5 false intersection detected!" );
     }
 
     return result;

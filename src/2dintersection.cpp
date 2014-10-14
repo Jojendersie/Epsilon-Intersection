@@ -50,4 +50,13 @@ namespace ei {
         return all((max(_rect0.max, _rect1.max) - min(_rect0.min, _rect1.min))
             <= ((_rect0.max - _rect0.min) + (_rect1.max - _rect1.min)));
     }
+
+    // ********************************************************************* //
+    bool intersects( const Disc2D& _disc, const Rect2D& _rect )
+    {
+        return (_disc.center.x + _disc.radius >= _rect.min.x)
+            && (_disc.center.x - _disc.radius <= _rect.max.x)
+            && (_disc.center.y + _disc.radius >= _rect.min.y)
+            && (_disc.center.y - _disc.radius <= _rect.max.y);
+    }
 }
