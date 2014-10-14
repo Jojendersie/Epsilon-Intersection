@@ -237,7 +237,7 @@ namespace ei {
 
     // ********************************************************************* //
     /// \brief Check if the absolute difference between all elements is smaller
-    ///    than epsilon.
+    ///    or equal than epsilon.
     /// \param [in] _mat0 First operand.
     /// \param [in] _mat1 Second operand.
     /// \param [in] _epsilon Maximum threshold for the difference between two

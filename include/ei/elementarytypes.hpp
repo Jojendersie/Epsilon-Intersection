@@ -86,6 +86,15 @@ namespace ei {
     T sgn(T _x);                                                               // TESTED
 
     // ********************************************************************* //
+    /// \brief Check if the absolute difference between two scalars is less
+    ///    or equal than epsilon.
+    /// \param [in] _epsilon Maximum threshold for the difference between two
+    ///    elements. The default value is 1e-6f.
+    /// \returns true if the difference is less or equal than _epsilon.
+    template<typename T>
+    bool approx(T _x0, T _x1, float _epsilon = 1e-6f);                         // TESTED
+
+    // ********************************************************************* //
     /// \brief Linear interpolation.
     /// \details There are two formulations:
     ///    * x * (1 - t) + y * t

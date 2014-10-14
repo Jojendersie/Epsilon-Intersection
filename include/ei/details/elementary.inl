@@ -43,6 +43,13 @@ inline T sgn(T _x)
 }
 
 // ************************************************************************* //
+template<typename T>
+inline bool approx(T _x0, T _x1, float _epsilon)
+{
+    return abs(_x1 - _x0) <= _epsilon;
+}
+
+// ************************************************************************* //
 template<typename T0, typename T1>
 decltype(std::declval<T0>() * std::declval<T1>()) lerp(T0 _x0, T0 _x1, T1 _t)
 {
