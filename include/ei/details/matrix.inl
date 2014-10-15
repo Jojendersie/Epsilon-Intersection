@@ -671,3 +671,89 @@ Matrix<T,N,M> transpose(const Matrix<T,M,N>& _mat0)
             result[i++] = _mat0(y,x);
     return result;
 }
+
+
+// ************************************************************************* //
+//                              TRANSFORMATIONS                              //
+// ************************************************************************* //
+
+// ************************************************************************* //
+template<typename T, unsigned N>
+Matrix<T,N,N> identity()
+{
+    Matrix<T,N,N> result(T(0));
+    for(int n = 0; n < N; ++n)
+        result[n*n] = T(1);
+    return result;
+}
+
+// TODO: test if this specialization is faster of if the compiler optimizes
+// identity() enough
+template<>
+inline Matrix<float,2,2> identity<float,2>()
+{
+    return Mat2x2(1.0f, 0.0f,
+                  0.0f, 1.0f);
+}
+template<>
+inline Matrix<float,3,3> identity<float,3>()
+{
+    return Mat3x3(1.0f, 0.0f, 0.0f,
+                  0.0f, 1.0f, 0.0f,
+                  0.0f, 0.0f, 1.0f);
+}
+template<>
+inline Matrix<float,4,4> identity<float,4>()
+{
+    return Mat4x4(1.0f, 0.0f, 0.0f, 0.0f,
+                  0.0f, 1.0f, 0.0f, 0.0f,
+                  0.0f, 0.0f, 1.0f, 0.0f,
+                  0.0f, 0.0f, 0.0f, 1.0f);
+}
+
+// ************************************************************************* //
+template<typename T, unsigned N>
+Matrix<T,N+1,N+1> translation( const Matrix<T, N, 1>& _vector )
+{
+    Matrix<T,N+1,N+1> result = identity<T,N+1>();
+    for(int i = 0; i < N; ++i)
+        result[i * (N+1) + N] = _vector[i];
+}
+
+// ************************************************************************* //
+template<typename T, unsigned N>
+Matrix<T,N,N> scaling( const Matrix<T, N, 1>& _scale )
+{
+    Matrix<T,N,N> result(T(0));
+    for(int n = 0; n < N; ++n)
+        result[n*n] = _scale[n];
+    return result;
+}
+
+// ************************************************************************* //
+template<typename T, unsigned N>
+Matrix<T,N,N> scaling( T _scale )
+{
+    Matrix<T,N,N> result(T(0));
+    for(int n = 0; n < N; ++n)
+        result[n*n] = _scale;
+    return result;
+}
+
+// ************************************************************************* //
+inline Matrix<float,4,4> scalingH( const Vec3& _scale )
+{
+    return Mat4x4(_scale.x, 0.0f,     0.0f,     0.0f,
+                  0.0f,     _scale.y, 0.0f,     0.0f,
+                  0.0f,     0.0f,     _scale.z, 0.0f,
+                  0.0f,     0.0f,     0.0f,     1.0f);
+}
+
+// ************************************************************************* //
+inline Matrix<float,4,4> scalingH( float _scale )
+{
+    return Mat4x4(_scale, 0.0f,   0.0f,   0.0f,
+                  0.0f,   _scale, 0.0f,   0.0f,
+                  0.0f,   0.0f,   _scale, 0.0f,
+                  0.0f,   0.0f,   0.0f,   1.0f);
+}

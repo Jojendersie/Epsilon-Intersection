@@ -12,6 +12,13 @@ namespace ei {
     ///     supports all kinds of matrix <-> matrix and matrix <-> scalar
     ///     operations including adding, ... a value to all components. If not
     ///     stated else each operator works component wise.
+    ///
+    ///     There is a list of creating functions to build transformation
+    ///     matrices: translation(), rotation(), scaling(), ...
+    ///     All those functions create matrices for column vectors. Hence, a
+    ///     transformation is done by multiplying the vectors from right:
+    ///     rotation() * v. Thus in translation() * rotation() * v the
+    ///     rotation is applied first and the translation afterwards.
     /// \tparam M Number of rows.
     /// \tparam N Number of columns.
     template<typename T, uint M, uint N>
@@ -395,8 +402,61 @@ namespace ei {
     template<typename T, unsigned M, unsigned N>
     Matrix<T,N,M> transpose(const Matrix<T,M,N>& _mat0);                       // TESTED
 
+
+    // ********************************************************************* //
+    //                            TRANSFORMATIONS                            //
+    // ********************************************************************* //
+
+    // ********************************************************************* //
+    /// \brief Generate the N x N identity matrix.
+    template<typename T, unsigned N>
+    Matrix<T,N,N> identity();
+
+    // ********************************************************************* //
+    /// \brief Create a translation matrix in homogeneous coordinate space.
+    /// \param [in] _vector Translate by/Add this vector.
+    /// \details The translation matrix always has a dimension one large then
+    ///    the vectors.
+    ///    To transform a vector append 1 and multiply it from right:
+    ///    translation() * VecX(v,1)
+    template<typename T, unsigned N>
+    Matrix<T,N+1,N+1> translation( const Matrix<T, N, 1>& _vector );
+
+    // ********************************************************************* //
+    /// \brief Create a scaling/diagonal matrix from vector.
+    template<typename T, unsigned N>
+    Matrix<T,N,N> scaling( const Matrix<T, N, 1>& _scale );
+
+    // ********************************************************************* //
+    /// \brief Create a uniform scaling/diagonal matrix from scalar.
+    template<typename T, unsigned N>
+    Matrix<T,N,N> scaling( T _scale );
+
+    // ********************************************************************* //
+    /// \brief Create a scaling matrix in homogeneous space.
+    Matrix<float,4,4> scalingH( const Vec3& _scale );
+
+    // ********************************************************************* //
+    /// \brief Create a uniform scaling matrix in homogeneous space.
+    Matrix<float,4,4> scalingH( float _scale );
+
+    // ********************************************************************* //
+    /// \brief Use vectors to build a matrix
+     // TODO: axis();
+
+     // TODO: Mat2x2 rotation( float _angle );
+
+    // TODO: orthonormalize()
+
 	// Include implementation.
 #	include "details/matrix.inl"
+
+    /// \brief Alias for identity<float,2>().
+    inline Mat2x2 identity2x2()    { return identity<float,2>(); }
+    /// \brief Alias for identity<float,3>().
+    inline Mat3x3 identity3x3()    { return identity<float,3>(); }
+    /// \brief Alias for identity<float,4>().
+    inline Mat4x4 identity4x4()    { return identity<float,4>(); }
 
 	// Remove helper macros.
 #	undef RESULT_TYPE
