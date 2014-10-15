@@ -658,3 +658,16 @@ bool all(const Matrix<bool,M,N>& _mat0)
         if(!_mat0[i]) return false;
     return true;
 }
+
+// ************************************************************************* //
+template<typename T, unsigned M, unsigned N>
+Matrix<T,N,M> transpose(const Matrix<T,M,N>& _mat0)
+{
+    Matrix<T,N,M> result;
+    // This counter avoids one index computation y*N+x in the inner loop
+    int i = 0;
+    for(int x = 0; x < N; ++x)
+        for(int y = 0; y < M; ++y)
+            result[i++] = _mat0(y,x);
+    return result;
+}

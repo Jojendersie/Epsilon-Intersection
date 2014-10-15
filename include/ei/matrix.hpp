@@ -390,6 +390,10 @@ namespace ei {
     bool all(const Matrix<bool,M,N>& _mat0);                                   // TESTED
 
 
+    // ********************************************************************* //
+    /// \brief Transpose a matrix or vector (switch the dimensions).
+    template<typename T, unsigned M, unsigned N>
+    Matrix<T,N,M> transpose(const Matrix<T,M,N>& _mat0);                       // TESTED
 
 	// Include implementation.
 #	include "details/matrix.inl"

@@ -256,5 +256,17 @@ bool test_matrix()
         TEST( cross(v4, v3) == -1.0f, "2D crossproduct wrong." );
     }
 
+    // ********************************************************************* //
+    // Test transpose
+    {
+        Mat2x2 m0(1.0f, -1.0f, 0.0f, 2.0f);
+        Mat2x2 m1(1.0f, 0.0f, -1.0f, 2.0f);
+        Matrix<float,1,3> v0(1.0f, 0.0f, 0.0f);
+        Vec3 v1(1.0f, 0.0f, 0.0f);
+
+        TEST( all(m0 == transpose(m1)), "m1 transposed is unequal m0!" );
+        TEST( all(v0 == transpose(v1)), "v1 transposed is unequal v0!" );
+    }
+
     return result;
 }
