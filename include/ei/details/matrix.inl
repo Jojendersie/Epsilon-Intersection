@@ -713,6 +713,47 @@ inline Matrix<float,4,4> identity<float,4>()
 
 // ************************************************************************* //
 template<typename T, unsigned N>
+Matrix<T,N+1,N+1> homo( const Matrix<T,N,N>& _mat0 )
+{
+    Matrix<T,N,N> result;
+    // Indices for _mat0 and result
+    int i = 0, j = 0;
+    for(int y = 0; y < N; ++y)
+    {
+        // Copy NxN part
+        for(int x = 0; x < N; ++x)
+            result[j++] = _mat0[i++];
+        // New element at the end of the row is 0
+        result[j++] = T(0);
+    }
+    // Fill new row
+    for(int x = 0; x < N; ++x)
+        result[j + x] = T(0);
+    result[j + N] = T(1);
+}
+
+template<typename T, unsigned N>
+Matrix<T,N+1,1> homo( const Matrix<T,N,1>& _v0 )
+{
+    Matrix<T,N+1,1> result;
+    for(int i = 0; i < N; ++i)
+        result[i] = _v0[i];
+    result[N] = T(1);
+    return result;
+}
+
+template<typename T, unsigned N>
+Matrix<T,1,N+1> homo( const Matrix<T,1,N>& _v0 )
+{
+    Matrix<T,1,N+1> result;
+    for(int i = 0; i < N; ++i)
+        result[i] = _v0[i];
+    result[N] = T(1);
+    return result;
+}
+
+// ************************************************************************* //
+template<typename T, unsigned N>
 Matrix<T,N+1,N+1> translation( const Matrix<T, N, 1>& _vector )
 {
     Matrix<T,N+1,N+1> result = identity<T,N+1>();
@@ -809,12 +850,7 @@ inline Mat3x3 rotationX( float _angle )
 
 inline Mat4x4 rotationXH( float _angle )
 {
-    float sinA = sin(_angle);
-    float cosA = cos(_angle);
-    return Mat4x4(1.0f, 0.0f,  0.0f, 0.0f,
-                  0.0f, cosA, -sinA, 0.0f,
-                  0.0f, sinA,  cosA, 0.0f,
-                  0.0f, 0.0f,  0.0f, 1.0f);
+    return homo(rotationX( _angle ));
 }
 
 // ************************************************************************* //
@@ -829,12 +865,7 @@ inline Mat3x3 rotationY( float _angle )
 
 inline Mat4x4 rotationYH( float _angle )
 {
-    float sinA = sin(_angle);
-    float cosA = cos(_angle);
-    return Mat4x4( cosA, 0.0f, sinA, 0.0f,
-                   0.0f, 1.0f, 0.0f, 0.0f,
-                  -sinA, 0.0f, cosA, 0.0f,
-                   0.0f, 0.0f, 0.0f, 1.0f);
+    return homo(rotationY( _angle ));
 }
 
 // ************************************************************************* //
@@ -849,12 +880,7 @@ inline Mat3x3 rotationZ( float _angle )
 
 inline Mat4x4 rotationZH( float _angle )
 {
-    float sinA = sin(_angle);
-    float cosA = cos(_angle);
-    return Mat4x4(cosA, -sinA, 0.0f, 0.0f,
-                  sinA,  cosA, 0.0f, 0.0f,
-                  0.0f,  0.0f, 1.0f, 0.0f,
-                  0.0f,  0.0f, 0.0f, 1.0f);
+    return homo(rotationZ( _angle ));
 }
 
 // ************************************************************************* //
@@ -873,16 +899,7 @@ inline Mat3x3 rotation( float _yaw, float _pitch, float _roll )
 
 inline Mat4x4 rotationH( float _yaw, float _pitch, float _roll )
 {
-    float sinA = sin(_yaw);
-    float cosA = cos(_yaw);
-    float sinB = sin(_pitch);
-    float cosB = cos(_pitch);
-    float sinC = sin(_roll);
-    float cosC = cos(_roll);
-    return Mat4x4(cosA * cosB, cosA * sinB * sinC - sinA * cosC, cosA * sinB * cosC + sinA * sinC, 0.0f,
-                  sinA * cosB, sinA * sinB * sinC + cosA * cosC, sinA * sinB * cosC - cosA * sinC, 0.0f,
-                  -sinB,       cosB * sinC,                      cosB * cosC,                      0.0f,
-                  0.0f,        0.0f,                             0.0f,                             1.0f);
+    return homo(rotation( _yaw, _pitch, _roll ));
 }
 
 // ************************************************************************* //
@@ -898,11 +915,5 @@ inline Mat3x3 rotation( const Vec3& _v, float _angle )
 
 inline Mat4x4 rotationH( const Vec3& _v, float _angle )
 {
-    float sinA = sin(_angle);
-    float cosA = cos(_angle);
-    float iCosA = 1.0f - cosA;
-    return Mat4x4(_v.x * _v.x * iCosA + cosA,        _v.x * _v.y * iCosA - _v.z * sinA, _v.x * _v.z * iCosA + _v.y * sinA, 0.0f,
-                  _v.x * _v.y * iCosA + _v.z * sinA, _v.y * _v.y * iCosA + cosA,        _v.y * _v.z * iCosA - _v.x * sinA, 0.0f,
-                  _v.x * _v.z * iCosA - _v.y * sinA, _v.y * _v.z * iCosA + _v.x * sinA, _v.z * _v.z * iCosA + cosA,        0.0f,
-                  0.0f,                              0.0f,                              0.0f,                              1.0f);
+    return homo(rotation( _v, _angle ));
 }

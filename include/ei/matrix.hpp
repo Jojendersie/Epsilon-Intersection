@@ -413,6 +413,21 @@ namespace ei {
     Matrix<T,N,N> identity();
 
     // ********************************************************************* //
+    /// \brief Lift vector or squared matrix to homogeneous space.
+    /// \details Adds a row and a column with zeros to a matrix and sets the
+    ///    new diagonal element to 1.
+    ///    A     =>    A 0
+    ///                0 1
+    ///
+    ///   Appends 1 to vectors: v    =>   (v 1)
+    template<typename T, unsigned N>
+    Matrix<T,N+1,N+1> homo( const Matrix<T,N,N>& _mat0 );
+    template<typename T, unsigned N>
+    Matrix<T,N+1,1> homo( const Matrix<T,N,1>& _v0 );
+    template<typename T, unsigned N>
+    Matrix<T,1,N+1> homo( const Matrix<T,1,N>& _v0 );
+
+    // ********************************************************************* //
     /// \brief Create a translation matrix in homogeneous coordinate space.
     /// \param [in] _vector Translate by/Add this vector.
     /// \details The translation matrix always has a dimension one large then
@@ -480,6 +495,12 @@ namespace ei {
     Mat4x4 rotationH( const Vec3& _axis, float _angle );
 
     // TODO: from quaternion
+
+    // ********************************************************************* //
+    /// \brief Create a camera matrix in 3D/homogeneous space.
+    //Mat3x3 lookAt( const Vec3& _position, const Vec3& _target, const Vec3& _up = Vec3(0.0f, 1.0f, 0.0f));
+    //Mat4x4 lookAtH( const Vec3& _position, const Vec3& _target, const Vec3& _up = Vec3(0.0f, 1.0f, 0.0f));
+
 
     // TODO: orthonormalize()
 
