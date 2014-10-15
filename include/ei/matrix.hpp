@@ -506,6 +506,8 @@ namespace ei {
     // ********************************************************************* //
     /// \brief Create a matrix in 3D/homogeneous space where the target is on
     ///    the positive z-axis.
+    /// \details This method creates an left-hand system (LHS) with positive
+    ///    z-axis.
     Mat3x3 lookAt( const Vec3& _target, const Vec3& _up = Vec3(0.0f, 1.0f, 0.0f));
     Mat4x4 lookAtH( const Vec3& _target, const Vec3& _up = Vec3(0.0f, 1.0f, 0.0f));
 
@@ -513,9 +515,40 @@ namespace ei {
     /// \brief Create a camera matrix in homogeneous space.
     /// \details The camera matrix must be in homogeneous space due to the
     ///    translation.
+    /// \details This method creates an left-hand system (LHS) with positive
+    ///    z-axis.
     Mat4x4 camera( const Vec3& _position, const Vec3& _target, const Vec3& _up = Vec3(0.0f, 1.0f, 0.0f));
 
     // TODO: orthonormalize()
+
+    // ********************************************************************* //
+    /// \brief Create perspective OpenGL matrix from 6 sides.
+    /// \details Assumes an LHS coordinate system.
+    ///
+    ///    The OpenGL frustum is defined in the [-1,-1,-1] x [1,1,1] cube.
+    /// \param [in] _l Left plane x-coordinate (at near plane)
+    /// \param [in] _r Right plane x-coordinate (at near plane)
+    /// \param [in] _b Bottom plane y-coordinate (at near plane)
+    /// \param [in] _t Bottom plane y-coordinate (at near plane)
+    /// \param [in] _n Near plane
+    /// \param [in] _f Far plane
+    Mat4x4 perspectiveGL( float _l, float _r, float _b, float _t, float _n, float _f );
+
+    // ********************************************************************* //
+    /// \brief Create perspective DirectX matrix from 6 sides.
+    /// \details Assumes an LHS coordinate system.
+    ///
+    ///    The DirectX frustum is defined in the [-1,-1,0] x [1,1,1] cube.
+    ///
+    ///    This method is transposed compared to the DX documentation because
+    ///    this library multiplies vectors from right.
+    /// \param [in] _l Left plane x-coordinate (at near plane)
+    /// \param [in] _r Right plane x-coordinate (at near plane)
+    /// \param [in] _b Bottom plane y-coordinate (at near plane)
+    /// \param [in] _t Bottom plane y-coordinate (at near plane)
+    /// \param [in] _n Near plane
+    /// \param [in] _f Far plane
+    Mat4x4 perspectiveDX( float _l, float _r, float _b, float _t, float _n, float _f );
 
 	// Include implementation.
 #	include "details/matrix.inl"

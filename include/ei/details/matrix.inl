@@ -943,8 +943,26 @@ inline Mat4x4 lookAtH( const Vec3& _target, const Vec3& _up )
     return homo(lookAt( _target, _up ));
 }
 
-// ********************************************************************* //
+// ************************************************************************* //
 inline Mat4x4 camera( const Vec3& _position, const Vec3& _target, const Vec3& _up )
 {
     return lookAtH( _target - _position, _up ) * translation( -_position );
+}
+
+// ************************************************************************* //
+inline Mat4x4 perspectiveGL( float l, float r, float b, float t, float n, float f )
+{
+    return Mat4x4(2.0f*n / (r-l), 0.0f,           (r+l) / (r-l),  0.0f,
+                  0.0f,           2.0f*n / (t-b), (t+b) / (t-b),  0.0f,
+                  0.0f,           0.0f,           (-f-n) / (f-n), -2.0f*f*n / (f-n),
+                  0.0f,           0.0f,           1.0f,          0.0f);
+}
+
+// ************************************************************************* //
+inline Mat4x4 perspectiveDX( float l, float r, float b, float t, float n, float f )
+{
+    return Mat4x4(2.0f*n / (r-l), 0.0f,           (l+r) / (l-r), 0.0f,
+                  0.0f,           2.0f*n / (t-b), (t+b) / (b-t), 0.0f,
+                  0.0f,           0.0f,           f / (f-n),     n*f / (n-f),
+                  0.0f,           0.0f,           1.0f,         0.0f);
 }
