@@ -61,6 +61,23 @@ bool test_2dintersections()
     }
 
     // ********************************************************************* //
+    // Test rect <-> point
+    {
+        Rect2D rec0( Vec2(0.0f, 0.0f), Vec2(1.0f, 1.0f) );
+        Vec2 p0(0.5f, 0.5f);                                    // inside
+        Vec2 p1(1.0f, 0.75f);                                   // on boundary
+        Vec2 p2(0.0f, 0.0f);                                    // on corner
+        Vec2 p3(-5.0f, 10.0f);                                  // far away
+        Vec2 p4(0.5f, 1.1f);                                    // overlap in one dimension
+
+        TEST( intersects(rec0, p0), "rec0, p0 intersection not detected!" );
+        TEST( intersects(rec0, p1), "rec0, p1 intersection not detected!" );
+        TEST( intersects(rec0, p2), "rec0, p2 intersection not detected!" );
+        TEST( !intersects(rec0, p3), "rec0, p3 false intersection detected!" );
+        TEST( !intersects(rec0, p4), "rec0, p4 false intersection detected!" );
+    }
+
+    // ********************************************************************* //
     // Test rect <-> disc
     {
         Rect2D rec0( Vec2(0.0f, 0.0f), Vec2(1.0f, 1.0f) );
@@ -86,7 +103,7 @@ bool test_2dintersections()
         Line2D lin1( Vec2(0.0f, 1.0f), Vec2(1.0f, 1.0f) );      // parallel
         Line2D lin2( Vec2(0.5f, 0.0f), Vec2(1.5f, 0.0f) );      // parallel and overlapping
         Line2D lin3( Vec2(0.5f, 0.5f), Vec2(2.0f, 2.0f) );      // somewhere else (no intersection)
-        Line2D lin4( Vec2(0.0f, 0.0f), Vec2(0.0f, 1.0f) );      // perpendicular touching in an endpoint
+        Line2D lin4( Vec2(0.0f, 1.0f), Vec2(0.0f, 0.0f) );      // perpendicular touching in an endpoint
         Line2D lin5( Vec2(0.5f, 0.5f), Vec2(0.75f, -0.5f) );    // intersection
 
         TEST( !intersects(lin0, lin1), "lin0, lin1 false intersection detected!" );
@@ -95,6 +112,18 @@ bool test_2dintersections()
         TEST( intersects(lin0, lin4), "lin0, lin4 intersection not detected!" );
         TEST( intersects(lin0, lin5), "lin0, lin5 intersection not detected!" );
         TEST( intersects(lin5, lin0), "lin5, lin0 intersection not detected!" );
+
+        Vec2 location;
+        TEST( !intersects(lin0, lin1, location), "lin0, lin1 false intersection w.loc. detected!" );
+        TEST( !intersects(lin0, lin3, location), "lin0, lin3 false intersection w.loc. detected!" );
+        TEST( intersects(lin0, lin2, location), "lin0, lin2 intersection w.loc. not detected!" );
+        TEST( all(location == Vec2(0.75f, 0.0f)), "Central point of overlap wrong!" );
+        TEST( intersects(lin0, lin4, location), "lin0, lin4 intersection w.loc. not detected!" );
+        TEST( all(location == Vec2(0.0f, 0.0f)), "Intersection point of lin0, lin4 wrong!" );
+        TEST( intersects(lin0, lin5, location), "lin0, lin5 intersection w.loc. not detected!" );
+        TEST( all(location == Vec2(0.625f, 0.0f)), "Intersection point of lin0, lin5 wrong!" );
+        TEST( intersects(lin5, lin0, location), "lin5, lin0 intersection w.loc. not detected!" );
+        TEST( all(location == Vec2(0.625f, 0.0f)), "Intersection point of lin5, lin0 wrong!" );
     }
 
     return result;

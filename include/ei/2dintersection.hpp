@@ -31,6 +31,12 @@ namespace ei {
     ///    fully inside the other one.
     bool intersects( const Rect2D& _rect0, const Rect2D& _rect1 );             // TESTED
 
+    /// \brief Do a point lies inside a rectangle/on the boundary?
+    /// \details Performance index: TODO
+    /// \return true if the point is inside or on the boundary.
+    bool intersects( const Vec2& _point, const Rect2D& _rect );                // TESTED
+    inline bool intersects( const Rect2D& _rect, const Vec2& _point )  { return intersects( _point, _rect ); }
+
     /// \brief Do a rectangle and disc intersect/touch?
     /// \details Performance index: TODO
     /// \return true if the rectangle and disc intersect or one lies
@@ -42,4 +48,11 @@ namespace ei {
     /// \details Performance index: TODO
     /// \return true if the lines intersect.
     bool intersects( const Line2D& _line0, const Line2D& _line1 );             // TESTED
+
+    /// \brief Where do two lines intersect/touch?
+    /// \details Performance index: TODO
+    /// \param [out] _outInfo The point of the intersection. If the two lines
+    ///    overlap the returned point is the center of this overlap.
+    /// \return true if the lines intersect.
+    bool intersects( const Line2D& _line0, const Line2D& _line1, Vec2& _outInfo ); // TESTED
 }
