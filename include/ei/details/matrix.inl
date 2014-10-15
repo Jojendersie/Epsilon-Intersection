@@ -524,6 +524,15 @@ inline decltype(sqrt(std::declval<T>())) len(const Matrix<T,M,N>& _mat0)
 }
 
 // ************************************************************************* //
+template<typename T, uint M, uint N>
+inline Matrix<T,M,N> normalize(const Matrix<T,M,N>& _mat0)
+{
+    return _mat0 / len(_mat0);
+    // TODO: Test if this one is faster
+    //return _mat0 * (1.0f / len(_mat0));
+}
+
+// ************************************************************************* //
 template<typename T, unsigned M, unsigned N>
 inline Matrix<T,M,N> max(const Matrix<T,M,N>& _mat0,
                          const Matrix<T,M,N>& _mat1)
@@ -715,7 +724,7 @@ inline Matrix<float,4,4> identity<float,4>()
 template<typename T, unsigned N>
 Matrix<T,N+1,N+1> homo( const Matrix<T,N,N>& _mat0 )
 {
-    Matrix<T,N,N> result;
+    Matrix<T,N+1,N+1> result;
     // Indices for _mat0 and result
     int i = 0, j = 0;
     for(int y = 0; y < N; ++y)
@@ -730,6 +739,7 @@ Matrix<T,N+1,N+1> homo( const Matrix<T,N,N>& _mat0 )
     for(int x = 0; x < N; ++x)
         result[j + x] = T(0);
     result[j + N] = T(1);
+    return result;
 }
 
 template<typename T, unsigned N>
@@ -916,4 +926,25 @@ inline Mat3x3 rotation( const Vec3& _v, float _angle )
 inline Mat4x4 rotationH( const Vec3& _v, float _angle )
 {
     return homo(rotation( _v, _angle ));
+}
+
+// ************************************************************************* //
+inline Mat3x3 lookAt( const Vec3& _target, const Vec3& _up )
+{
+    Vec3 zAxis = normalize(_target);
+    Vec3 xAxis = cross(zAxis, _up);
+    Vec3 yAxis = cross(xAxis, zAxis);
+    return axis( xAxis, yAxis, zAxis );
+}
+
+// ************************************************************************* //
+inline Mat4x4 lookAtH( const Vec3& _target, const Vec3& _up )
+{
+    return homo(lookAt( _target, _up ));
+}
+
+// ********************************************************************* //
+inline Mat4x4 camera( const Vec3& _position, const Vec3& _target, const Vec3& _up )
+{
+    return lookAtH( _target - _position, _up ) * translation( -_position );
 }

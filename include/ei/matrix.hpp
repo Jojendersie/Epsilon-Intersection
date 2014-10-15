@@ -298,6 +298,13 @@ namespace ei {
     decltype(sqrt(std::declval<T>())) len(const Matrix<T,M,N>& _mat0);         // TESTED
 
     // ********************************************************************* //
+    /// \brief Normalizes a vector or matrix with respect to len.
+    /// \details This is equivalent to _mat0 / len(_mat0).
+    /// \returns Normalized vector or matrix.
+    template<typename T, unsigned M, unsigned N>
+    Matrix<T,M,N> normalize(const Matrix<T,M,N>& _mat0);
+
+    // ********************************************************************* //
     /// \brief Component wise maximum.
     /// \returns A matrix with the maximum values from both inputs.
     template<typename T, unsigned M, unsigned N>
@@ -497,10 +504,16 @@ namespace ei {
     // TODO: from quaternion
 
     // ********************************************************************* //
-    /// \brief Create a camera matrix in 3D/homogeneous space.
-    //Mat3x3 lookAt( const Vec3& _position, const Vec3& _target, const Vec3& _up = Vec3(0.0f, 1.0f, 0.0f));
-    //Mat4x4 lookAtH( const Vec3& _position, const Vec3& _target, const Vec3& _up = Vec3(0.0f, 1.0f, 0.0f));
+    /// \brief Create a matrix in 3D/homogeneous space where the target is on
+    ///    the positive z-axis.
+    Mat3x3 lookAt( const Vec3& _target, const Vec3& _up = Vec3(0.0f, 1.0f, 0.0f));
+    Mat4x4 lookAtH( const Vec3& _target, const Vec3& _up = Vec3(0.0f, 1.0f, 0.0f));
 
+    // ********************************************************************* //
+    /// \brief Create a camera matrix in homogeneous space.
+    /// \details The camera matrix must be in homogeneous space due to the
+    ///    translation.
+    Mat4x4 camera( const Vec3& _position, const Vec3& _target, const Vec3& _up = Vec3(0.0f, 1.0f, 0.0f));
 
     // TODO: orthonormalize()
 
