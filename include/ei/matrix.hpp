@@ -441,10 +441,45 @@ namespace ei {
     Matrix<float,4,4> scalingH( float _scale );
 
     // ********************************************************************* //
-    /// \brief Use vectors to build a matrix
-     // TODO: axis();
+    /// \brief Use vectors which span a space to build a matrix.
+    /// \details The vectors become the rows of the matrix
+    Mat2x2 axis( const Vec2& _x, const Vec2& _y );
+    Mat3x3 axis( const Vec3& _x, const Vec3& _y, const Vec3& _z );
+    Mat4x4 axisH( const Vec3& _x, const Vec3& _y, const Vec3& _z );
+    Mat4x4 axis( const Vec4& _x, const Vec4& _y, const Vec4& _z, const Vec4& _w );
 
-     // TODO: Mat2x2 rotation( float _angle );
+    // ********************************************************************* //
+    /// \brief Rotation matrix in 2D.
+    Mat2x2 rotation( float _angle );
+
+    // ********************************************************************* //
+    /// \brief Rotation matrix in 3D/homogeneous space around x-axis.
+    Mat3x3 rotationX( float _angle );
+    Mat4x4 rotationXH( float _angle );
+
+    // ********************************************************************* //
+    /// \brief Rotation matrix in 3D/homogeneous space around y-axis.
+    Mat3x3 rotationY( float _angle );
+    Mat4x4 rotationYH( float _angle );
+
+    // ********************************************************************* //
+    /// \brief Rotation matrix in 3D/homogeneous space around z-axis.
+    Mat3x3 rotationZ( float _angle );
+    Mat4x4 rotationZH( float _angle );
+
+    // ********************************************************************* //
+    /// \brief Rotation matrix in 3D/homogeneous space from 3 angles:
+    ///     rotationZ(_yaw) * rotationY(_pitch) * rotationX(_roll).
+    // TODO: test gimbal lock
+    Mat3x3 rotation( float _yaw, float _pitch, float _roll );
+    Mat4x4 rotationH( float _yaw, float _pitch, float _roll );
+
+    // ********************************************************************* //
+    /// \brief Rotation matrix in 3D/homogeneous space for an arbitrary axis.
+    Mat3x3 rotation( const Vec3& _axis, float _angle );
+    Mat4x4 rotationH( const Vec3& _axis, float _angle );
+
+    // TODO: from quaternion
 
     // TODO: orthonormalize()
 

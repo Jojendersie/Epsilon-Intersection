@@ -757,3 +757,152 @@ inline Matrix<float,4,4> scalingH( float _scale )
                   0.0f,   0.0f,   _scale, 0.0f,
                   0.0f,   0.0f,   0.0f,   1.0f);
 }
+
+// ************************************************************************* //
+inline Mat2x2 axis( const Vec2& _x, const Vec2& _y )
+{
+    return Mat2x2(_x.x, _x.y,
+                  _y.x, _y.y);
+}
+
+inline Mat3x3 axis( const Vec3& _x, const Vec3& _y, const Vec3& _z )
+{
+    return Mat3x3(_x.x, _x.y, _x.z,
+                  _y.x, _y.y, _y.z,
+                  _z.x, _z.y, _z.z);
+}
+
+inline Mat4x4 axisH( const Vec3& _x, const Vec3& _y, const Vec3& _z )
+{
+    return Mat4x4(_x.x, _x.y, _x.z, 0.0f,
+                  _y.x, _y.y, _y.z, 0.0f,
+                  _z.x, _z.y, _z.z, 0.0f,
+                  0.0f, 0.0f, 0.0f, 1.0f);
+}
+
+inline Mat4x4 axis( const Vec4& _x, const Vec4& _y, const Vec4& _z, const Vec4& _w )
+{
+    return Mat4x4(_x.x, _x.y, _x.z, _x.w,
+                  _y.x, _y.y, _y.z, _y.w,
+                  _z.x, _z.y, _z.z, _z.w,
+                  _w.x, _w.y, _w.z, _w.w);
+}
+
+// ************************************************************************* //
+inline Mat2x2 rotation( float _angle )
+{
+    float sinA = sin(_angle);
+    float cosA = cos(_angle);
+    return Mat2x2(cosA, -sinA,
+                  sinA,  cosA);
+}
+
+// ************************************************************************* //
+inline Mat3x3 rotationX( float _angle )
+{
+    float sinA = sin(_angle);
+    float cosA = cos(_angle);
+    return Mat3x3(1.0f, 0.0f,  0.0f,
+                  0.0f, cosA, -sinA,
+                  0.0f, sinA,  cosA);
+}
+
+inline Mat4x4 rotationXH( float _angle )
+{
+    float sinA = sin(_angle);
+    float cosA = cos(_angle);
+    return Mat4x4(1.0f, 0.0f,  0.0f, 0.0f,
+                  0.0f, cosA, -sinA, 0.0f,
+                  0.0f, sinA,  cosA, 0.0f,
+                  0.0f, 0.0f,  0.0f, 1.0f);
+}
+
+// ************************************************************************* //
+inline Mat3x3 rotationY( float _angle )
+{
+    float sinA = sin(_angle);
+    float cosA = cos(_angle);
+    return Mat3x3( cosA, 0.0f, sinA,
+                   0.0f, 1.0f, 0.0f,
+                  -sinA, 0.0f, cosA);
+}
+
+inline Mat4x4 rotationYH( float _angle )
+{
+    float sinA = sin(_angle);
+    float cosA = cos(_angle);
+    return Mat4x4( cosA, 0.0f, sinA, 0.0f,
+                   0.0f, 1.0f, 0.0f, 0.0f,
+                  -sinA, 0.0f, cosA, 0.0f,
+                   0.0f, 0.0f, 0.0f, 1.0f);
+}
+
+// ************************************************************************* //
+inline Mat3x3 rotationZ( float _angle )
+{
+    float sinA = sin(_angle);
+    float cosA = cos(_angle);
+    return Mat3x3(cosA, -sinA, 0.0f,
+                  sinA,  cosA, 0.0f,
+                  0.0f,  0.0f, 1.0f);
+}
+
+inline Mat4x4 rotationZH( float _angle )
+{
+    float sinA = sin(_angle);
+    float cosA = cos(_angle);
+    return Mat4x4(cosA, -sinA, 0.0f, 0.0f,
+                  sinA,  cosA, 0.0f, 0.0f,
+                  0.0f,  0.0f, 1.0f, 0.0f,
+                  0.0f,  0.0f, 0.0f, 1.0f);
+}
+
+// ************************************************************************* //
+inline Mat3x3 rotation( float _yaw, float _pitch, float _roll )
+{
+    float sinA = sin(_yaw);
+    float cosA = cos(_yaw);
+    float sinB = sin(_pitch);
+    float cosB = cos(_pitch);
+    float sinC = sin(_roll);
+    float cosC = cos(_roll);
+    return Mat3x3(cosA * cosB, cosA * sinB * sinC - sinA * cosC, cosA * sinB * cosC + sinA * sinC,
+                  sinA * cosB, sinA * sinB * sinC + cosA * cosC, sinA * sinB * cosC - cosA * sinC,
+                  -sinB,       cosB * sinC,                      cosB * cosC                     );
+}
+
+inline Mat4x4 rotationH( float _yaw, float _pitch, float _roll )
+{
+    float sinA = sin(_yaw);
+    float cosA = cos(_yaw);
+    float sinB = sin(_pitch);
+    float cosB = cos(_pitch);
+    float sinC = sin(_roll);
+    float cosC = cos(_roll);
+    return Mat4x4(cosA * cosB, cosA * sinB * sinC - sinA * cosC, cosA * sinB * cosC + sinA * sinC, 0.0f,
+                  sinA * cosB, sinA * sinB * sinC + cosA * cosC, sinA * sinB * cosC - cosA * sinC, 0.0f,
+                  -sinB,       cosB * sinC,                      cosB * cosC,                      0.0f,
+                  0.0f,        0.0f,                             0.0f,                             1.0f);
+}
+
+// ************************************************************************* //
+inline Mat3x3 rotation( const Vec3& _v, float _angle )
+{
+    float sinA = sin(_angle);
+    float cosA = cos(_angle);
+    float iCosA = 1.0f - cosA;
+    return Mat3x3(_v.x * _v.x * iCosA + cosA,        _v.x * _v.y * iCosA - _v.z * sinA, _v.x * _v.z * iCosA + _v.y * sinA,
+                  _v.x * _v.y * iCosA + _v.z * sinA, _v.y * _v.y * iCosA + cosA,        _v.y * _v.z * iCosA - _v.x * sinA,
+                  _v.x * _v.z * iCosA - _v.y * sinA, _v.y * _v.z * iCosA + _v.x * sinA, _v.z * _v.z * iCosA + cosA       );
+}
+
+inline Mat4x4 rotationH( const Vec3& _v, float _angle )
+{
+    float sinA = sin(_angle);
+    float cosA = cos(_angle);
+    float iCosA = 1.0f - cosA;
+    return Mat4x4(_v.x * _v.x * iCosA + cosA,        _v.x * _v.y * iCosA - _v.z * sinA, _v.x * _v.z * iCosA + _v.y * sinA, 0.0f,
+                  _v.x * _v.y * iCosA + _v.z * sinA, _v.y * _v.y * iCosA + cosA,        _v.y * _v.z * iCosA - _v.x * sinA, 0.0f,
+                  _v.x * _v.z * iCosA - _v.y * sinA, _v.y * _v.z * iCosA + _v.x * sinA, _v.z * _v.z * iCosA + cosA,        0.0f,
+                  0.0f,                              0.0f,                              0.0f,                              1.0f);
+}
