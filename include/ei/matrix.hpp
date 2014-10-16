@@ -522,7 +522,7 @@ namespace ei {
     // TODO: orthonormalize()
 
     // ********************************************************************* //
-    /// \brief Create perspective OpenGL matrix from 6 sides.
+    /// \brief Create OpenGL perspective projection matrix from 6 sides.
     /// \details Assumes an LHS coordinate system.
     ///
     ///    The OpenGL frustum is defined in the [-1,-1,-1] x [1,1,1] cube.
@@ -535,16 +535,29 @@ namespace ei {
     Mat4x4 perspectiveGL( float _l, float _r, float _b, float _t, float _n, float _f );
 
     // ********************************************************************* //
-    /// \brief Create perspective OpenGL matrix from fovY and aspect ratio.
+    /// \brief Create OpenGL perspective projection matrix from fovY and aspect ratio.
     /// \details Assumes an LHS coordinate system.
     ///
     ///    The OpenGL frustum is defined in the [-1,-1,-1] x [1,1,1] cube.
     /// \param [in] _fovY Field of view in the y direction, in radians.
     /// \param [in] _aspectRatio width/height of the frame buffer.
-    Mat4x4 perspectiveDX( float _fovY, float _aspectRatio, float _near, float _far );
+    Mat4x4 perspectiveGL( float _fovY, float _aspectRatio, float _near, float _far );
 
     // ********************************************************************* //
-    /// \brief Create perspective DirectX matrix from 6 sides.
+    /// \brief Create OpenGL orthographic matrix from 6 sides.
+    /// \details Assumes an LHS coordinate system.
+    ///
+    ///    The OpenGL frustum is defined in the [-1,-1,-1] x [1,1,1] cube.
+    /// \param [in] _l Left plane x-coordinate (at near plane)
+    /// \param [in] _r Right plane x-coordinate (at near plane)
+    /// \param [in] _b Bottom plane y-coordinate (at near plane)
+    /// \param [in] _t Bottom plane y-coordinate (at near plane)
+    /// \param [in] _n Near plane
+    /// \param [in] _f Far plane
+    Mat4x4 orthographicGL( float _l, float _r, float _b, float _t, float _n, float _f );
+
+    // ********************************************************************* //
+    /// \brief Create DirectX perspective projection matrix from 6 sides.
     /// \details Assumes an LHS coordinate system.
     ///
     ///    The DirectX frustum is defined in the [-1,-1,0] x [1,1,1] cube.
@@ -560,7 +573,7 @@ namespace ei {
     Mat4x4 perspectiveDX( float _l, float _r, float _b, float _t, float _n, float _f );
 
     // ********************************************************************* //
-    /// \brief Create perspective DirectX matrix from fovY and aspect ratio.
+    /// \brief Create DirectX perspective projection matrix from fovY and aspect ratio.
     /// \details Assumes an LHS coordinate system.
     ///
     ///    The DirectX frustum is defined in the [-1,-1,0] x [1,1,1] cube.
@@ -570,6 +583,22 @@ namespace ei {
     /// \param [in] _fovY Field of view in the y direction, in radians.
     /// \param [in] _aspectRatio width/height of the frame buffer.
     Mat4x4 perspectiveDX( float _fovY, float _aspectRatio, float _near, float _far );
+
+    // ********************************************************************* //
+    /// \brief Create DirectX orthographic projection matrix from 6 sides.
+    /// \details Assumes an LHS coordinate system.
+    ///
+    ///    The DirectX frustum is defined in the [-1,-1,0] x [1,1,1] cube.
+    ///
+    ///    This method is transposed compared to the DX documentation because
+    ///    this library multiplies vectors from right.
+    /// \param [in] _l Left plane x-coordinate (at near plane)
+    /// \param [in] _r Right plane x-coordinate (at near plane)
+    /// \param [in] _b Bottom plane y-coordinate (at near plane)
+    /// \param [in] _t Bottom plane y-coordinate (at near plane)
+    /// \param [in] _n Near plane
+    /// \param [in] _f Far plane
+    Mat4x4 orthographicDX( float _l, float _r, float _b, float _t, float _n, float _f );
 
 	// Include implementation.
 #	include "details/matrix.inl"

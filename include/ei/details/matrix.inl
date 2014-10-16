@@ -971,6 +971,15 @@ inline Mat4x4 perspectiveGL( float _fovY, float _aspectRatio, float _n, float _f
 }
 
 // ************************************************************************* //
+inline Mat4x4 orthographicGL( float _l, float _r, float _b, float _t, float _n, float _f )
+{
+    return Mat4x4(2.0f / (_r-_l), 0.0f, 0.0f, -(_r+_l) / (_r-_l),
+                  0.0f, 2.0f / (_t-_b), 0.0f, -(_t+_b) / (_t-_b),
+                  0.0f, 0.0f, 2.0f / (_f-_n), -(_f+_n) / (_f-_n),
+                  0.0f, 0.0f, 0.0f,           1.0f);
+}
+
+// ************************************************************************* //
 inline Mat4x4 perspectiveDX( float l, float r, float b, float t, float n, float f )
 {
     return Mat4x4(2.0f*n / (r-l), 0.0f,           (l+r) / (l-r), 0.0f,
@@ -989,4 +998,13 @@ inline Mat4x4 perspectiveDX( float _fovY, float _aspectRatio, float _n, float _f
                   0.0f, h,    0.0f,         0.0f,
                   0.0f, 0.0f, _f / (_f-_n), -_n*_f/(_f-_n),
                   0.0f, 0.0f, 1.0f,         0.0f);
+}
+
+// ************************************************************************* //
+inline Mat4x4 orthographicDX( float _l, float _r, float _b, float _t, float _n, float _f )
+{
+    return Mat4x4(2.0f / (_r-_l), 0.0f, 0.0f, -(_r+_l) / (_r-_l),
+                  0.0f, 2.0f / (_t-_b), 0.0f, -(_t+_b) / (_t-_b),
+                  0.0f, 0.0f, 1.0f / (_f-_n), -(_f+_n) / (_f-_n),
+                  0.0f, 0.0f, 0.0f,           1.0f);
 }
