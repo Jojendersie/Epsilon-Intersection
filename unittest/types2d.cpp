@@ -1,4 +1,4 @@
-#include "ei/2dtypes.hpp"
+﻿#include "ei/2dtypes.hpp"
 #include "unittest.hpp"
 
 #include <iostream>
@@ -31,7 +31,7 @@ bool test_2dtypes()
         "Circumcircle of three points not correct!"
     );
 
-    TEST( Disc2D( rec0 ) == Disc2D( Vec2(0.0f, 0.0f), sqrt(2.0f) ),
+    TEST( Disc2D( rec0 ) == Disc2D( Vec2(0.0f, 0.0f), √2 ),
         "Circumcircle of rectangle not correct!"
     );
 
@@ -55,7 +55,7 @@ bool test_2dtypes()
         "Circumcircle of line not correct!"
     );
 
-    TEST( Disc2D( cap0 ) == Disc2D( Vec2(0.0f, 0.0f), sqrt(2.0f) + 0.5f ),
+    TEST( Disc2D( cap0 ) == Disc2D( Vec2(0.0f, 0.0f), √2 + 0.5f ),
         "Circumcircle of triangle not correct!"
     );
 

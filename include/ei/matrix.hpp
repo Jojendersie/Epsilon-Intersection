@@ -535,6 +535,15 @@ namespace ei {
     Mat4x4 perspectiveGL( float _l, float _r, float _b, float _t, float _n, float _f );
 
     // ********************************************************************* //
+    /// \brief Create perspective OpenGL matrix from fovY and aspect ratio.
+    /// \details Assumes an LHS coordinate system.
+    ///
+    ///    The OpenGL frustum is defined in the [-1,-1,-1] x [1,1,1] cube.
+    /// \param [in] _fovY Field of view in the y direction, in radians.
+    /// \param [in] _aspectRatio width/height of the frame buffer.
+    Mat4x4 perspectiveDX( float _fovY, float _aspectRatio, float _near, float _far );
+
+    // ********************************************************************* //
     /// \brief Create perspective DirectX matrix from 6 sides.
     /// \details Assumes an LHS coordinate system.
     ///
@@ -549,6 +558,18 @@ namespace ei {
     /// \param [in] _n Near plane
     /// \param [in] _f Far plane
     Mat4x4 perspectiveDX( float _l, float _r, float _b, float _t, float _n, float _f );
+
+    // ********************************************************************* //
+    /// \brief Create perspective DirectX matrix from fovY and aspect ratio.
+    /// \details Assumes an LHS coordinate system.
+    ///
+    ///    The DirectX frustum is defined in the [-1,-1,0] x [1,1,1] cube.
+    ///
+    ///    This method is transposed compared to the DX documentation because
+    ///    this library multiplies vectors from right.
+    /// \param [in] _fovY Field of view in the y direction, in radians.
+    /// \param [in] _aspectRatio width/height of the frame buffer.
+    Mat4x4 perspectiveDX( float _fovY, float _aspectRatio, float _near, float _far );
 
 	// Include implementation.
 #	include "details/matrix.inl"

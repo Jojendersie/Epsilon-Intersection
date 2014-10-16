@@ -1,4 +1,4 @@
-// ************************************************************************* //
+﻿// ************************************************************************* //
 //                               CONSTRUCTORS                                //
 // ************************************************************************* //
 
@@ -952,17 +952,41 @@ inline Mat4x4 camera( const Vec3& _position, const Vec3& _target, const Vec3& _u
 // ************************************************************************* //
 inline Mat4x4 perspectiveGL( float l, float r, float b, float t, float n, float f )
 {
-    return Mat4x4(2.0f*n / (r-l), 0.0f,           (r+l) / (r-l),  0.0f,
-                  0.0f,           2.0f*n / (t-b), (t+b) / (t-b),  0.0f,
-                  0.0f,           0.0f,           (-f-n) / (f-n), -2.0f*f*n / (f-n),
-                  0.0f,           0.0f,           1.0f,          0.0f);
+    return Mat4x4(2.0f*n / (r-l), 0.0f,           (l+r) / (l-r),  0.0f,
+                  0.0f,           2.0f*n / (t-b), (b+t) / (b-t),  0.0f,
+                  0.0f,           0.0f,           (f+n) / (f-n), -2.0f*n*f / (f-n),
+                  0.0f,           0.0f,           1.0f,           0.0f);
+}
+
+// ************************************************************************* //
+inline Mat4x4 perspectiveGL( float _fovY, float _aspectRatio, float _n, float _f )
+{
+    // cot(x) == tan(π/2 - x)
+    float h = tan(π * 0.5f -_fovY / 2.0f);
+    float w = h * _aspectRatio;
+    return Mat4x4(w,    0.0f, 0.0f,              0.0f,
+                  0.0f, h,    0.0f,              0.0f,
+                  0.0f, 0.0f, (_f+_n) / (_f-_n), -2.0f*_n*_f / (_f-_n),
+                  0.0f, 0.0f, 1.0f,              0.0f);
 }
 
 // ************************************************************************* //
 inline Mat4x4 perspectiveDX( float l, float r, float b, float t, float n, float f )
 {
     return Mat4x4(2.0f*n / (r-l), 0.0f,           (l+r) / (l-r), 0.0f,
-                  0.0f,           2.0f*n / (t-b), (t+b) / (b-t), 0.0f,
-                  0.0f,           0.0f,           f / (f-n),     n*f / (n-f),
-                  0.0f,           0.0f,           1.0f,         0.0f);
+                  0.0f,           2.0f*n / (t-b), (b+t) / (b-t), 0.0f,
+                  0.0f,           0.0f,           f / (f-n),     -n*f / (f-n),
+                  0.0f,           0.0f,           1.0f,          0.0f);
+}
+
+// ************************************************************************* //
+inline Mat4x4 perspectiveDX( float _fovY, float _aspectRatio, float _n, float _f )
+{
+    // cot(x) == tan(π/2 - x)
+    float h = tan(π * 0.5f -_fovY / 2.0f);
+    float w = h * _aspectRatio;
+    return Mat4x4(w,    0.0f, 0.0f,         0.0f,
+                  0.0f, h,    0.0f,         0.0f,
+                  0.0f, 0.0f, _f / (_f-_n), -_n*_f/(_f-_n),
+                  0.0f, 0.0f, 1.0f,         0.0f);
 }

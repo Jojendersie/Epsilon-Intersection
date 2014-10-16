@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "config.hpp"
 #include "details/inttemplate.hpp"
@@ -39,6 +39,17 @@ namespace ei {
 #endif
 
 namespace ei {
+    // ********************************************************************* //
+    //                             MATH CONSTANTS                            //
+    // ********************************************************************* //
+    const float PI = 3.141592654f;
+    const float π = 3.141592654f;
+    const float E = 2.718281828f;
+    const float GOLDEN_RATIO = 1.61803398875f;
+    const float Φ = GOLDEN_RATIO;
+    const float PHYTAGORAS = 1.4142135623f;
+    const float √2 = 1.4142135623f;
+
     // ********************************************************************* //
     //                               FUNCTIONS                               //
     // ********************************************************************* //
