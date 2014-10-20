@@ -769,6 +769,7 @@ Matrix<T,N+1,N+1> translation( const Matrix<T, N, 1>& _vector )
     Matrix<T,N+1,N+1> result = identity<T,N+1>();
     for(int i = 0; i < N; ++i)
         result[i * (N+1) + N] = _vector[i];
+    return result;
 }
 
 // ************************************************************************* //

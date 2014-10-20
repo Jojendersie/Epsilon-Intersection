@@ -237,6 +237,29 @@ namespace ei {
     /// \brief 4x4 matrix of type int32.
     typedef Matrix<int32, 4, 4> IMat4x4;
 
+    // ********************************************************************* //
+    // Predefined 32 bit unsigned integer vector and matrix types.
+
+    /// \brief 2D column-vector of type uint32.
+    typedef Matrix<uint32, 2, 1> UVec2;
+    /// \brief 3D column-vector of type uint32.
+    typedef Matrix<uint32, 3, 1> UVec3;
+    /// \brief 4D column-vector of type uint32.
+    typedef Matrix<uint32, 4, 1> UVec4;
+
+    /// \brief 2D row-vector of type uint32.
+    typedef Matrix<uint32, 1, 2> URVec2;
+    /// \brief 3D row-vector of type uint32.
+    typedef Matrix<uint32, 1, 3> URVec3;
+    /// \brief 4D row-vector of type uint32.
+    typedef Matrix<uint32, 1, 4> URVec4;
+
+    /// \brief 2x2 matrix of type uint32.
+    typedef Matrix<uint32, 2, 2> UMat2x2;
+    /// \brief 3x3 matrix of type uint32.
+    typedef Matrix<uint32, 3, 3> UMat3x3;
+    /// \brief 4x4 matrix of type uint32.
+    typedef Matrix<uint32, 4, 4> UMat4x4;
 
     // ********************************************************************* //
     //                               FUNCTIONS                               //
