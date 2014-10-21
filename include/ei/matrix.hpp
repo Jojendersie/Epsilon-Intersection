@@ -133,6 +133,39 @@ namespace ei {
         template<typename T1, ENABLE_IF(M == 1)>
         Matrix<RESULT_TYPE(/), 1, N> operator/ (const Matrix<T1,1,N>& _mat1) const;  // TESTED
 
+        /// \brief Self assigning component wise addition.
+        /// \details There is a bug in visual studio which causes error C2244
+        ///    if the implementation is put into the *.inl file.
+        template<typename T1>
+        Matrix<T, M, N>& operator+= (const Matrix<T1,M,N>& _mat1)              // TESTED
+        {
+            for(int i = 0; i < N * M; ++i)
+                (*this)[i] += _mat1[i];
+            return *this;
+        }
+        /// \brief Self assigning component wise subtraction.
+        /// \details There is a bug in visual studio which causes error C2244
+        ///    if the implementation is put into the *.inl file.
+        template<typename T1>
+        Matrix<T, M, N>& operator-= (const Matrix<T1,M,N>& _mat1)              // TESTED
+        {
+            for(int i = 0; i < N * M; ++i)
+                (*this)[i] -= _mat1[i];
+            return *this;
+        }
+        /// \brief Self assigning component wise multiplication for vectors
+        ///    of the same size.
+        template<typename T1, ENABLE_IF(N == 1)>
+        Matrix<T, M, 1>& operator*= (const Matrix<T1,M,1>& _mat1);             // TESTED
+        template<typename T1, ENABLE_IF(M == 1)>
+        Matrix<T, 1, N>& operator*= (const Matrix<T1,1,N>& _mat1);             // TESTED
+        /// \brief Self assigning component wise division for vectors
+        ///    of the same size.
+        template<typename T1, ENABLE_IF(N == 1)>
+        Matrix<T, M, 1>& operator/= (const Matrix<T1,M,1>& _mat1);             // TESTED
+        template<typename T1, ENABLE_IF(M == 1)>
+        Matrix<T, 1, N>& operator/= (const Matrix<T1,1,N>& _mat1);             // TESTED
+
         /// \brief Compare component wise, if two matrices are identical.
         Matrix<bool,M,N> operator== (const Matrix<T,M,N>& _mat1) const;        // TESTED
         /// \brief Compare component wise, if elements are smaller or equal.

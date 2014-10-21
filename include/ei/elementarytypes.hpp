@@ -43,12 +43,14 @@ namespace ei {
     //                             MATH CONSTANTS                            //
     // ********************************************************************* //
     const float PI = 3.141592654f;
-    const float π = PI;
     const float E = 2.718281828f;
     const float GOLDEN_RATIO = 1.61803398875f;
-    const float Φ = GOLDEN_RATIO;
     const float PHYTAGORAS = 1.4142135623f;
-    const float √2 = 1.4142135623f;
+    // Unicode names for the above constants
+    const float π = PI;
+    const float Φ = GOLDEN_RATIO;
+    const float √2 = PHYTAGORAS;
+    const float ℇ = E;
 
     // ********************************************************************* //
     //                               FUNCTIONS                               //

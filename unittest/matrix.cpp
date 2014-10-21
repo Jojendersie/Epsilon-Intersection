@@ -185,6 +185,35 @@ bool test_matrix()
     }
 
     // ********************************************************************* //
+    // Test assignment operators +=, *=, -=, /=
+    {
+        Matrix<int, 2, 2> m0(1, 2, 3, 4);
+        Matrix<int, 2, 2> m1(3, 4, 5, 6);
+        Matrix<int, 2, 2> m2(4, 6, 8, 10);
+        Matrix<float, 2, 2> m3(2.0f, 2.0f, 4.0f, 4.0f);
+        Matrix<float, 2, 2> m4(5.0f, 6.0f, 9.0f, 10.0f);
+        Vec2 v0(1.0f, 1.0f);
+        Vec2 v1(0.0f, 1.0f);
+        Vec2 v2(0.0f, 1.0f);
+        Matrix<float, 1, 2> vr0(1.0f, 1.0f);
+        Matrix<float, 1, 2> vr1(0.0f, 1.0f);
+        Matrix<float, 1, 2> vr2(0.0f, 1.0f);
+        TEST( all((m0 += m1) == m2), "Component wise += failed!" );
+        m2 -= m0;
+        TEST( all(m2 == Matrix<int,2,2>(0)), "Component wise -= failed!" );
+        m3 += m1;
+        TEST( all(m3 == m4), "Component wise += with different types failed!" );
+        v0 *= v1;
+        TEST( all(v0 == v1), "Component wise *= for vectors failed!" );
+        (v1 += v0) /= v0 + 1.0f;
+        TEST( all(v1 == v2), "Component wise /= for vectors failed!" );
+        vr0 *= vr1;
+        TEST( all(vr0 == vr1), "Component wise *= for row vectors failed!" );
+        (vr1 += vr0) /= vr0 + 1.0f;
+        TEST( all(vr1 == vr2), "Component wise /= for row vectors failed!" );
+    }
+
+    // ********************************************************************* //
     // Test len, lensq, dot
     {
         Vec3 v0(1.0f, 2.0f, 0.0f);

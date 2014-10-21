@@ -246,6 +246,66 @@ Matrix<RESULT_TYPE(/), 1, N> Matrix<T, M, N>::operator/ (const Matrix<T1,1,N>& _
 }
 
 // ************************************************************************* //
+// putting the implementation here causes error C2244 in visual studio.
+/*template<typename T, uint M, uint N>
+template<typename T1, class>
+Matrix<T, M, N>& Matrix<T, M, N>::operator+= (const Matrix<T1,M,N>& _mat1)
+{
+    for(int i = 0; i < N * M; ++i)
+        (*this)[i] += _mat1[i];
+    return *this;
+}*/
+
+/*template<typename T, uint M, uint N>
+template<typename T1, class>
+Matrix<T, M, N>& Matrix<T, M, N>::operator-= (const Matrix<T1,M,N>& _mat1)
+{
+    for(int i = 0; i < N * M; ++i)
+        (*this)[i] -= _mat1[i];
+    return *this;
+}*/
+
+// ************************************************************************* //
+template<typename T, uint M, uint N>
+template<typename T1, class>
+Matrix<T, M, 1>& Matrix<T, M, N>::operator*= (const Matrix<T1,M,1>& _mat1)
+{
+    for(int i = 0; i < M; ++i)
+        (*this)[i] *= _mat1[i];
+    return *this;
+}
+
+// ************************************************************************* //
+template<typename T, uint M, uint N>
+template<typename T1, class>
+Matrix<T, 1, N>& Matrix<T, M, N>::operator*= (const Matrix<T1,1,N>& _mat1)
+{
+    for(int i = 0; i < N; ++i)
+        (*this)[i] *= _mat1[i];
+    return *this;
+}
+
+// ************************************************************************* //
+template<typename T, uint M, uint N>
+template<typename T1, class>
+Matrix<T, M, 1>& Matrix<T, M, N>::operator/= (const Matrix<T1,M,1>& _mat1)
+{
+    for(int i = 0; i < M; ++i)
+        (*this)[i] /= _mat1[i];
+    return *this;
+}
+
+// ************************************************************************* //
+template<typename T, uint M, uint N>
+template<typename T1, class>
+Matrix<T, 1, N>& Matrix<T, M, N>::operator/= (const Matrix<T1,1,N>& _mat1)
+{
+    for(int i = 0; i < N; ++i)
+        (*this)[i] /= _mat1[i];
+    return *this;
+}
+
+// ************************************************************************* //
 template<typename T, uint M, uint N>
 inline Matrix<bool,M,N> Matrix<T, M, N>::operator== (const Matrix<T,M,N>& _mat1) const
 {
