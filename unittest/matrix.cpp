@@ -211,6 +211,11 @@ bool test_matrix()
         TEST( all(vr0 == vr1), "Component wise *= for row vectors failed!" );
         (vr1 += vr0) /= vr0 + 1.0f;
         TEST( all(vr1 == vr2), "Component wise /= for row vectors failed!" );
+
+        TEST( all((vr1 += 1.0f) == vr2 + 1), "Matrix-Scalar += failed!");
+        TEST( all((m3 -= 0.5f) == m4 - 0.5f), "Matrix-Scalar -= failed!");
+        TEST( all((v1 *= 2.0f) == v2 / 0.5f), "Matrix-Scalar *= failed!");
+        TEST( all((v1 /= 2.0f) == v2), "Matrix-Scalar /= failed!");
     }
 
     // ********************************************************************* //
