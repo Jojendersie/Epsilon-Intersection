@@ -50,12 +50,20 @@ bool test_matrix()
     // ********************************************************************* //
     // Test type conversion constructors
     {
-        Vec2 v0(0);  // vector with zeros
-//      Vec2 v1 = 1; // This line should not compile (no accidentally conversion)
-        Vec2 v2(-1); // Test a scalar of a different type (should yield the standard warning)
+        Vec2 v0(0);     // vector with zeros
+//      Vec2 v1 = 1;    // This line should not compile (no accidentally conversion)
+        Vec2 v2(-1);    // Test a scalar of a different type (should yield the standard warning)
         Vec2 v3 = static_cast<Vec2>(-1); // Test a scalar of a different type without warning
-        IVec2 v4(v3); // Convert to other vector
-//      v4 = v0;      // This line should not compile (no accidentally conversion)
+        IVec2 v4(v3);   // Convert to other vector
+//      v4 = v0;        // This line should not compile (no accidentally conversion)
+        IVec3 v5(-1);   // Used for the truncation tests
+        Vec2 v6(v5);    // Truncate and type convert
+        TEST( all(v6 == v2) , "Truncation operator wrong!" );
+        Mat3x3 m0(0, 1, 2, 3, 4, 5, 6, 7, 8); // Used for more truncation tests
+        Mat2x2 m1(m0);  // Truncate in both dimensions
+        Vec3 v7(m0);    // Get first column
+        TEST( all(m1 == Mat2x2(0, 1, 3, 4)), "Truncation in both dimensions failed!" );
+        TEST( all(v7 == Vec3(0, 3, 6)), "Truncation to vector failed!" );
     }
 
     // ********************************************************************* //

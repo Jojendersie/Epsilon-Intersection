@@ -27,6 +27,18 @@ Matrix<T, M, N>::Matrix(const Matrix<T1,M,N>& _mat1)
 
 // ************************************************************************* //
 template<typename T, uint M, uint N>
+template<typename T1, uint M1, uint N1, class>
+Matrix<T, M, N>::Matrix(const Matrix<T1,M1,N1>& _mat1)
+{
+    // This counter avoids one index computation y*N+x in the inner loop
+    int i = 0;
+    for(int y = 0; y < M; ++y)
+        for(int x = 0; x < N; ++x)
+            m_data[i++] = static_cast<T>(_mat1(y, x));
+}
+
+// ************************************************************************* //
+template<typename T, uint M, uint N>
 template<class>
 Matrix<T, M, N>::Matrix(T _s0, T _s1)
 {

@@ -64,6 +64,10 @@ namespace ei {
         template<typename T1>
         explicit Matrix(const Matrix<T1,M,N>& _mat1);                          // TESTED
 
+        /// \brief Allow explicit truncation of the dimension sizes.
+        template<typename T1, uint M1, uint N1, ENABLE_IF((M < M1 && N <= N1) || (M <= M1 && N < N1))>
+        explicit Matrix(const Matrix<T1,M1,N1>& _mat1);
+
         /// \brief Construction from N * M scalar values (up to 16 elements).
         /// \details The template meta programming trick allows only the
         ///    compilation of the matching constructor.
@@ -122,6 +126,16 @@ namespace ei {
         template<typename T1, uint O>
         typename std::conditional<M * O == 1, RESULT_TYPE(*), Matrix<RESULT_TYPE(*), M, O>>::type
         operator* (const Matrix<T1,N,O>& _mat1) const;                               // TESTED
+        /// \brief Specialized version to allow simple homogeneous coordinate
+        ///    transformations for column vectors. E.g. Mat4x4 * Vec3
+        /// \details This transformation also divides by the last component.
+      /*  template<typename T1, ENABLE_IF(N == M)>
+        Matrix<RESULT_TYPE(*), N-1, 1> operator* (const Matrix<T1,N-1,1>& _mat1) const;
+        /// \brief Specialized version to allow simple homogeneous coordinate
+        ///    transformations for row vectors. E.g. RVec3 * Mat4x4
+        /// \details This transformation also divides by the last component.
+        template<typename T1, ENABLE_IF(N == M)>
+        Matrix<RESULT_TYPE(*), 1, N-1> operator* (const Matrix<T1,1,N-1>& _mat1) const;*/
         /// \brief Component wise multiplication for vectors of the same size.
         template<typename T1, ENABLE_IF(N == 1)>
         Matrix<RESULT_TYPE(*), M, 1> operator* (const Matrix<T1,M,1>& _mat1) const;  // TESTED
@@ -663,7 +677,7 @@ namespace ei {
     /// \brief Alias for identity<float,3>().
     inline Mat3x3 identity3x3()    { return identity<float,3>(); }
     /// \brief Alias for identity<float,4>().
-    inline Mat4x4 identity4x4()    { return identity<float,4>(); }
+    inline Mat4x4 identity4x4()    { return identity<float,4>(); }             // TESTED
 
 	// Remove helper macros.
 #	undef RESULT_TYPE
