@@ -12,7 +12,7 @@ Matrix<T, M, N>::Matrix()
 template<typename T, uint M, uint N>
 Matrix<T, M, N>::Matrix(T _s)
 {
-    for(int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         m_data[i] = _s;
 }
 
@@ -21,19 +21,21 @@ template<typename T, uint M, uint N>
 template<typename T1>
 Matrix<T, M, N>::Matrix(const Matrix<T1,M,N>& _mat1)
 {
-    for(int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         m_data[i] = static_cast<T>(_mat1[i]);
 }
 
 // ************************************************************************* //
 template<typename T, uint M, uint N>
 template<typename T1, uint M1, uint N1, class>
-Matrix<T, M, N>::Matrix(const Matrix<T1,M1,N1>& _mat1)
+Matrix<T, M, N>::Matrix(const Matrix<T1,M1,N1>& _mat1, uint _rowOff = 0, uint _colOff = 0)
 {
+    assertlvl1( _rowOff + M <= M1, "Out of boundaries: matrix subsection wrong!" );
+    assertlvl1( _colOff + N <= N1, "Out of boundaries: matrix subsection wrong!" );
     // This counter avoids one index computation y*N+x in the inner loop
-    int i = 0;
-    for(int y = 0; y < M; ++y)
-        for(int x = 0; x < N; ++x)
+    uint i = 0;
+    for(uint y = _rowOff; y < M+_rowOff; ++y)
+        for(uint x = _colOff; x < N+_colOff; ++x)
             m_data[i++] = static_cast<T>(_mat1(y, x));
 }
 
@@ -167,7 +169,7 @@ template<typename T1>
 Matrix<RESULT_TYPE(+), M, N> Matrix<T, M, N>::operator+ (const Matrix<T1,M,N>& _mat1) const
 {
     Matrix<RESULT_TYPE(+), M, N> result;
-    for(int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         result[i] = (*this)[i] + _mat1[i];
     return result;
 }
@@ -178,7 +180,7 @@ template<typename T1>
 Matrix<RESULT_TYPE(-), M, N> Matrix<T, M, N>::operator- (const Matrix<T1,M,N>& _mat1) const
 {
     Matrix<RESULT_TYPE(-), M, N> result;
-    for(int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         result[i] = (*this)[i] - _mat1[i];
     return result;
 }
@@ -188,7 +190,7 @@ template<typename T, uint M, uint N>
 Matrix<T, M, N> Matrix<T, M, N>::operator- () const
 {
     Matrix<T, M, N> result;
-    for(int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         result[i] = -(*this)[i];
     return result;
 }
@@ -200,12 +202,12 @@ typename std::conditional<M * O == 1, RESULT_TYPE(*), Matrix<RESULT_TYPE(*), M, 
 Matrix<T, M, N>::operator* (const Matrix<T1,N,O>& _mat1) const
 {
     typename std::conditional<M * O == 1, RESULT_TYPE(*), Matrix<RESULT_TYPE(*), M, O>>::type result;
-    for(int m = 0; m < M; ++m)
+    for(uint m = 0; m < M; ++m)
     {
-        for(int o = 0; o < O; ++o)
+        for(uint o = 0; o < O; ++o)
         {
             RESULT_TYPE(*) acc = (*this)(m,0) * _mat1(0,o);
-            for(int n = 1; n < N; ++n)
+            for(uint n = 1; n < N; ++n)
                 acc += (*this)(m,n) * _mat1(n,o);
             *(reinterpret_cast<RESULT_TYPE(*)*>(&result) + m * O + o) = acc;
         }
@@ -219,7 +221,7 @@ template<typename T1, class>
 Matrix<RESULT_TYPE(*), M, 1> Matrix<T, M, N>::operator* (const Matrix<T1,M,1>& _mat1) const
 {
     Matrix<RESULT_TYPE(*), M, 1> result;
-    for(int i = 0; i < M; ++i)
+    for(uint i = 0; i < M; ++i)
         result[i] = (*this)[i] * _mat1[i];
     return result;
 }
@@ -230,7 +232,7 @@ template<typename T1, class>
 Matrix<RESULT_TYPE(*), 1, N> Matrix<T, M, N>::operator* (const Matrix<T1,1,N>& _mat1) const
 {
     Matrix<RESULT_TYPE(*), 1, N> result;
-    for(int i = 0; i < N; ++i)
+    for(uint i = 0; i < N; ++i)
         result[i] = (*this)[i] * _mat1[i];
     return result;
 }
@@ -241,7 +243,7 @@ template<typename T1, class>
 Matrix<RESULT_TYPE(/), M, 1> Matrix<T, M, N>::operator/ (const Matrix<T1,M,1>& _mat1) const
 {
     Matrix<RESULT_TYPE(*), M, 1> result;
-    for(int i = 0; i < M; ++i)
+    for(uint i = 0; i < M; ++i)
         result[i] = (*this)[i] / _mat1[i];
     return result;
 }
@@ -252,7 +254,7 @@ template<typename T1, class>
 Matrix<RESULT_TYPE(/), 1, N> Matrix<T, M, N>::operator/ (const Matrix<T1,1,N>& _mat1) const
 {
     Matrix<RESULT_TYPE(*), 1, N> result;
-    for(int i = 0; i < N; ++i)
+    for(uint i = 0; i < N; ++i)
         result[i] = (*this)[i] / _mat1[i];
     return result;
 }
@@ -263,7 +265,7 @@ template<typename T, uint M, uint N>
 template<typename T1>
 Matrix<T, M, N>& Matrix<T, M, N>::operator+= (const Matrix<T1,M,N>& _mat1)
 {
-    for(int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         (*this)[i] += _mat1[i];
     return *this;
 }
@@ -272,7 +274,7 @@ template<typename T, uint M, uint N>
 template<typename T1>
 Matrix<T, M, N>& Matrix<T, M, N>::operator-= (const Matrix<T1,M,N>& _mat1)
 {
-    for(int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         (*this)[i] -= _mat1[i];
     return *this;
 }
@@ -282,7 +284,7 @@ template<typename T, uint M, uint N>
 template<typename T1, class>
 Matrix<T, M, 1>& Matrix<T, M, N>::operator*= (const Matrix<T1,M,1>& _mat1)
 {
-    for(int i = 0; i < M; ++i)
+    for(uint i = 0; i < M; ++i)
         (*this)[i] *= _mat1[i];
     return *this;
 }
@@ -292,7 +294,7 @@ template<typename T, uint M, uint N>
 template<typename T1, class>
 Matrix<T, 1, N>& Matrix<T, M, N>::operator*= (const Matrix<T1,1,N>& _mat1)
 {
-    for(int i = 0; i < N; ++i)
+    for(uint i = 0; i < N; ++i)
         (*this)[i] *= _mat1[i];
     return *this;
 }
@@ -302,7 +304,7 @@ template<typename T, uint M, uint N>
 template<typename T1, class>
 Matrix<T, M, 1>& Matrix<T, M, N>::operator/= (const Matrix<T1,M,1>& _mat1)
 {
-    for(int i = 0; i < M; ++i)
+    for(uint i = 0; i < M; ++i)
         (*this)[i] /= _mat1[i];
     return *this;
 }
@@ -312,7 +314,7 @@ template<typename T, uint M, uint N>
 template<typename T1, class>
 Matrix<T, 1, N>& Matrix<T, M, N>::operator/= (const Matrix<T1,1,N>& _mat1)
 {
-    for(int i = 0; i < N; ++i)
+    for(uint i = 0; i < N; ++i)
         (*this)[i] /= _mat1[i];
     return *this;
 }
@@ -322,7 +324,7 @@ template<typename T, uint M, uint N>
 template<typename T1>
 Matrix<T, M, N>& Matrix<T, M, N>::operator+= (T1 _s)
 {
-    for(int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         (*this)[i] += _s;
     return *this;
 }
@@ -332,7 +334,7 @@ template<typename T, uint M, uint N>
 template<typename T1>
 Matrix<T, M, N>& Matrix<T, M, N>::operator-= (T1 _s)
 {
-    for(int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         (*this)[i] -= _s;
     return *this;
 }
@@ -342,7 +344,7 @@ template<typename T, uint M, uint N>
 template<typename T1>
 Matrix<T, M, N>& Matrix<T, M, N>::operator*= (T1 _s)
 {
-    for(int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         (*this)[i] *= _s;
     return *this;
 }
@@ -352,7 +354,7 @@ template<typename T, uint M, uint N>
 template<typename T1>
 Matrix<T, M, N>& Matrix<T, M, N>::operator/= (T1 _s)
 {
-    for(int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         (*this)[i] /= _s;
     return *this;
 }
@@ -362,7 +364,7 @@ template<typename T, uint M, uint N>
 inline Matrix<bool,M,N> Matrix<T, M, N>::operator== (const Matrix<T,M,N>& _mat1) const
 {
     Matrix<bool,M,N> result;
-    for(int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         result[i] = (*this)[i] == _mat1[i];
     return result;
 }
@@ -372,7 +374,7 @@ template<typename T, uint M, uint N>
 inline Matrix<bool,M,N> Matrix<T, M, N>::operator<= (const Matrix<T,M,N>& _mat1) const
 {
     Matrix<bool,M,N> result;
-    for(int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         result[i] = (*this)[i] <= _mat1[i];
     return result;
 }
@@ -382,7 +384,7 @@ template<typename T, uint M, uint N>
 inline Matrix<bool,M,N> Matrix<T, M, N>::operator< (const Matrix<T,M,N>& _mat1) const
 {
     Matrix<bool,M,N> result;
-    for(int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         result[i] = (*this)[i] < _mat1[i];
     return result;
 }
@@ -392,7 +394,7 @@ template<typename T, uint M, uint N>
 inline Matrix<bool,M,N> Matrix<T, M, N>::operator> (const Matrix<T,M,N>& _mat1) const
 {
     Matrix<bool,M,N> result;
-    for(int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         result[i] = (*this)[i] > _mat1[i];
     return result;
 }
@@ -402,7 +404,7 @@ template<typename T, uint M, uint N>
 inline Matrix<bool,M,N> Matrix<T, M, N>::operator>= (const Matrix<T,M,N>& _mat1) const
 {
     Matrix<bool,M,N> result;
-    for(int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         result[i] = (*this)[i] >= _mat1[i];
     return result;
 }
@@ -412,7 +414,7 @@ template<typename T, uint M, uint N, typename T1>
 inline Matrix<RESULT_TYPE(+), M, N> operator+ (const Matrix<T,M,N>& _mat, T1 _s)
 {
     Matrix<RESULT_TYPE(+), M, N> result;
-    for(int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         result[i] = _mat[i] + _s;
     return result;
 }
@@ -421,7 +423,7 @@ template<typename T1, typename T, uint M, uint N>
 inline Matrix<RESULT_TYPE(+), M, N> operator+ (T1 _s, const Matrix<T,M,N>& _mat)
 {
     Matrix<RESULT_TYPE(+), M, N> result;
-    for(int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         result[i] = _s + _mat[i];
     return result;
 }
@@ -431,7 +433,7 @@ template<typename T, uint M, uint N, typename T1>
 inline Matrix<RESULT_TYPE(-), M, N> operator- (const Matrix<T, M, N>& _mat, T1 _s)
 {
     Matrix<RESULT_TYPE(-), M, N> result;
-    for (int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         result[i] = _mat[i] - _s;
     return result;
 }
@@ -440,7 +442,7 @@ template<typename T1, typename T, uint M, uint N>
 inline Matrix<RESULT_TYPE(-), M, N> operator- (T1 _s, const Matrix<T, M, N>& _mat)
 {
     Matrix<RESULT_TYPE(-), M, N> result;
-    for (int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         result[i] = _s - _mat[i];
     return result;
 }
@@ -450,7 +452,7 @@ template<typename T, uint M, uint N, typename T1>
 inline Matrix<RESULT_TYPE(/), M, N> operator/ (const Matrix<T, M, N>& _mat, T1 _s)
 {
     Matrix<RESULT_TYPE(/), M, N> result;
-    for (int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         result[i] = _mat[i] / _s;
     return result;
 }
@@ -459,7 +461,7 @@ template<typename T1, typename T, uint M, uint N>
 inline Matrix<RESULT_TYPE(/), M, N> operator/ (T1 _s, const Matrix<T, M, N>& _mat)
 {
     Matrix<RESULT_TYPE(/), M, N> result;
-    for (int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         result[i] = _s / _mat[i];
     return result;
 }
@@ -469,7 +471,7 @@ template<typename T, uint M, uint N, typename T1>
 inline Matrix<bool, M, N> operator< (const Matrix<T, M, N>& _mat, T1 _s)
 {
     Matrix<bool, M, N> result;
-    for (int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         result[i] = _mat[i] < _s;
     return result;
 }
@@ -478,7 +480,7 @@ template<typename T1, typename T, uint M, uint N>
 inline Matrix<bool, M, N> operator< (T1 _s, const Matrix<T, M, N>& _mat)
 {
     Matrix<bool, M, N> result;
-    for (int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         result[i] = _s < _mat[i];
     return result;
 }
@@ -488,7 +490,7 @@ template<typename T, uint M, uint N, typename T1>
 inline Matrix<bool, M, N> operator<= (const Matrix<T, M, N>& _mat, T1 _s)
 {
     Matrix<bool, M, N> result;
-    for (int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         result[i] = _mat[i] <= _s;
     return result;
 }
@@ -497,7 +499,7 @@ template<typename T1, typename T, uint M, uint N>
 inline Matrix<bool, M, N> operator<= (T1 _s, const Matrix<T, M, N>& _mat)
 {
     Matrix<bool, M, N> result;
-    for (int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         result[i] = _s <= _mat[i];
     return result;
 }
@@ -507,7 +509,7 @@ template<typename T, uint M, uint N, typename T1>
 inline Matrix<bool, M, N> operator>= (const Matrix<T, M, N>& _mat, T1 _s)
 {
     Matrix<bool, M, N> result;
-    for (int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         result[i] = _mat[i] >= _s;
     return result;
 }
@@ -516,7 +518,7 @@ template<typename T1, typename T, uint M, uint N>
 inline Matrix<bool, M, N> operator>= (T1 _s, const Matrix<T, M, N>& _mat)
 {
     Matrix<bool, M, N> result;
-    for (int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         result[i] = _s >= _mat[i];
     return result;
 }
@@ -526,7 +528,7 @@ template<typename T, uint M, uint N, typename T1>
 inline Matrix<bool, M, N> operator> (const Matrix<T, M, N>& _mat, T1 _s)
 {
     Matrix<bool, M, N> result;
-    for (int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         result[i] = _mat[i] > _s;
     return result;
 }
@@ -535,7 +537,7 @@ template<typename T1, typename T, uint M, uint N>
 inline Matrix<bool, M, N> operator> (T1 _s, const Matrix<T, M, N>& _mat)
 {
     Matrix<bool, M, N> result;
-    for (int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         result[i] = _s > _mat[i];
     return result;
 }
@@ -545,7 +547,7 @@ template<typename T, uint M, uint N, typename T1>
 inline Matrix<RESULT_TYPE(*), M, N> operator* (const Matrix<T,M,N>& _mat, T1 _s)
 {
     Matrix<RESULT_TYPE(*), M, N> result;
-    for(int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         result[i] = _mat[i] * _s;
     return result;
 }
@@ -554,7 +556,7 @@ template<typename T1, typename T, uint M, uint N>
 inline Matrix<RESULT_TYPE(*), M, N> operator* (T1 _s, const Matrix<T,M,N>& _mat)
 {
     Matrix<RESULT_TYPE(*), M, N> result;
-    for(int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         result[i] = _s * _mat[i];
     return result;
 }
@@ -569,7 +571,7 @@ inline bool approx(const Matrix<T,M,N>& _mat0,
                    const Matrix<T,M,N>& _mat1,
                    float _epsilon)
 {
-    for(int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         if(abs(_mat1[i] - _mat0[i]) > _epsilon) return false;
     return true;
 }
@@ -580,7 +582,7 @@ inline RESULT_TYPE(*) dot(const Matrix<T,M,N>& _mat0,
                           const Matrix<T1,M,N>& _mat1)
 {
     RESULT_TYPE(*) sum = _mat0[0] * _mat1[0];
-    for(int i = 1; i < N * M; ++i)
+    for(uint i = 1; i < N * M; ++i)
         sum += _mat0[i] * _mat1[i];
     return sum;
 }
@@ -650,7 +652,7 @@ inline Matrix<T,M,N> max(const Matrix<T,M,N>& _mat0,
                          const Matrix<T,M,N>& _mat1)
 {
     Matrix<T,M,N> result;
-    for(int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         result[i] = max(_mat0[i], _mat1[i]);
     return result;
 }
@@ -661,7 +663,7 @@ inline Matrix<T,M,N> min(const Matrix<T,M,N>& _mat0,
                          const Matrix<T,M,N>& _mat1)
 {
     Matrix<T,M,N> result;
-    for(int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         result[i] = min(_mat0[i], _mat1[i]);
     return result;
 }
@@ -671,7 +673,7 @@ template<typename T, unsigned M, unsigned N>
 inline T max(const Matrix<T,M,N>& _mat0)
 {
     T result = _mat0[0];
-    for(int i = 1; i < N * M; ++i)
+    for(uint i = 1; i < N * M; ++i)
         result = max(_mat0[i], result);
     return result;
 }
@@ -681,7 +683,7 @@ template<typename T, unsigned M, unsigned N>
 inline T min(const Matrix<T,M,N>& _mat0)
 {
     T result = _mat0[0];
-    for(int i = 1; i < N * M; ++i)
+    for(uint i = 1; i < N * M; ++i)
         result = min(_mat0[i], result);
     return result;
 }
@@ -691,7 +693,7 @@ template<typename T, unsigned M, unsigned N>
 inline decltype(std::declval<T>() + std::declval<T>()) sum(const Matrix<T,M,N>& _mat0)
 {
     decltype(std::declval<T>() + std::declval<T>()) result = _mat0[0];
-    for(int i = 1; i < N * M; ++i)
+    for(uint i = 1; i < N * M; ++i)
         result += _mat0[i];
     return result;
 }
@@ -708,7 +710,7 @@ template<typename T, unsigned M, unsigned N>
 inline Matrix<T,M,N> abs(const Matrix<T,M,N>& _mat0)
 {
     Matrix<T,M,N> result;
-    for(int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         result[i] = abs(_mat0[i]);
     return result;
 }
@@ -718,7 +720,7 @@ template<typename T, unsigned M, unsigned N>
 inline Matrix<T,M,N> sign(const Matrix<T,M,N>& _mat0)
 {
     Matrix<T,M,N> result;
-    for(int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         result[i] = sign(_mat0[i]);
     return result;
 }
@@ -728,7 +730,7 @@ template<typename T, unsigned M, unsigned N>
 inline Matrix<T,M,N> sgn(const Matrix<T,M,N>& _mat0)
 {
     Matrix<T,M,N> result;
-    for(int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         result[i] = sgn(_mat0[i]);
     return result;
 }
@@ -757,7 +759,7 @@ Matrix<decltype(std::declval<T0>() * std::declval<T1>()),M,N>
 template<unsigned M, unsigned N>
 bool any(const Matrix<bool,M,N>& _mat0)
 {
-    for(int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         if(_mat0[i]) return true;
     return false;
 }
@@ -766,7 +768,7 @@ bool any(const Matrix<bool,M,N>& _mat0)
 template<unsigned M, unsigned N>
 bool none(const Matrix<bool,M,N>& _mat0)
 {
-    for(int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         if(_mat0[i]) return false;
     return true;
 }
@@ -775,7 +777,7 @@ bool none(const Matrix<bool,M,N>& _mat0)
 template<unsigned M, unsigned N>
 bool all(const Matrix<bool,M,N>& _mat0)
 {
-    for(int i = 0; i < N * M; ++i)
+    for(uint i = 0; i < N * M; ++i)
         if(!_mat0[i]) return false;
     return true;
 }
@@ -786,9 +788,9 @@ Matrix<T,N,M> transpose(const Matrix<T,M,N>& _mat0)
 {
     Matrix<T,N,M> result;
     // This counter avoids one index computation y*N+x in the inner loop
-    int i = 0;
-    for(int x = 0; x < N; ++x)
-        for(int y = 0; y < M; ++y)
+    uint i = 0;
+    for(uint x = 0; x < N; ++x)
+        for(uint y = 0; y < M; ++y)
             result[i++] = _mat0(y,x);
     return result;
 }
@@ -803,7 +805,7 @@ template<typename T, unsigned N>
 Matrix<T,N,N> identity()
 {
     Matrix<T,N,N> result(T(0));
-    for(int n = 0; n < N; ++n)
+    for(uint n = 0; n < N; ++n)
         result[n*n] = T(1);
     return result;
 }
@@ -838,17 +840,17 @@ Matrix<T,N+1,N+1> homo( const Matrix<T,N,N>& _mat0 )
 {
     Matrix<T,N+1,N+1> result;
     // Indices for _mat0 and result
-    int i = 0, j = 0;
-    for(int y = 0; y < N; ++y)
+    uint i = 0, j = 0;
+    for(uint y = 0; y < N; ++y)
     {
         // Copy NxN part
-        for(int x = 0; x < N; ++x)
+        for(uint x = 0; x < N; ++x)
             result[j++] = _mat0[i++];
         // New element at the end of the row is 0
         result[j++] = T(0);
     }
     // Fill new row
-    for(int x = 0; x < N; ++x)
+    for(uint x = 0; x < N; ++x)
         result[j + x] = T(0);
     result[j + N] = T(1);
     return result;
@@ -858,7 +860,7 @@ template<typename T, unsigned N>
 Matrix<T,N+1,1> homo( const Matrix<T,N,1>& _v0 )
 {
     Matrix<T,N+1,1> result;
-    for(int i = 0; i < N; ++i)
+    for(uint i = 0; i < N; ++i)
         result[i] = _v0[i];
     result[N] = T(1);
     return result;
@@ -868,7 +870,7 @@ template<typename T, unsigned N>
 Matrix<T,1,N+1> homo( const Matrix<T,1,N>& _v0 )
 {
     Matrix<T,1,N+1> result;
-    for(int i = 0; i < N; ++i)
+    for(uint i = 0; i < N; ++i)
         result[i] = _v0[i];
     result[N] = T(1);
     return result;
@@ -879,7 +881,7 @@ template<typename T, unsigned N>
 Matrix<T,N+1,N+1> translation( const Matrix<T, N, 1>& _vector )
 {
     Matrix<T,N+1,N+1> result = identity<T,N+1>();
-    for(int i = 0; i < N; ++i)
+    for(uint i = 0; i < N; ++i)
         result[i * (N+1) + N] = _vector[i];
     return result;
 }
@@ -889,7 +891,7 @@ template<typename T, unsigned N>
 Matrix<T,N,N> scaling( const Matrix<T, N, 1>& _scale )
 {
     Matrix<T,N,N> result(T(0));
-    for(int n = 0; n < N; ++n)
+    for(uint n = 0; n < N; ++n)
         result[n*n] = _scale[n];
     return result;
 }
@@ -899,7 +901,7 @@ template<typename T, unsigned N>
 Matrix<T,N,N> scaling( T _scale )
 {
     Matrix<T,N,N> result(T(0));
-    for(int n = 0; n < N; ++n)
+    for(uint n = 0; n < N; ++n)
         result[n*n] = _scale;
     return result;
 }

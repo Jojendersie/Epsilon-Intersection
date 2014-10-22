@@ -66,7 +66,7 @@ namespace ei {
 
         /// \brief Allow explicit truncation of the dimension sizes.
         template<typename T1, uint M1, uint N1, ENABLE_IF((M < M1 && N <= N1) || (M <= M1 && N < N1))>
-        explicit Matrix(const Matrix<T1,M1,N1>& _mat1);
+        explicit Matrix(const Matrix<T1,M1,N1>& _mat1, uint _rowOff = 0, uint _colOff = 0);
 
         /// \brief Construction from N * M scalar values (up to 16 elements).
         /// \details The template meta programming trick allows only the
