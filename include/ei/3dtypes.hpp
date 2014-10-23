@@ -44,6 +44,9 @@ namespace ei {
 
         /// \brief Create from minimal and maximal coordinates
         Box( const Vec3& _min, const Vec3& _max );
+
+        /// \brief Get the smallest box containing two boxes.
+        Box( const Box& _box0, const Box& _box1 );
     };
 
     // Include inline implementations
