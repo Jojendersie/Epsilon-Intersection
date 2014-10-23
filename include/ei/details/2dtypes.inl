@@ -21,7 +21,7 @@ inline Disc2D::Disc2D( const Triangle2D& _triangle ) :
 // ************************************************************************* //
 inline Disc2D::Disc2D( const Rect2D& _rect )
 {
-    assertlvl1( all(_rect.max > _rect.min),
+    assertlvl1( all(_rect.max >= _rect.min),
         "The input rect is degenerated! All components of max should be larger than in min." );
     // For a regular n-gone the center is simply the center of all vertices.
     // The radius is then equal to all vertices.
