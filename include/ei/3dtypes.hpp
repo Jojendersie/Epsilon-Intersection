@@ -49,6 +49,20 @@ namespace ei {
         Box( const Box& _box0, const Box& _box1 );
     };
 
+    /// \brief A triangle in 3D space.
+    struct Triangle
+    {
+        Vec3 v0;
+        Vec3 v1;
+        Vec3 v2;
+
+        /// \brief Create uninitialized Triangle.
+        Triangle() {}
+
+        /// \brief Create from three vertex coordinates
+        Triangle( const Vec3& _v0, const Vec3& _v1, const Vec3& _v2 );
+    };
+
     // Include inline implementations
     #include "details/3dtypes.inl"
 }
