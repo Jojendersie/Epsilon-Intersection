@@ -24,7 +24,7 @@ inline Box::Box( const Box& _box0, const Box& _box1 ) :
 }
 
 // ************************************************************************* //
-Triangle::Triangle( const Vec3& _v0, const Vec3& _v1, const Vec3& _v2 ) :
+inline Triangle::Triangle( const Vec3& _v0, const Vec3& _v1, const Vec3& _v2 ) :
     v0(_v0),
     v1(_v1),
     v2(_v2)
