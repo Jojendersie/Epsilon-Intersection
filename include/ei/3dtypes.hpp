@@ -47,6 +47,12 @@ namespace ei {
 
         /// \brief Get the smallest box containing two boxes.
         Box( const Box& _box0, const Box& _box1 );
+
+        /// \brief Create the bounding box for a sphere.
+        explicit Box( const Sphere& _sphere );
+
+        /// \brief Create the bounding box for a triangle.
+        explicit Box( const Triangle& _triangle );
     };
 
     /// \brief A triangle in 3D space.

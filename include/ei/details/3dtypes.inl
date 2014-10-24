@@ -24,6 +24,24 @@ inline Box::Box( const Box& _box0, const Box& _box1 ) :
 }
 
 // ************************************************************************* //
+inline Box::Box( const Sphere& _sphere ) :
+    min(_sphere.center - _sphere.radius),
+    max(_sphere.center + _sphere.radius)
+{
+    assertlvl2( all(max >= min),
+        "Subtraction or addition of a scalar failed or sphere had negative radius!" );
+}
+
+// ************************************************************************* //
+inline Box::Box( const Triangle& _triangle ) :
+    min(ei::min(_triangle.v0, ei::min(_triangle.v1, _triangle.v2))),
+    max(ei::max(_triangle.v0, ei::max(_triangle.v1, _triangle.v2)))
+{
+    assertlvl2( all(max >= min),
+        "min() or max() failed for a vector!" );
+}
+
+// ************************************************************************* //
 inline Triangle::Triangle( const Vec3& _v0, const Vec3& _v1, const Vec3& _v2 ) :
     v0(_v0),
     v1(_v1),
