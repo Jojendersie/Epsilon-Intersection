@@ -11,10 +11,14 @@ namespace egg = ei;
 
 // Define the assertions depending on the option level.
 #if defined(DEBUG) || defined(_DEBUG) || !defined(NDEBUG)
+#   ifdef EI_DEBUG_BREAK
+#   undef EI_DEBUG_BREAK
+#   endif
+
 #   if defined(_WIN32)
-#       define DEBUG_BREAK __debugbreak()
+#       define EI_DEBUG_BREAK __debugbreak()
 #   else
-#       define DEBUG_BREAK ::kill(0, SIGTRAP)
+#       define EI_DEBUG_BREAK ::kill(0, SIGTRAP)
 #   endif
 	
 	/// \brief Default assert macro for all our needs. Use this instead of <cassert>
@@ -32,7 +36,7 @@ namespace egg = ei;
 #   define assertlvl1(condition, errorMessage) \
         do {                                   \
             if((condition) == false) {         \
-	            DEBUG_BREAK;                   \
+	            EI_DEBUG_BREAK;                \
 	        }                                  \
 	    } while((void)0,0)
 
@@ -42,7 +46,7 @@ namespace egg = ei;
 #       define assertlvl2(condition, errorMessage) \
             do {                                   \
                 if((condition) == false) {         \
-                    DEBUG_BREAK;                   \
+                    EI_DEBUG_BREAK;                \
                 }                                  \
             } while((void)0,0)
 #   endif
@@ -55,6 +59,4 @@ namespace egg = ei;
 #   if ASSERTION_LEVEL > 1
 #       define assertlvl2(condition, errorMessage) do { } while((void)0,0)
 #   endif
-
-#   undef DEBUG_BREAK
 #endif
