@@ -20,6 +20,27 @@ namespace ei {
     struct OEllipsoid;
     struct Capsule;
 
+	/// \brief A list of all supported 3d types
+	enum struct Types3D
+	{
+		SPHERE,
+		PLANE,
+		BOX,
+		OBOX,
+		DISC,
+		TRIANGLE,
+		THETRAHEDRON,
+		RAY,
+		LINE,
+		FRUSTUM,
+		PYRAMIDFRUSTUM,
+		ELLIPSOID,
+		OELLIPSOID,
+		CAPSULE,
+
+		NUM_TYPES
+	};
+
     /// \brief A sphere in 3D space.
     struct Sphere
     {
