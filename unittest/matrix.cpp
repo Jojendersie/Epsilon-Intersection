@@ -68,6 +68,49 @@ bool test_matrix()
         TEST( all(v8 == Vec3(1, 4, 7)), "Truncation to vector failed!" );
     }
 
+	// ********************************************************************* //
+    // Test vector composition constructors for column vectors
+    {
+        Vec2 v0(0.0f, 0.5f);
+		IVec2 v1(1, 2);
+		Vec3 v2(0.0f, 0.5f, 2.0f);
+		Vec3 v3(0.5f, 1.0f, 2.0f);
+		IVec4 v4(1, 2, 0, 0);
+		Vec4 v5(0.0f, 0.5f, 1.0f, 2.0f);
+		Vec4 v6(1.0f, 0.0f, 0.5f, 2.0f);
+		Vec4 v7(1.0f, 2.0f, 0.0f, 0.5f);
+		Vec4 v8(0.5f, 1.0f, 2.0f, 7.5f);
+        TEST( all(Vec3(v0, 2.0) == v2), "vec2+scalar to vec3 failed!" );
+        TEST( all(Vec3(0.5f, v1) == v3), "scalar+vec2 to vec3 failed!" );
+        TEST( all(IVec4(v1, v0) == v4), "vec2+vec2 to vec4 failed!" );
+		TEST( all(Vec4(v0, 1.0f, 2.0f) == v5), "vec2+2*scalar to vec4 failed!" );
+		TEST( all(Vec4(1.0f, v0, 2.0f) == v6), "scalar+vec2+scalar to vec4 failed!" );
+		TEST( all(Vec4(1.0f, 2.0f, v0) == v7), "2*scalar+vec2 to vec4 failed!" );
+		TEST( all(Vec4(1.0f, v2) == v6), "scalar+vec3 to vec4 failed!" );
+		TEST( all(Vec4(v3, 7.5f) == v8), "vec2+scalar to vec4 failed!" );
+	}
+
+	// Test vector composition constructors for row vectors
+    {
+		RVec2 v0(0.0f, 0.5f);
+		IRVec2 v1(1, 2);
+		RVec3 v2(0.0f, 0.5f, 2.0f);
+		RVec3 v3(0.5f, 1.0f, 2.0f);
+		IRVec4 v4(1, 2, 0, 0);
+		RVec4 v5(0.0f, 0.5f, 1.0f, 2.0f);
+		RVec4 v6(1.0f, 0.0f, 0.5f, 2.0f);
+		RVec4 v7(1.0f, 2.0f, 0.0f, 0.5f);
+		RVec4 v8(0.5f, 1.0f, 2.0f, 7.5f);
+        TEST( all(RVec3(v0, 2.0) == v2), "rvec2+scalar to rvec3 failed!" );
+        TEST( all(RVec3(0.5f, v1) == v3), "scalar+rvec2 to rvec3 failed!" );
+        TEST( all(IRVec4(v1, v0) == v4), "rvec2+rvec2 to rvec4 failed!" );
+		TEST( all(RVec4(v0, 1.0f, 2.0f) == v5), "rvec2+2*scalar to rvec4 failed!" );
+		TEST( all(RVec4(1.0f, v0, 2.0f) == v6), "scalar+rvec2+scalar to rvec4 failed!" );
+		TEST( all(RVec4(1.0f, 2.0f, v0) == v7), "2*scalar+rvec2 to rvec4 failed!" );
+		TEST( all(RVec4(1.0f, v2) == v6), "scalar+rvec3 to rvec4 failed!" );
+		TEST( all(RVec4(v3, 7.5f) == v8), "rvec2+scalar to rvec4 failed!" );
+    }
+
     // ********************************************************************* //
     // Test of boolean operators
     {

@@ -88,6 +88,43 @@ namespace ei {
         template<ENABLE_IF(N * M == 16)>
         Matrix(T _s0, T _s1, T _s2, T _s3, T _s4, T _s5, T _s6, T _s7, T _s8, T _s9, T _s10, T _s11, T _s12, T _s13, T _s14, T _s15); // TESTED
 
+		/// \brief Construction from mixed vectors and scalars for larger
+		///		vectors (column vectors)
+		template<typename T1, typename T2, ENABLE_IF(M == 3 && N == 1)>
+        Matrix(T1 _s0, Matrix<T2,2,1> _v12);                                   // TESTED
+		template<typename T1, typename T2, ENABLE_IF(M == 3 && N == 1)>
+        Matrix(Matrix<T1,2,1> _v01, T2 _s2);                                   // TESTED
+		template<typename T1, typename T2, ENABLE_IF(M == 4 && N == 1)>
+        Matrix(Matrix<T1,2,1> _v01, Matrix<T2,2,1> _v23);                      // TESTED
+		template<typename T1, typename T2, typename T3, ENABLE_IF(M == 4 && N == 1)>
+        Matrix(T1 _s0, T2 _s1, Matrix<T3,2,1> _v23);                           // TESTED
+		template<typename T1, typename T2, typename T3, ENABLE_IF(M == 4 && N == 1)>
+        Matrix(T1 _s0, Matrix<T2,2,1> _v12, T3 _s3);                           // TESTED
+		template<typename T1, typename T2, typename T3, ENABLE_IF(M == 4 && N == 1)>
+        Matrix(Matrix<T1,2,1> _v01, T2 _s2, T3 _s3);                           // TESTED
+		template<typename T1, typename T2, ENABLE_IF(M == 4 && N == 1)>
+        Matrix(T1 _s0, Matrix<T2,3,1> _v123);                                  // TESTED
+		template<typename T1, typename T2, ENABLE_IF(M == 4 && N == 1)>
+        Matrix(Matrix<T1,3,1> _v012, T2 _s3);                                  // TESTED
+		/// \brief Construction from mixed vectors and scalars for larger
+		///		vectors (row vectors)
+		template<typename T1, typename T2, ENABLE_IF(M == 1 && N == 3)>
+        Matrix(T1 _s0, Matrix<T2,1,2> _v12);                                   // TESTED
+		template<typename T1, typename T2, ENABLE_IF(M == 1 && N == 3)>
+        Matrix(Matrix<T1,1,2> _v01, T2 _s2);                                   // TESTED
+		template<typename T1, typename T2, ENABLE_IF(M == 1 && N == 4)>
+        Matrix(Matrix<T1,1,2> _v01, Matrix<T2,1,2> _v23);                      // TESTED
+		template<typename T1, typename T2, typename T3, ENABLE_IF(M == 1 && N == 4)>
+        Matrix(T1 _s0, T2 _s1, Matrix<T3,1,2> _v23);                           // TESTED
+		template<typename T1, typename T2, typename T3, ENABLE_IF(M == 1 && N == 4)>
+        Matrix(T1 _s0, Matrix<T2,1,2> _v12, T3 _s3);                           // TESTED
+		template<typename T1, typename T2, typename T3, ENABLE_IF(M == 1 && N == 4)>
+        Matrix(Matrix<T1,1,2> _v01, T2 _s2, T3 _s3);                           // TESTED
+		template<typename T1, typename T2, ENABLE_IF(M == 1 && N == 4)>
+        Matrix(T1 _s0, Matrix<T2,1,3> _v123);                                  // TESTED
+		template<typename T1, typename T2, ENABLE_IF(M == 1 && N == 4)>
+        Matrix(Matrix<T1,1,3> _v012, T2 _s3);                                  // TESTED
+
         /// \brief Access a single element with two indices.
         /// \details Computes the data index _row * N + _col. Therefore
         ///    iterating over _col in inner loops is fastest.

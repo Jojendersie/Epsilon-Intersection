@@ -128,6 +128,163 @@ Matrix<T, M, N>::Matrix(T _s0, T _s1, T _s2, T _s3, T _s4, T _s5, T _s6, T _s7, 
     m_data[12] = _s12; 	m_data[13] = _s13;  m_data[14] = _s14;  m_data[15] = _s15;
 }
 
+// ************************************************************************* //
+template<typename T, uint M, uint N>
+template<typename T1, typename T2, class>
+Matrix<T, M, N>::Matrix(T1 _s0, Matrix<T2,2,1> _v12)
+{
+	m_data[0] = static_cast<T>(_s0);
+	m_data[1] = static_cast<T>(_v12.x);
+	m_data[2] = static_cast<T>(_v12.y);
+}
+
+template<typename T, uint M, uint N>
+template<typename T1, typename T2, class>
+Matrix<T, M, N>::Matrix(Matrix<T1,2,1> _v01, T2 _s2)
+{
+	m_data[0] = static_cast<T>(_v01.x);
+	m_data[1] = static_cast<T>(_v01.y);
+	m_data[2] = static_cast<T>(_s2);
+}
+
+template<typename T, uint M, uint N>
+template<typename T1, typename T2, class>
+Matrix<T, M, N>::Matrix(Matrix<T1,2,1> _v01, Matrix<T2,2,1> _v23)
+{
+	m_data[0] = static_cast<T>(_v01.x);
+	m_data[1] = static_cast<T>(_v01.y);
+	m_data[2] = static_cast<T>(_v23.x);
+	m_data[3] = static_cast<T>(_v23.y);
+}
+
+template<typename T, uint M, uint N>
+template<typename T1, typename T2, typename T3, class>
+Matrix<T, M, N>::Matrix(T1 _s0, T2 _s1, Matrix<T3,2,1> _v23)
+{
+	m_data[0] = static_cast<T>(_s0);
+	m_data[1] = static_cast<T>(_s1);
+	m_data[2] = static_cast<T>(_v23.x);
+	m_data[3] = static_cast<T>(_v23.y);
+}
+
+template<typename T, uint M, uint N>
+template<typename T1, typename T2, typename T3, class>
+Matrix<T, M, N>::Matrix(T1 _s0, Matrix<T2,2,1> _v12, T3 _s3)
+{
+	m_data[0] = static_cast<T>(_s0);
+	m_data[1] = static_cast<T>(_v12.x);
+	m_data[2] = static_cast<T>(_v12.y);
+	m_data[3] = static_cast<T>(_s3);
+}
+
+template<typename T, uint M, uint N>
+template<typename T1, typename T2, typename T3, class>
+Matrix<T, M, N>::Matrix(Matrix<T1,2,1> _v01, T2 _s2, T3 _s3)
+{
+	m_data[0] = static_cast<T>(_v01.x);
+	m_data[1] = static_cast<T>(_v01.y);
+	m_data[2] = static_cast<T>(_s2);
+	m_data[3] = static_cast<T>(_s3);
+}
+
+template<typename T, uint M, uint N>
+template<typename T1, typename T2, class>
+Matrix<T, M, N>::Matrix(T1 _s0, Matrix<T2,3,1> _v123)
+{
+	m_data[0] = static_cast<T>(_s0);
+	m_data[1] = static_cast<T>(_v123.x);
+	m_data[2] = static_cast<T>(_v123.y);
+	m_data[3] = static_cast<T>(_v123.z);
+}
+
+template<typename T, uint M, uint N>
+template<typename T1, typename T2, class>
+Matrix<T, M, N>::Matrix(Matrix<T1,3,1> _v012, T2 _s3)
+{
+	m_data[0] = static_cast<T>(_v012.x);
+	m_data[1] = static_cast<T>(_v012.y);
+	m_data[2] = static_cast<T>(_v012.z);
+	m_data[3] = static_cast<T>(_s3);
+}
+
+
+template<typename T, uint M, uint N>
+template<typename T1, typename T2, class>
+Matrix<T, M, N>::Matrix(T1 _s0, Matrix<T2,1,2> _v12)
+{
+	m_data[0] = static_cast<T>(_s0);
+	m_data[1] = static_cast<T>(_v12.x);
+	m_data[2] = static_cast<T>(_v12.y);
+}
+
+template<typename T, uint M, uint N>
+template<typename T1, typename T2, class>
+Matrix<T, M, N>::Matrix(Matrix<T1,1,2> _v01, T2 _s2)
+{
+	m_data[0] = static_cast<T>(_v01.x);
+	m_data[1] = static_cast<T>(_v01.y);
+	m_data[2] = static_cast<T>(_s2);
+}
+
+template<typename T, uint M, uint N>
+template<typename T1, typename T2, class>
+Matrix<T, M, N>::Matrix(Matrix<T1,1,2> _v01, Matrix<T2,1,2> _v23)
+{
+	m_data[0] = static_cast<T>(_v01.x);
+	m_data[1] = static_cast<T>(_v01.y);
+	m_data[2] = static_cast<T>(_v23.x);
+	m_data[3] = static_cast<T>(_v23.y);
+}
+
+template<typename T, uint M, uint N>
+template<typename T1, typename T2, typename T3, class>
+Matrix<T, M, N>::Matrix(T1 _s0, T2 _s1, Matrix<T3,1,2> _v23)
+{
+	m_data[0] = static_cast<T>(_s0);
+	m_data[1] = static_cast<T>(_s1);
+	m_data[2] = static_cast<T>(_v23.x);
+	m_data[3] = static_cast<T>(_v23.y);
+}
+
+template<typename T, uint M, uint N>
+template<typename T1, typename T2, typename T3, class>
+Matrix<T, M, N>::Matrix(T1 _s0, Matrix<T2,1,2> _v12, T3 _s3)
+{
+	m_data[0] = static_cast<T>(_s0);
+	m_data[1] = static_cast<T>(_v12.x);
+	m_data[2] = static_cast<T>(_v12.y);
+	m_data[3] = static_cast<T>(_s3);
+}
+
+template<typename T, uint M, uint N>
+template<typename T1, typename T2, typename T3, class>
+Matrix<T, M, N>::Matrix(Matrix<T1,1,2> _v01, T2 _s2, T3 _s3)
+{
+	m_data[0] = static_cast<T>(_v01.x);
+	m_data[1] = static_cast<T>(_v01.y);
+	m_data[2] = static_cast<T>(_s2);
+	m_data[3] = static_cast<T>(_s3);
+}
+
+template<typename T, uint M, uint N>
+template<typename T1, typename T2, class>
+Matrix<T, M, N>::Matrix(T1 _s0, Matrix<T2,1,3> _v123)
+{
+	m_data[0] = static_cast<T>(_s0);
+	m_data[1] = static_cast<T>(_v123.x);
+	m_data[2] = static_cast<T>(_v123.y);
+	m_data[3] = static_cast<T>(_v123.z);
+}
+
+template<typename T, uint M, uint N>
+template<typename T1, typename T2, class>
+Matrix<T, M, N>::Matrix(Matrix<T1,1,3> _v012, T2 _s3)
+{
+	m_data[0] = static_cast<T>(_v012.x);
+	m_data[1] = static_cast<T>(_v012.y);
+	m_data[2] = static_cast<T>(_v012.z);
+	m_data[3] = static_cast<T>(_s3);
+}
 
 // ************************************************************************* //
 //                               OPERATORS                                   //
