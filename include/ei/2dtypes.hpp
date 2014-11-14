@@ -15,21 +15,21 @@ namespace ei {
     struct Line2D;
     struct Ray2D;
 
-	/// \brief A list of all supported 3d types
-	enum struct Types2D
-	{
-		DISC,
-		RECT,
-		ORECT,
-		TRIANGLE,
-		ELLIPSE,
-		OELLIPSE,
-		CAPSULE,
-		LINE,
-		RAY,
+    /// \brief A list of all supported 2d types
+    enum struct Types2D
+    {
+        DISC,
+        RECT,
+        ORECT,
+        TRIANGLE,
+        ELLIPSE,
+        OELLIPSE,
+        CAPSULE,
+        LINE,
+        RAY,
 
-		NUM_TYPES
-	};
+        NUM_TYPES
+    };
 
     /// \brief Standard disc (solid filled circle)
     /// \details You may change the position and radius arbitrary.

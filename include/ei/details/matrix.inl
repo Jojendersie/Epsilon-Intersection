@@ -133,78 +133,78 @@ template<typename T, uint M, uint N>
 template<typename T1, typename T2, class>
 Matrix<T, M, N>::Matrix(T1 _s0, Matrix<T2,2,1> _v12)
 {
-	m_data[0] = static_cast<T>(_s0);
-	m_data[1] = static_cast<T>(_v12.x);
-	m_data[2] = static_cast<T>(_v12.y);
+    m_data[0] = static_cast<T>(_s0);
+    m_data[1] = static_cast<T>(_v12.x);
+    m_data[2] = static_cast<T>(_v12.y);
 }
 
 template<typename T, uint M, uint N>
 template<typename T1, typename T2, class>
 Matrix<T, M, N>::Matrix(Matrix<T1,2,1> _v01, T2 _s2)
 {
-	m_data[0] = static_cast<T>(_v01.x);
-	m_data[1] = static_cast<T>(_v01.y);
-	m_data[2] = static_cast<T>(_s2);
+    m_data[0] = static_cast<T>(_v01.x);
+    m_data[1] = static_cast<T>(_v01.y);
+    m_data[2] = static_cast<T>(_s2);
 }
 
 template<typename T, uint M, uint N>
 template<typename T1, typename T2, class>
 Matrix<T, M, N>::Matrix(Matrix<T1,2,1> _v01, Matrix<T2,2,1> _v23)
 {
-	m_data[0] = static_cast<T>(_v01.x);
-	m_data[1] = static_cast<T>(_v01.y);
-	m_data[2] = static_cast<T>(_v23.x);
-	m_data[3] = static_cast<T>(_v23.y);
+    m_data[0] = static_cast<T>(_v01.x);
+    m_data[1] = static_cast<T>(_v01.y);
+    m_data[2] = static_cast<T>(_v23.x);
+    m_data[3] = static_cast<T>(_v23.y);
 }
 
 template<typename T, uint M, uint N>
 template<typename T1, typename T2, typename T3, class>
 Matrix<T, M, N>::Matrix(T1 _s0, T2 _s1, Matrix<T3,2,1> _v23)
 {
-	m_data[0] = static_cast<T>(_s0);
-	m_data[1] = static_cast<T>(_s1);
-	m_data[2] = static_cast<T>(_v23.x);
-	m_data[3] = static_cast<T>(_v23.y);
+    m_data[0] = static_cast<T>(_s0);
+    m_data[1] = static_cast<T>(_s1);
+    m_data[2] = static_cast<T>(_v23.x);
+    m_data[3] = static_cast<T>(_v23.y);
 }
 
 template<typename T, uint M, uint N>
 template<typename T1, typename T2, typename T3, class>
 Matrix<T, M, N>::Matrix(T1 _s0, Matrix<T2,2,1> _v12, T3 _s3)
 {
-	m_data[0] = static_cast<T>(_s0);
-	m_data[1] = static_cast<T>(_v12.x);
-	m_data[2] = static_cast<T>(_v12.y);
-	m_data[3] = static_cast<T>(_s3);
+    m_data[0] = static_cast<T>(_s0);
+    m_data[1] = static_cast<T>(_v12.x);
+    m_data[2] = static_cast<T>(_v12.y);
+    m_data[3] = static_cast<T>(_s3);
 }
 
 template<typename T, uint M, uint N>
 template<typename T1, typename T2, typename T3, class>
 Matrix<T, M, N>::Matrix(Matrix<T1,2,1> _v01, T2 _s2, T3 _s3)
 {
-	m_data[0] = static_cast<T>(_v01.x);
-	m_data[1] = static_cast<T>(_v01.y);
-	m_data[2] = static_cast<T>(_s2);
-	m_data[3] = static_cast<T>(_s3);
+    m_data[0] = static_cast<T>(_v01.x);
+    m_data[1] = static_cast<T>(_v01.y);
+    m_data[2] = static_cast<T>(_s2);
+    m_data[3] = static_cast<T>(_s3);
 }
 
 template<typename T, uint M, uint N>
 template<typename T1, typename T2, class>
 Matrix<T, M, N>::Matrix(T1 _s0, Matrix<T2,3,1> _v123)
 {
-	m_data[0] = static_cast<T>(_s0);
-	m_data[1] = static_cast<T>(_v123.x);
-	m_data[2] = static_cast<T>(_v123.y);
-	m_data[3] = static_cast<T>(_v123.z);
+    m_data[0] = static_cast<T>(_s0);
+    m_data[1] = static_cast<T>(_v123.x);
+    m_data[2] = static_cast<T>(_v123.y);
+    m_data[3] = static_cast<T>(_v123.z);
 }
 
 template<typename T, uint M, uint N>
 template<typename T1, typename T2, class>
 Matrix<T, M, N>::Matrix(Matrix<T1,3,1> _v012, T2 _s3)
 {
-	m_data[0] = static_cast<T>(_v012.x);
-	m_data[1] = static_cast<T>(_v012.y);
-	m_data[2] = static_cast<T>(_v012.z);
-	m_data[3] = static_cast<T>(_s3);
+    m_data[0] = static_cast<T>(_v012.x);
+    m_data[1] = static_cast<T>(_v012.y);
+    m_data[2] = static_cast<T>(_v012.z);
+    m_data[3] = static_cast<T>(_s3);
 }
 
 
@@ -212,78 +212,78 @@ template<typename T, uint M, uint N>
 template<typename T1, typename T2, class>
 Matrix<T, M, N>::Matrix(T1 _s0, Matrix<T2,1,2> _v12)
 {
-	m_data[0] = static_cast<T>(_s0);
-	m_data[1] = static_cast<T>(_v12.x);
-	m_data[2] = static_cast<T>(_v12.y);
+    m_data[0] = static_cast<T>(_s0);
+    m_data[1] = static_cast<T>(_v12.x);
+    m_data[2] = static_cast<T>(_v12.y);
 }
 
 template<typename T, uint M, uint N>
 template<typename T1, typename T2, class>
 Matrix<T, M, N>::Matrix(Matrix<T1,1,2> _v01, T2 _s2)
 {
-	m_data[0] = static_cast<T>(_v01.x);
-	m_data[1] = static_cast<T>(_v01.y);
-	m_data[2] = static_cast<T>(_s2);
+    m_data[0] = static_cast<T>(_v01.x);
+    m_data[1] = static_cast<T>(_v01.y);
+    m_data[2] = static_cast<T>(_s2);
 }
 
 template<typename T, uint M, uint N>
 template<typename T1, typename T2, class>
 Matrix<T, M, N>::Matrix(Matrix<T1,1,2> _v01, Matrix<T2,1,2> _v23)
 {
-	m_data[0] = static_cast<T>(_v01.x);
-	m_data[1] = static_cast<T>(_v01.y);
-	m_data[2] = static_cast<T>(_v23.x);
-	m_data[3] = static_cast<T>(_v23.y);
+    m_data[0] = static_cast<T>(_v01.x);
+    m_data[1] = static_cast<T>(_v01.y);
+    m_data[2] = static_cast<T>(_v23.x);
+    m_data[3] = static_cast<T>(_v23.y);
 }
 
 template<typename T, uint M, uint N>
 template<typename T1, typename T2, typename T3, class>
 Matrix<T, M, N>::Matrix(T1 _s0, T2 _s1, Matrix<T3,1,2> _v23)
 {
-	m_data[0] = static_cast<T>(_s0);
-	m_data[1] = static_cast<T>(_s1);
-	m_data[2] = static_cast<T>(_v23.x);
-	m_data[3] = static_cast<T>(_v23.y);
+    m_data[0] = static_cast<T>(_s0);
+    m_data[1] = static_cast<T>(_s1);
+    m_data[2] = static_cast<T>(_v23.x);
+    m_data[3] = static_cast<T>(_v23.y);
 }
 
 template<typename T, uint M, uint N>
 template<typename T1, typename T2, typename T3, class>
 Matrix<T, M, N>::Matrix(T1 _s0, Matrix<T2,1,2> _v12, T3 _s3)
 {
-	m_data[0] = static_cast<T>(_s0);
-	m_data[1] = static_cast<T>(_v12.x);
-	m_data[2] = static_cast<T>(_v12.y);
-	m_data[3] = static_cast<T>(_s3);
+    m_data[0] = static_cast<T>(_s0);
+    m_data[1] = static_cast<T>(_v12.x);
+    m_data[2] = static_cast<T>(_v12.y);
+    m_data[3] = static_cast<T>(_s3);
 }
 
 template<typename T, uint M, uint N>
 template<typename T1, typename T2, typename T3, class>
 Matrix<T, M, N>::Matrix(Matrix<T1,1,2> _v01, T2 _s2, T3 _s3)
 {
-	m_data[0] = static_cast<T>(_v01.x);
-	m_data[1] = static_cast<T>(_v01.y);
-	m_data[2] = static_cast<T>(_s2);
-	m_data[3] = static_cast<T>(_s3);
+    m_data[0] = static_cast<T>(_v01.x);
+    m_data[1] = static_cast<T>(_v01.y);
+    m_data[2] = static_cast<T>(_s2);
+    m_data[3] = static_cast<T>(_s3);
 }
 
 template<typename T, uint M, uint N>
 template<typename T1, typename T2, class>
 Matrix<T, M, N>::Matrix(T1 _s0, Matrix<T2,1,3> _v123)
 {
-	m_data[0] = static_cast<T>(_s0);
-	m_data[1] = static_cast<T>(_v123.x);
-	m_data[2] = static_cast<T>(_v123.y);
-	m_data[3] = static_cast<T>(_v123.z);
+    m_data[0] = static_cast<T>(_s0);
+    m_data[1] = static_cast<T>(_v123.x);
+    m_data[2] = static_cast<T>(_v123.y);
+    m_data[3] = static_cast<T>(_v123.z);
 }
 
 template<typename T, uint M, uint N>
 template<typename T1, typename T2, class>
 Matrix<T, M, N>::Matrix(Matrix<T1,1,3> _v012, T2 _s3)
 {
-	m_data[0] = static_cast<T>(_v012.x);
-	m_data[1] = static_cast<T>(_v012.y);
-	m_data[2] = static_cast<T>(_v012.z);
-	m_data[3] = static_cast<T>(_s3);
+    m_data[0] = static_cast<T>(_v012.x);
+    m_data[1] = static_cast<T>(_v012.y);
+    m_data[2] = static_cast<T>(_v012.z);
+    m_data[3] = static_cast<T>(_s3);
 }
 
 // ************************************************************************* //
@@ -1031,6 +1031,93 @@ Matrix<T,1,N+1> homo( const Matrix<T,1,N>& _v0 )
         result[i] = _v0[i];
     result[N] = T(1);
     return result;
+}
+
+// ************************************************************************* //
+template<typename T, unsigned N>
+Matrix<T,N,1> transform( const Matrix<T,N,1>& _what, const Matrix<T,N+1,N+1>& _space )
+{
+    Matrix<T,1,N+1> t;
+    // Multiply Matrix * Vector(_what,1)
+    for(uint y = 0; y <= N; ++y)
+    {
+        // Initialize with the last component * 1
+        t[y] = _space(y,N);
+        // Add the other N factors
+        for(uint x = 0; x < N; ++x)
+            t[y] += _space(y,x) * _what[x];
+    }
+    // Create a reduced vector with divided components
+    Matrix<T,1,N> result;
+    for(uint i = 0; i < N; ++i)
+        result[i] = t[i] / t[N];
+    return result;
+}
+
+template<typename T, unsigned N>
+Matrix<T,1,N> transform( const Matrix<T,1,N>& _what, const Matrix<T,N+1,N+1>& _space )
+{
+    Matrix<T,N+1,1> t;
+    // Multiply Vector(_what,1) * Matrix
+    for(uint x = 0; x <= N; ++x)
+    {
+        // Initialize with the last component * 1
+        t[x] = _space(N,x);
+        // Add the other N factors
+        for(uint y = 0; y < N; ++y)
+            t[x] += _what[y] * _space(y,x);
+    }
+    // Create a reduced vector with divided components
+    Matrix<T,N,1> result;
+    for(uint i = 0; i < N; ++i)
+        result[i] = t[i] / t[N];
+    return result;
+}
+
+// ************************************************************************* //
+template<typename T, unsigned N>
+Matrix<T,N,1> transformDir( const Matrix<T,N,1>& _what, const Matrix<T,N+1,N+1>& _space )
+{
+    Matrix<T,1,N> result;
+    // Multiply Matrix * Vector(_what,0)
+    for(uint y = 0; y < N; ++y)
+    {
+        // Initialize with the first component
+        t[y] = _space(y,0) * _what[0];
+        // Add the other N-1 factors
+        for(uint x = 1; x < N; ++x)
+            t[y] += _space(y,x) * _what[x];
+    }
+    return result;
+}
+
+template<typename T, unsigned N>
+Matrix<T,1,N> transformDir( const Matrix<T,1,N>& _what, const Matrix<T,N+1,N+1>& _space )
+{
+    Matrix<T,N,1> result;
+    // Multiply Vector(_what,0) * Matrix
+    for(uint x = 0; x < N; ++x)
+    {
+        // Initialize with the first component
+        t[x] = _what[0] * _space(0,x);
+        // Add the other N-1 factors
+        for(uint y = 1; y < N; ++y)
+            t[x] += _what[y] * _space(y,x);
+    }
+    return result;
+}
+
+// ************************************************************************* //
+template<typename T, unsigned N>
+Matrix<T,N,1> transform( const Matrix<T,N,1>& _what, const Matrix<T,N,N>& _space )
+{
+    return _space * _what;
+}
+
+template<typename T, unsigned N>
+Matrix<T,1,N> transform( const Matrix<T,1,N>& _what, const Matrix<T,N,N>& _space )
+{
+    return _what * _space;
 }
 
 // ************************************************************************* //

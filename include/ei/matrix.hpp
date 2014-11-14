@@ -88,41 +88,41 @@ namespace ei {
         template<ENABLE_IF(N * M == 16)>
         Matrix(T _s0, T _s1, T _s2, T _s3, T _s4, T _s5, T _s6, T _s7, T _s8, T _s9, T _s10, T _s11, T _s12, T _s13, T _s14, T _s15); // TESTED
 
-		/// \brief Construction from mixed vectors and scalars for larger
-		///		vectors (column vectors)
-		template<typename T1, typename T2, ENABLE_IF(M == 3 && N == 1)>
+        /// \brief Construction from mixed vectors and scalars for larger
+        ///		vectors (column vectors)
+        template<typename T1, typename T2, ENABLE_IF(M == 3 && N == 1)>
         Matrix(T1 _s0, Matrix<T2,2,1> _v12);                                   // TESTED
-		template<typename T1, typename T2, ENABLE_IF(M == 3 && N == 1)>
+        template<typename T1, typename T2, ENABLE_IF(M == 3 && N == 1)>
         Matrix(Matrix<T1,2,1> _v01, T2 _s2);                                   // TESTED
-		template<typename T1, typename T2, ENABLE_IF(M == 4 && N == 1)>
+        template<typename T1, typename T2, ENABLE_IF(M == 4 && N == 1)>
         Matrix(Matrix<T1,2,1> _v01, Matrix<T2,2,1> _v23);                      // TESTED
-		template<typename T1, typename T2, typename T3, ENABLE_IF(M == 4 && N == 1)>
+        template<typename T1, typename T2, typename T3, ENABLE_IF(M == 4 && N == 1)>
         Matrix(T1 _s0, T2 _s1, Matrix<T3,2,1> _v23);                           // TESTED
-		template<typename T1, typename T2, typename T3, ENABLE_IF(M == 4 && N == 1)>
+        template<typename T1, typename T2, typename T3, ENABLE_IF(M == 4 && N == 1)>
         Matrix(T1 _s0, Matrix<T2,2,1> _v12, T3 _s3);                           // TESTED
-		template<typename T1, typename T2, typename T3, ENABLE_IF(M == 4 && N == 1)>
+        template<typename T1, typename T2, typename T3, ENABLE_IF(M == 4 && N == 1)>
         Matrix(Matrix<T1,2,1> _v01, T2 _s2, T3 _s3);                           // TESTED
-		template<typename T1, typename T2, ENABLE_IF(M == 4 && N == 1)>
+        template<typename T1, typename T2, ENABLE_IF(M == 4 && N == 1)>
         Matrix(T1 _s0, Matrix<T2,3,1> _v123);                                  // TESTED
-		template<typename T1, typename T2, ENABLE_IF(M == 4 && N == 1)>
+        template<typename T1, typename T2, ENABLE_IF(M == 4 && N == 1)>
         Matrix(Matrix<T1,3,1> _v012, T2 _s3);                                  // TESTED
-		/// \brief Construction from mixed vectors and scalars for larger
-		///		vectors (row vectors)
-		template<typename T1, typename T2, ENABLE_IF(M == 1 && N == 3)>
+        /// \brief Construction from mixed vectors and scalars for larger
+        ///		vectors (row vectors)
+        template<typename T1, typename T2, ENABLE_IF(M == 1 && N == 3)>
         Matrix(T1 _s0, Matrix<T2,1,2> _v12);                                   // TESTED
-		template<typename T1, typename T2, ENABLE_IF(M == 1 && N == 3)>
+        template<typename T1, typename T2, ENABLE_IF(M == 1 && N == 3)>
         Matrix(Matrix<T1,1,2> _v01, T2 _s2);                                   // TESTED
-		template<typename T1, typename T2, ENABLE_IF(M == 1 && N == 4)>
+        template<typename T1, typename T2, ENABLE_IF(M == 1 && N == 4)>
         Matrix(Matrix<T1,1,2> _v01, Matrix<T2,1,2> _v23);                      // TESTED
-		template<typename T1, typename T2, typename T3, ENABLE_IF(M == 1 && N == 4)>
+        template<typename T1, typename T2, typename T3, ENABLE_IF(M == 1 && N == 4)>
         Matrix(T1 _s0, T2 _s1, Matrix<T3,1,2> _v23);                           // TESTED
-		template<typename T1, typename T2, typename T3, ENABLE_IF(M == 1 && N == 4)>
+        template<typename T1, typename T2, typename T3, ENABLE_IF(M == 1 && N == 4)>
         Matrix(T1 _s0, Matrix<T2,1,2> _v12, T3 _s3);                           // TESTED
-		template<typename T1, typename T2, typename T3, ENABLE_IF(M == 1 && N == 4)>
+        template<typename T1, typename T2, typename T3, ENABLE_IF(M == 1 && N == 4)>
         Matrix(Matrix<T1,1,2> _v01, T2 _s2, T3 _s3);                           // TESTED
-		template<typename T1, typename T2, ENABLE_IF(M == 1 && N == 4)>
+        template<typename T1, typename T2, ENABLE_IF(M == 1 && N == 4)>
         Matrix(T1 _s0, Matrix<T2,1,3> _v123);                                  // TESTED
-		template<typename T1, typename T2, ENABLE_IF(M == 1 && N == 4)>
+        template<typename T1, typename T2, ENABLE_IF(M == 1 && N == 4)>
         Matrix(Matrix<T1,1,3> _v012, T2 _s3);                                  // TESTED
 
         /// \brief Access a single element with two indices.
@@ -539,6 +539,28 @@ namespace ei {
     Matrix<T,N+1,1> homo( const Matrix<T,N,1>& _v0 );
     template<typename T, unsigned N>
     Matrix<T,1,N+1> homo( const Matrix<T,1,N>& _v0 );
+
+    // ********************************************************************* //
+    /// \brief Apply transformations in homogeneous space. This includes a
+    ///     division by w after the transformation
+    template<typename T, unsigned N>
+    Matrix<T,N,1> transform( const Matrix<T,N,1>& _what, const Matrix<T,N+1,N+1>& _space );
+    template<typename T, unsigned N>
+    Matrix<T,1,N> transform( const Matrix<T,1,N>& _what, const Matrix<T,N+1,N+1>& _space );
+    /// \brief Apply transformations and ignore the fourth component and the
+    ///     translation.
+    /// \details Use this function to transform direction vectors. Still, there
+    ///     is no normalization involved and the direction might be scaled by
+    ///     the matrix.
+    template<typename T, unsigned N>
+    Matrix<T,N,1> transformDir( const Matrix<T,N,1>& _what, const Matrix<T,N+1,N+1>& _space );
+    template<typename T, unsigned N>
+    Matrix<T,1,N> transformDir( const Matrix<T,1,N>& _what, const Matrix<T,N+1,N+1>& _space );
+    /// \brief Apply transformations with a matrix multiplication.
+    template<typename T, unsigned N>
+    Matrix<T,N,1> transform( const Matrix<T,N,1>& _what, const Matrix<T,N,N>& _space );
+    template<typename T, unsigned N>
+    Matrix<T,1,N> transform( const Matrix<T,1,N>& _what, const Matrix<T,N,N>& _space );
 
     // ********************************************************************* //
     /// \brief Create a translation matrix in homogeneous coordinate space.

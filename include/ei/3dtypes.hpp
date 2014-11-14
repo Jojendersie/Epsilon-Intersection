@@ -7,6 +7,7 @@ namespace ei {
     // Predeclarations for all types to enable conversion operators.
     struct Sphere;
     struct Plane;
+	struct DOP;
     struct Box;
     struct OBox;
     struct Disc;
@@ -20,26 +21,27 @@ namespace ei {
     struct OEllipsoid;
     struct Capsule;
 
-	/// \brief A list of all supported 3d types
-	enum struct Types3D
-	{
-		SPHERE,
-		PLANE,
-		BOX,
-		OBOX,
-		DISC,
-		TRIANGLE,
-		THETRAHEDRON,
-		RAY,
-		LINE,
-		FRUSTUM,
-		PYRAMIDFRUSTUM,
-		ELLIPSOID,
-		OELLIPSOID,
-		CAPSULE,
+    /// \brief A list of all supported 3d types
+    enum struct Types3D
+    {
+        SPHERE,
+        PLANE,
+        DOUBLE_PLANE,
+        BOX,
+        OBOX,
+        DISC,
+        TRIANGLE,
+        THETRAHEDRON,
+        RAY,
+        LINE,
+        FRUSTUM,
+        PYRAMIDFRUSTUM,
+        ELLIPSOID,
+        OELLIPSOID,
+        CAPSULE,
 
-		NUM_TYPES
-	};
+        NUM_TYPES
+    };
 
     /// \brief A sphere in 3D space.
     struct Sphere
@@ -88,6 +90,14 @@ namespace ei {
 
         /// \brief Create from three vertex coordinates
         Triangle( const Vec3& _v0, const Vec3& _v1, const Vec3& _v2 );
+    };
+
+    /// \brief A plane in 3D. If you want to use 2 parallel planes use
+    ///
+    struct Plane
+    {
+        Vec3 n;     ///< The normal on the plane
+        float d;    ///< The distance to the origin
     };
 
     // Include inline implementations
