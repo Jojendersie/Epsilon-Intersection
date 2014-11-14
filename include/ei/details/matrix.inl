@@ -30,8 +30,8 @@ template<typename T, uint M, uint N>
 template<typename T1, uint M1, uint N1, class>
 Matrix<T, M, N>::Matrix(const Matrix<T1,M1,N1>& _mat1, uint _rowOff = 0, uint _colOff = 0)
 {
-    assertlvl1( _rowOff + M <= M1, "Out of boundaries: matrix subsection wrong!" );
-    assertlvl1( _colOff + N <= N1, "Out of boundaries: matrix subsection wrong!" );
+    eiAssert( _rowOff + M <= M1, "Out of boundaries: matrix subsection wrong!" );
+    eiAssert( _colOff + N <= N1, "Out of boundaries: matrix subsection wrong!" );
     // This counter avoids one index computation y*N+x in the inner loop
     uint i = 0;
     for(uint y = _rowOff; y < M+_rowOff; ++y)
@@ -294,14 +294,14 @@ Matrix<T, M, N>::Matrix(Matrix<T1,1,3> _v012, T2 _s3)
 template<typename T, uint M, uint N>
 T& Matrix<T, M, N>::operator() (uint _row, uint _col)
 {
-    assertlvl2(_row < M && _col < N, "Index out of bounds!");
+    eiAssertWeak(_row < M && _col < N, "Index out of bounds!");
     return m_data[_row * N + _col];
 }
 
 template<typename T, uint M, uint N>
 T Matrix<T, M, N>::operator() (uint _row, uint _col) const
 {
-    assertlvl2(_row < M && _col < N, "Index out of bounds!");
+    eiAssertWeak(_row < M && _col < N, "Index out of bounds!");
     return m_data[_row * N + _col];
 }
 
@@ -309,14 +309,14 @@ T Matrix<T, M, N>::operator() (uint _row, uint _col) const
 template<typename T, uint M, uint N>
 T& Matrix<T, M, N>::operator[] (uint _index)
 {
-    assertlvl2(_index < N * M, "Index out of bounds!");
+    eiAssertWeak(_index < N * M, "Index out of bounds!");
     return m_data[_index];
 }
 
 template<typename T, uint M, uint N>
 T Matrix<T, M, N>::operator[] (uint _index) const
 {
-    assertlvl2(_index < N * M, "Index out of bounds!");
+    eiAssertWeak(_index < N * M, "Index out of bounds!");
     return m_data[_index];
 }
 

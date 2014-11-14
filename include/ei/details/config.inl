@@ -20,30 +20,30 @@ namespace egg = ei;
 #   else
 #       define EI_DEBUG_BREAK ::kill(0, SIGTRAP)
 #   endif
-	
-	/// \brief Default assert macro for all our needs. Use this instead of <cassert>
-	/// \details This form of assertion breaks at the very point of code
-	///    where you placed it. Further you are able to step over the assertion
-	///    in any condition.
-	///
-	///    The do while loop is the only way to guarantee robustness of the macro.
-	///    It forces you to set a semicolon and can be used within if, for, ...
-	///    without curled brackets:
-	///        if(...)
-	///            assertlvl1(..., "Even if compiled out the if statement does not
-	///                             infer with the next line.");
-	///        somestatement;
-#   define assertlvl1(condition, errorMessage) \
+
+    /// \brief Default assert macro for all our needs. Use this instead of <cassert>
+    /// \details This form of assertion breaks at the very point of code
+    ///    where you placed it. Further you are able to step over the assertion
+    ///    in any condition.
+    ///
+    ///    The do while loop is the only way to guarantee robustness of the macro.
+    ///    It forces you to set a semicolon and can be used within if, for, ...
+    ///    without curled brackets:
+    ///        if(...)
+    ///            eiAssert(..., "Even if compiled out the if statement does not
+    ///                             infer with the next line.");
+    ///        somestatement;
+#   define eiAssert(condition, errorMessage)   \
         do {                                   \
             if((condition) == false) {         \
-	            EI_DEBUG_BREAK;                \
-	        }                                  \
-	    } while((void)0,0)
+                EI_DEBUG_BREAK;                \
+            }                                  \
+        } while((void)0,0)
 
-	/// \brief Optional assert macro for highly frequented code.
-	/// \details \see assertlvl1()
+    /// \brief Optional assert macro for highly frequented code.
+    /// \details \see eiAssert()
 #   if ASSERTION_LEVEL > 1
-#       define assertlvl2(condition, errorMessage) \
+#       define eiAssertWeak(condition, errorMessage) \
             do {                                   \
                 if((condition) == false) {         \
                     EI_DEBUG_BREAK;                \
@@ -53,10 +53,10 @@ namespace egg = ei;
 
 #else
 
-	/// \brief Empty replacement if switched off.
-	/// \details \see assertlvl1()
-#   define assertlvl1(condition, errorMessage) do { } while((void)0,0)
+    /// \brief Empty replacement if switched off.
+    /// \details \see assertlvl1()
+#   define eiAssert(condition, errorMessage) do { } while((void)0,0)
 #   if ASSERTION_LEVEL > 1
-#       define assertlvl2(condition, errorMessage) do { } while((void)0,0)
+#       define eiAssertWeak(condition, errorMessage) do { } while((void)0,0)
 #   endif
 #endif

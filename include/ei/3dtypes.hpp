@@ -92,12 +92,27 @@ namespace ei {
         Triangle( const Vec3& _v0, const Vec3& _v1, const Vec3& _v2 );
     };
 
-    /// \brief A plane in 3D. If you want to use 2 parallel planes use
-    ///
+    /// \brief A plane in 3D. If you want to use 2 parallel planes use DOPs
+    ///     instead.
     struct Plane
     {
         Vec3 n;     ///< The normal on the plane
         float d;    ///< The distance to the origin
+
+        /// \brief Create uninitialized Plane.
+        Plane() {}
+
+        /// \brief Create a plane from direct parameters
+        Plane(const Vec3& _normal, float _d);                                  // TESTED
+
+        /// \brief Create a plane from a support vector and a direction vector.
+        Plane(const Vec3& _normal, const Vec3& _support);                      // TESTED
+
+        /// \brief Create a plane from three points.
+        /// \details Creates the RHS normal for courter-clock-wise sorted
+        ///     vertices. With other words: the normal is that of the
+        ///     triangle.
+        Plane(const Vec3& _v0, const Vec3& _v1, const Vec3& _v2);              // TESTED
     };
 
     // Include inline implementations
