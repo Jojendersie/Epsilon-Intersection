@@ -115,6 +115,21 @@ namespace ei {
         Plane(const Vec3& _v0, const Vec3& _v1, const Vec3& _v2);              // TESTED
     };
 
+    struct Ellipsoid
+    {
+        Vec3 center;
+        Vec3 radii;
+
+        /// \brief Create uninitialized Ellipsoid.
+        Ellipsoid() {}
+
+        /// \brief Create an Ellipsoid from center and radii.
+        Ellipsoid(const Vec3& _center, const Vec3& _radii);                    // TESTED
+
+        /// \brief Create bounding Ellipsoid from axis aligned bounding box.
+        Ellipsoid(const Box& _box);                                            // TESTED
+    };
+
     // Include inline implementations
     #include "details/3dtypes.inl"
 }

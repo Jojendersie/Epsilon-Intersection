@@ -71,3 +71,20 @@ inline Plane::Plane(const Vec3& _v0, const Vec3& _v1, const Vec3& _v2)
     n = normalize(cross(_v1 - _v0, _v2 - _v0));
     d = -dot(n, _v0);
 }
+
+
+// ************************************************************************* //
+inline Ellipsoid::Ellipsoid(const Vec3& _center, const Vec3& _radii) :
+    center(_center),
+    radii(_radii)
+{
+}
+
+// ************************************************************************* //
+inline Ellipsoid::Ellipsoid(const Box& _box)
+{
+    eiAssert( all(_box.max >= _box.min), "Invalid bounding box." );
+    center = (_box.max + _box.min) * 0.5f;
+    /// sqrt(3) * side length / 2
+    radii = 0.866025404f * (_box.max - _box.min);
+}

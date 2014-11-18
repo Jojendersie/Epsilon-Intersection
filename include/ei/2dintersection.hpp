@@ -4,7 +4,7 @@
 
 namespace ei {
 
-    /// \brief Do a point lies inside a circle/on the boundary?
+    /// \brief Does a point lie inside a circle/on the boundary?
     /// \details Performance index: TODO
     /// \return true if the point is inside or on the boundary.
     bool intersects( const Vec2& _point, const Disc2D& _disc );                // TESTED
@@ -31,7 +31,7 @@ namespace ei {
     ///    fully inside the other one.
     bool intersects( const Rect2D& _rect0, const Rect2D& _rect1 );             // TESTED
 
-    /// \brief Do a point lies inside a rectangle/on the boundary?
+    /// \brief Does a point lie inside a rectangle/on the boundary?
     /// \details Performance index: TODO
     /// \return true if the point is inside or on the boundary.
     bool intersects( const Vec2& _point, const Rect2D& _rect );                // TESTED

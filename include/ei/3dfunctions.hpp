@@ -9,12 +9,13 @@ namespace ei
     float volume(const Box& _box);                                             // TESTED
     float volume(const Triangle& _triangle);                                   // TESTED
     float volume(const Plane& _plane);                                         // TESTED
+    float volume(const Ellipsoid& _ellipsoid);                                 // TESTED
 
     /// \brief Get the surface area of any object.
     float surface(const Sphere& _sphere);                                      // TESTED
     float surface(const Box& _box);                                            // TESTED
     float surface(const Triangle& _triangle);                                  // TESTED
-    float surface(const Plane& _plane);                                        // TESTED
+    float surface(const Ellipsoid& _ellipsoid);                                // TESTED
 
     // Include inline implementations
 #   include "details/3dfunctions.inl"
