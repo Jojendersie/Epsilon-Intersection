@@ -309,12 +309,18 @@ bool test_matrix()
         Vec4 v2(-1.0f, -0.5f, 0.25f, 0.0f);
         Vec4 v3(0.5f, 2.5f, 1.0f, 0.5f);
         Vec4 v4(1.0f, 0.5f, 0.25f, 0.5f);
+        Vec4 v5(-1.0f, -0.5f, 0.25f, 0.0f);
+        Vec4 v6(0.0f, 0.0f, 0.25f, 0.5f);
+        Vec4 v7(0.0f, 0.0f, 1.0f, 1.0f);
         TEST( all(min(v0, v1) == v2), "Component wise minimum wrong!" );
         TEST( all(max(v0, v1) == v3), "Component wise maximum wrong!" );
         TEST( min(v0) == -1.0f, "Minimum of a vector wrong!" );
         TEST( min(v1) == 0.0f, "Minimum of a vector wrong!" );
         TEST( max(v2) == 0.25f, "Maximum of a vector wrong!" );
         TEST( max(v3) == 2.5f, "Maximum of a vector wrong!" );
+        TEST( all(clamp(v0, v2, v1) == v5), "Clamp of a vector in box boundaries wrong!" );
+        TEST( all(clamp(v0, 0.0f, 3.0f) == v6), "Clamp of a vector in interval wrong!" );
+        TEST( all(saturate(v0 * 4.0f) == v7), "Saturate of a vector wrong!" );
         TEST( sum(v1) == 4.0f, "Sum of a vector wrong!" );
         TEST( avg(v3) == 1.125f, "Average of a vector wrong!" );
         TEST( all(abs(v0) == v4), "Absolute value of a vector wrong!" );

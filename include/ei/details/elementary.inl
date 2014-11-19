@@ -21,6 +21,20 @@ inline T min(T _x, T _y)
 
 // ************************************************************************* //
 template<typename T>
+inline T clamp(T _x, T _min, T _max)
+{
+    return _x > _max ? _max : (_x < _min ? _min : _x);
+}
+
+// ************************************************************************* //
+template<typename T>
+inline T saturate(T _x)
+{
+    return _x > static_cast<T>(1) ? static_cast<T>(1) : (_x < static_cast<T>(0) ? static_cast<T>(0) : _x);
+}
+
+// ************************************************************************* //
+template<typename T>
 inline T abs(T _x)
 {
     return _x < static_cast<T>(0) ? -_x : _x;

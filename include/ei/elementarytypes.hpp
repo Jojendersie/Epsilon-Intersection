@@ -78,6 +78,16 @@ namespace ei {
     T min(T _x, T _y);                                                         // TESTED
 
     // ********************************************************************* //
+    /// \brief Clamp a value to the boundaries.
+    template<typename T>
+    T clamp(T _x, T _min, T _max);                                             // TESTED
+
+    // ********************************************************************* //
+    /// \brief Clamp a value to [0,1] interval.
+    template<typename T>
+    T saturate(T _x);
+
+    // ********************************************************************* //
     /// \brief Get the absolute value.
     template<typename T>
     T abs(T _x);                                                               // TESTED

@@ -893,6 +893,30 @@ inline T min(const Matrix<T,M,N>& _mat0)
     return result;
 }
 
+// ********************************************************************* //
+template<typename T, unsigned M, unsigned N>
+inline Matrix<T,M,N> clamp(const Matrix<T,M,N>& _mat,
+                    const Matrix<T,M,N>& _min,
+                    const Matrix<T,M,N>& _max)
+{
+    Matrix<T,M,N> result;
+    for(uint i = 0; i < N * M; ++i)
+        result[i] = clamp(_mat[i], _min[i], _max[i]);
+    return result;
+}
+
+// ********************************************************************* //
+template<typename T, unsigned M, unsigned N>
+inline Matrix<T,M,N> clamp(const Matrix<T,M,N>& _mat,
+                    T _min,
+                    T _max)
+{
+    Matrix<T,M,N> result;
+    for(uint i = 0; i < N * M; ++i)
+        result[i] = clamp(_mat[i], _min, _max);
+    return result;
+}
+
 // ************************************************************************* //
 template<typename T, unsigned M, unsigned N>
 inline decltype(std::declval<T>() + std::declval<T>()) sum(const Matrix<T,M,N>& _mat0)

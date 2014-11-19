@@ -451,6 +451,26 @@ namespace ei {
     T min(const Matrix<T,M,N>& _mat0);                                         // TESTED
 
     // ********************************************************************* //
+    /// \brief Component wise clamp to boundaries.
+    /// \returns A matrix with values in the bounding box.
+    template<typename T, unsigned M, unsigned N>
+    Matrix<T,M,N> clamp(const Matrix<T,M,N>& _mat,
+                        const Matrix<T,M,N>& _min,
+                        const Matrix<T,M,N>& _max);                            // TESTED
+
+    // ********************************************************************* //
+    /// \brief Component wise clamp to scalar boundaries.
+    /// \returns A matrix with values in the interval.
+    template<typename T, unsigned M, unsigned N>
+    Matrix<T,M,N> clamp(const Matrix<T,M,N>& _mat,
+                        T _min,
+                        T _max);                                               // TESTED
+
+    /// \brief Clamp all components to [0,1]
+    template<typename T, unsigned M, unsigned N>
+    Matrix<T,M,N> saturate(const Matrix<T,M,N>& _mat)   { return clamp(_mat, static_cast<T>(0), static_cast<T>(1)); }  // TESTED
+
+    // ********************************************************************* //
     /// \brief Signed sum of all components.
     /// \returns Scalar sum of all values.
     template<typename T, unsigned M, unsigned N>
