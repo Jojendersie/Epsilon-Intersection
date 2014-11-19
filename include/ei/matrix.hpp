@@ -218,6 +218,8 @@ namespace ei {
 
         /// \brief Compare component wise, if two matrices are identical.
         Matrix<bool,M,N> operator== (const Matrix<T,M,N>& _mat1) const;        // TESTED
+        /// \brief Compare component wise, if two matrices are distinct.
+        Matrix<bool,M,N> operator!= (const Matrix<T,M,N>& _mat1) const;        // TESTED
         /// \brief Compare component wise, if elements are smaller or equal.
         Matrix<bool,M,N> operator<= (const Matrix<T,M,N>& _mat1) const;        // TESTED
         /// \brief Compare component wise, if elements are smaller.
@@ -256,21 +258,29 @@ namespace ei {
    
     /// \brief Test all components with respect to a scalar.
     template<typename T, uint M, uint N, typename T1>
+    Matrix<bool, M, N> operator== (const Matrix<T,M,N>& _mat, T1 _s);          // TESTED
+    template<typename T1, typename T, uint M, uint N>
+    Matrix<bool, M, N> operator== (T1 _s, const Matrix<T,M,N>& _mat);          // TESTED
+    template<typename T, uint M, uint N, typename T1>
+    Matrix<bool, M, N> operator!= (const Matrix<T,M,N>& _mat, T1 _s);          // TESTED
+    template<typename T1, typename T, uint M, uint N>
+    Matrix<bool, M, N> operator!= (T1 _s, const Matrix<T,M,N>& _mat);          // TESTED
+    template<typename T, uint M, uint N, typename T1>
     Matrix<bool, M, N> operator< (const Matrix<T,M,N>& _mat, T1 _s);           // TESTED
     template<typename T1, typename T, uint M, uint N>
-    Matrix<bool, M, N> operator< (T1 _s, const Matrix<T,M,N>& _mat);
+    Matrix<bool, M, N> operator< (T1 _s, const Matrix<T,M,N>& _mat);           // TESTED
     template<typename T, uint M, uint N, typename T1>
     Matrix<bool, M, N> operator<= (const Matrix<T,M,N>& _mat, T1 _s);          // TESTED
     template<typename T1, typename T, uint M, uint N>
-    Matrix<bool, M, N> operator<= (T1 _s, const Matrix<T,M,N>& _mat);
+    Matrix<bool, M, N> operator<= (T1 _s, const Matrix<T,M,N>& _mat);          // TESTED
     template<typename T, uint M, uint N, typename T1>
     Matrix<bool, M, N> operator>= (const Matrix<T,M,N>& _mat, T1 _s);          // TESTED
     template<typename T1, typename T, uint M, uint N>
-    Matrix<bool, M, N> operator>= (T1 _s, const Matrix<T,M,N>& _mat);
+    Matrix<bool, M, N> operator>= (T1 _s, const Matrix<T,M,N>& _mat);          // TESTED
     template<typename T, uint M, uint N, typename T1>
     Matrix<bool, M, N> operator> (const Matrix<T,M,N>& _mat, T1 _s);           // TESTED
     template<typename T1, typename T, uint M, uint N>
-    Matrix<bool, M, N> operator> (T1 _s, const Matrix<T,M,N>& _mat);
+    Matrix<bool, M, N> operator> (T1 _s, const Matrix<T,M,N>& _mat);           // TESTED
 
     // ********************************************************************* //
     // Predefined float vector and matrix types.
@@ -728,8 +738,8 @@ namespace ei {
     /// \param [in] _f Far plane
     Mat4x4 orthographicDX( float _l, float _r, float _b, float _t, float _n, float _f );
 
-	// Include implementation.
-#	include "details/matrix.inl"
+    // Include implementation.
+#   include "details/matrix.inl"
 
     /// \brief Alias for identity<float,2>().
     inline Mat2x2 identity2x2()    { return identity<float,2>(); }
@@ -738,7 +748,7 @@ namespace ei {
     /// \brief Alias for identity<float,4>().
     inline Mat4x4 identity4x4()    { return identity<float,4>(); }             // TESTED
 
-	// Remove helper macros.
-#	undef RESULT_TYPE
+    // Remove helper macros.
+#   undef RESULT_TYPE
 #   undef ENABLE_IF
 }
