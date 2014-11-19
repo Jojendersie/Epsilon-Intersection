@@ -85,6 +85,8 @@ inline Ellipsoid::Ellipsoid(const Box& _box)
 {
     eiAssert( all(_box.max >= _box.min), "Invalid bounding box." );
     center = (_box.max + _box.min) * 0.5f;
-    /// sqrt(3) * side length / 2
-    radii = 0.866025404f * (_box.max - _box.min);
+    /// sqrt(n) * side length / 2, where n is the number of dimensions with
+    /// an extension (side length 0 allows to generate ellipses or rays)
+    Vec3 sideLen = _box.max - _box.min;
+    radii = (sqrt((float)sum(sideLen != 0.0f)) * 0.5f) * sideLen;
 }
