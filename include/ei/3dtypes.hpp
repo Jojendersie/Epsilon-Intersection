@@ -85,6 +85,10 @@ namespace ei {
         Vec3 v1;
         Vec3 v2;
 
+        /// \brief Indexed access to the 3 vertices
+        Vec3& v(int _index);
+        const Vec3& v(int _index) const;
+
         /// \brief Create uninitialized Triangle.
         Triangle() {}
 

@@ -50,6 +50,19 @@ inline Triangle::Triangle( const Vec3& _v0, const Vec3& _v1, const Vec3& _v2 ) :
 }
 
 // ************************************************************************* //
+inline Vec3& Triangle::v(int _index)
+{
+    eiAssertWeak(_index >= 0 && _index < 3, "A triangle only has 3 vertices!");
+    return reinterpret_cast<Vec3*>(this)[_index];
+}
+
+inline const Vec3& Triangle::v(int _index) const
+{
+    eiAssertWeak(_index >= 0 && _index < 3, "A triangle only has 3 vertices!");
+    return reinterpret_cast<const Vec3*>(this)[_index];
+}
+
+// ************************************************************************* //
 inline Plane::Plane(const Vec3& _normal, float _d) :
     n(_normal),
     d(_d)
