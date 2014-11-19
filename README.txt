@@ -16,7 +16,7 @@ All interfaces are declared in "include/ei/<xyz>.hpp" files. You never need to
 include or look into files from the "include/ei/details" or "src" directory.
 
 The hierarchy of header-files is as follows.
-config --- elementarytypes --- matrix -|- 2dtypes --- 2dintersection
-                                       -- 3dtypes --- 3dintersection
+config -- elementarytypes -- matrix -|- 2dtypes -- 2dfunctions -- 2dintersection
+                                     |- 3dtypes -- 3dfunctions -- 3dintersection
 Hence each one includes all its parents. You always need to include only the
 latest one.

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "3dtypes.hpp"
+#include "3dfunctions.hpp"
 
 namespace ei {
 
