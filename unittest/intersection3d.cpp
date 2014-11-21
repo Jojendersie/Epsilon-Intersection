@@ -2,6 +2,7 @@
 #include "unittest.hpp"
 
 #include <iostream>
+#include <vector>
 
 using namespace ei;
 using namespace std;
@@ -51,20 +52,19 @@ template<> const char* name<Box>() { return "Box"; }
 template<class T0, class T1> void performance()
 {
     float perfIndex = 0.0f;
+    uint64 totalTicks = 0;
 #ifdef _DEBUG
     const int PERF_ITERATIONS = 100;
     const int TEST_PER_ITERATION = 100;
 #else
-    const int PERF_ITERATIONS = 10000;
-    const int TEST_PER_ITERATION = 200;
+    const int PERF_ITERATIONS = 5000;
+    const int TEST_PER_ITERATION = 1000;
 #endif
     for(int t = 0; t < PERF_ITERATIONS; ++t)
     {
         // Fill data set for x intersections
-        T0 geo0[TEST_PER_ITERATION];
-        T1 geo1[TEST_PER_ITERATION];
-        Vec<bool, TEST_PER_ITERATION> res;
-        Vec<float, TEST_PER_ITERATION> resDot;
+        std::vector<T0> geo0(TEST_PER_ITERATION);
+        std::vector<T1> geo1(TEST_PER_ITERATION);
         for(int i = 0; i < TEST_PER_ITERATION; ++i)
         {
             random(geo0[i]);
@@ -73,20 +73,23 @@ template<class T0, class T1> void performance()
 
         // Start
         uint64 a = ticks();
+        volatile bool res;
         for(int i = 0; i < TEST_PER_ITERATION; ++i)
-            res[i] = intersects(geo0[i], geo1[i]);
+            res = intersects(geo0[i], geo1[i]);
         uint64 b = ticks();
         // Measure dot products to compare
-        Vec3* source0 = reinterpret_cast<Vec3*>(geo0);
-        Vec3* source1 = reinterpret_cast<Vec3*>(geo1);
-        for(int i = 0; i < TEST_PER_ITERATION; ++i)
-            resDot[i] = dot(source0[i], source1[i]);
+        Vec3* source0 = reinterpret_cast<Vec3*>(geo0.data());
+        Vec3* source1 = reinterpret_cast<Vec3*>(geo1.data());
+        volatile float xres;
+        for(int j = 0; j < 10; ++j)
+            for(int i = 0; i < TEST_PER_ITERATION; ++i)
+                 xres = dot(source0[i], source1[i]);
         uint64 c = ticks();
-        perfIndex += float(b-a)/(c-b);
-        eatMyDummy((float)sum(res));
-        eatMyDummy(sum(resDot));
+        perfIndex += (b-a) * 10.0f / (c-b);
+        totalTicks += b-a;
     }
-    std::cerr << "Performance " << name<T0>() << " <-> " << name<T1>() << ": " << perfIndex/PERF_ITERATIONS << std::endl;
+    std::cerr << "Performance " << name<T0>() << " <-> " << name<T1>() << ": "
+        << perfIndex/PERF_ITERATIONS << " absolute ticks: " << totalTicks / float(PERF_ITERATIONS * TEST_PER_ITERATION) << std::endl;
 }
 
 
@@ -126,6 +129,23 @@ bool test_3dintersections()
         TEST( !intersects( ray3, ell1 ), "ray3 should miss ell1!" );
 
         performance<Ray,Ellipsoid>();
+    }
+
+    // Test box <-> ray intersection
+    {
+        Ray ray0( Vec3(-1.0f, 0.0f, 0.0f), normalize(Vec3(0.5f, 0.5f, 0.0f)) );
+        Ray ray1( Vec3(3.0f, 5.0f, 8.0f), normalize(Vec3(-2.5f, -4.5f, -7.5f)) );
+        Ray ray2( Vec3(1.25f, 1.25f, 1.25f), normalize(Vec3(1.5f, 0.5f, 0.5f)) );
+        Box box0( Vec3(0.0f, 0.0f, 0.0f), Vec3(0.5f, 1.0f, 2.0f) );
+        Box box1( Vec3(1.0f, 1.0f, 1.0f), Vec3(1.5f, 1.5f, 1.5f) );
+        TEST( intersects( ray0, box0 ), "ray0 should hit box0!" );
+        TEST( !intersects( ray0, box1 ), "ray0 should miss box1!" );
+        TEST( intersects( ray1, box0 ), "ray1 should hit box0!" );
+        TEST( !intersects( ray1, box1 ), "ray1 should miss box1!" );
+        TEST( !intersects( ray2, box0 ), "ray2 should miss box0!" );
+        TEST( intersects( ray2, box1 ), "ray2 should hit box0!" );
+
+        performance<Ray,Box>();
     }
 
     return result;
