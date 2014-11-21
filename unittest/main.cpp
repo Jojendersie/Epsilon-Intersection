@@ -6,6 +6,7 @@ bool test_matrix();
 bool test_2dtypes();
 bool test_2dintersections();
 bool test_3dtypes();
+bool test_3dintersections();
 
 int main()
 {
@@ -23,6 +24,9 @@ int main()
 
     if( test_3dtypes() )
         cerr << "Successfully completed: 3D types test." << std::endl;
+
+    if( test_3dintersections() )
+        cerr << "Successfully completed: 3D intersection test." << std::endl;
 
     return 0;
 }

@@ -89,7 +89,7 @@ inline Plane::Plane(const Vec3& _v0, const Vec3& _v1, const Vec3& _v2)
 // ************************************************************************* //
 inline Ellipsoid::Ellipsoid(const Vec3& _center, const Vec3& _radii) :
     center(_center),
-    radii(_radii)
+    radii(max(_radii, Vec3(1e-16f)))
 {
 }
 
@@ -102,4 +102,13 @@ inline Ellipsoid::Ellipsoid(const Box& _box)
     /// an extension (side length 0 allows to generate ellipses or rays)
     Vec3 sideLen = _box.max - _box.min;
     radii = (sqrt((float)sum(sideLen != 0.0f)) * 0.5f) * sideLen;
+    radii = max(radii, Vec3(1e-16f));
+}
+
+// ************************************************************************* //
+inline Ray::Ray(const Vec3& _origin, const Vec3& _direction) :
+    origin(_origin),
+    direction(_direction)
+{
+    eiAssert(approx(lensq(_direction), 1.0f), "Insert a normalized normal!");
 }

@@ -7,7 +7,7 @@ namespace ei {
     // Predeclarations for all types to enable conversion operators.
     struct Sphere;
     struct Plane;
-	struct DOP;
+    struct DOP;
     struct Box;
     struct OBox;
     struct Disc;
@@ -119,19 +119,37 @@ namespace ei {
         Plane(const Vec3& _v0, const Vec3& _v1, const Vec3& _v2);              // TESTED
     };
 
+    /// \brief An axis alignd ellipsoid.
     struct Ellipsoid
     {
         Vec3 center;
-        Vec3 radii;
+        Vec3 radii;         ///< 3 radii unequal 0
 
         /// \brief Create uninitialized Ellipsoid.
         Ellipsoid() {}
 
         /// \brief Create an Ellipsoid from center and radii.
+        /// \param [in] _radii The scaling radii. If a radius is <= 1e-30f the
+        ///     constructor replaces it with 1e-30f for reasons of stability.
         Ellipsoid(const Vec3& _center, const Vec3& _radii);                    // TESTED
 
         /// \brief Create bounding Ellipsoid from axis aligned bounding box.
         Ellipsoid(const Box& _box);                                            // TESTED
+    };
+
+    struct Ray
+    {
+        Vec3 origin;        ///< Origin of the ray
+        Vec3 direction;     ///< Normlized direction vector
+
+        /// \brief Create uninitialized Ray.
+        Ray() {}
+
+        /// \brief Create Ray from origin and direction.
+        /// \param [in] _direction A normalized direction vector.
+        ///     The method does no normalization because it could
+        ///     be a redundant operation.
+        Ray(const Vec3& _origin, const Vec3& _direction);
     };
 
     // Include inline implementations
