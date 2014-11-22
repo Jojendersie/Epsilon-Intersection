@@ -473,17 +473,17 @@ namespace ei {
     // ********************************************************************* //
     /// \brief Round all components towards negative infinity
     template<typename T, unsigned M, unsigned N>
-    Matrix<T,M,N> floor(const Matrix<T,M,N>& _mat);
+    Matrix<typename details::Int<sizeof(T)>::stype,M,N> floor(const Matrix<T,M,N>& _mat);
 
     // ********************************************************************* //
     /// \brief Round all components towards negative infinity
     template<typename T, unsigned M, unsigned N>
-    Matrix<T,M,N> ceil(const Matrix<T,M,N>& _mat);
+    Matrix<typename details::Int<sizeof(T)>::stype,M,N> ceil(const Matrix<T,M,N>& _mat);
 
     // ********************************************************************* //
     /// \brief Round all components towards next number (x.5 rounds up)
     template<typename T, unsigned M, unsigned N>
-    Matrix<T,M,N> round(const Matrix<T,M,N>& _mat);
+    Matrix<typename details::Int<sizeof(T)>::stype,M,N> round(const Matrix<T,M,N>& _mat);
 
     // ********************************************************************* //
     /// \brief Signed sum of all components.

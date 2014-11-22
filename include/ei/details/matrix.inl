@@ -919,9 +919,9 @@ inline Matrix<T,M,N> clamp(const Matrix<T,M,N>& _mat,
 
 // ********************************************************************* //
 template<typename T, unsigned M, unsigned N>
-inline Matrix<T,M,N> floor(const Matrix<T,M,N>& _mat)
+inline Matrix<typename details::Int<sizeof(T)>::stype,M,N> floor(const Matrix<T,M,N>& _mat)
 {
-    Matrix<T,M,N> result;
+    Matrix<typename details::Int<sizeof(T)>::stype,M,N> result;
     for(uint i = 0; i < N * M; ++i)
         result[i] = floor(_mat[i]);
     return result;
@@ -929,9 +929,9 @@ inline Matrix<T,M,N> floor(const Matrix<T,M,N>& _mat)
 
 // ********************************************************************* //
 template<typename T, unsigned M, unsigned N>
-inline Matrix<T,M,N> ceil(const Matrix<T,M,N>& _mat)
+inline Matrix<typename details::Int<sizeof(T)>::stype,M,N> ceil(const Matrix<T,M,N>& _mat)
 {
-    Matrix<T,M,N> result;
+    Matrix<typename details::Int<sizeof(T)>::stype,M,N> result;
     for(uint i = 0; i < N * M; ++i)
         result[i] = ceil(_mat[i]);
     return result;
@@ -939,9 +939,9 @@ inline Matrix<T,M,N> ceil(const Matrix<T,M,N>& _mat)
 
 // ********************************************************************* //
 template<typename T, unsigned M, unsigned N>
-inline Matrix<T,M,N> round(const Matrix<T,M,N>& _mat)
+inline Matrix<typename details::Int<sizeof(T)>::stype,M,N> round(const Matrix<T,M,N>& _mat)
 {
-    Matrix<T,M,N> result;
+    Matrix<typename details::Int<sizeof(T)>::stype,M,N> result;
     for(uint i = 0; i < N * M; ++i)
         result[i] = round(_mat[i]);
     return result;

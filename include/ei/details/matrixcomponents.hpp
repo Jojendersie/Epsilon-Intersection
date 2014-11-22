@@ -1,12 +1,5 @@
 namespace details {
 
-	/// \brief Dummy class to detect correct types for matrix <-> matrix
-	///     and matrix <-> scalar operations.
-	/// \details The overloading mechanism fails when both types of operations
-	///     are templated, because the matrix <-> scalar is chosen even if
-	///     both operants are matrices.
-	class MatrixType	{};
-
 	/// \brief Specialized component access for small vectors and matrices.
 	/// \details This is the fallback for larger vectors without single component
 	///		access.
