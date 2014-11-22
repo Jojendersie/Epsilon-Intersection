@@ -64,6 +64,29 @@ inline bool approx(T _x0, T _x1, float _epsilon)
 }
 
 // ************************************************************************* //
+template<typename T>
+inline bool floor(T _x)
+{
+    int r=(int)a;
+    return r - (int)((a<0) && (a-r!=0.0f));
+}
+
+// ************************************************************************* //
+template<typename T>
+inline bool ceil(T _x)
+{
+    int r=(int)a;
+    return r + (int)((a>0) && (a-r!=0.0f));
+}
+
+// ************************************************************************* //
+template<typename T>
+inline bool round(T _x)
+{
+    return ceil(_x + static_cast<T>(0.5));
+}
+
+// ************************************************************************* //
 template<typename T0, typename T1>
 decltype(std::declval<T0>() * std::declval<T1>()) lerp(T0 _x0, T0 _x1, T1 _t)
 {

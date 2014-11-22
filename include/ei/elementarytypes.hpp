@@ -118,6 +118,21 @@ namespace ei {
     bool approx(T _x0, T _x1, float _epsilon = 1e-6f);                         // TESTED
 
     // ********************************************************************* //
+    /// \brief Round value towards negative infinity.
+    template<typename T>
+    T floor(T _x);
+
+    // ********************************************************************* //
+    /// \brief Round value towards positive infinity.
+    template<typename T>
+    T ceil(T _x);
+
+    // ********************************************************************* //
+    /// \brief Round value towards next integral number (0.5 rounds up).
+    template<typename T>
+    T round(T _x);
+
+    // ********************************************************************* //
     /// \brief Linear interpolation.
     /// \details There are two formulations:
     ///    * x * (1 - t) + y * t

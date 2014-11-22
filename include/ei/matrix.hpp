@@ -471,6 +471,21 @@ namespace ei {
     Matrix<T,M,N> saturate(const Matrix<T,M,N>& _mat)   { return clamp(_mat, static_cast<T>(0), static_cast<T>(1)); }  // TESTED
 
     // ********************************************************************* //
+    /// \brief Round all components towards negative infinity
+    template<typename T, unsigned M, unsigned N>
+    Matrix<T,M,N> floor(const Matrix<T,M,N>& _mat);
+
+    // ********************************************************************* //
+    /// \brief Round all components towards negative infinity
+    template<typename T, unsigned M, unsigned N>
+    Matrix<T,M,N> ceil(const Matrix<T,M,N>& _mat);
+
+    // ********************************************************************* //
+    /// \brief Round all components towards next number (x.5 rounds up)
+    template<typename T, unsigned M, unsigned N>
+    Matrix<T,M,N> round(const Matrix<T,M,N>& _mat);
+
+    // ********************************************************************* //
     /// \brief Signed sum of all components.
     /// \returns Scalar sum of all values.
     template<typename T, unsigned M, unsigned N>
