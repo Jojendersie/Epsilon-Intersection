@@ -5,19 +5,19 @@
 namespace ei {
 
     /// \brief Does a point lie inside an ellipsoid/on the boundary?
-    /// \details Performance index: 8.9
+    /// \details Performance index: 5.68
     /// \return true if the point is inside or on the boundary.
     bool intersects( const Vec3& _point, const Ellipsoid& _ellipsoid );        // TESTED
     inline bool intersects( const Ellipsoid& _ellipsoid, const Vec3& _point )  { return intersects( _point, _ellipsoid ); }
 
     /// \brief Do a ray and an ellipsoid intersect or touch?
-    /// \details Performance index: 12.8
+    /// \details Performance index: 23.1
     /// \return true if there is at least one comon point between ray and ellipsoid
     bool intersects( const Ray& _ray, const Ellipsoid& _ellipsoid );           // TESTED
     inline bool intersects( const Ellipsoid& _ellipsoid, const Ray& _ray )  { return intersects( _ray, _ellipsoid ); }
 
     /// \brief Get the distance of the first intersection if hit.
-    /// \details Performance index: 14.1
+    /// \details Performance index: 23.9
     /// \param [out] _distance The ray parameter (distance) for the first
     ///     intersection point in positive direction.
     ///

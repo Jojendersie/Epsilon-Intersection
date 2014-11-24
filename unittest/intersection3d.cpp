@@ -164,7 +164,7 @@ bool test_3dintersections()
         TEST( intersects( ray0.origin, ell1 ), "ray0.origin should be in ell1!" );
         TEST( intersects( Vec3(0.0f, 0.0f, 0.0f), ell1 ), "0 should be in ell1!" );
         // The next one is numerical to unstable
-        //TEST( intersects( ray1, ell0 ), "ray1 should hit ell0!" );
+        TEST( intersects( ray1, ell0 ), "ray1 should hit ell0!" );
         TEST( intersects( ray1, ell1 ), "ray1 should hit ell1!" );
         TEST( !intersects( ray2, ell0 ), "ray2 should miss ell0!" );
         TEST( intersects( ray2, ell1 ), "ray2 should hit ell1!" );

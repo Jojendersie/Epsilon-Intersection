@@ -6,7 +6,13 @@ namespace ei {
     bool intersects( const Vec3& _point, const Ellipsoid& _ellipsoid )
     {
         // Use ellipsoid equation.
-        return lensq(Vec<double,3>((_point - _ellipsoid.center) / _ellipsoid.radii)) <= 1.0;
+        //return lensq(Vec<double,3>((_point - _ellipsoid.center) / _ellipsoid.radii)) <= 1.0;
+        //return lensq((_point - _ellipsoid.center) / _ellipsoid.radii) <= 1.0;
+        Vec3 o = (_point - _ellipsoid.center);
+        if( _ellipsoid.radii.x != 0.0f ) o.x /= _ellipsoid.radii.x; else o.x *= 3.402823466e+38f;
+        if( _ellipsoid.radii.y != 0.0f ) o.y /= _ellipsoid.radii.y; else o.y *= 3.402823466e+38f;
+        if( _ellipsoid.radii.z != 0.0f ) o.z /= _ellipsoid.radii.z; else o.z *= 3.402823466e+38f;
+        return double(o.x*o.x) + double(o.y*o.y) + double(o.z*o.z) <= 1.0;
         // The following is a try to get a more staple solution without
         // addition, but it is less stable in the end.
         //Vec3 t = (_point - _ellipsoid.center) / _ellipsoid.radii;
@@ -20,10 +26,11 @@ namespace ei {
         Vec3 o = _ray.origin - _ellipsoid.center;
 
         // Go to sphere for numerical stability
-        /*float r = max(_ellipsoid.radii);
+        float r = max(_ellipsoid.radii);
         float t = dot(o, _ray.direction);
         t = max(0.0f, - t - r);
-        o += _ray.direction * t;//*/
+        if(t > 0.0f)
+            o += _ray.direction * t;//*/
 
         /*Vec3 scale = max(Vec3(0.0f), 1.0f - _ellipsoid.radii) * _ray.direction;
         scale = Vec3(scale.y + scale.z, scale.x + scale.z, scale.x + scale.y);
@@ -34,7 +41,7 @@ namespace ei {
         float odoto = dot(o, o);
 
         // Test if quadratic equation for the hit point has a solution
-        Vec3 d = _ray.direction / _ellipsoid.radii;//max(_ellipsoid.radii, Vec3(1.0f));
+        Vec3 d = _ray.direction / _ellipsoid.radii;
         float odotd = dot(o, d);
         float ddotd = dot(d, d);
         float phalf = odotd / ddotd;
@@ -47,6 +54,13 @@ namespace ei {
     {
         // Translate to origin
         Vec3 o = _ray.origin - _ellipsoid.center;
+
+        // Go to sphere for numerical stability
+        float r = max(_ellipsoid.radii);
+        float t = dot(o, _ray.direction);
+        t = max(0.0f, - t - r);
+        if(t > 0.0f)
+            o += _ray.direction * t;
 
         // Scale system
         o /= _ellipsoid.radii;
@@ -61,6 +75,7 @@ namespace ei {
         float rad = phalf * phalf - q;
         if( rad < 0.0f ) return false;
         rad = sqrt(rad);
+        phalf -= t;
         _distance = (-phalf - rad < 0.0f) ? (-phalf + rad) : (-phalf - rad);
         return _distance >= 0.0f;
     }

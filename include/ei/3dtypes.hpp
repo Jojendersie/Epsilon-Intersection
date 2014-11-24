@@ -126,7 +126,7 @@ namespace ei {
     struct Ellipsoid
     {
         Vec3 center;
-        Vec3 radii;         ///< 3 radii unequal 0
+        Vec3 radii;         ///< 3 radii greater 0
 
         /// \brief Create uninitialized Ellipsoid.
         Ellipsoid() {}
