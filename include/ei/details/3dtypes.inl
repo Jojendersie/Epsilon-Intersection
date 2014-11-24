@@ -42,6 +42,14 @@ inline Box::Box( const Triangle& _triangle ) :
 }
 
 // ************************************************************************* //
+inline Box::Box( const Ellipsoid& _ellipsoid ) :
+    min(_ellipsoid.center - _ellipsoid.radii),
+    max(_ellipsoid.center + _ellipsoid.radii)
+{
+    eiAssertWeak(all(_ellipsoid.radii >= 0.0f), "Invalid ellipsoid!");
+}
+
+// ************************************************************************* //
 inline Triangle::Triangle( const Vec3& _v0, const Vec3& _v1, const Vec3& _v2 ) :
     v0(_v0),
     v1(_v1),

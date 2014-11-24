@@ -66,16 +66,19 @@ namespace ei {
         Box() {}
 
         /// \brief Create from minimal and maximal coordinates
-        Box( const Vec3& _min, const Vec3& _max );
+        Box( const Vec3& _min, const Vec3& _max );                             // TESTED
 
         /// \brief Get the smallest box containing two boxes.
-        Box( const Box& _box0, const Box& _box1 );
+        Box( const Box& _box0, const Box& _box1 );                             // TESTED
 
         /// \brief Create the bounding box for a sphere.
-        explicit Box( const Sphere& _sphere );
+        explicit Box( const Sphere& _sphere );                                 // TESTED
 
         /// \brief Create the bounding box for a triangle.
-        explicit Box( const Triangle& _triangle );
+        explicit Box( const Triangle& _triangle );                             // TESTED
+
+        /// \brief Create the bounding box for an ellipsoid
+        explicit Box( const Ellipsoid& _ellipsoid );                           // TESTED
     };
 
     /// \brief A triangle in 3D space.
@@ -134,7 +137,7 @@ namespace ei {
         Ellipsoid(const Vec3& _center, const Vec3& _radii);                    // TESTED
 
         /// \brief Create bounding Ellipsoid from axis aligned bounding box.
-        Ellipsoid(const Box& _box);                                            // TESTED
+        explicit Ellipsoid(const Box& _box);                                   // TESTED
     };
 
     struct Ray

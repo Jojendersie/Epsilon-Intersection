@@ -1,4 +1,4 @@
-#include "ei/3dfunctions.hpp"
+﻿#include "ei/3dfunctions.hpp"
 #include "ei/3dintersection.hpp"
 #include "unittest.hpp"
 
@@ -51,6 +51,27 @@ bool test_3dtypes()
         TEST( intersects( box.min, ell0 ), "The bounding box min must be contained in the ellipsoid!" );
         TEST( intersects( box.max, ell0 ), "The bounding box max must be contained in the ellipsoid!" );
         TEST( !intersects( box.max + 1e-6f, ell0 ), "The point must be outside the ellipsoid!" );
+    }
+
+    // Test box construction
+    {
+        Box box0( Vec3(-2.0f, -1.0f, -1.0f), Vec3(0.0f, 0.0f, 0.0f) );
+        Box box1( Vec3(3.0f), Vec3(7.0f) );
+        Ellipsoid ell( Vec3(-1.0f, -0.5f, -0.5f), Vec3(1.0f, 0.5f, 0.5f) );
+        Triangle tri( Vec3(-2.0f, -0.5f, -0.5f), Vec3(0.0, -1.0f, 0.0f), Vec3(0.0f, 0.0f, -1.0f) );
+        Sphere sph( Vec3(5.0f), 2.0f );
+        Box box2( ell );
+        Box box3( tri );
+        Box box4( sph );
+        Box box5( box0, box1 );
+        TEST( all(box0.min == box2.min), "Ellipsoid bounding min is wrong!" );
+        TEST( all(box0.max == box2.max), "Ellipsoid bounding min is wrong!" );
+        TEST( all(box0.min == box3.min), "Triangle bounding min is wrong!" );
+        TEST( all(box0.max == box3.max), "Triangle bounding max is wrong!" );
+        TEST( all(box1.min == box4.min), "Sphere bounding min is wrong!" );
+        TEST( all(box1.max == box4.max), "Sphere bounding max is wrong!" );
+        TEST( all(box5.min == Vec3(-2.0f, -1.0f, -1.0f)), "2Box bounding min is wrong!" );
+        TEST( all(box5.max == Vec3(7.0f)), "2Box bounding max is wrong!" );
     }
 
     return result;
