@@ -188,6 +188,7 @@ bool test_3dintersections()
         Ray ray0( Vec3(-1.0f, 0.0f, 0.0f), normalize(Vec3(0.5f, 0.5f, 0.0f)) );
         Ray ray1( Vec3(3.0f, 5.0f, 8.0f), normalize(Vec3(-2.5f, -4.5f, -7.5f)) );
         Ray ray2( Vec3(1.25f, 1.25f, 1.25f), normalize(Vec3(1.5f, 0.5f, 0.5f)) );
+        Ray ray3( Vec3(1.25f, 1.25f, 1.25f), normalize(Vec3(0.0f, 1.0f, 0.0f)) );
         Box box0( Vec3(0.0f, 0.0f, 0.0f), Vec3(0.5f, 1.0f, 2.0f) );
         Box box1( Vec3(1.0f, 1.0f, 1.0f), Vec3(1.5f, 1.5f, 1.5f) );
         TEST( intersects( ray0, box0 ), "ray0 should hit box0!" );
@@ -195,9 +196,15 @@ bool test_3dintersections()
         TEST( intersects( ray1, box0 ), "ray1 should hit box0!" );
         TEST( !intersects( ray1, box1 ), "ray1 should miss box1!" );
         TEST( !intersects( ray2, box0 ), "ray2 should miss box0!" );
-        TEST( intersects( ray2, box1 ), "ray2 should hit box0!" );
+        TEST( intersects( ray2, box1 ), "ray2 should hit box1!" );
+        TEST( intersects( ray3, box1 ), "ray3 should hit box1!" );
+
+        float d;
+        TEST( intersects( ray3, box1, d ) && d == 0.25f, "ray3 should hit box1 with a distance of 0.25f!" );
+        TEST( intersects( ray0, box0, d ) && d == sqrt(2.0f), "ray0 should hit box0 with a distance of 0.25f!" );
 
         performance<Ray,Box>();
+        performanceRet1f<Ray,Box>();
     }
 
     return result;

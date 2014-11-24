@@ -84,4 +84,25 @@ namespace ei {
         tmax = min(tmax, max(t0, t1));
         return (tmax >= 0.0f) && (tmin <= tmax);
     }
+
+    // ********************************************************************* //
+    bool intersects( const Ray& _ray, const Box& _box, float& _distance )
+    {
+        float t0 = (_box.min.x - _ray.origin.x) / _ray.direction.x;
+        float t1 = (_box.max.x - _ray.origin.x) / _ray.direction.x;
+        float tmin = min(t0, t1);
+        float tmax = max(t0, t1);
+        if(tmax < 0.0f) return false;
+        t0 = (_box.min.y - _ray.origin.y) / _ray.direction.y;
+        t1 = (_box.max.y - _ray.origin.y) / _ray.direction.y;
+        tmin = max(tmin, min(t0, t1));
+        tmax = min(tmax, max(t0, t1));
+        if(tmax < 0.0f || tmin > tmax) return false;
+        t0 = (_box.min.z - _ray.origin.z) / _ray.direction.z;
+        t1 = (_box.max.z - _ray.origin.z) / _ray.direction.z;
+        tmin = max(tmin, min(t0, t1));
+        tmax = min(tmax, max(t0, t1));
+        _distance = tmin < 0.0f ? tmax : tmin;
+        return (tmax >= 0.0f) && (tmin <= tmax);
+    }
 }
