@@ -16,6 +16,16 @@ namespace ei {
     bool intersects( const Ray& _ray, const Ellipsoid& _ellipsoid );           // TESTED
     inline bool intersects( const Ellipsoid& _ellipsoid, const Ray& _ray )  { return intersects( _ray, _ellipsoid ); }
 
+    /// \brief Get the distance of the first intersection if hit.
+    /// \details Performance index: 14.1
+    /// \param [out] _distance The ray parameter (distance) for the first
+    ///     intersection point in positive direction.
+    ///
+    ///     If the ray starts inside the exit point on surface is returned.
+    /// \return true if there is at least one comon point between ray and ellipsoid
+    bool intersects( const Ray& _ray, const Ellipsoid& _ellipsoid, float& _distance );
+    inline bool intersects( const Ellipsoid& _ellipsoid, const Ray& _ray, float& _distance )  { return intersects( _ray, _ellipsoid, _distance ); }
+
     /// \brief Do a ray and a box intersect or touch?
     /// \details Performance index: 17.1
     /// \return true if there is at least one comon point between ray and box

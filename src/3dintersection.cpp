@@ -32,16 +32,37 @@ namespace ei {
         // Scale system
         o /= _ellipsoid.radii;
         float odoto = dot(o, o);
-        // Origin inside?
-        if(odoto <= 1.0f) return true;
 
         // Test if quadratic equation for the hit point has a solution
         Vec3 d = _ray.direction / _ellipsoid.radii;//max(_ellipsoid.radii, Vec3(1.0f));
         float odotd = dot(o, d);
         float ddotd = dot(d, d);
         float phalf = odotd / ddotd;
-        float q = odoto / ddotd;
+        float q = (odoto - 1.0f) / ddotd;
         return phalf * phalf - q >= 0.0f;
+    }
+
+    // ********************************************************************* //
+    bool intersects( const Ray& _ray, const Ellipsoid& _ellipsoid, float& _distance )
+    {
+        // Translate to origin
+        Vec3 o = _ray.origin - _ellipsoid.center;
+
+        // Scale system
+        o /= _ellipsoid.radii;
+        float odoto = dot(o, o);
+
+        // Test if quadratic equation for the hit point has a solution
+        Vec3 d = _ray.direction / _ellipsoid.radii;//max(_ellipsoid.radii, Vec3(1.0f));
+        float odotd = dot(o, d);
+        float ddotd = dot(d, d);
+        float phalf = odotd / ddotd;
+        float q = (odoto - 1.0f) / ddotd;
+        float rad = phalf * phalf - q;
+        if( rad < 0.0f ) return false;
+        rad = sqrt(rad);
+        _distance = (-phalf - rad < 0.0f) ? (-phalf + rad) : (-phalf - rad);
+        return _distance >= 0.0f;
     }
 
     // ********************************************************************* //

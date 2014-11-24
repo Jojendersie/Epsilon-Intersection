@@ -47,12 +47,6 @@ template<> const char* name<Ray>() { return "Ray"; }
 template<> const char* name<Ellipsoid>() { return "Ellipsoid"; }
 template<> const char* name<Box>() { return "Box"; }
 
-// ************************************************************************* //
-// Benchmark for basic intersection types
-template<class T0, class T1> void performance()
-{
-    float perfIndex = 0.0f;
-    uint64 totalTicks = 0;
 #ifdef _DEBUG
     const int PERF_ITERATIONS = 100;
     const int TEST_PER_ITERATION = 100;
@@ -60,6 +54,13 @@ template<class T0, class T1> void performance()
     const int PERF_ITERATIONS = 5000;
     const int TEST_PER_ITERATION = 1000;
 #endif
+
+// ************************************************************************* //
+// Benchmark for basic intersection types
+template<class T0, class T1> void performance()
+{
+    float perfIndex = 0.0f;
+    uint64 totalTicks = 0;
     for(int t = 0; t < PERF_ITERATIONS; ++t)
     {
         // Fill data set for x intersections
@@ -89,6 +90,48 @@ template<class T0, class T1> void performance()
         totalTicks += b-a;
     }
     std::cerr << "Performance " << name<T0>() << " <-> " << name<T1>() << ": "
+        << perfIndex/PERF_ITERATIONS << " absolute ticks: " << totalTicks / float(PERF_ITERATIONS * TEST_PER_ITERATION) << std::endl;
+}
+
+// ************************************************************************* //
+// Benchmark for basic intersection types with single float return value
+template<class T0, class T1> void performanceRet1f()
+{
+    float perfIndex = 0.0f;
+    uint64 totalTicks = 0;
+    for(int t = 0; t < PERF_ITERATIONS; ++t)
+    {
+        // Fill data set for x intersections
+        std::vector<T0> geo0(TEST_PER_ITERATION);
+        std::vector<T1> geo1(TEST_PER_ITERATION);
+        for(int i = 0; i < TEST_PER_ITERATION; ++i)
+        {
+            random(geo0[i]);
+            random(geo1[i]);
+        }
+
+        // Start
+        uint64 a = ticks();
+        volatile bool res;
+        float rt;
+        volatile float eat;
+        for(int i = 0; i < TEST_PER_ITERATION; ++i) {
+            res = intersects(geo0[i], geo1[i], rt);
+            eat = rt;
+        }
+        uint64 b = ticks();
+        // Measure dot products to compare
+        Vec3* source0 = reinterpret_cast<Vec3*>(geo0.data());
+        Vec3* source1 = reinterpret_cast<Vec3*>(geo1.data());
+        volatile float xres;
+        for(int j = 0; j < 10; ++j)
+            for(int i = 0; i < TEST_PER_ITERATION; ++i)
+                 xres = dot(source0[i], source1[i]);
+        uint64 c = ticks();
+        perfIndex += (b-a) * 10.0f / (c-b);
+        totalTicks += b-a;
+    }
+    std::cerr << "Performance " << name<T0>() << " <-> " << name<T1>() << " with ret1f: "
         << perfIndex/PERF_ITERATIONS << " absolute ticks: " << totalTicks / float(PERF_ITERATIONS * TEST_PER_ITERATION) << std::endl;
 }
 
@@ -128,7 +171,16 @@ bool test_3dintersections()
         TEST( !intersects( ray3, ell0 ), "ray3 should miss ell0!" );
         TEST( !intersects( ray3, ell1 ), "ray3 should miss ell1!" );
 
+        float d;
+        TEST( intersects( ray0, ell1, d ), "ray0 should hit ell1!" );
+        TEST( intersects( ray0.origin + ray0.direction * (d-1e-6f), ell1 ), "Hit point outside ell1!" );
+        TEST( !intersects( ray0.origin + ray0.direction * (d+1e-6f), ell1 ), "Point should be outside ell1!" );
+        TEST( intersects( ray2, ell1, d ), "ray2 should hit ell1!" );
+        TEST( intersects( ray2.origin + ray2.direction * (d+1e-6f), ell1 ), "Hit point outside ell1!" );
+        TEST( !intersects( ray2.origin + ray2.direction * (d-1e-6f), ell1 ), "Point should be outside ell1!" );
+
         performance<Ray,Ellipsoid>();
+        performanceRet1f<Ray,Ellipsoid>();
     }
 
     // Test box <-> ray intersection
