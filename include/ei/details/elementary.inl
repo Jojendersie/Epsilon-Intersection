@@ -64,6 +64,29 @@ inline bool approx(T _x0, T _x1, float _epsilon)
 }
 
 // ************************************************************************* //
+template<typename T, class>
+inline typename details::Int<sizeof(T)>::stype floor(T _x)
+{
+    typename details::Int<sizeof(T)>::stype r = static_cast<typename details::Int<sizeof(T)>::stype>(_x);
+    return r - static_cast<typename details::Int<sizeof(T)>::stype>((_x<static_cast<T>(0)) && (_x-r!=static_cast<T>(0)));
+}
+
+// ************************************************************************* //
+template<typename T, class>
+inline typename details::Int<sizeof(T)>::stype ceil(T _x)
+{
+    typename details::Int<sizeof(T)>::stype r = static_cast<typename details::Int<sizeof(T)>::stype>(_x);
+    return r + static_cast<typename details::Int<sizeof(T)>::stype>((_x>static_cast<T>(0)) && (_x-r!=static_cast<T>(0)));
+}
+
+// ************************************************************************* //
+template<typename T, class>
+inline typename details::Int<sizeof(T)>::stype round(T _x)
+{
+    return floor(_x + static_cast<T>(0.5));
+}
+
+// ************************************************************************* //
 template<typename T0, typename T1>
 decltype(std::declval<T0>() * std::declval<T1>()) lerp(T0 _x0, T0 _x1, T1 _t)
 {

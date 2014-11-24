@@ -38,6 +38,15 @@ namespace ei {
 }
 #endif
 
+namespace details {
+	/// \brief Dummy class to detect correct types for matrix <-> matrix
+	///     and matrix <-> scalar operations.
+	/// \details The overloading mechanism fails when both types of operations
+	///     are templated, because the matrix <-> scalar is chosen even if
+	///     both operants are matrices.
+	class MatrixType	{};
+}
+
 namespace ei {
     // ********************************************************************* //
     //                             MATH CONSTANTS                            //
@@ -116,6 +125,21 @@ namespace ei {
     /// \returns true if the difference is less or equal than _epsilon.
     template<typename T>
     bool approx(T _x0, T _x1, float _epsilon = 1e-6f);                         // TESTED
+
+    // ********************************************************************* //
+    /// \brief Round value towards negative infinity.
+    template<typename T, class = typename std::enable_if<!std::is_base_of<details::MatrixType, T>::value, class Dummy>::type>
+    typename details::Int<sizeof(T)>::stype floor(T _x);
+
+    // ********************************************************************* //
+    /// \brief Round value towards positive infinity.
+    template<typename T, class = typename std::enable_if<!std::is_base_of<details::MatrixType, T>::value, class Dummy>::type>
+    typename details::Int<sizeof(T)>::stype ceil(T _x);
+
+    // ********************************************************************* //
+    /// \brief Round value towards next integral number (0.5 rounds up).
+    template<typename T, class = typename std::enable_if<!std::is_base_of<details::MatrixType, T>::value, class Dummy>::type>
+    typename details::Int<sizeof(T)>::stype round(T _x);
 
     // ********************************************************************* //
     /// \brief Linear interpolation.

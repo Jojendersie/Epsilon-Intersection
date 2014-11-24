@@ -917,6 +917,36 @@ inline Matrix<T,M,N> clamp(const Matrix<T,M,N>& _mat,
     return result;
 }
 
+// ********************************************************************* //
+template<typename T, unsigned M, unsigned N>
+inline Matrix<typename details::Int<sizeof(T)>::stype,M,N> floor(const Matrix<T,M,N>& _mat)
+{
+    Matrix<typename details::Int<sizeof(T)>::stype,M,N> result;
+    for(uint i = 0; i < N * M; ++i)
+        result[i] = floor(_mat[i]);
+    return result;
+}
+
+// ********************************************************************* //
+template<typename T, unsigned M, unsigned N>
+inline Matrix<typename details::Int<sizeof(T)>::stype,M,N> ceil(const Matrix<T,M,N>& _mat)
+{
+    Matrix<typename details::Int<sizeof(T)>::stype,M,N> result;
+    for(uint i = 0; i < N * M; ++i)
+        result[i] = ceil(_mat[i]);
+    return result;
+}
+
+// ********************************************************************* //
+template<typename T, unsigned M, unsigned N>
+inline Matrix<typename details::Int<sizeof(T)>::stype,M,N> round(const Matrix<T,M,N>& _mat)
+{
+    Matrix<typename details::Int<sizeof(T)>::stype,M,N> result;
+    for(uint i = 0; i < N * M; ++i)
+        result[i] = round(_mat[i]);
+    return result;
+}
+
 // ************************************************************************* //
 template<typename T, unsigned M, unsigned N>
 inline decltype(std::declval<T>() + std::declval<T>()) sum(const Matrix<T,M,N>& _mat0)

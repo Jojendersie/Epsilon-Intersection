@@ -6,7 +6,10 @@ namespace details {
 	///
 	///		The DUMMY parameter avoids the creation of two equal
 	///		specializations in case one or multiple types have the same size.
-	template <int BYTES, int DUMMY = 0> struct Int;
+	template <int BYTES, int DUMMY = 0> struct Int
+    {
+    };
+
 	template <> struct Int<sizeof(char)>
 	{
 		typedef signed char stype;
