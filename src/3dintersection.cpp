@@ -76,8 +76,8 @@ namespace ei {
         if( rad < 0.0f ) return false;
         rad = sqrt(rad);
         phalf -= t;
-        _distance = (-phalf - rad < 0.0f) ? (-phalf + rad) : (-phalf - rad);
-        return _distance >= 0.0f;
+        _distance = max(-phalf - rad, 0.0f);//(-phalf - rad < 0.0f) ? (-phalf + rad) : (-phalf - rad);
+        return -phalf + rad >= 0.0f;
     }
 
     // ********************************************************************* //
@@ -98,6 +98,13 @@ namespace ei {
         tmin = max(tmin, min(t0, t1));
         tmax = min(tmax, max(t0, t1));
         return (tmax >= 0.0f) && (tmin <= tmax);
+        /*Vec3 tbot = (_box.min - _ray.origin) / _ray.direction;
+        Vec3 ttop = (_box.max - _ray.origin) / _ray.direction;
+        Vec3 tmin = min(ttop, tbot);
+        Vec3 tmax = max(ttop, tbot);
+        float firstHit = max(0.0f, max(tmin));
+        float lastHit = min(tmax);
+        return firstHit <= lastHit;*/
     }
 
     // ********************************************************************* //
@@ -117,7 +124,7 @@ namespace ei {
         t1 = (_box.max.z - _ray.origin.z) / _ray.direction.z;
         tmin = max(tmin, min(t0, t1));
         tmax = min(tmax, max(t0, t1));
-        _distance = tmin < 0.0f ? tmax : tmin;
-        return (tmax >= 0.0f) && (tmin <= tmax);
+        _distance = max(tmin, 0.0f);//tmin < 0.0f ? tmax : tmin;
+        return tmin <= tmax;
     }
 }

@@ -21,7 +21,7 @@ namespace ei {
     /// \param [out] _distance The ray parameter (distance) for the first
     ///     intersection point in positive direction.
     ///
-    ///     If the ray starts inside the exit point on surface is returned.
+    ///     If the ray starts inside 0 is returned.
     /// \return true if there is at least one comon point between ray and ellipsoid
     bool intersects( const Ray& _ray, const Ellipsoid& _ellipsoid, float& _distance );
     inline bool intersects( const Ellipsoid& _ellipsoid, const Ray& _ray, float& _distance )  { return intersects( _ray, _ellipsoid, _distance ); }
@@ -37,7 +37,8 @@ namespace ei {
     /// \param [out] _distance The ray parameter (distance) for the first
     ///     intersection point in positive direction.
     ///
-    ///     If the ray starts inside the exit point on surface is returned.    /// \return true if there is at least one comon point between ray and box
+    ///     If the ray starts inside 0 is returned.
+    /// \return true if there is at least one comon point between ray and box
     bool intersects( const Ray& _ray, const Box& _box, float& _distance );
     inline bool intersects( const Box& _box, const Ray& _ray, float& _distance )  { return intersects( _ray, _box, _distance ); }
 }
