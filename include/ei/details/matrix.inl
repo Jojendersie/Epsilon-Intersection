@@ -73,6 +73,17 @@ Matrix<T, M, N>::Matrix(T _s0, T _s1, T _s2, T _s3)
 // ************************************************************************* //
 template<typename T, uint M, uint N>
 template<class>
+Matrix<T, M, N>::Matrix(T _s0, T _s1, T _s2, T _s3, T _s4)
+{
+    static_assert(M * N == 5, "Constructor should not exist!");
+    m_data[0] = _s0;  m_data[1] = _s1;
+    m_data[2] = _s2;  m_data[3] = _s3;
+    m_data[4] = _s4;
+}
+
+// ************************************************************************* //
+template<typename T, uint M, uint N>
+template<class>
 Matrix<T, M, N>::Matrix(T _s0, T _s1, T _s2, T _s3, T _s4, T _s5)
 {
     static_assert(M * N == 6, "Constructor should not exist!");
@@ -1133,6 +1144,53 @@ Matrix<T,1,N+1> homo( const Matrix<T,1,N>& _v0 )
         result[i] = _v0[i];
     result[N] = T(1);
     return result;
+}
+
+// ********************************************************************* //
+template<typename T, unsigned N>
+Vec<T,N> sphericalCoords( const Vec<T,N>& _v0 )
+{
+    static_assert(N >= 2, "In 1D cartesian and spherical coordinates are the same!");
+    Vec<T,N> result;
+    // Accumulate the squared length over the iterations
+    result[0] = sq(_v0[N-1]) + sq(_v0[N-2]);
+    result[N-1] = atan2(_v0[N-1], _v0[N-2]);
+    if(result[N-1] < 0.0f) result[N-1] += 2.0f * PI;
+   // if( _v0[N-1] < 0.0f ) result[N-1] = 2.0f * PI - result[N-1];
+    for(uint i = 2; i < N; ++i)
+    {
+        result[0] += sq(_v0[N-i-1]);
+        result[N-i] = acos(clamp(_v0[N-i-1]/sqrt(result[0]), -1.0f, 1.0f));
+    }
+    result[0] = sqrt(result[0]);
+    return result;
+}
+
+template<typename T, unsigned N>
+RVec<T,N> sphericalCoords( const RVec<T,N>& _v0 )
+{
+    return *reinterpret_cast<RVec<T,N>(&sphericalCoords(*reinterpret_cast<Vec<T,N>(&_v0)));
+}
+
+// ********************************************************************* //
+template<typename T, unsigned N>
+Vec<T,N> cartesianCoords( const Vec<T,N>& _v0 )
+{
+    Vec<T,N> result;
+    float tmp = _v0[0];
+    for(uint i = 0; i < N-1; ++i)
+    {
+        result[i] = tmp * cos(_v0[i+1]);
+        tmp *= sin(_v0[i+1]);
+    }
+    result[N-1] = tmp;
+    return result;
+}
+
+template<typename T, unsigned N>
+RVec<T,N> cartesianCoords( const RVec<T,N>& _v0 )
+{
+    return *reinterpret_cast<RVec<T,N>(&cartesianCoords(*reinterpret_cast<Vec<T,N>(&_v0)));
 }
 
 // ************************************************************************* //

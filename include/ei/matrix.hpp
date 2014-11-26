@@ -77,6 +77,8 @@ namespace ei {
         Matrix(T _s0, T _s1, T _s2);                                           // TESTED
         template<ENABLE_IF(N * M == 4)>
         Matrix(T _s0, T _s1, T _s2, T _s3);                                    // TESTED
+        template<ENABLE_IF(N * M == 5)>
+        Matrix(T _s0, T _s1, T _s2, T _s3, T _s4);                             // TESTED
         template<ENABLE_IF(N * M == 6)>
         Matrix(T _s0, T _s1, T _s2, T _s3, T _s4, T _s5);                      // TESTED
         template<ENABLE_IF(N * M == 8)>
@@ -588,6 +590,29 @@ namespace ei {
     Matrix<T,N+1,1> homo( const Matrix<T,N,1>& _v0 );
     template<typename T, unsigned N>
     Matrix<T,1,N+1> homo( const Matrix<T,1,N>& _v0 );
+
+    // ********************************************************************* //
+    /// \brief Convert a vector from cartesian coordinates in spherical
+    ///     (angular) coordinates.
+    /// \details In 2d this gives (r, α) and in 3d this gives (r, θ, ϕ) for
+    ///     the vectors: (r cos α, r sin α) and (r cos θ, r sin θ cos ϕ, r sin θ sin ϕ).
+    ///     This is not the usual convention, but unifies dimensions!
+    /// \return The N-1 spherical angles and the length of the vector.
+    ///     (r, φ1, φ02, ..., φN-1) where
+    ///     φ1, ..., φN-2 ∈ [0,π) and φN-1 ∈ [0,2π)
+    template<typename T, unsigned N>
+    Vec<T,N> sphericalCoords( const Vec<T,N>& _v0 );                           // TESTED
+    template<typename T, unsigned N>
+    RVec<T,N> sphericalCoords( const RVec<T,N>& _v0 );                         // TESTED
+
+    // ********************************************************************* //
+    /// \brief Convert a vector from sphericar coordinates (r, φ1, φ02, ..., φN-1)
+    ///     to regular cartesian coordinates.
+    /// \return The regular cartesian vector.
+    template<typename T, unsigned N>
+    Vec<T,N> cartesianCoords( const Vec<T,N>& _v0 );                           // TESTED
+    template<typename T, unsigned N>
+    RVec<T,N> cartesianCoords( const RVec<T,N>& _v0 );                         // TESTED
 
     // ********************************************************************* //
     /// \brief Apply transformations in homogeneous space. This includes a

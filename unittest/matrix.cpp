@@ -371,5 +371,32 @@ bool test_matrix()
         TEST( all(v0 == transpose(v1)), "v1 transposed is unequal v0!" );
     }
 
+    // ********************************************************************* //
+    // Test spherical coordinates
+    {
+        Vec2 v0(1.0f, 0.0f);		Vec2 s0(1.0f, 0.0f);
+        Vec2 v1(1.0f, 1.0f);		Vec2 s1(PHYTAGORAS, PI/4.0f);
+        Vec2 v2(-3.0f, -4.0f);		Vec2 s2(5.0f, 4.06888771f);
+        Vec3 v3(1.0f, 0.0f, 0.0f);	Vec3 s3(1.0f, 0.0f, 0.0f);
+        Vec3 v4(-1.0f, 2.0f, 3.0f);	Vec3 s4(3.741657387f, 1.84134603f, 0.982793723f);
+        Vec3 v5(0.0f, 1.0f, -1.0f);	Vec3 s5(PHYTAGORAS, PI/2.0f, 5.49778748f);
+        Vec<float,5> v6(0.0f, -2.0f, 2.5f, -1.0f, 0.0f);
+
+        TEST( all(sphericalCoords(v0) == s0), "Spherical coordinates of v0 wrong!" );
+        TEST( all(sphericalCoords(v1) == s1), "Spherical coordinates of v1 wrong!" );
+        TEST( all(sphericalCoords(v2) == s2), "Spherical coordinates of v2 wrong!" );
+        TEST( all(sphericalCoords(v3) == s3), "Spherical coordinates of v3 wrong!" );
+        TEST( all(sphericalCoords(v4) == s4), "Spherical coordinates of v4 wrong!" );
+        TEST( all(sphericalCoords(v5) == s5), "Spherical coordinates of v5 wrong!" );
+
+        TEST( all(v0 == cartesianCoords(s0)), "Cartesian coordinates of s0 wrong!" );
+        TEST( approx(v1, cartesianCoords(s1)), "Cartesian coordinates of s1 wrong!" );
+        TEST( approx(v2, cartesianCoords(s2)), "Cartesian coordinates of s2 wrong!" );
+        TEST( approx(v3, cartesianCoords(s3)), "Cartesian coordinates of s3 wrong!" );
+        TEST( approx(v4, cartesianCoords(s4)), "Cartesian coordinates of s4 wrong!" );
+        TEST( approx(v5, cartesianCoords(s5)), "Cartesian coordinates of s5 wrong!" );
+        TEST( approx(v6, cartesianCoords(sphericalCoords(v6))), "5D vector coordinate transformation to spherical and back failed!" );
+    }
+
     return result;
 }
