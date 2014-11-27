@@ -1065,6 +1065,77 @@ Matrix<T,N,M> transpose(const Matrix<T,M,N>& _mat0)
     return result;
 }
 
+// ************************************************************************* //
+template<typename T, unsigned N>
+bool decomposeLUp(const Matrix<T,N,N>& _A, Matrix<T,N,N>& _LU, Vec<uint,N>& _p)
+{
+    // LUP decomposition algorithm by Cormen et al. with both matrices L and U
+    // combined to one.
+
+    // Copy and work inplace
+    _LU = _A;
+
+    // Init permutation to none
+    for(uint i = 0; i < N; ++i) _p[i] = i;
+    // Loop over rows in A
+    for(uint r = 0; r < N-1; ++r)
+    {
+        // Search a non zero pivot element in current column
+        T pivot = static_cast<T>(0);
+        uint p = 0;
+        for(uint i = r; i < N; ++i) if(abs(_LU(i,r)) > pivot) {
+            pivot = abs(_LU(i,r));
+            p = i;
+        }
+        if(pivot == static_cast<T>(0)) return false;
+        // Swap the lines
+        if(p != r)
+        {
+            // Permutation vector
+            uint tmpUI = _p[r]; _p[r] = _p[p]; _p[p] = tmpUI;
+            // Complete row: the first r-1 elements are already part of U
+            for(uint c = 0; c < N; ++c) {
+                T tmpT = _LU(r,c); _LU(r,c) = _LU(p,c); _LU(p,c) = tmpT;
+            }
+        }
+        // Gauß elimination but keep the diagonal element
+        for(uint i = r+1; i < N; ++i)
+        {
+            _LU(i,r) /= _LU(r,r);
+            for(uint j = r+1; j < N; ++j)
+                _LU(i,j) -= _LU(i,r) * _LU(r,j);
+        }
+    }
+    return _LU(N-1,N-1) != 0.0f;
+}
+
+// ********************************************************************* //
+template<typename T, unsigned M, unsigned N>
+Matrix<T,M,N> solveLUp(const Matrix<T,M,M>& _LU, const Matrix<uint,M,1>& _p, const Matrix<T,M,N>& _B)
+{
+    Matrix<T,M,N> X;
+    for(uint n = 0; n < N; ++n)
+    {
+        // Compute L Y = P B
+        for(uint i = 0; i < M; ++i)
+        {
+            T sum = static_cast<T>(0);
+            for(uint j = 0; j < i; ++j)
+                sum += _LU(i,j) * X(j,n);
+            X(i,n) = _B(_p[i],n) - sum;
+        }
+        // Compute U X = Y
+        for(int i = M-1; i >= 0; --i)
+        {
+            T sum = static_cast<T>(0);
+            for(uint j = i+1; j < M; ++j)
+                sum += _LU(i,j) * X(j,n);
+            X(i,n) = (X(i,n) - sum) / _LU(i,i);
+        }
+    }
+    return X;
+}
+
 
 // ************************************************************************* //
 //                              TRANSFORMATIONS                              //

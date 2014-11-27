@@ -398,5 +398,30 @@ bool test_matrix()
         TEST( approx(v6, cartesianCoords(sphericalCoords(v6))), "5D vector coordinate transformation to spherical and back failed!" );
     }
 
+    // ********************************************************************* //
+    // Test LUp decomposition
+    {
+        Mat3x3 A0(3.0f, 2.0f, -1.0f,
+                 2.0f, -2.0f, 4.0f,
+                 -1.0f, 0.5f, -1.0f);
+        Mat3x3 A1(0.0f, 2.0f, -4.0f,
+                  4.0f, 1.0f, 0.0f,
+                  8.0f, 5.0f, -6.0f);
+        Vec3 b0(1.0f, -2.0f, 0.0f);
+        Vec3 x0(1.0f, -2.0f, -2.0f);
+        Mat3x3 LU, X;
+        UVec3 p;
+        Vec3 x;
+        TEST( decomposeLUp(A0, LU, p), "Matrix A0 is decomposible!" );
+        x = solveLUp(LU, p, b0);
+        TEST( approx(x, x0, 1e-5f), "Solution of equation system A0 x=b0 wrong!");
+        // Test inverse
+        X = solveLUp(LU, p, identity3x3());
+        X = X * A0;
+        TEST( approx(X, identity3x3()), "Matrix inverse bad!");
+
+        TEST( !decomposeLUp(A1, LU, p), "Matrix A1 is singular!");
+    }
+
     return result;
 }

@@ -566,6 +566,32 @@ namespace ei {
     template<typename T, unsigned M, unsigned N>
     Matrix<T,N,M> transpose(const Matrix<T,M,N>& _mat0);                       // TESTED
 
+    // ********************************************************************* //
+    /// \brief Compute LUp decomposition of A such that A[p] = LU.
+    /// \details L is a lower triangular matrix with zeros below the diagonal,
+    ///     U is a unit upper triangular matrix with zeros above the diagonal
+    ///     and all 1 on the main diagonal. Further p is a row permutation
+    ///     vector.
+    /// \param [in] _A The matrix to be decomposed.
+    /// \param [out] _LU A matrix in the form (example for 3D):
+    ///         |l00 u01 u02|           |l00   0   0|   |1 u01 u02|
+    ///         |l10 l11 u12| such that |l10 l11   0| * |0   1 u12| = A[p]
+    ///         |l20 l21 l22|           |l20 l21 l22|   |0   0   1|
+    /// \return true if the decomposition was possible (A is non singular).
+    template<typename T, unsigned N>
+    bool decomposeLUp(const Matrix<T,N,N>& _A, Matrix<T,N,N>& _LU, Vec<uint,N>& _p);    // TESTED
+
+    // ********************************************************************* //
+    /// \brief Compute one or more solutions for linear equation system given
+    ///     the LUp decomposition.
+    /// \details Computation time: O(n²)
+    /// \param [in] _LU Combined LU matrix from decomposeLUp.
+    /// \param [in] _p Permutation vector from decomposeLUp.
+    /// \param [in] _B Set of N column vectors which contain the target vectors.
+    /// \return Solution X of LU X = B[p].
+    template<typename T, unsigned M, unsigned N>
+    Matrix<T,M,N> solveLUp(const Matrix<T,M,M>& _LU, const Matrix<uint,M,1>& _p, const Matrix<T,M,N>& _B);  // TESTED
+
 
     // ********************************************************************* //
     //                            TRANSFORMATIONS                            //
