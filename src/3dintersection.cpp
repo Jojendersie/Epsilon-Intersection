@@ -127,4 +127,48 @@ namespace ei {
         _distance = max(tmin, 0.0f);//tmin < 0.0f ? tmax : tmin;
         return tmin <= tmax;
     }
+
+    // ********************************************************************* //
+    bool intersects( const Ray& _ray, const Triangle& _triangle )
+    {
+        // Möller and Trumbore
+        Vec3 e0 = _triangle.v1 - _triangle.v0;
+        Vec3 e1 = _triangle.v0 - _triangle.v2;
+        // Normal scaled by 2A
+        Vec3 normal = cross( e1, e0 );
+
+        float dist2A = dot( normal, _ray.direction );
+        Vec3 o = (_triangle.v0 - _ray.origin);
+        Vec3 d = cross( _ray.direction, o );
+
+        float barycentricCoord1 = dot( d, e1 ) / dist2A;
+        if(barycentricCoord1 < 0.0f) return false;
+        float barycentricCoord2 = dot( d, e0 ) / dist2A;
+        if(barycentricCoord2 < 0.0f) return false;
+        return barycentricCoord1 + barycentricCoord2 <= 1.0f;
+    }
+
+    // ********************************************************************* //
+    bool intersects( const Ray& _ray, const Triangle& _triangle, float& _distance )
+    {
+        // Möller and Trumbore
+        Vec3 e0 = _triangle.v1 - _triangle.v0;
+        Vec3 e1 = _triangle.v0 - _triangle.v2;
+        // Normal scaled by 2A
+        Vec3 normal = cross( e1, e0 );
+
+        float dist2A = dot( normal, _ray.direction );
+        Vec3 o = (_triangle.v0 - _ray.origin);
+        Vec3 d = cross( _ray.direction, o );
+
+        float barycentricCoord1 = dot( d, e1 ) / dist2A;
+        if(barycentricCoord1 < 0.0f) return false;
+        float barycentricCoord2 = dot( d, e0 ) / dist2A;
+        if(barycentricCoord2 < 0.0f) return false;
+        if(barycentricCoord1 + barycentricCoord2 > 1.0f) return false;
+        
+        // Projection to plane. The 2A from normal is canceled out
+        _distance = dot( normal, o ) / dist2A;
+        return _distance >= 0.0f;
+    }
 }

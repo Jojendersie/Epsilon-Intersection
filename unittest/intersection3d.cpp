@@ -46,6 +46,7 @@ template<> const char* name<Vec3>() { return "Point"; }
 template<> const char* name<Ray>() { return "Ray"; }
 template<> const char* name<Ellipsoid>() { return "Ellipsoid"; }
 template<> const char* name<Box>() { return "Box"; }
+template<> const char* name<Triangle>() { return "Triangle"; }
 
 #ifdef _DEBUG
     const int PERF_ITERATIONS = 100;
@@ -201,10 +202,29 @@ bool test_3dintersections()
 
         float d;
         //TEST( intersects( ray3, box1, d ) && d == 0.25f, "ray3 should hit box1 with a distance of 0.25!" );
-        TEST( intersects( ray0, box0, d ) && d == sqrt(2.0f), "ray0 should hit box0 with a distance of 0.25!" );
+        TEST( intersects( ray0, box0, d ) && d == sqrt(2.0f), "ray0 should hit box0 with a distance of sqrt(2)!" );
 
         performance<Ray,Box>();
         performanceRet1f<Ray,Box>();
+    }
+
+    // Test triangle <-> ray intersection
+    {
+        Ray ray0( Vec3(-1.0f, 0.0f, 0.0f), normalize(Vec3(0.5f, 0.5f, 0.0f)) );
+        Ray ray1( Vec3(90.0f, 100.0f, -110.0f), normalize(Vec3(-88.75f, -99.5f, 111.16666f)) );
+        Triangle tri0( Vec3(0.0f, 0.0f, -1.0f), Vec3(0.0f, 2.0f, 1.0f), Vec3(0.0f, 2.0f, -1.0f) );
+        Triangle tri1( Vec3(1.0f, 0.0f, 1.0f), Vec3(1.5f, 0.5f, 1.0f), Vec3(1.25f, 1.0f, 1.5f) );
+        TEST( intersects( ray0, tri0 ), "ray0 should hit tri0!" );
+        TEST( !intersects( ray0, tri1 ), "ray0 should miss tri1!" );
+        TEST( !intersects( ray1, tri0 ), "ray1 should miss tri0!" );
+        TEST( intersects( ray1, tri1 ), "ray1 should hit tri1!" );
+
+        float d;
+        TEST( intersects( ray0, tri0, d ) && d == sqrt(2.0f), "ray0 should hit tri0 with a distance of sqrt(2)!" );
+        TEST( intersects( ray1, tri1, d ) && d == 173.593903f, "ray1 should hit tri1 with a distance of 173.593903!" );
+
+        performance<Ray,Triangle>();
+        performanceRet1f<Ray,Triangle>();
     }
 
     return result;
