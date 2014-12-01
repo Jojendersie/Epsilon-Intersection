@@ -171,4 +171,29 @@ namespace ei {
         _distance = dot( normal, o ) / dist2A;
         return _distance >= 0.0f;
     }
+
+    // ********************************************************************* //
+    bool intersects( const Ray& _ray, const Triangle& _triangle, float& _distance, Vec3& _barycentric )
+    {
+        // Möller and Trumbore
+        Vec3 e0 = _triangle.v1 - _triangle.v0;
+        Vec3 e1 = _triangle.v0 - _triangle.v2;
+        // Normal scaled by 2A
+        Vec3 normal = cross( e1, e0 );
+
+        float dist2A = dot( normal, _ray.direction );
+        Vec3 o = (_triangle.v0 - _ray.origin);
+        Vec3 d = cross( _ray.direction, o );
+
+        _barycentric.y = dot( d, e1 ) / dist2A;
+        if(_barycentric.y < 0.0f) return false;
+        _barycentric.z = dot( d, e0 ) / dist2A;
+        if(_barycentric.z < 0.0f) return false;
+        _barycentric.x = 1.0f - (_barycentric.y + _barycentric.z);
+        if(_barycentric.x < 0.0f) return false;
+        
+        // Projection to plane. The 2A from normal is canceled out
+        _distance = dot( normal, o ) / dist2A;
+        return _distance >= 0.0f;
+    }
 }

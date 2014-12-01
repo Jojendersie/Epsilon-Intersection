@@ -222,6 +222,11 @@ bool test_3dintersections()
         float d;
         TEST( intersects( ray0, tri0, d ) && d == sqrt(2.0f), "ray0 should hit tri0 with a distance of sqrt(2)!" );
         TEST( intersects( ray1, tri1, d ) && d == 173.593903f, "ray1 should hit tri1 with a distance of 173.593903!" );
+        Vec3 bary;
+        intersects( ray0, tri0, d, bary );
+        TEST( approx(ray0.origin+ray0.direction*d, tri0.v0*bary.x + tri0.v1*bary.y + tri0.v2*bary.z), "The hit point from barycentric coordinates and ray parameter should be the same (ray0, tri0)." );
+        intersects( ray1, tri1, d, bary );
+        TEST( approx(ray1.origin+ray1.direction*d, tri1.v0*bary.x + tri1.v1*bary.y + tri1.v2*bary.z, 1e-5f), "The hit point from barycentric coordinates and ray parameter should be the same (ray1, tri1)." );
 
         performance<Ray,Triangle>();
         performanceRet1f<Ray,Triangle>();

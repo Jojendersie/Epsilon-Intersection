@@ -55,4 +55,15 @@ namespace ei {
     /// \return true if there is at least one comon point between ray and triangle
     bool intersects( const Ray& _ray, const Triangle& _triangle, float& _distance );    // TESTED
     inline bool intersects( const Triangle& _triangle, const Ray& _ray, float& _distance )  { return intersects( _ray, _triangle, _distance ); }
+
+    /// \brief Get the distance of the first intersection if hit and the
+    ///     barycentric coordinates.
+    /// \details Performance index: TODO
+    /// \param [out] _distance The ray parameter (distance) for the first
+    ///     intersection point in positive direction.
+    /// \param [out] _barycentric The barycentric coordinates of the hit point
+    ///     on the triangle.
+    /// \return true if there is at least one comon point between ray and triangle
+    bool intersects( const Ray& _ray, const Triangle& _triangle, float& _distance, Vec3& _barycentric );    // TESTED
+    inline bool intersects( const Triangle& _triangle, const Ray& _ray, float& _distance, Vec3& _barycentric )  { return intersects( _ray, _triangle, _distance, _barycentric ); }
 }
