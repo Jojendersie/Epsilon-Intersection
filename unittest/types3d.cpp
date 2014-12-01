@@ -53,6 +53,15 @@ bool test_3dtypes()
         TEST( !intersects( box.max + 1e-6f, ell0 ), "The point must be outside the ellipsoid!" );
     }
 
+    // Test sphere construction
+    {
+        Box box( Vec3(-2.0f, -1.0f, -1.0f), Vec3(0.0f, 0.0f, 0.0f) );
+        Sphere sph0( Vec3(-1.0f, -0.5f, -0.5f), 1.224744871f );
+        Sphere sph1( box );
+        TEST( all(sph0.center == sph1.center), "Center of sphere wrong!" );
+        TEST( sph0.radius == sph1.radius, "Radius of sphere wrong!" );
+    }
+
     // Test box construction
     {
         Box box0( Vec3(-2.0f, -1.0f, -1.0f), Vec3(0.0f, 0.0f, 0.0f) );

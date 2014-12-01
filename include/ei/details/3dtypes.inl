@@ -6,6 +6,14 @@ inline Sphere::Sphere( const Vec3& _center, float _radius ) :
 }
 
 // ************************************************************************* //
+inline Sphere::Sphere( const Box& _box ) :
+    center((_box.min + _box.max) * 0.5f),
+    radius(len(_box.max - _box.min) * 0.5f)
+{
+    eiAssert( all(_box.max >= _box.min), "Invalid bounding box." );
+}
+
+// ************************************************************************* //
 inline Box::Box( const Vec3& _min, const Vec3& _max ) :
     min(_min),
     max(_max)

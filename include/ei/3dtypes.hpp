@@ -53,7 +53,10 @@ namespace ei {
         Sphere() {}
 
         /// \brief Create sphere from center and radius
-        Sphere( const Vec3& _center, float _radius );
+        Sphere( const Vec3& _center, float _radius );                          // TESTED
+
+        /// \brief Create the bounding sphere of a box
+        explicit Sphere( const Box& _box );                                    // TESTED
     };
 
     /// \brief Axis aligned box.
