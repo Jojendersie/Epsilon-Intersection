@@ -31,11 +31,18 @@ namespace ei {
     ///     intersection point in positive direction.
     ///
     ///     If the ray starts inside 0 is returned.
+    /// \param [out,opt] _distanceExit The ray parameter (distance) for the
+    ///     second intersection point in positive direction.
+    ///
+    ///     This is always the exit point. If the ray starts on the boundary
+    ///     and shows away _distance and _distanceExit are the same (0).
     /// \return true if there is at least one comon point between ray and box
     bool intersects( const Ray& _ray, const Box& _box );                       // TESTED
     bool intersects( const Ray& _ray, const Box& _box, float& _distance );
+    bool intersects( const Ray& _ray, const Box& _box, float& _distance, float& _distanceExit );
     inline bool intersects( const Box& _box, const Ray& _ray )  { return intersects( _ray, _box ); }
     inline bool intersects( const Box& _box, const Ray& _ray, float& _distance )  { return intersects( _ray, _box, _distance ); }
+    inline bool intersects( const Box& _box, const Ray& _ray, float& _distance, float& _distanceExit )  { return intersects( _ray, _box, _distance, _distanceExit ); }
 
     /// \brief Do a ray and a triangle intersect or touch?
     /// \details Performance index: 12.3, 13.7, TODO (Numbers for increasing

@@ -434,10 +434,10 @@ bool test_matrix()
 
         // Test inverse
         X = solveLUp(LU, p, identity3x3());
-        TEST( all(inverse(A0) == X), "Manual inversion and invert function have different results!" );
+        TEST( all(invert(A0) == X), "Manual inversion and invert function have different results!" );
         X = X * A0;
         TEST( approx(X, identity3x3()), "3x3 Matrix inverse bad!");
-        TEST( approx(inverse(A2) * A2, identity4x4(), 2e-5f), "4x4 Matrix inverse bad!");
+        TEST( approx(invert(A2) * A2, identity4x4(), 2e-5f), "4x4 Matrix inverse bad!");
     }
 
     return result;

@@ -1139,7 +1139,7 @@ Matrix<T,M,N> solveLUp(const Matrix<T,M,M>& _LU, const Matrix<uint,M,1>& _p, con
 
 // ************************************************************************* //
 template<typename T, unsigned N>
-Matrix<T,N,N> inverse(const Matrix<T,N,N>& _mat0)
+Matrix<T,N,N> invert(const Matrix<T,N,N>& _mat0)
 {
     Matrix<T,N,N> LU;
     Vec<uint32,N> p;

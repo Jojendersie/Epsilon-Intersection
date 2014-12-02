@@ -598,7 +598,7 @@ namespace ei {
     /// \details If the matrix has no inverse the identity is returned.
     /// \return Inverse matrix or identity.
     template<typename T, unsigned N>
-    Matrix<T,N,N> inverse(const Matrix<T,N,N>& _mat0);                         // TESTED
+    Matrix<T,N,N> invert(const Matrix<T,N,N>& _mat0);                          // TESTED
 
 
     // ********************************************************************* //
