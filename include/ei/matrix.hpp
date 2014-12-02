@@ -598,7 +598,7 @@ namespace ei {
     /// \details If the matrix has no inverse the identity is returned.
     /// \return Inverse matrix or identity.
     template<typename T, unsigned N>
-    Matrix<T,N,N> inverse(const Matrix<T,N,N>& _mat0);                       
+    Matrix<T,N,N> inverse(const Matrix<T,N,N>& _mat0);                         // TESTED
 
 
     // ********************************************************************* //
@@ -702,7 +702,7 @@ namespace ei {
     /// \brief Use vectors which span a space to build a matrix.
     /// \details The vectors become the rows of the matrix
     Mat2x2 axis( const Vec2& _x, const Vec2& _y );
-    Mat3x3 axis( const Vec3& _x, const Vec3& _y, const Vec3& _z );
+    Mat3x3 axis( const Vec3& _x, const Vec3& _y, const Vec3& _z );             // TESTED
     Mat4x4 axisH( const Vec3& _x, const Vec3& _y, const Vec3& _z );
     Mat4x4 axis( const Vec4& _x, const Vec4& _y, const Vec4& _z, const Vec4& _w );
 
@@ -842,7 +842,7 @@ namespace ei {
     /// \brief Alias for identity<float,2>().
     inline Mat2x2 identity2x2()    { return identity<float,2>(); }
     /// \brief Alias for identity<float,3>().
-    inline Mat3x3 identity3x3()    { return identity<float,3>(); }
+    inline Mat3x3 identity3x3()    { return identity<float,3>(); }             // TESTED
     /// \brief Alias for identity<float,4>().
     inline Mat4x4 identity4x4()    { return identity<float,4>(); }             // TESTED
 

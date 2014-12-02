@@ -372,6 +372,17 @@ bool test_matrix()
     }
 
     // ********************************************************************* //
+    // Test axis matrix
+    {
+        Mat3x3 m0 = axis(normalize(Vec3(1.0f, 1.0f, 0.0f)), normalize(Vec3(-1.0f, 1.0f, 0.0f)), Vec3(0.0f, 0.0f, 1.0f));
+        Vec3 v0(0.0f, 0.0f, 5.0f);
+        Vec3 v1(2.0f, 0.0f, 0.0f);
+        Vec3 v2(1.414213562f, -1.414213562f, 0.0f);
+        TEST( all(m0 * v0 == v0), "v0 should not be transformed by m0!" );
+        TEST( all(m0 * v1 == v2), "v1 should be transformed into v2 by m0!" );
+    }
+
+    // ********************************************************************* //
     // Test spherical coordinates
     {
         Vec2 v0(1.0f, 0.0f);		Vec2 s0(1.0f, 0.0f);
