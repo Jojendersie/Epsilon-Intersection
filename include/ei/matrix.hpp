@@ -594,6 +594,14 @@ namespace ei {
 
 
     // ********************************************************************* //
+    /// \brief Invert a quadratic matrix.
+    /// \details If the matrix has no inverse the identity is returned.
+    /// \return Inverse matrix or identity.
+    template<typename T, unsigned N>
+    Matrix<T,N,N> inverse(const Matrix<T,N,N>& _mat0);                       
+
+
+    // ********************************************************************* //
     //                            TRANSFORMATIONS                            //
     // ********************************************************************* //
 

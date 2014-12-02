@@ -1138,6 +1138,18 @@ Matrix<T,M,N> solveLUp(const Matrix<T,M,M>& _LU, const Matrix<uint,M,1>& _p, con
 
 
 // ************************************************************************* //
+template<typename T, unsigned N>
+Matrix<T,N,N> inverse(const Matrix<T,N,N>& _mat0)
+{
+    Matrix<T,N,N> LU;
+    Vec<uint32,N> p;
+    if( decomposeLUp( _mat0, LU, p ) )
+        return solveLUp( LU, p, identity<T,N>() );
+    else return identity<T,N>();
+}
+
+
+// ************************************************************************* //
 //                              TRANSFORMATIONS                              //
 // ************************************************************************* //
 
