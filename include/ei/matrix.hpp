@@ -488,10 +488,17 @@ namespace ei {
     Matrix<typename details::Int<sizeof(T)>::stype,M,N> round(const Matrix<T,M,N>& _mat);
 
     // ********************************************************************* //
-    /// \brief Signed sum of all components.
+    /// \brief Sum of all components.
+    /// \details Can be used for boolean vectors/matrices too (number of trues).
     /// \returns Scalar sum of all values.
     template<typename T, unsigned M, unsigned N>
     decltype(std::declval<T>() + std::declval<T>()) sum(const Matrix<T,M,N>& _mat0);    // TESTED
+
+    // ********************************************************************* //
+    /// \brief Product of all components.
+    /// \returns Product of all values (scalar).
+    template<typename T, unsigned M, unsigned N>
+    T prod(const Matrix<T,M,N>& _mat0);                                        // TESTED
 
     // ********************************************************************* //
     /// \brief Average of all values from a matrix.

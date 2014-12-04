@@ -302,7 +302,7 @@ bool test_matrix()
     }
 
     // ********************************************************************* //
-    // Test max, min, sum, avg, abs, sgn, sign
+    // Test max, min, sum, avg, abs, sgn, sign, prod
     {
         Vec4 v0(-1.0f, -0.5f, 0.25f, 0.5f);
         Vec4 v1(0.5f, 2.5f, 1.0f, 0.0f);
@@ -322,6 +322,7 @@ bool test_matrix()
         TEST( all(clamp(v0, 0.0f, 3.0f) == v6), "Clamp of a vector in interval wrong!" );
         TEST( all(saturate(v0 * 4.0f) == v7), "Saturate of a vector wrong!" );
         TEST( sum(v1) == 4.0f, "Sum of a vector wrong!" );
+        TEST( prod(v0) == 0.0625f, "Product of a vector wrong!" );
         TEST( avg(v3) == 1.125f, "Average of a vector wrong!" );
         TEST( all(abs(v0) == v4), "Absolute value of a vector wrong!" );
         TEST( all(sign(v1) == Vec4(1.0f, 1.0f, 1.0f, 0.0f)), "Sign values of a vector wrong!" );

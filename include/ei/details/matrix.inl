@@ -970,6 +970,16 @@ inline decltype(std::declval<T>() + std::declval<T>()) sum(const Matrix<T,M,N>& 
 
 // ************************************************************************* //
 template<typename T, unsigned M, unsigned N>
+inline T prod(const Matrix<T,M,N>& _mat0)
+{
+    T result = _mat0[0];
+    for(uint i = 1; i < N * M; ++i)
+        result *= _mat0[i];
+    return result;
+}
+
+// ************************************************************************* //
+template<typename T, unsigned M, unsigned N>
 inline T avg(const Matrix<T,M,N>& _mat0)
 {
     return sum(_mat0) / T(M * N);
