@@ -172,6 +172,25 @@ bool test_matrix()
     }
 
     // ********************************************************************* //
+    // Test |, &, ^ and ~
+    {
+        Matrix<int, 2, 2> m0(1, 2, 3, 4);
+        Matrix<int, 2, 2> m1(5, 6, 7, 8);
+        Matrix<int, 2, 2> m2(5, 6, 7, 12);
+        Matrix<int, 2, 2> m3(1, 2, 3, 0);
+        Matrix<int, 2, 2> m4(4, 4, 4, 12);
+        Matrix<int, 2, 2> m5(0xfffffffe, 0xfffffffd, 0xfffffffc, 0xfffffffb);
+        TEST( all((m0 | m1) == m2), "Component wise | failed!" );
+        TEST( all((m0 & m1) == m3), "Component wise & failed!" );
+        TEST( all((m0 ^ m1) == m4), "Component wise ^ failed!" );
+        TEST( all((~m0) == m5), "Component wise ~ failed!" );
+        // Generates an error message (expected)
+        //Matrix<float, 2, 2> m3(3.0f, 1.0f, 4.0f, 1.0f);
+        //Matrix<float, 2, 2> m4(4.0f, 3.0f, 7.0f, 5.0f);
+        //Matrix<float, 2, 2> m = m3 | m4;
+    }
+
+    // ********************************************************************* //
     // Test *, / and element constructors (3,9 elements)
     {
         Matrix<int, 3, 1> v0(1, 2, 3);

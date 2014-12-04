@@ -428,6 +428,49 @@ Matrix<RESULT_TYPE(/), 1, N> Matrix<T, M, N>::operator/ (const Matrix<T1,1,N>& _
 }
 
 // ************************************************************************* //
+template<typename T, uint M, uint N>
+template<typename T1>
+Matrix<RESULT_TYPE(|), M, N> Matrix<T, M, N>::operator| (const Matrix<T1,M,N>& _mat1) const
+{
+    Matrix<RESULT_TYPE(|), M, N> result;
+    for(uint i = 0; i < N * M; ++i)
+        result[i] = (*this)[i] | _mat1[i];
+    return result;
+}
+
+// ************************************************************************* //
+template<typename T, uint M, uint N>
+template<typename T1>
+Matrix<RESULT_TYPE(&), M, N> Matrix<T, M, N>::operator& (const Matrix<T1,M,N>& _mat1) const
+{
+    Matrix<RESULT_TYPE(&), M, N> result;
+    for(uint i = 0; i < N * M; ++i)
+        result[i] = (*this)[i] & _mat1[i];
+    return result;
+}
+
+// ************************************************************************* //
+template<typename T, uint M, uint N>
+template<typename T1>
+Matrix<RESULT_TYPE(^), M, N> Matrix<T, M, N>::operator^ (const Matrix<T1,M,N>& _mat1) const
+{
+    Matrix<RESULT_TYPE(^), M, N> result;
+    for(uint i = 0; i < N * M; ++i)
+        result[i] = (*this)[i] ^ _mat1[i];
+    return result;
+}
+
+// ************************************************************************* //
+template<typename T, uint M, uint N>
+Matrix<T, M, N> Matrix<T, M, N>::operator~ () const
+{
+    Matrix<T, M, N> result;
+    for(uint i = 0; i < N * M; ++i)
+        result[i] = ~(*this)[i];
+    return result;
+}
+
+// ************************************************************************* //
 // putting the implementation here causes error C2244 in visual studio.
 template<typename T, uint M, uint N>
 template<typename T1>
