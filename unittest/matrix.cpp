@@ -267,6 +267,24 @@ bool test_matrix()
     }
 
     // ********************************************************************* //
+    // Test scalar |, &, ^
+    {
+        Matrix<int, 2, 2> m0(1, 2, 3, 4);
+        Matrix<int, 2, 2> m1(5, 6, 7, 4);
+        Matrix<int, 2, 2> m2(0, 0, 0, 4);
+        Matrix<int, 2, 2> m3(5, 6, 7, 0);
+        TEST( all((m0 | 4) == m1), "Component wise | failed!" );
+        TEST( all((4 | m0) == m1), "Component wise | failed!" );
+        TEST( all((m0 & 4) == m2), "Component wise & failed!" );
+        TEST( all((4 & m0) == m2), "Component wise & failed!" );
+        TEST( all((m0 ^ 4) == m3), "Component wise ^ failed!" );
+        TEST( all((4 ^ m0) == m3), "Component wise ^ failed!" );
+        // Generates an error message (expected)
+        //Matrix<float, 2, 2> m4(3.0f, 1.0f, 4.0f, 1.0f);
+        //Matrix<float, 2, 2> m = m4 | 4.0f;
+    }
+
+    // ********************************************************************* //
     // Test assignment operators +=, *=, -=, /=
     {
         Matrix<int, 2, 2> m0(1, 2, 3, 4);

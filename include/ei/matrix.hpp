@@ -263,7 +263,26 @@ namespace ei {
     /// \brief Divide a scalar by each component.
     template<typename T1, typename T, uint M, uint N>
     Matrix<RESULT_TYPE(/), M, N> operator/ (T1 _s, const Matrix<T,M,N>& _mat); // TESTED
-   
+
+    /// \brief Binary or of all components and a scalar.
+    template<typename T, uint M, uint N, typename T1>
+    Matrix<RESULT_TYPE(|), M, N> operator| (const Matrix<T,M,N>& _mat, T1 _s); // TESTED
+    /// \brief Binary or of a scalar and all components.
+    template<typename T1, typename T, uint M, uint N>
+    Matrix<RESULT_TYPE(|), M, N> operator| (T1 _s, const Matrix<T,M,N>& _mat); // TESTED
+    /// \brief Binary and of all components and a scalar.
+    template<typename T, uint M, uint N, typename T1>
+    Matrix<RESULT_TYPE(&), M, N> operator& (const Matrix<T,M,N>& _mat, T1 _s); // TESTED
+    /// \brief Binary and of a scalar and all components.
+    template<typename T1, typename T, uint M, uint N>
+    Matrix<RESULT_TYPE(&), M, N> operator& (T1 _s, const Matrix<T,M,N>& _mat); // TESTED
+    /// \brief Binary xor of all components and a scalar.
+    template<typename T, uint M, uint N, typename T1>
+    Matrix<RESULT_TYPE(^), M, N> operator^ (const Matrix<T,M,N>& _mat, T1 _s); // TESTED
+    /// \brief Binary xor of a scalar and all components.
+    template<typename T1, typename T, uint M, uint N>
+    Matrix<RESULT_TYPE(^), M, N> operator^ (T1 _s, const Matrix<T,M,N>& _mat); // TESTED
+
     /// \brief Test all components with respect to a scalar.
     template<typename T, uint M, uint N, typename T1>
     Matrix<bool, M, N> operator== (const Matrix<T,M,N>& _mat, T1 _s);          // TESTED

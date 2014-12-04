@@ -631,194 +631,68 @@ inline Matrix<bool,M,N> Matrix<T, M, N>::operator>= (const Matrix<T,M,N>& _mat1)
 }
 
 // ********************************************************************* //
-template<typename T, uint M, uint N, typename T1>
-inline Matrix<RESULT_TYPE(+), M, N> operator+ (const Matrix<T,M,N>& _mat, T1 _s)
-{
-    Matrix<RESULT_TYPE(+), M, N> result;
-    for(uint i = 0; i < N * M; ++i)
-        result[i] = _mat[i] + _s;
-    return result;
-}
-
-template<typename T1, typename T, uint M, uint N>
-inline Matrix<RESULT_TYPE(+), M, N> operator+ (T1 _s, const Matrix<T,M,N>& _mat)
-{
-    Matrix<RESULT_TYPE(+), M, N> result;
-    for(uint i = 0; i < N * M; ++i)
-        result[i] = _s + _mat[i];
-    return result;
-}
-
-// ********************************************************************* //
-template<typename T, uint M, uint N, typename T1>
-inline Matrix<RESULT_TYPE(-), M, N> operator- (const Matrix<T, M, N>& _mat, T1 _s)
-{
-    Matrix<RESULT_TYPE(-), M, N> result;
-    for(uint i = 0; i < N * M; ++i)
-        result[i] = _mat[i] - _s;
-    return result;
-}
-
-template<typename T1, typename T, uint M, uint N>
-inline Matrix<RESULT_TYPE(-), M, N> operator- (T1 _s, const Matrix<T, M, N>& _mat)
-{
-    Matrix<RESULT_TYPE(-), M, N> result;
-    for(uint i = 0; i < N * M; ++i)
-        result[i] = _s - _mat[i];
-    return result;
+#define CODE_GEN_MAT_SCALAR_OP(op)                                                  \
+template<typename T, uint M, uint N, typename T1>                                   \
+inline Matrix<RESULT_TYPE(op), M, N> operator op (const Matrix<T,M,N>& _mat, T1 _s) \
+{                                                                                   \
+    Matrix<RESULT_TYPE(op), M, N> result;                                           \
+    for(uint i = 0; i < N * M; ++i)                                                 \
+        result[i] = _mat[i] op _s;                                                  \
+    return result;                                                                  \
+}                                                                                   \
+                                                                                    \
+template<typename T1, typename T, uint M, uint N>                                   \
+inline Matrix<RESULT_TYPE(op), M, N> operator op (T1 _s, const Matrix<T,M,N>& _mat) \
+{                                                                                   \
+    Matrix<RESULT_TYPE(op), M, N> result;                                           \
+    for(uint i = 0; i < N * M; ++i)                                                 \
+        result[i] = _s op _mat[i];                                                  \
+    return result;                                                                  \
 }
 
 // ********************************************************************* //
-template<typename T, uint M, uint N, typename T1>
-inline Matrix<RESULT_TYPE(/), M, N> operator/ (const Matrix<T, M, N>& _mat, T1 _s)
-{
-    Matrix<RESULT_TYPE(/), M, N> result;
-    for(uint i = 0; i < N * M; ++i)
-        result[i] = _mat[i] / _s;
-    return result;
-}
+CODE_GEN_MAT_SCALAR_OP(+)
+CODE_GEN_MAT_SCALAR_OP(-)
+CODE_GEN_MAT_SCALAR_OP(*)
+CODE_GEN_MAT_SCALAR_OP(/)
 
-template<typename T1, typename T, uint M, uint N>
-inline Matrix<RESULT_TYPE(/), M, N> operator/ (T1 _s, const Matrix<T, M, N>& _mat)
-{
-    Matrix<RESULT_TYPE(/), M, N> result;
-    for(uint i = 0; i < N * M; ++i)
-        result[i] = _s / _mat[i];
-    return result;
+// ********************************************************************* //
+CODE_GEN_MAT_SCALAR_OP(|)
+CODE_GEN_MAT_SCALAR_OP(&)
+CODE_GEN_MAT_SCALAR_OP(^)
+
+// ********************************************************************* //
+#define CODE_GEN_MAT_SCALAR_RELATION(op)                                            \
+template<typename T, uint M, uint N, typename T1>                                   \
+inline Matrix<bool, M, N> operator op (const Matrix<T,M,N>& _mat, T1 _s)            \
+{                                                                                   \
+    Matrix<bool, M, N> result;                                                      \
+    for(uint i = 0; i < N * M; ++i)                                                 \
+        result[i] = _mat[i] op _s;                                                  \
+    return result;                                                                  \
+}                                                                                   \
+                                                                                    \
+template<typename T1, typename T, uint M, uint N>                                   \
+inline Matrix<bool, M, N> operator op (T1 _s, const Matrix<T,M,N>& _mat)            \
+{                                                                                   \
+    Matrix<bool, M, N> result;                                                      \
+    for(uint i = 0; i < N * M; ++i)                                                 \
+        result[i] = _s op _mat[i];                                                  \
+    return result;                                                                  \
 }
 
 // ********************************************************************* //
-template<typename T, uint M, uint N, typename T1>
-inline Matrix<bool, M, N> operator== (const Matrix<T, M, N>& _mat, T1 _s)
-{
-    Matrix<bool, M, N> result;
-    for(uint i = 0; i < N * M; ++i)
-        result[i] = _mat[i] == _s;
-    return result;
-}
+CODE_GEN_MAT_SCALAR_RELATION(==)
+CODE_GEN_MAT_SCALAR_RELATION(!=)
+CODE_GEN_MAT_SCALAR_RELATION(<)
+CODE_GEN_MAT_SCALAR_RELATION(<=)
+CODE_GEN_MAT_SCALAR_RELATION(>=)
+CODE_GEN_MAT_SCALAR_RELATION(>)
 
-template<typename T1, typename T, uint M, uint N>
-inline Matrix<bool, M, N> operator== (T1 _s, const Matrix<T, M, N>& _mat)
-{
-    Matrix<bool, M, N> result;
-    for(uint i = 0; i < N * M; ++i)
-        result[i] = _s == _mat[i];
-    return result;
-}
 
-// ********************************************************************* //
-template<typename T, uint M, uint N, typename T1>
-inline Matrix<bool, M, N> operator!=(const Matrix<T, M, N>& _mat, T1 _s)
-{
-    Matrix<bool, M, N> result;
-    for(uint i = 0; i < N * M; ++i)
-        result[i] = _mat[i] != _s;
-    return result;
-}
+#undef CODE_GEN_MAT_SCALAR_OP
+#undef CODE_GEN_MAT_SCALAR_RELATION
 
-template<typename T1, typename T, uint M, uint N>
-inline Matrix<bool, M, N> operator!= (T1 _s, const Matrix<T, M, N>& _mat)
-{
-    Matrix<bool, M, N> result;
-    for(uint i = 0; i < N * M; ++i)
-        result[i] = _s != _mat[i];
-    return result;
-}
-
-// ********************************************************************* //
-template<typename T, uint M, uint N, typename T1>
-inline Matrix<bool, M, N> operator< (const Matrix<T, M, N>& _mat, T1 _s)
-{
-    Matrix<bool, M, N> result;
-    for(uint i = 0; i < N * M; ++i)
-        result[i] = _mat[i] < _s;
-    return result;
-}
-
-template<typename T1, typename T, uint M, uint N>
-inline Matrix<bool, M, N> operator< (T1 _s, const Matrix<T, M, N>& _mat)
-{
-    Matrix<bool, M, N> result;
-    for(uint i = 0; i < N * M; ++i)
-        result[i] = _s < _mat[i];
-    return result;
-}
-
-// ********************************************************************* //
-template<typename T, uint M, uint N, typename T1>
-inline Matrix<bool, M, N> operator<= (const Matrix<T, M, N>& _mat, T1 _s)
-{
-    Matrix<bool, M, N> result;
-    for(uint i = 0; i < N * M; ++i)
-        result[i] = _mat[i] <= _s;
-    return result;
-}
-
-template<typename T1, typename T, uint M, uint N>
-inline Matrix<bool, M, N> operator<= (T1 _s, const Matrix<T, M, N>& _mat)
-{
-    Matrix<bool, M, N> result;
-    for(uint i = 0; i < N * M; ++i)
-        result[i] = _s <= _mat[i];
-    return result;
-}
-
-// ********************************************************************* //
-template<typename T, uint M, uint N, typename T1>
-inline Matrix<bool, M, N> operator>= (const Matrix<T, M, N>& _mat, T1 _s)
-{
-    Matrix<bool, M, N> result;
-    for(uint i = 0; i < N * M; ++i)
-        result[i] = _mat[i] >= _s;
-    return result;
-}
-
-template<typename T1, typename T, uint M, uint N>
-inline Matrix<bool, M, N> operator>= (T1 _s, const Matrix<T, M, N>& _mat)
-{
-    Matrix<bool, M, N> result;
-    for(uint i = 0; i < N * M; ++i)
-        result[i] = _s >= _mat[i];
-    return result;
-}
-
-// ********************************************************************* //
-template<typename T, uint M, uint N, typename T1>
-inline Matrix<bool, M, N> operator> (const Matrix<T, M, N>& _mat, T1 _s)
-{
-    Matrix<bool, M, N> result;
-    for(uint i = 0; i < N * M; ++i)
-        result[i] = _mat[i] > _s;
-    return result;
-}
-
-template<typename T1, typename T, uint M, uint N>
-inline Matrix<bool, M, N> operator> (T1 _s, const Matrix<T, M, N>& _mat)
-{
-    Matrix<bool, M, N> result;
-    for(uint i = 0; i < N * M; ++i)
-        result[i] = _s > _mat[i];
-    return result;
-}
-
-// ********************************************************************* //
-template<typename T, uint M, uint N, typename T1>
-inline Matrix<RESULT_TYPE(*), M, N> operator* (const Matrix<T,M,N>& _mat, T1 _s)
-{
-    Matrix<RESULT_TYPE(*), M, N> result;
-    for(uint i = 0; i < N * M; ++i)
-        result[i] = _mat[i] * _s;
-    return result;
-}
-
-template<typename T1, typename T, uint M, uint N>
-inline Matrix<RESULT_TYPE(*), M, N> operator* (T1 _s, const Matrix<T,M,N>& _mat)
-{
-    Matrix<RESULT_TYPE(*), M, N> result;
-    for(uint i = 0; i < N * M; ++i)
-        result[i] = _s * _mat[i];
-    return result;
-}
 
 // ************************************************************************* //
 //                               FUNCTIONS                                   //
