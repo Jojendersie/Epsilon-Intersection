@@ -332,26 +332,20 @@ T Matrix<T, M, N>::operator[] (uint _index) const
 }
 
 // ************************************************************************* //
-template<typename T, uint M, uint N>
-template<typename T1>
-Matrix<RESULT_TYPE(+), M, N> Matrix<T, M, N>::operator+ (const Matrix<T1,M,N>& _mat1) const
-{
-    Matrix<RESULT_TYPE(+), M, N> result;
-    for(uint i = 0; i < N * M; ++i)
-        result[i] = (*this)[i] + _mat1[i];
-    return result;
+#define CODE_GEN_MAT_MAT_OP(op)                         \
+template<typename T, uint M, uint N>                    \
+template<typename T1>                                   \
+Matrix<RESULT_TYPE(op), M, N> Matrix<T, M, N>::operator op (const Matrix<T1,M,N>& _mat1) const\
+{                                                       \
+    Matrix<RESULT_TYPE(op), M, N> result;               \
+    for(uint i = 0; i < N * M; ++i)                     \
+        result[i] = (*this)[i] op _mat1[i];             \
+    return result;                                      \
 }
 
 // ************************************************************************* //
-template<typename T, uint M, uint N>
-template<typename T1>
-Matrix<RESULT_TYPE(-), M, N> Matrix<T, M, N>::operator- (const Matrix<T1,M,N>& _mat1) const
-{
-    Matrix<RESULT_TYPE(-), M, N> result;
-    for(uint i = 0; i < N * M; ++i)
-        result[i] = (*this)[i] - _mat1[i];
-    return result;
-}
+CODE_GEN_MAT_MAT_OP(+)
+CODE_GEN_MAT_MAT_OP(-)
 
 // ************************************************************************* //
 template<typename T, uint M, uint N>
@@ -384,81 +378,49 @@ Matrix<T, M, N>::operator* (const Matrix<T1,N,O>& _mat1) const
 }
 
 // ************************************************************************* //
-template<typename T, uint M, uint N>
-template<typename T1, class>
-Matrix<RESULT_TYPE(*), M, 1> Matrix<T, M, N>::operator* (const Matrix<T1,M,1>& _mat1) const
+template<typename T, typename T1, uint M>
+Matrix<RESULT_TYPE(*), M, 1> operator* (const Matrix<T,M,1>& _mat0, const Matrix<T1,M,1>& _mat1)
 {
     Matrix<RESULT_TYPE(*), M, 1> result;
     for(uint i = 0; i < M; ++i)
-        result[i] = (*this)[i] * _mat1[i];
+        result[i] = _mat0[i] * _mat1[i];
     return result;
 }
 
 // ************************************************************************* //
-template<typename T, uint M, uint N>
-template<typename T1, class>
-Matrix<RESULT_TYPE(*), 1, N> Matrix<T, M, N>::operator* (const Matrix<T1,1,N>& _mat1) const
+template<typename T, typename T1, uint N>
+Matrix<RESULT_TYPE(*), 1, N> operator* (const Matrix<T,1,N>& _mat0, const Matrix<T1,1,N>& _mat1)
 {
     Matrix<RESULT_TYPE(*), 1, N> result;
     for(uint i = 0; i < N; ++i)
-        result[i] = (*this)[i] * _mat1[i];
+        result[i] = _mat0[i] * _mat1[i];
     return result;
 }
 
 // ************************************************************************* //
-template<typename T, uint M, uint N>
-template<typename T1, class>
-Matrix<RESULT_TYPE(/), M, 1> Matrix<T, M, N>::operator/ (const Matrix<T1,M,1>& _mat1) const
+template<typename T, typename T1, uint M>
+Matrix<RESULT_TYPE(/), M, 1> operator/ (const Matrix<T,M,1>& _mat0, const Matrix<T1,M,1>& _mat1)
 {
     Matrix<RESULT_TYPE(*), M, 1> result;
     for(uint i = 0; i < M; ++i)
-        result[i] = (*this)[i] / _mat1[i];
+        result[i] = _mat0[i] / _mat1[i];
     return result;
 }
 
 // ************************************************************************* //
-template<typename T, uint M, uint N>
-template<typename T1, class>
-Matrix<RESULT_TYPE(/), 1, N> Matrix<T, M, N>::operator/ (const Matrix<T1,1,N>& _mat1) const
+template<typename T, typename T1, uint N>
+Matrix<RESULT_TYPE(/), 1, N> operator/ (const Matrix<T,1,N>& _mat0, const Matrix<T1,1,N>& _mat1)
 {
     Matrix<RESULT_TYPE(*), 1, N> result;
     for(uint i = 0; i < N; ++i)
-        result[i] = (*this)[i] / _mat1[i];
+        result[i] = _mat0[i] / _mat1[i];
     return result;
 }
 
 // ************************************************************************* //
-template<typename T, uint M, uint N>
-template<typename T1>
-Matrix<RESULT_TYPE(|), M, N> Matrix<T, M, N>::operator| (const Matrix<T1,M,N>& _mat1) const
-{
-    Matrix<RESULT_TYPE(|), M, N> result;
-    for(uint i = 0; i < N * M; ++i)
-        result[i] = (*this)[i] | _mat1[i];
-    return result;
-}
-
-// ************************************************************************* //
-template<typename T, uint M, uint N>
-template<typename T1>
-Matrix<RESULT_TYPE(&), M, N> Matrix<T, M, N>::operator& (const Matrix<T1,M,N>& _mat1) const
-{
-    Matrix<RESULT_TYPE(&), M, N> result;
-    for(uint i = 0; i < N * M; ++i)
-        result[i] = (*this)[i] & _mat1[i];
-    return result;
-}
-
-// ************************************************************************* //
-template<typename T, uint M, uint N>
-template<typename T1>
-Matrix<RESULT_TYPE(^), M, N> Matrix<T, M, N>::operator^ (const Matrix<T1,M,N>& _mat1) const
-{
-    Matrix<RESULT_TYPE(^), M, N> result;
-    for(uint i = 0; i < N * M; ++i)
-        result[i] = (*this)[i] ^ _mat1[i];
-    return result;
-}
+CODE_GEN_MAT_MAT_OP(|)
+CODE_GEN_MAT_MAT_OP(&)
+CODE_GEN_MAT_MAT_OP(^)
 
 // ************************************************************************* //
 template<typename T, uint M, uint N>
@@ -507,6 +469,15 @@ Matrix<T, 1, N>& Matrix<T, M, N>::operator*= (const Matrix<T1,1,N>& _mat1)
 {
     for(uint i = 0; i < N; ++i)
         (*this)[i] *= _mat1[i];
+    return *this;
+}
+
+// ************************************************************************* //
+template<typename T, uint M, uint N>
+template<typename T1, class>
+Matrix<T, M, N>& Matrix<T, M, N>::operator*= (const Matrix<T1,N,M>& _mat1)
+{
+    *this = (*this) * _mat1;
     return *this;
 }
 

@@ -166,17 +166,6 @@ namespace ei {
         typename std::conditional<M * O == 1, RESULT_TYPE(*), Matrix<RESULT_TYPE(*), M, O>>::type
         operator* (const Matrix<T1,N,O>& _mat1) const;                               // TESTED
 
-        /// \brief Component wise multiplication for vectors of the same size.
-        template<typename T1, ENABLE_IF(N == 1)>
-        Matrix<RESULT_TYPE(*), M, 1> operator* (const Matrix<T1,M,1>& _mat1) const;  // TESTED
-        template<typename T1, ENABLE_IF(M == 1)>
-        Matrix<RESULT_TYPE(*), 1, N> operator* (const Matrix<T1,1,N>& _mat1) const;  // TESTED
-        /// \brief Component wise division for vectors of the same size.
-        template<typename T1, ENABLE_IF(N == 1)>
-        Matrix<RESULT_TYPE(/), M, 1> operator/ (const Matrix<T1,M,1>& _mat1) const;  // TESTED
-        template<typename T1, ENABLE_IF(M == 1)>
-        Matrix<RESULT_TYPE(/), 1, N> operator/ (const Matrix<T1,1,N>& _mat1) const;  // TESTED
-
         /// \brief Component wise binary or.
         /// \details Or is commutative.
         template<typename T1>
@@ -199,11 +188,13 @@ namespace ei {
         template<typename T1>
         Matrix<T, M, N>& operator-= (const Matrix<T1,M,N>& _mat1);             // TESTED
         /// \brief Self assigning component wise multiplication for vectors
-        ///    of the same size.
+        ///    of the same size and squared matrices.
         template<typename T1, ENABLE_IF(N == 1)>
         Matrix<T, M, 1>& operator*= (const Matrix<T1,M,1>& _mat1);             // TESTED
         template<typename T1, ENABLE_IF(M == 1)>
         Matrix<T, 1, N>& operator*= (const Matrix<T1,1,N>& _mat1);             // TESTED
+        template<typename T1, ENABLE_IF(M == N)>
+        Matrix<T, M, N>& operator*= (const Matrix<T1,N,M>& _mat1);
         /// \brief Self assigning component wise division for vectors
         ///    of the same size.
         template<typename T1, ENABLE_IF(N == 1)>
@@ -237,6 +228,20 @@ namespace ei {
         /// \brief Compare component wise, if elements are greater or equal.
         Matrix<bool,M,N> operator>= (const Matrix<T,M,N>& _mat1) const;        // TESTED
     };
+
+    // ********************************************************************* //
+    // Vector operators
+
+    /// \brief Component wise multiplication for vectors of the same size.
+    template<typename T, typename T1, uint M>
+    Matrix<RESULT_TYPE(*), M, 1> operator* (const Matrix<T,M,1>& _mat0, const Matrix<T1,M,1>& _mat1);  // TESTED
+    template<typename T, typename T1, uint N>
+    Matrix<RESULT_TYPE(*), 1, N> operator* (const Matrix<T,1,N>& _mat0, const Matrix<T1,1,N>& _mat1);  // TESTED
+    /// \brief Component wise division for vectors of the same size.
+    template<typename T, typename T1, uint M>
+    Matrix<RESULT_TYPE(/), M, 1> operator/ (const Matrix<T,M,1>& _mat0, const Matrix<T1,M,1>& _mat1);  // TESTED
+    template<typename T, typename T1, uint N>
+    Matrix<RESULT_TYPE(/), 1, N> operator/ (const Matrix<T,1,N>& _mat0, const Matrix<T1,1,N>& _mat1);  // TESTED
 
     // ********************************************************************* //
     // Scalar operators
@@ -317,18 +322,18 @@ namespace ei {
     template<typename T, unsigned N> using RVec = Matrix<T, 1, N>;
 
     /// \brief 2D column-vector of type float.
-    typedef Vec<float, 2> Vec2;
+    typedef Matrix<float, 2, 1> Vec2;
     /// \brief 3D column-vector of type float.
-    typedef Vec<float, 3> Vec3;
+    typedef Matrix<float, 3, 1> Vec3;
     /// \brief 4D column-vector of type float.
-    typedef Vec<float, 4> Vec4;
+    typedef Matrix<float, 4, 1> Vec4;
 
     /// \brief 2D row-vector of type float.
-    typedef RVec<float, 2> RVec2;
+    typedef Matrix<float, 1, 2> RVec2;
     /// \brief 3D row-vector of type float.
-    typedef RVec<float, 3> RVec3;
+    typedef Matrix<float, 1, 3> RVec3;
     /// \brief 4D row-vector of type float.
-    typedef RVec<float, 4> RVec4;
+    typedef Matrix<float, 1, 4> RVec4;
 
     /// \brief 2x2 matrix of type float.
     typedef Matrix<float, 2, 2> Mat2x2;
@@ -341,18 +346,18 @@ namespace ei {
     // Predefined 32 bit integer vector and matrix types.
 
     /// \brief 2D column-vector of type int32.
-    typedef Vec<int32, 2> IVec2;
+    typedef Matrix<int32, 2, 1> IVec2;
     /// \brief 3D column-vector of type int32.
-    typedef Vec<int32, 3> IVec3;
+    typedef Matrix<int32, 3, 1> IVec3;
     /// \brief 4D column-vector of type int32.
-    typedef Vec<int32, 4> IVec4;
+    typedef Matrix<int32, 4, 1> IVec4;
 
     /// \brief 2D row-vector of type int32.
-    typedef RVec<int32, 2> IRVec2;
+    typedef Matrix<int32, 1, 2> IRVec2;
     /// \brief 3D row-vector of type int32.
-    typedef RVec<int32, 3> IRVec3;
+    typedef Matrix<int32, 1, 3> IRVec3;
     /// \brief 4D row-vector of type int32.
-    typedef RVec<int32, 4> IRVec4;
+    typedef Matrix<int32, 1, 4> IRVec4;
 
     /// \brief 2x2 matrix of type int32.
     typedef Matrix<int32, 2, 2> IMat2x2;
@@ -365,18 +370,18 @@ namespace ei {
     // Predefined 32 bit unsigned integer vector and matrix types.
 
     /// \brief 2D column-vector of type uint32.
-    typedef Vec<uint32, 2> UVec2;
+    typedef Matrix<uint32, 2, 1> UVec2;
     /// \brief 3D column-vector of type uint32.
-    typedef Vec<uint32, 3> UVec3;
+    typedef Matrix<uint32, 3, 1> UVec3;
     /// \brief 4D column-vector of type uint32.
-    typedef Vec<uint32, 4> UVec4;
+    typedef Matrix<uint32, 4, 1> UVec4;
 
     /// \brief 2D row-vector of type uint32.
-    typedef RVec<uint32, 2> URVec2;
+    typedef Matrix<uint32, 1, 2> URVec2;
     /// \brief 3D row-vector of type uint32.
-    typedef RVec<uint32, 3> URVec3;
+    typedef Matrix<uint32, 1, 3> URVec3;
     /// \brief 4D row-vector of type uint32.
-    typedef RVec<uint32, 4> URVec4;
+    typedef Matrix<uint32, 1, 4> URVec4;
 
     /// \brief 2x2 matrix of type uint32.
     typedef Matrix<uint32, 2, 2> UMat2x2;
