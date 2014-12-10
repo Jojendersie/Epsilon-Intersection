@@ -78,6 +78,17 @@ inline const Vec3& Triangle::v(int _index) const
     return reinterpret_cast<const Vec3*>(this)[_index];
 }
 
+
+// ************************************************************************* //
+inline Disc::Disc(const Vec3& _center, const Vec3& _normal, float _radius) :
+    center(_center),
+    normal(_normal),
+    radius(_radius)
+{
+    eiAssert(_radius >= 0.0f, "Expected a positive radius!");
+}
+
+
 // ************************************************************************* //
 inline Plane::Plane(const Vec3& _normal, float _d) :
     n(_normal),

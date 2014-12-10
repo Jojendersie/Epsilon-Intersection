@@ -8,6 +8,7 @@ namespace ei
     float volume(const Sphere& _sphere);                                       // TESTED
     float volume(const Box& _box);                                             // TESTED
     float volume(const Triangle& _triangle);                                   // TESTED
+    float volume(const Disc& _disc);
     float volume(const Plane& _plane);                                         // TESTED
     float volume(const DOP& _dop);
     float volume(const Ellipsoid& _ellipsoid);                                 // TESTED
@@ -16,6 +17,7 @@ namespace ei
     float surface(const Sphere& _sphere);                                      // TESTED
     float surface(const Box& _box);                                            // TESTED
     float surface(const Triangle& _triangle);                                  // TESTED
+    float surface(const Disc& _disc);
     float surface(const Plane& _plane);                                        // TESTED
     float surface(const DOP& _dop);
     float surface(const Ellipsoid& _ellipsoid);                                // TESTED

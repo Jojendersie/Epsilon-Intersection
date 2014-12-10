@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "matrix.hpp"
 
@@ -84,6 +84,17 @@ namespace ei {
         explicit Box( const Ellipsoid& _ellipsoid );                           // TESTED
     };
 
+    /// \brief Oriented bounding box.
+    /// \details If you are going to use oriented bounding boxes you might want
+    ///     to use multiple double oriented planes (k-DOPs) instead. The
+    ///     parametrization of the OBox is more natuaral wheras k-DOPs are faster????
+    /*struct OBox
+    {
+        Vec3 center;
+        Vec3 sides;                 ///< Side lengths of the box
+        Quaternion orientation;     ///< Orientation of the box
+    };*/
+
     /// \brief A triangle in 3D space.
     struct Triangle
     {
@@ -99,7 +110,21 @@ namespace ei {
         Triangle() {}
 
         /// \brief Create from three vertex coordinates
-        Triangle( const Vec3& _v0, const Vec3& _v1, const Vec3& _v2 );
+        Triangle(const Vec3& _v0, const Vec3& _v1, const Vec3& _v2);
+    };
+
+    /// \brief A 2D cicular element in 3D space
+    struct Disc
+    {
+        Vec3 center;        ///< Center/Position of the disc
+        Vec3 normal;        ///< Disc normal
+        float radius;       ///< Disc radius [0,INF) allowed
+
+        /// \brief Create uninitialized Disc.
+        Disc() {}
+
+        /// \brief Create from parameters
+        Disc(const Vec3& _center, const Vec3& _normal, float _radius);
     };
 
     /// \brief A plane in 3D. If you want to use 2 parallel planes use DOPs
