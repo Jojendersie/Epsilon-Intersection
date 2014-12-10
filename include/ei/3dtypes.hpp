@@ -95,6 +95,24 @@ namespace ei {
         Quaternion orientation;     ///< Orientation of the box
     };*/
 
+    struct Thetrahedron
+    {
+        Vec3 v0;
+        Vec3 v1;
+        Vec3 v2;
+        Vec3 v3;
+
+        /// \brief Indexed access to the 4 vertices
+        Vec3& v(int _index);
+        const Vec3& v(int _index) const;
+
+        /// \brief Create uninitialized thetrahedron.
+        Thetrahedron() {}
+
+        /// \brief Create from four vertices
+        Thetrahedron(const Vec3& _v0, const Vec3& _v1, const Vec3& _v2, const Vec3& _v3);
+    };
+
     /// \brief A triangle in 3D space.
     struct Triangle
     {

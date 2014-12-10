@@ -16,6 +16,7 @@ bool test_3dtypes()
     {
         Sphere sph( Vec3(1.0f, 2.0f, 3.14159f), 0.75f );
         Box box( Vec3(1.0f, 1.0f, 1.0f), Vec3(2.0f, 2.5f, 3.0f) );
+        Thetrahedron the( Vec3(1.0f, 0.0f, -1.0f/PHYTAGORAS), Vec3(-1.0f, 0.0f, -1.0f/PHYTAGORAS), Vec3(0.0f, 1.0f, 1.0f/PHYTAGORAS), Vec3(0.0f, -1.0f, 1.0f/PHYTAGORAS));
         Triangle tri( Vec3(0.0f), Vec3(1.0f, 1.0f, 0.0f), Vec3(0.0f, 0.0f, 1.0f) );
         Disc dis( Vec3(1.0f), normalize(Vec3(-1.0f)), 1.0f );
         Plane pla( Vec3(1.0f, 0.0f, 0.0f), Vec3(1.0f, 1.0f, 0.0f) );
@@ -23,6 +24,7 @@ bool test_3dtypes()
         Ellipsoid ell( Vec3(-1.0f, -0.5f, -0.5f), Vec3(1.5f, 0.75f, 0.75f) );
         TEST( volume(sph) == 1.767145868f, "Volume of a sphere wrong!" );
         TEST( volume(box) == 3.0f, "Volume of a box wrong!" );
+        TEST( volume(the) == 0.942809042f, "Volume of a thetrahedron wrong!" );
         TEST( volume(tri) == 0.0f, "Volume of a triangle wrong!" );
         TEST( volume(dis) == 0.0f, "Volume of a disc wrong!" );
         TEST( volume(pla) == 0.0f, "Volume of a plane wrong!" );
@@ -31,6 +33,7 @@ bool test_3dtypes()
 
         TEST( surface(sph) == 7.068583471f, "Surface of a sphere wrong!" );
         TEST( surface(box) == 13.0f, "Surface of a box wrong!" );
+        TEST( surface(the) == 6.92820323f, "Surface of a thetrahedron wrong!" );
         TEST( surface(tri) == 0.707106781f, "Surface of a triangle wrong!" );
         TEST( surface(dis) == PI, "Surface of a disc wrong!" );
         TEST( surface(pla) == std::numeric_limits<float>::infinity(), "Surface of a plane wrong!" );

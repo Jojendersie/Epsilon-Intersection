@@ -57,6 +57,30 @@ inline Box::Box( const Ellipsoid& _ellipsoid ) :
     eiAssertWeak(all(_ellipsoid.radii >= 0.0f), "Invalid ellipsoid!");
 }
 
+
+// ************************************************************************* //
+inline Thetrahedron::Thetrahedron( const Vec3& _v0, const Vec3& _v1, const Vec3& _v2, const Vec3& _v3 ) :
+    v0(_v0),
+    v1(_v1),
+    v2(_v2),
+    v3(_v3)
+{
+}
+
+// ************************************************************************* //
+inline Vec3& Thetrahedron::v(int _index)
+{
+    eiAssertWeak(_index >= 0 && _index < 4, "A thetrahedron only has 4 vertices!");
+    return reinterpret_cast<Vec3*>(this)[_index];
+}
+
+inline const Vec3& Thetrahedron::v(int _index) const
+{
+    eiAssertWeak(_index >= 0 && _index < 4, "A thetrahedron only has 3 vertices!");
+    return reinterpret_cast<const Vec3*>(this)[_index];
+}
+
+
 // ************************************************************************* //
 inline Triangle::Triangle( const Vec3& _v0, const Vec3& _v1, const Vec3& _v2 ) :
     v0(_v0),

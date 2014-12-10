@@ -10,6 +10,11 @@ inline float volume(const Box& _box)
     return size.x * size.y * size.z;
 }
 
+inline float volume(const Thetrahedron& _thetrahedron)
+{
+    return dot(_thetrahedron.v3-_thetrahedron.v0, cross(_thetrahedron.v2-_thetrahedron.v0, _thetrahedron.v1-_thetrahedron.v0)) / 6.0f;
+}
+
 inline float volume(const Triangle& _triangle)
 {
     return 0.0f;
@@ -45,6 +50,20 @@ inline float surface(const Box& _box)
 {
     Vec3 size = _box.max - _box.min;
     return 2.0f * (size.x * size.y + size.x * size.z + size.y * size.z);
+}
+
+inline float surface(const Thetrahedron& _thetra)
+{
+    // Analogous to a triangle (repeated four times)
+    Vec3 a = _thetra.v1 - _thetra.v0;
+    Vec3 b = _thetra.v2 - _thetra.v0;
+    Vec3 c = _thetra.v3 - _thetra.v0;
+    Vec3 d = _thetra.v2 - _thetra.v1;
+    Vec3 e = _thetra.v3 - _thetra.v1;
+    return 0.5f * (len( cross(a, b) )
+                 + len( cross(a, c) )
+                 + len( cross(b, c) )
+                 + len( cross(d, e) ));
 }
 
 inline float surface(const Triangle& _triangle)
