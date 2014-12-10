@@ -125,6 +125,27 @@ namespace ei {
         Plane(const Vec3& _v0, const Vec3& _v1, const Vec3& _v2);              // TESTED
     };
 
+    /// \brief A double oriented plane (i.e. two parallel planes).
+    /// \details DOPs are often used for generalized bounding volumes (k-DOP).
+    ///     E.g. an axis aligned 3-DOP is the same as an axis aligned bounding
+    ///     box.
+    struct DOP
+    {
+        Vec3 n;     ///< The normal on the first plane
+        float d0;   ///< The distance to the origin of the first plane
+        float d1;   ///< The distance to the origin of the second plane
+
+        /// \brief Create uninitialized DOP.
+        DOP() {}
+
+        /// \brief Create a DOP from direct parameters
+        DOP(const Vec3& _normal, float _d0, float _d1);
+
+        /// \brief Create a DOP from a direction (normal) and two support
+        ///     vectors.
+        DOP(const Vec3& _normal, const Vec3& _support0, const Vec3& _support1);
+    };
+
     /// \brief An axis alignd ellipsoid.
     struct Ellipsoid
     {

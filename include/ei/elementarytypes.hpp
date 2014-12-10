@@ -39,12 +39,20 @@ namespace ei {
 #endif
 
 namespace details {
-	/// \brief Dummy class to detect correct types for matrix <-> matrix
-	///     and matrix <-> scalar operations.
-	/// \details The overloading mechanism fails when both types of operations
-	///     are templated, because the matrix <-> scalar is chosen even if
-	///     both operants are matrices.
-	class MatrixType	{};
+    /// \brief Dummy class to detect correct types for matrix <-> matrix
+    ///     and matrix <-> scalar operations.
+    /// \details The overloading mechanism fails when both types of operations
+    ///     are templated, because the matrix <-> scalar is chosen even if
+    ///     both operants are matrices.
+    class MatrixType    {};
+
+    // Avoid including <limits> by defining infinity itself.
+    union Inf {
+        float f;
+        Int<4>::utype i;
+        Inf(Int<4>::utype _i) : i(_i) {}
+    };
+    const Inf F_INF = 0x7f800000;
 }
 
 namespace ei {
@@ -55,11 +63,14 @@ namespace ei {
     const float E = 2.718281828f;
     const float GOLDEN_RATIO = 1.61803398875f;
     const float PHYTAGORAS = 1.4142135623f;
+    // The cmath header has an ugly macro with name INFINITY -> name conflict
+    const float INF = details::F_INF.f;
     // Unicode names for the above constants
     const float π = PI;
     const float Φ = GOLDEN_RATIO;
     const float √2 = PHYTAGORAS;
     const float ℇ = E;
+    const float ∞ = INF;
 
     // ********************************************************************* //
     //                               FUNCTIONS                               //

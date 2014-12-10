@@ -18,17 +18,20 @@ bool test_3dtypes()
         Box box( Vec3(1.0f, 1.0f, 1.0f), Vec3(2.0f, 2.5f, 3.0f) );
         Triangle tri( Vec3(0.0f), Vec3(1.0f, 1.0f, 0.0f), Vec3(0.0f, 0.0f, 1.0f) );
         Plane pla( Vec3(1.0f, 0.0f, 0.0f), Vec3(1.0f, 1.0f, 0.0f) );
+        DOP dop( Vec3(1.0f, 0.0f, 0.0f), -0.5f, 1.5f );
         Ellipsoid ell( Vec3(-1.0f, -0.5f, -0.5f), Vec3(1.5f, 0.75f, 0.75f) );
         TEST( volume(sph) == 1.767145868f, "Volume of a sphere wrong!" );
         TEST( volume(box) == 3.0f, "Volume of a box wrong!" );
         TEST( volume(tri) == 0.0f, "Volume of a triangle wrong!" );
         TEST( volume(pla) == 0.0f, "Volume of a plane wrong!" );
+        TEST( volume(dop) == 0.0f, "Volume of a DOP wrong!" );
         TEST( volume(ell) == 3.53429174f, "Volume of an ellipsoid wrong!" );
 
         TEST( surface(sph) == 7.068583471f, "Surface of a sphere wrong!" );
         TEST( surface(box) == 13.0f, "Surface of a box wrong!" );
         TEST( surface(tri) == 0.707106781f, "Surface of a triangle wrong!" );
         TEST( surface(pla) == std::numeric_limits<float>::infinity(), "Surface of a plane wrong!" );
+        TEST( surface(dop) == std::numeric_limits<float>::infinity(), "Surface of a DOP wrong!" );
         TEST( abs(surface(ell) / 12.0816f - 1.0f) < 0.012f, "Surface approximation of an ellipsoid too far away!" );
     }
 
