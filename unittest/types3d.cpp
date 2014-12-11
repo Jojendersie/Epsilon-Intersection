@@ -22,6 +22,8 @@ bool test_3dtypes()
         Plane pla( Vec3(1.0f, 0.0f, 0.0f), Vec3(1.0f, 1.0f, 0.0f) );
         DOP dop( Vec3(1.0f, 0.0f, 0.0f), -0.5f, 1.5f );
         Ellipsoid ell( Vec3(-1.0f, -0.5f, -0.5f), Vec3(1.5f, 0.75f, 0.75f) );
+        Ray ray( Vec3(0.0f), Vec3(1.0f, 0.0f, 0.0f) );
+        Line lin( Vec3(0.0f), Vec3(2.0f, 0.0f, 0.0f) );
         TEST( volume(sph) == 1.767145868f, "Volume of a sphere wrong!" );
         TEST( volume(box) == 3.0f, "Volume of a box wrong!" );
         TEST( volume(the) == 0.942809042f, "Volume of a thetrahedron wrong!" );
@@ -30,6 +32,8 @@ bool test_3dtypes()
         TEST( volume(pla) == 0.0f, "Volume of a plane wrong!" );
         TEST( volume(dop) == 0.0f, "Volume of a DOP wrong!" );
         TEST( volume(ell) == 3.53429174f, "Volume of an ellipsoid wrong!" );
+        TEST( volume(ray) == 0.0f, "Volume of a ray wrong!" );
+        TEST( volume(lin) == 0.0f, "Volume of a line wrong!" );
 
         TEST( surface(sph) == 7.068583471f, "Surface of a sphere wrong!" );
         TEST( surface(box) == 13.0f, "Surface of a box wrong!" );
@@ -39,6 +43,8 @@ bool test_3dtypes()
         TEST( surface(pla) == std::numeric_limits<float>::infinity(), "Surface of a plane wrong!" );
         TEST( surface(dop) == std::numeric_limits<float>::infinity(), "Surface of a DOP wrong!" );
         TEST( abs(surface(ell) / 12.0816f - 1.0f) < 0.012f, "Surface approximation of an ellipsoid too far away!" );
+        TEST( surface(ray) == 0.0f, "Surface of a ray wrong!" );
+        TEST( surface(lin) == 0.0f, "Surface of a line wrong!" );
     }
 
     // Test plane construction

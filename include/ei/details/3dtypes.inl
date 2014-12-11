@@ -182,3 +182,18 @@ inline Ray::Ray(const Vec3& _origin, const Vec3& _direction) :
 {
     eiAssert(approx(lensq(_direction), 1.0f), "Insert a normalized normal!");
 }
+
+// ************************************************************************* //
+inline Line::Line(const Vec3& _a, const Vec3& _b) :
+    a(_a),
+    b(_b)
+{
+}
+
+// ************************************************************************* //
+inline Line::Line(const Ray& _ray, float _distance) :
+    a(_ray.origin),
+    b(_ray.origin + _ray.direction * _distance)
+{
+    eiAssert(approx(lensq(_ray.direction), 1.0f), "The input ray is not normalized!");
+}
