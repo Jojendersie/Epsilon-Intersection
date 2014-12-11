@@ -5,13 +5,13 @@ inline Sphere::Sphere( const Vec3& _center, float _radius ) :
 {
 }
 
-// ************************************************************************* //
 inline Sphere::Sphere( const Box& _box ) :
     center((_box.min + _box.max) * 0.5f),
     radius(len(_box.max - _box.min) * 0.5f)
 {
     eiAssert( all(_box.max >= _box.min), "Invalid bounding box." );
 }
+
 
 // ************************************************************************* //
 inline Box::Box( const Vec3& _min, const Vec3& _max ) :
@@ -22,7 +22,6 @@ inline Box::Box( const Vec3& _min, const Vec3& _max ) :
         "Minimum coordinates must be smaller or equal the maximum." );
 }
 
-// ************************************************************************* //
 inline Box::Box( const Box& _box0, const Box& _box1 ) :
     min(ei::min(_box0.min, _box1.min)),
     max(ei::max(_box0.max, _box1.max))
@@ -31,7 +30,6 @@ inline Box::Box( const Box& _box0, const Box& _box1 ) :
         "Minimum coordinates must be smaller or equal the maximum." );
 }
 
-// ************************************************************************* //
 inline Box::Box( const Sphere& _sphere ) :
     min(_sphere.center - _sphere.radius),
     max(_sphere.center + _sphere.radius)
@@ -40,7 +38,6 @@ inline Box::Box( const Sphere& _sphere ) :
         "Subtraction or addition of a scalar failed or sphere had negative radius!" );
 }
 
-// ************************************************************************* //
 inline Box::Box( const Triangle& _triangle ) :
     min(ei::min(_triangle.v0, ei::min(_triangle.v1, _triangle.v2))),
     max(ei::max(_triangle.v0, ei::max(_triangle.v1, _triangle.v2)))
@@ -49,7 +46,6 @@ inline Box::Box( const Triangle& _triangle ) :
         "min() or max() failed for a vector!" );
 }
 
-// ************************************************************************* //
 inline Box::Box( const Ellipsoid& _ellipsoid ) :
     min(_ellipsoid.center - _ellipsoid.radii),
     max(_ellipsoid.center + _ellipsoid.radii)
@@ -67,7 +63,6 @@ inline Thetrahedron::Thetrahedron( const Vec3& _v0, const Vec3& _v1, const Vec3&
 {
 }
 
-// ************************************************************************* //
 inline Vec3& Thetrahedron::v(int _index)
 {
     eiAssertWeak(_index >= 0 && _index < 4, "A thetrahedron only has 4 vertices!");
@@ -89,7 +84,6 @@ inline Triangle::Triangle( const Vec3& _v0, const Vec3& _v1, const Vec3& _v2 ) :
 {
 }
 
-// ************************************************************************* //
 inline Vec3& Triangle::v(int _index)
 {
     eiAssertWeak(_index >= 0 && _index < 3, "A triangle only has 3 vertices!");
@@ -121,7 +115,6 @@ inline Plane::Plane(const Vec3& _normal, float _d) :
     eiAssert(approx(len(_normal), 1.0f), "Expected normalized vector for the normal!");
 }
 
-// ************************************************************************* //
 inline Plane::Plane(const Vec3& _normal, const Vec3& _support) :
     n(_normal),
     d(-dot(_normal, _support))
@@ -129,7 +122,6 @@ inline Plane::Plane(const Vec3& _normal, const Vec3& _support) :
     eiAssert(approx(len(_normal), 1.0f), "Expected normalized vector for the normal!");
 }
 
-// ************************************************************************* //
 inline Plane::Plane(const Vec3& _v0, const Vec3& _v1, const Vec3& _v2)
 {
     n = normalize(cross(_v1 - _v0, _v2 - _v0));
@@ -146,7 +138,6 @@ inline DOP::DOP(const Vec3& _normal, float _d0, float _d1) :
     eiAssert(approx(len(_normal), 1.0f), "Expected normalized vector for the normal!");
 }
 
-// ************************************************************************* //
 inline DOP::DOP(const Vec3& _normal, const Vec3& _support0, const Vec3& _support1) :
     n(_normal),
     d0(-dot(_normal, _support0)),
@@ -163,7 +154,6 @@ inline Ellipsoid::Ellipsoid(const Vec3& _center, const Vec3& _radii) :
 {
 }
 
-// ************************************************************************* //
 inline Ellipsoid::Ellipsoid(const Box& _box)
 {
     eiAssert( all(_box.max >= _box.min), "Invalid bounding box." );
@@ -175,6 +165,7 @@ inline Ellipsoid::Ellipsoid(const Box& _box)
     radii = max(radii, Vec3(1e-16f));
 }
 
+
 // ************************************************************************* //
 inline Ray::Ray(const Vec3& _origin, const Vec3& _direction) :
     origin(_origin),
@@ -183,6 +174,7 @@ inline Ray::Ray(const Vec3& _origin, const Vec3& _direction) :
     eiAssert(approx(lensq(_direction), 1.0f), "Insert a normalized normal!");
 }
 
+
 // ************************************************************************* //
 inline Line::Line(const Vec3& _a, const Vec3& _b) :
     a(_a),
@@ -190,10 +182,27 @@ inline Line::Line(const Vec3& _a, const Vec3& _b) :
 {
 }
 
-// ************************************************************************* //
 inline Line::Line(const Ray& _ray, float _distance) :
     a(_ray.origin),
     b(_ray.origin + _ray.direction * _distance)
 {
-    eiAssert(approx(lensq(_ray.direction), 1.0f), "The input ray is not normalized!");
+    eiAssertWeak(approx(lensq(_ray.direction), 1.0f), "The input ray is not normalized!");
+}
+
+
+// ************************************************************************* //
+inline Capsule::Capsule(const Vec3& _a, const Vec3& _b, float _radius) :
+    a(_a),
+    b(_b),
+    radius(_radius)
+{
+    eiAssertWeak(_radius >= 0.0f, "Radius must be positive!");
+}
+
+inline Capsule::Capsule(const Line& _line, float _radius) :
+    a(_line.a),
+    b(_line.b),
+    radius(_radius)
+{
+    eiAssertWeak(_radius >= 0.0f, "Radius must be positive!");
 }

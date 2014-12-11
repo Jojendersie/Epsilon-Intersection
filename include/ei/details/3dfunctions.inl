@@ -50,6 +50,11 @@ inline float volume(const Line& _line)
     return 0.0f;
 }
 
+inline float volume(const Capsule& _capsule)
+{
+    return PI * sq(_capsule.radius) * (_capsule.radius*4.0f/3.0f + len(_capsule.b-_capsule.a));
+}
+
 // ************************************************************************* //
 inline float surface(const Sphere& _sphere)
 {
@@ -116,4 +121,9 @@ inline float surface(const Ray& _ray)
 inline float surface(const Line& _line)
 {
     return 0.0f;
+}
+
+inline float surface(const Capsule& _capsule)
+{
+    return 2 * PI * _capsule.radius * (2 * _capsule.radius + len(_capsule.b-_capsule.a));
 }

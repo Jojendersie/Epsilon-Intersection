@@ -241,6 +241,23 @@ namespace ei {
         Line(const Ray& _ray, float _distance);
     };
 
+    /// \brief A cylinder with hemispherical ends.
+    struct Capsule
+    {
+        Vec3 a;             ///< Start of the inner line (cylinder center bottom)
+        Vec3 b;             ///< End of the inner line (cylinder center top)
+        float radius;       ///< Size of the boundary (radius of cylinder and hemisphere)
+
+        /// \brief Create uninitialized Capsule.
+        Capsule() {}
+
+        /// \brief Direct create from parameters
+        Capsule(const Vec3& _a, const Vec3& _b, float _radius);
+
+        /// \brief Create from line and add boundary
+        Capsule(const Line& _line, float _radius);
+    };
+
     // Include inline implementations
     #include "details/3dtypes.inl"
 }
