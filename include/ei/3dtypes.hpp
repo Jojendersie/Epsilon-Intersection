@@ -16,7 +16,6 @@ namespace ei {
     struct Ray;
     struct Line;
     struct Frustum;
-    struct PyramidFrustum;
     struct Ellipsoid;
     struct OEllipsoid;
     struct Capsule;
@@ -35,7 +34,6 @@ namespace ei {
         RAY,
         LINE,
         FRUSTUM,
-        PYRAMIDFRUSTUM,
         ELLIPSOID,
         OELLIPSOID,
         CAPSULE,
@@ -182,6 +180,10 @@ namespace ei {
         DOP() {}
 
         /// \brief Create a DOP from direct parameters
+        /// \param [in] _d0 Negated distance from the origin to the first plane
+        ///     (-dot(_normal, _support0)).
+        /// \param [in] _d0 Negated distance from the origin to the second plane
+        ///     (-dot(_normal, _support1)).
         DOP(const Vec3& _normal, float _d0, float _d1);
 
         /// \brief Create a DOP from a direction (normal) and two support
@@ -256,6 +258,27 @@ namespace ei {
 
         /// \brief Create from line and add boundary
         Capsule(const Line& _line, float _radius);
+    };
+
+    /// \brief
+    struct Frustum
+    {
+        DOP nf;         ///< Parallel near and far planes
+        Plane l;        ///< left plane
+        Plane r;        ///< right plane
+        Plane t;        ///< top plane
+        Plane b;        ///< bottom plane
+
+        /// \brief Create uninitialized Frustum.
+        Frustum() {}
+
+        /// \brief Create from camera like parametrization (rhs)
+        /// \param [in] _direction Normalized direction vector.
+        /// \param [in] _l Distance to the left plane from center to border on the near plane.
+        /// \param [in] _r Distance to the right plane from center to border on the near plane.
+        /// \param [in] _t Distance to the top plane from center to border on the near plane.
+        /// \param [in] _b Distance to the bottom plane from center to border on the near plane.
+        Frustum(const Vec3& _origin, const Vec3& _direction, const Vec3& _up, float _n, float _f, float _l, float _r, float _t, float _b);
     };
 
     // Include inline implementations

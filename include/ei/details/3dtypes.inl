@@ -206,3 +206,28 @@ inline Capsule::Capsule(const Line& _line, float _radius) :
 {
     eiAssertWeak(_radius >= 0.0f, "Radius must be positive!");
 }
+
+
+// ************************************************************************* //
+inline Frustum::Frustum(const Vec3& _origin, const Vec3& _direction, const Vec3& _up, float _n, float _f, float _l, float _r, float _t, float _b) :
+    nf(_direction, _n * _direction + _origin, _f * _direction + _origin)
+{
+    eiAssert(approx(lensq(_direction), 1.0f), "Insert a normalized direction!");
+    eiAssert(approx(lensq(_up), 1.0f), "Insert a normalized up vector!");
+    eiAssert(_n < _f, "Near and far frustum planes are sorted wrongly.");
+    eiAssert(_l < _r, "Left and right frustum planes are sorted wrongly.");
+    eiAssert(_t < _b, "Top and bottom frustum planes are sorted wrongly.");
+
+    // Get third axis and central off point
+    Vec3 right = cross(_direction, _up);
+    Vec3 near = _n * _direction + _origin;
+    // Use two vectors in the planes to derive the normal.
+    Vec3 onPlane = near - _l*right;
+    l = Plane(normalize(cross(_up, onPlane)), onPlane);
+    onPlane = near + _r*right;
+    r = Plane(normalize(cross(onPlane, _up)), onPlane);
+    onPlane = near - _b*_up;
+    b = Plane(normalize(cross(onPlane, right)), onPlane);
+    onPlane = near + _t*_up;
+    t = Plane(normalize(cross(right, onPlane)), onPlane);
+}
