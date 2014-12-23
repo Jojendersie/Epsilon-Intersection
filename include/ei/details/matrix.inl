@@ -1432,7 +1432,7 @@ inline Mat4x4 rotationH( const Vec3& _v, float _angle )
 inline Mat3x3 lookAt( const Vec3& _target, const Vec3& _up )
 {
     Vec3 zAxis = normalize(_target);
-    Vec3 xAxis = cross(zAxis, _up);
+    Vec3 xAxis = normalize(cross(zAxis, _up));
     Vec3 yAxis = cross(xAxis, zAxis);
     return axis( xAxis, yAxis, zAxis );
 }
