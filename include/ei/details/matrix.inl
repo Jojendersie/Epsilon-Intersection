@@ -1085,48 +1085,6 @@ inline Matrix<float,4,4> identity<float,4>()
                   0.0f, 0.0f, 0.0f, 1.0f);
 }
 
-// ************************************************************************* //
-template<typename T, unsigned N>
-Matrix<T,N+1,N+1> homo( const Matrix<T,N,N>& _mat0 )
-{
-    Matrix<T,N+1,N+1> result;
-    // Indices for _mat0 and result
-    uint i = 0, j = 0;
-    for(uint y = 0; y < N; ++y)
-    {
-        // Copy NxN part
-        for(uint x = 0; x < N; ++x)
-            result[j++] = _mat0[i++];
-        // New element at the end of the row is 0
-        result[j++] = T(0);
-    }
-    // Fill new row
-    for(uint x = 0; x < N; ++x)
-        result[j + x] = T(0);
-    result[j + N] = T(1);
-    return result;
-}
-
-template<typename T, unsigned N>
-Matrix<T,N+1,1> homo( const Matrix<T,N,1>& _v0 )
-{
-    Matrix<T,N+1,1> result;
-    for(uint i = 0; i < N; ++i)
-        result[i] = _v0[i];
-    result[N] = T(1);
-    return result;
-}
-
-template<typename T, unsigned N>
-Matrix<T,1,N+1> homo( const Matrix<T,1,N>& _v0 )
-{
-    Matrix<T,1,N+1> result;
-    for(uint i = 0; i < N; ++i)
-        result[i] = _v0[i];
-    result[N] = T(1);
-    return result;
-}
-
 // ********************************************************************* //
 template<typename T, unsigned N>
 Vec<T,N> sphericalCoords( const Vec<T,N>& _v0 )
@@ -1360,7 +1318,7 @@ inline Mat3x3 rotationX( float _angle )
 
 inline Mat4x4 rotationXH( float _angle )
 {
-    return homo(rotationX( _angle ));
+    return details::incrementDims(rotationX( _angle ));
 }
 
 // ************************************************************************* //
@@ -1375,7 +1333,7 @@ inline Mat3x3 rotationY( float _angle )
 
 inline Mat4x4 rotationYH( float _angle )
 {
-    return homo(rotationY( _angle ));
+    return details::incrementDims(rotationY( _angle ));
 }
 
 // ************************************************************************* //
@@ -1390,7 +1348,7 @@ inline Mat3x3 rotationZ( float _angle )
 
 inline Mat4x4 rotationZH( float _angle )
 {
-    return homo(rotationZ( _angle ));
+    return details::incrementDims(rotationZ( _angle ));
 }
 
 // ************************************************************************* //
@@ -1409,7 +1367,7 @@ inline Mat3x3 rotation( float _yaw, float _pitch, float _roll )
 
 inline Mat4x4 rotationH( float _yaw, float _pitch, float _roll )
 {
-    return homo(rotation( _yaw, _pitch, _roll ));
+    return details::incrementDims(rotation( _yaw, _pitch, _roll ));
 }
 
 // ************************************************************************* //
@@ -1425,7 +1383,7 @@ inline Mat3x3 rotation( const Vec3& _v, float _angle )
 
 inline Mat4x4 rotationH( const Vec3& _v, float _angle )
 {
-    return homo(rotation( _v, _angle ));
+    return details::incrementDims(rotation( _v, _angle ));
 }
 
 // ************************************************************************* //
@@ -1440,7 +1398,7 @@ inline Mat3x3 lookAt( const Vec3& _target, const Vec3& _up )
 // ************************************************************************* //
 inline Mat4x4 lookAtH( const Vec3& _target, const Vec3& _up )
 {
-    return homo(lookAt( _target, _up ));
+    return details::incrementDims(lookAt( _target, _up ));
 }
 
 // ************************************************************************* //

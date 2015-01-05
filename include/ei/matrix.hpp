@@ -648,22 +648,7 @@ namespace ei {
     Matrix<T,N,N> identity();
 
     // ********************************************************************* //
-    /// \brief Lift vector or squared matrix to homogeneous space.
-    /// \details Adds a row and a column with zeros to a matrix and sets the
-    ///    new diagonal element to 1.
-    ///    A     =>    A 0
-    ///                0 1
-    ///
-    ///   Appends 1 to vectors: v    =>   (v 1)
-    template<typename T, unsigned N>
-    Matrix<T,N+1,N+1> homo( const Matrix<T,N,N>& _mat0 );
-    template<typename T, unsigned N>
-    Matrix<T,N+1,1> homo( const Matrix<T,N,1>& _v0 );
-    template<typename T, unsigned N>
-    Matrix<T,1,N+1> homo( const Matrix<T,1,N>& _v0 );
-
-    // ********************************************************************* //
-    /// \brief Convert a vector from cartesian coordinates in spherical
+    /// \brief Convert a vector from Cartesian coordinates in spherical
     ///     (angular) coordinates.
     /// \details In 2d this gives (r, α) and in 3d this gives (r, θ, ϕ) for
     ///     the vectors: (r cos α, r sin α) and (r cos θ, r sin θ cos ϕ, r sin θ sin ϕ).
@@ -677,9 +662,9 @@ namespace ei {
     RVec<T,N> sphericalCoords( const RVec<T,N>& _v0 );                         // TESTED
 
     // ********************************************************************* //
-    /// \brief Convert a vector from sphericar coordinates (r, φ1, φ02, ..., φN-1)
-    ///     to regular cartesian coordinates.
-    /// \return The regular cartesian vector.
+    /// \brief Convert a vector from spherical coordinates (r, φ1, φ02, ..., φN-1)
+    ///     to regular Cartesian coordinates.
+    /// \return The regular Cartesian vector.
     template<typename T, unsigned N>
     Vec<T,N> cartesianCoords( const Vec<T,N>& _v0 );                           // TESTED
     template<typename T, unsigned N>
@@ -778,9 +763,15 @@ namespace ei {
 
     // ********************************************************************* //
     /// \brief Create a matrix in 3D/homogeneous space where the target is on
-    ///    the positive z-axis.
+    ///     the positive z-axis.
     /// \details This method creates an left-hand system (LHS) with positive
-    ///    z-axis.
+    ///     z-axis.
+    ///
+    ///     This matrix always 'looks' from the origin. Use a camera() or
+    ///     combine with a translation() to add an other origin.
+    /// \param [in] _target A position which should lie on the z-axis.
+    /// \param [in] _up The x-axis/horizon is created perpendicular to this
+    ///     vector. The up vector must not necessarily be normalized.
     Mat3x3 lookAt( const Vec3& _target, const Vec3& _up = Vec3(0.0f, 1.0f, 0.0f));
     Mat4x4 lookAtH( const Vec3& _target, const Vec3& _up = Vec3(0.0f, 1.0f, 0.0f));
 
@@ -873,6 +864,11 @@ namespace ei {
     /// \param [in] _f Far plane
     Mat4x4 orthographicDX( float _l, float _r, float _b, float _t, float _n, float _f );
 
+}
+
+#include "details/matrixutililities.hpp"
+
+namespace ei {
     // Include implementation.
 #   include "details/matrix.inl"
 
