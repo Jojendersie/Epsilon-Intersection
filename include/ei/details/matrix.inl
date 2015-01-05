@@ -1432,7 +1432,7 @@ inline Mat4x4 rotationH( const Vec3& _v, float _angle )
 inline Mat3x3 lookAt( const Vec3& _target, const Vec3& _up )
 {
     Vec3 zAxis = normalize(_target);
-    Vec3 xAxis = cross(zAxis, _up);
+    Vec3 xAxis = normalize(cross(zAxis, _up));
     Vec3 yAxis = cross(xAxis, zAxis);
     return axis( xAxis, yAxis, zAxis );
 }
@@ -1463,7 +1463,7 @@ inline Mat4x4 perspectiveGL( float _fovY, float _aspectRatio, float _n, float _f
 {
     // cot(x) == tan(π/2 - x)
     float h = tan(π * 0.5f -_fovY / 2.0f);
-    float w = h * _aspectRatio;
+    float w = h / _aspectRatio;
     return Mat4x4(w,    0.0f, 0.0f,              0.0f,
                   0.0f, h,    0.0f,              0.0f,
                   0.0f, 0.0f, (_f+_n) / (_f-_n), -2.0f*_n*_f / (_f-_n),
@@ -1493,7 +1493,7 @@ inline Mat4x4 perspectiveDX( float _fovY, float _aspectRatio, float _n, float _f
 {
     // cot(x) == tan(π/2 - x)
     float h = tan(π * 0.5f -_fovY / 2.0f);
-    float w = h * _aspectRatio;
+    float w = h / _aspectRatio;
     return Mat4x4(w,    0.0f, 0.0f,         0.0f,
                   0.0f, h,    0.0f,         0.0f,
                   0.0f, 0.0f, _f / (_f-_n), -_n*_f/(_f-_n),
