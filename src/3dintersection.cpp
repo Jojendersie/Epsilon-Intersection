@@ -15,6 +15,24 @@ namespace ei {
     }
 
     // ********************************************************************* //
+    bool intersects( const Sphere& _sphere, const Box& _box )
+    {
+        float distSq = sq(_sphere.radius);
+        if (_sphere.center.x < _box.min.x) distSq -= sq(_sphere.center.x - _box.min.x);
+        else if (_sphere.center.x > _box.max.x) distSq -= sq(_sphere.center.x - _box.max.x);
+        if(distSq < 0.0f) return false;
+        if (_sphere.center.y < _box.min.y) distSq -= sq(_sphere.center.y - _box.min.y);
+        else if (_sphere.center.y > _box.max.y) distSq -= sq(_sphere.center.y - _box.max.y);
+        if(distSq < 0.0f) return false;
+        if (_sphere.center.z < _box.min.z) distSq -= sq(_sphere.center.z - _box.min.z);
+        else if (_sphere.center.z > _box.max.z) distSq -= sq(_sphere.center.z - _box.max.z);
+        // Vectorized alternative (much slower)
+        //distSq -= lensq(max(Vec3(0.0f), _box.min - _sphere.center));
+        //distSq -= lensq(max(Vec3(0.0f), _sphere.center - _box.max));
+        return distSq > 0.0f;
+    }
+
+    // ********************************************************************* //
     bool intersects( const Vec3& _point, const Ellipsoid& _ellipsoid )
     {
         // Use ellipsoid equation.

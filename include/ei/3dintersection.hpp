@@ -15,6 +15,12 @@ namespace ei {
     bool intersects( const Vec3& _point, const Sphere& _sphere );              // TESTED
     inline bool intersects( const Sphere& _sphere, const Vec3& _point )  { return intersects( _point, _sphere ); }
 
+    /// \brief Does a sphere lie inside a box/touches the boundary?
+    /// \details Performance index: TODO
+    /// \return true if the sphere and the box have at least one point in common.
+    bool intersects( const Sphere& _sphere, const Box& _box );                 // TESTED
+    inline bool intersects( const Box& _box, const Sphere& _sphere )  { return intersects( _sphere, _box ); }
+
     /// \brief Does a point lie inside an ellipsoid/on the boundary?
     /// \details Performance index: 5.68
     /// \return true if the point is inside or on the boundary.

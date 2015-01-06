@@ -171,6 +171,17 @@ bool test_3dintersections()
         performance<Vec3,Sphere>();
     }
 
+    // Test sphere <-> box intersection
+    {
+        Sphere sph0( Vec3(0.0f, 1.0f, 0.0f), 1.0f );
+        Sphere sph1( Vec3(2.0f, 2.0f, 2.0f), 0.99f );
+        Box box0( Vec3(0.0f), Vec3(1.0f) );
+        TEST( intersects( sph0, box0 ), "Box sphere intersection failed!" );
+        TEST( !intersects( sph1, box0 ), "sph1 is outside box0 failed!" );
+
+        performance<Sphere, Box>();
+    }
+
     // Test ellipsoid <-> point intersection
     {
         Vec3 v0( 0.0f, 1.0f, 2.0f );
