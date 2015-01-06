@@ -4,6 +4,12 @@
 
 namespace ei {
 
+    /// \brief Does a point lie inside a sphere/on the boundary?
+    /// \details Performance index: TODO
+    /// \return true if the point is inside or on the boundary.
+    bool intersects( const Vec3& _point, const Sphere& _sphere );              // TESTED
+    inline bool intersects( const Sphere& _sphere, const Vec3& _point )  { return intersects( _point, _sphere ); }
+
     /// \brief Does a point lie inside an ellipsoid/on the boundary?
     /// \details Performance index: 5.68
     /// \return true if the point is inside or on the boundary.

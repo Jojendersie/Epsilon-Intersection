@@ -18,6 +18,11 @@ template<> void random<Vec3>(Vec3& _out)
     _out = Vec3(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f);
 }
 
+template<> void random<Sphere>(Sphere& _out)
+{
+    _out = Sphere(Vec3(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f), rnd() * 0.2f + 0.05f);
+}
+
 template<> void random<Ellipsoid>(Ellipsoid& _out)
 {
     _out.center = Vec3(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f);
@@ -44,6 +49,7 @@ template<> void random<Box>(Box& _out)
 template<class T> const char* name() { return typeid(T).name(); }
 template<> const char* name<Vec3>() { return "Point"; }
 template<> const char* name<Ray>() { return "Ray"; }
+template<> const char* name<Sphere>() { return "Sphere"; }
 template<> const char* name<Ellipsoid>() { return "Ellipsoid"; }
 template<> const char* name<Box>() { return "Box"; }
 template<> const char* name<Triangle>() { return "Triangle"; }
@@ -140,6 +146,17 @@ template<class T0, class T1> void performanceRet1f()
 bool test_3dintersections()
 {
     bool result = true;
+
+    // Test sphere <-> point intersection
+    {
+        Vec3 v0( 0.0f, 1.0f, 1.0f );
+        Vec3 v1( 1e-3f, 1.0f, 1.0f );
+        Sphere sph0( Vec3(0.0f, 1.0f, 0.0f), 1.0f );
+        TEST( intersects( v0, sph0 ), "Point in sphere failed!" );
+        TEST( !intersects( v1, sph0 ), "Point outside sphere failed!" );
+
+        performance<Vec3,Sphere>();
+    }
 
     // Test ellipsoid <-> point intersection
     {

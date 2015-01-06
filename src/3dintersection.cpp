@@ -3,6 +3,12 @@
 namespace ei {
 
     // ********************************************************************* //
+    bool intersects( const Vec3& _point, const Sphere& _sphere )
+    {
+        return lensq(_point-_sphere.center) <= sq(_sphere.radius);
+    }
+
+    // ********************************************************************* //
     bool intersects( const Vec3& _point, const Ellipsoid& _ellipsoid )
     {
         // Use ellipsoid equation.
