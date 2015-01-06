@@ -272,22 +272,12 @@ namespace ei {
     ///     not for fast intersection tests.
     struct Frustum
     {
-        /*const struct Planes {
-            DOP nf;         ///< Parallel near and far planes
-            Plane l;        ///< left plane
-            Plane r;        ///< right plane
-            Plane t;        ///< top plane
-            Plane b;        ///< bottom plane
-        } planes;*/
         Vec3 apex;          ///< The origin / tip of the pyramid
         Vec3 up;
         Vec3 direction;
         float l, r;         ///< Left and right distances on the far plane. Assumption: l < r
         float b, t;         ///< Bottom and top distances on the far plane. Assumption: b < t
         float n, f;         ///< Near and far distance. Assumptions: 0 <= n < f
-
-        /// \brief Get the direction perpendicular to near and far plane.
-        //const Vec3& direction() const { return planes.nf.n; }
 
         /// \brief Create from camera like parametrization (LHS)
         /// \param [in] _direction Normalized direction vector.
@@ -300,6 +290,26 @@ namespace ei {
         /// \param [in] _t Distance to the top plane from center to border on
         ///     the far plane.
         Frustum(const Vec3& _apex, const Vec3& _direction, const Vec3& _up, float _l, float _r, float _b, float _t, float _n, float _f);
+    };
+
+
+    // ********************************************************************* //
+    //                           FAST VARIANTS                               //
+    // ********************************************************************* //
+
+    struct FastFrustum
+    {
+        const DOP nf;         ///< Parallel near and far planes
+        const Plane l;        ///< left plane
+        const Plane r;        ///< right plane
+        const Plane t;        ///< top plane
+        const Plane b;        ///< bottom plane
+
+        /// \brief Construction from dynamic variant
+        FastFrustum(const Frustum& _frustum);
+
+        /// \brief Create from standard frustum parametrization
+        FastFrustum(const Vec3& _apex, const Vec3& _direction, const Vec3& _up, float _l, float _r, float _b, float _t, float _n, float _f);
     };
 
     // Include inline implementations

@@ -220,22 +220,11 @@ inline Frustum::Frustum(const Vec3& _apex, const Vec3& _direction, const Vec3& _
     eiAssert(_n < _f && 0 <= _n, "Near and far frustum planes are sorted wrongly.");
     eiAssert(_l < _r, "Left and right frustum planes are sorted wrongly.");
     eiAssert(_b < _t, "Top and bottom frustum planes are sorted wrongly.");
+}
 
-    // Initialization of planes is difficult in the list, so the const-cast
-    // only defers the initialization a bit.
-    /*Planes* pl = const_cast<Planes*>(&planes);
 
-    Vec3 far = _f * _direction + _apex;
-    pl->nf = DOP(_direction, _n * _direction + _apex, far);
-    // Get third axis and central off point
-    Vec3 right = cross(_direction, _up);
-    // Use two vectors in the planes to derive the normal.
-    Vec3 onPlane = far + _l*right;
-    pl->l = Plane(normalize(cross(_up, onPlane)), onPlane);
-    onPlane = far + _r*right;
-    pl->r = Plane(normalize(cross(onPlane, _up)), onPlane);
-    onPlane = far + _b*_up;
-    pl->b = Plane(normalize(cross(onPlane, right)), onPlane);
-    onPlane = far + _t*_up;
-    pl->t = Plane(normalize(cross(right, onPlane)), onPlane);*/
+// ************************************************************************* //
+inline FastFrustum::FastFrustum(const Vec3& _apex, const Vec3& _direction, const Vec3& _up, float _l, float _r, float _b, float _t, float _n, float _f) :
+    FastFrustum(Frustum(_apex, _direction, _up, _l, _r, _b, _t, _n, _f))
+{
 }
