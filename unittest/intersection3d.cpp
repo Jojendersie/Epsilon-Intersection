@@ -147,6 +147,19 @@ bool test_3dintersections()
 {
     bool result = true;
 
+    // Test sphere <-> sphere intersection
+    {
+        Sphere sph0( Vec3(0.0f, 1.0f, 0.0f), 1.0f );
+        Sphere sph1( Vec3(0.0f, 1.1f, 0.0f), 0.5f );
+        Sphere sph2( Vec3(0.0f, -1.0f, 0.0f), 1.0f );
+        Sphere sph3( Vec3(0.0f, -1.0f, 0.0f), 0.9f );
+        TEST( intersects( sph0, sph1 ), "sph1 is inside sph0!" );
+        TEST( intersects( sph0, sph2 ), "sph2 touches sph0!" );
+        TEST( !intersects( sph0, sph3 ), "sph0 and sph3 does not intersect!" );
+
+        performance<Sphere,Sphere>();
+    }
+
     // Test sphere <-> point intersection
     {
         Vec3 v0( 0.0f, 1.0f, 1.0f );

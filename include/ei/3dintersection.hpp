@@ -4,6 +4,11 @@
 
 namespace ei {
 
+    /// \brief Do two spheres intersect, touch or is on inside the other?
+    /// \details Performance index: TODO
+    /// \return true if both spheres have at least one point in common.
+    bool intersects( const Sphere& _sphere0, const Sphere& _sphere1 );         // TESTED
+
     /// \brief Does a point lie inside a sphere/on the boundary?
     /// \details Performance index: TODO
     /// \return true if the point is inside or on the boundary.

@@ -3,6 +3,12 @@
 namespace ei {
 
     // ********************************************************************* //
+    bool intersects( const Sphere& _sphere0, const Sphere& _sphere1 )
+    {
+        return lensq(_sphere1.center-_sphere0.center) <= sq(_sphere0.radius + _sphere1.radius);
+    }
+
+    // ********************************************************************* //
     bool intersects( const Vec3& _point, const Sphere& _sphere )
     {
         return lensq(_point-_sphere.center) <= sq(_sphere.radius);
