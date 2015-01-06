@@ -20,6 +20,12 @@ namespace ei {
     struct OEllipsoid;
     struct Capsule;
 
+    // Fast types are designed if a primitive should be tested against many
+    // others. They may take more memory for precomputed and redundant
+    // information. For that reason they contain only const members to avoid
+    // inconsistent states.
+    struct FastFrustum;
+
     /// \brief A list of all supported 3d types
     enum struct Types3D
     {
@@ -260,25 +266,40 @@ namespace ei {
         Capsule(const Line& _line, float _radius);
     };
 
-    /// \brief
+    /// \brief A pyramid frustum with four planes which intersect in one point.
+    /// \details There is also a FastFrustum type which should be used for camera
+    ///     frustums etc. This type is intended for calculations with a frustum
+    ///     not for fast intersection tests.
     struct Frustum
     {
-        DOP nf;         ///< Parallel near and far planes
-        Plane l;        ///< left plane
-        Plane r;        ///< right plane
-        Plane t;        ///< top plane
-        Plane b;        ///< bottom plane
+        /*const struct Planes {
+            DOP nf;         ///< Parallel near and far planes
+            Plane l;        ///< left plane
+            Plane r;        ///< right plane
+            Plane t;        ///< top plane
+            Plane b;        ///< bottom plane
+        } planes;*/
+        Vec3 apex;          ///< The origin / tip of the pyramid
+        Vec3 up;
+        Vec3 direction;
+        float l, r;         ///< Left and right distances on the far plane. Assumption: l < r
+        float b, t;         ///< Bottom and top distances on the far plane. Assumption: b < t
+        float n, f;         ///< Near and far distance. Assumptions: 0 <= n < f
 
-        /// \brief Create uninitialized Frustum.
-        Frustum() {}
+        /// \brief Get the direction perpendicular to near and far plane.
+        //const Vec3& direction() const { return planes.nf.n; }
 
-        /// \brief Create from camera like parametrization (rhs)
+        /// \brief Create from camera like parametrization (LHS)
         /// \param [in] _direction Normalized direction vector.
-        /// \param [in] _l Distance to the left plane from center to border on the near plane.
-        /// \param [in] _r Distance to the right plane from center to border on the near plane.
-        /// \param [in] _t Distance to the top plane from center to border on the near plane.
-        /// \param [in] _b Distance to the bottom plane from center to border on the near plane.
-        Frustum(const Vec3& _origin, const Vec3& _direction, const Vec3& _up, float _n, float _f, float _l, float _r, float _t, float _b);
+        /// \param [in] _l Distance to the left plane from center to border on
+        ///     the far plane.
+        /// \param [in] _r Distance to the right plane from center to border
+        ///     on the far plane.
+        /// \param [in] _b Distance to the bottom plane from center to border
+        ///     on the far plane.
+        /// \param [in] _t Distance to the top plane from center to border on
+        ///     the far plane.
+        Frustum(const Vec3& _apex, const Vec3& _direction, const Vec3& _up, float _l, float _r, float _b, float _t, float _n, float _f);
     };
 
     // Include inline implementations

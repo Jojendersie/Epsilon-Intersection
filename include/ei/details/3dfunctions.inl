@@ -55,6 +55,20 @@ inline float volume(const Capsule& _capsule)
     return PI * sq(_capsule.radius) * (_capsule.radius*4.0f/3.0f + len(_capsule.b-_capsule.a));
 }
 
+inline float volume(const Frustum& _frustum)
+{
+    eiAssert( _frustum.r > _frustum.l, "Bad parametrization!" );
+    eiAssert( _frustum.t > _frustum.b, "Bad parametrization!" );
+    eiAssert( _frustum.f > _frustum.n, "Bad parametrization!" );
+    // Use formular: V = (f-n)/3 * (a1 + sqrt(a1*a2) + a2) where a1 is the area on the
+    // far plane and a2 that on the near plane.
+    // Since a2 = sq(n/f) * a1 the formular simplifies to:
+    // (f-n)/3 * (a1 + a1 * (n/f) + a1 * sq(n/f))
+    float a1 = (_frustum.r - _frustum.l) * (_frustum.t - _frustum.b);
+    float ratio = (_frustum.n / _frustum.f);
+    return (_frustum.f - _frustum.n) / 3.0f * (a1 + (a1 + a1 * ratio) * ratio);
+}
+
 // ************************************************************************* //
 inline float surface(const Sphere& _sphere)
 {
@@ -126,4 +140,20 @@ inline float surface(const Line& _line)
 inline float surface(const Capsule& _capsule)
 {
     return 2 * PI * _capsule.radius * (2 * _capsule.radius + len(_capsule.b-_capsule.a));
+}
+
+inline float surface(const Frustum& _frustum)
+{
+    // Calculate area of all 6 sides and add them
+    float hratio = (_frustum.f - _frustum.n) / _frustum.f;
+    float ratio = _frustum.n / _frustum.f;
+    // Far side
+    float a1 = (_frustum.r - _frustum.l) * (_frustum.t - _frustum.b);
+    // Near side
+    float a2 = sq(ratio) * a1;
+    // Top and bottom side
+    float a3_a5 = (sqrt(sq(_frustum.f)+sq(_frustum.b)) + sqrt(sq(_frustum.f)+sq(_frustum.t))) * 0.5f * ((_frustum.r - _frustum.l) * (1.0f + ratio));
+    // Left and right side
+    float a4_a6 = (sqrt(sq(_frustum.f)+sq(_frustum.l)) + sqrt(sq(_frustum.f)+sq(_frustum.r))) * 0.5f * ((_frustum.t - _frustum.b) * (1.0f + ratio));
+    return a1 + a2 + a3_a5 + a4_a6;
 }

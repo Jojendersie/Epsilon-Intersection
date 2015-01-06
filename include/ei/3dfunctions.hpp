@@ -16,6 +16,7 @@ namespace ei
     float volume(const Ray& _ray);                                             // TESTED
     float volume(const Line& _line);                                           // TESTED
     float volume(const Capsule& _capsule);                                     // TESTED
+    float volume(const Frustum& _frustum);                                     // TESTED
 
     /// \brief Get the surface area of any object.
     float surface(const Sphere& _sphere);                                      // TESTED
@@ -29,6 +30,7 @@ namespace ei
     float surface(const Ray& _ray);                                            // TESTED
     float surface(const Line& _line);                                          // TESTED
     float surface(const Capsule& _capsule);                                    // TESTED
+    float surface(const Frustum& _frustum);                                    // TESTED
 
     // Include inline implementations
 #   include "details/3dfunctions.inl"

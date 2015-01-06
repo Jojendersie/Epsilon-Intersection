@@ -25,6 +25,7 @@ bool test_3dtypes()
         Ray ray( Vec3(0.0f), Vec3(1.0f, 0.0f, 0.0f) );
         Line lin( Vec3(0.0f), Vec3(2.0f, 0.0f, 0.0f) );
         Capsule cap( Vec3(0.0f), Vec3(0.0f, 1.0f, 0.0f), 0.5f);
+        Frustum fru( Vec3(0.0f), Vec3(0.0f, 0.0f, 1.0f), Vec3(0.0f, 1.0f, 0.0f), 1.0f, 2.0f, 0.0f, 1.0f, 0.0f, 1.0f);
         TEST( volume(sph) == 1.767145868f, "Volume of a sphere wrong!" );
         TEST( volume(box) == 3.0f, "Volume of a box wrong!" );
         TEST( volume(the) == 0.942809042f, "Volume of a thetrahedron wrong!" );
@@ -36,10 +37,11 @@ bool test_3dtypes()
         TEST( volume(ray) == 0.0f, "Volume of a ray wrong!" );
         TEST( volume(lin) == 0.0f, "Volume of a line wrong!" );
         TEST( volume(cap) == 1.30899704f, "Volume of a capsule wrong!" );
+        TEST( volume(fru) == 0.33333333f, "Volume of a frustum wrong!" );
 
         TEST( surface(sph) == 7.068583471f, "Surface of a sphere wrong!" );
         TEST( surface(box) == 13.0f, "Surface of a box wrong!" );
-        TEST( surface(the) == 6.92820323f, "Surface of a thetrahedron wrong!" );
+        TEST( surface(the) == 6.92820323f, "Surface of a tetrahedron wrong!" );
         TEST( surface(tri) == 0.707106781f, "Surface of a triangle wrong!" );
         TEST( surface(dis) == PI, "Surface of a disc wrong!" );
         TEST( surface(pla) == std::numeric_limits<float>::infinity(), "Surface of a plane wrong!" );
@@ -48,6 +50,10 @@ bool test_3dtypes()
         TEST( surface(ray) == 0.0f, "Surface of a ray wrong!" );
         TEST( surface(lin) == 0.0f, "Surface of a line wrong!" );
         TEST( surface(cap) == 6.283185307f, "Surface of a capsule wrong!" );
+        Vec3 a(1.0f, 0.0f, 1.0f), b(2.0f, 0.0f, 1.0f), c(2.0f, 1.0f, 1.0f), d(1.0f, 1.0f, 1.0f);
+        float refA3_A5 = 0.5f * (len(cross(a, b)) + len(cross(c, d)));
+        float refA4_A6 = 0.5f * (len(cross(b, c)) + len(cross(d, a)));
+        TEST( surface(fru) == refA3_A5 + refA4_A6 + 1.0f, "Surface of a frustum wrong!" );
     }
 
     // Test plane construction
