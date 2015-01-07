@@ -1387,6 +1387,21 @@ inline Mat4x4 rotationH( const Vec3& _v, float _angle )
 }
 
 // ************************************************************************* //
+template<typename T, unsigned N>
+inline Vec<T,N> reflect( const Vec<T,N>& _incident, const Vec<T,N>& _at )
+{
+    eiAssertWeak(approx(lensq(_at), 1.0f), "The reflection normal must be normalized!");
+    return _incident - (static_cast<T>(2) * dot(_incident, _at)) * _at;
+}
+
+template<typename T, unsigned N>
+inline RVec<T,N> reflect( const RVec<T,N>& _incident, const RVec<T,N>& _at )
+{
+    eiAssertWeak(approx(lensq(_at), 1.0f), "The reflection normal must be normalized!");
+    return _incident - (static_cast<T>(2) * dot(_incident, _at)) * _at;
+}
+
+// ************************************************************************* //
 inline Mat3x3 lookAt( const Vec3& _target, const Vec3& _up )
 {
     Vec3 zAxis = normalize(_target);

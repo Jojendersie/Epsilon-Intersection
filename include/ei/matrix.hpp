@@ -762,6 +762,17 @@ namespace ei {
     // TODO: from quaternion
 
     // ********************************************************************* //
+    /// \brief Reflect a vector at a plane.
+    /// \details Reflects using I - 2 * dot(I,At) * At (householder transformation)
+    /// \param [in] _incident A direction or position vector which should be
+    ///     reflected.
+    /// \param [in] _at The normal vector for the reflection plane (normalized!).
+    template<typename T, unsigned N>
+    Vec<T,N> reflect( const Vec<T,N>& _incident, const Vec<T,N>& _at );
+    template<typename T, unsigned N>
+    RVec<T,N> reflect( const RVec<T,N>& _incident, const RVec<T,N>& _at );
+
+    // ********************************************************************* //
     /// \brief Create a matrix in 3D/homogeneous space where the target is on
     ///     the positive z-axis.
     /// \details This method creates an left-hand system (LHS) with positive

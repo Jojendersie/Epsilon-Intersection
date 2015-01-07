@@ -16,17 +16,17 @@ namespace details {
     {
         ei::Matrix<T,N+1,N+1> result;
         // Indices for _mat0 and result
-        ei::uint i = 0, j = 0;
-        for(ei::uint y = 0; y < N; ++y)
+        unsigned i = 0, j = 0;
+        for(unsigned y = 0; y < N; ++y)
         {
             // Copy NxN part
-            for(ei::uint x = 0; x < N; ++x)
+            for(unsigned x = 0; x < N; ++x)
                 result[j++] = _mat0[i++];
             // New element at the end of the row is 0
             result[j++] = T(0);
         }
         // Fill new row
-        for(ei::uint x = 0; x < N; ++x)
+        for(unsigned x = 0; x < N; ++x)
             result[j + x] = T(0);
         result[j + N] = T(1);
         return result;
@@ -36,7 +36,7 @@ namespace details {
     ei::Matrix<T,N+1,1> incrementDims( const ei::Matrix<T,N,1>& _v0 )
     {
         ei::Matrix<T,N+1,1> result;
-        for(ei::uint i = 0; i < N; ++i)
+        for(unsigned i = 0; i < N; ++i)
             result[i] = _v0[i];
         result[N] = T(1);
         return result;
@@ -46,7 +46,7 @@ namespace details {
     ei::Matrix<T,1,N+1> incrementDims( const ei::Matrix<T,1,N>& _v0 )
     {
         ei::Matrix<T,1,N+1> result;
-        for(ei::uint i = 0; i < N; ++i)
+        for(unsigned i = 0; i < N; ++i)
             result[i] = _v0[i];
         result[N] = T(1);
         return result;
