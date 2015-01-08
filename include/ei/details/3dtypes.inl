@@ -228,3 +228,12 @@ inline FastFrustum::FastFrustum(const Vec3& _apex, const Vec3& _direction, const
     FastFrustum(Frustum(_apex, _direction, _up, _l, _r, _b, _t, _n, _f))
 {
 }
+
+inline Frustum& FastFrustum::operator = (const Frustum& _frustum)
+{
+    const_cast<DOP&>(nf) = nf;
+    const_cast<Plane&>(l) = l;
+    const_cast<Plane&>(r) = r;
+    const_cast<Plane&>(b) = b;
+    const_cast<Plane&>(t) = t;
+}

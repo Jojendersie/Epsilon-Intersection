@@ -152,8 +152,8 @@ inline float surface(const Frustum& _frustum)
     // Near side
     float a2 = sq(ratio) * a1;
     // Top and bottom side
-    float a3_a5 = (sqrt(sq(_frustum.f)+sq(_frustum.b)) + sqrt(sq(_frustum.f)+sq(_frustum.t))) * 0.5f * ((_frustum.r - _frustum.l) * (1.0f + ratio));
+    float a3_a5 = (sqrt(sq(_frustum.f)+sq(_frustum.b)) + sqrt(sq(_frustum.f)+sq(_frustum.t))) * hratio * 0.5f * ((_frustum.r - _frustum.l) * (1.0f + ratio));
     // Left and right side
-    float a4_a6 = (sqrt(sq(_frustum.f)+sq(_frustum.l)) + sqrt(sq(_frustum.f)+sq(_frustum.r))) * 0.5f * ((_frustum.t - _frustum.b) * (1.0f + ratio));
+    float a4_a6 = (sqrt(sq(_frustum.f)+sq(_frustum.l)) + sqrt(sq(_frustum.f)+sq(_frustum.r))) * hratio * 0.5f * ((_frustum.t - _frustum.b) * (1.0f + ratio));
     return a1 + a2 + a3_a5 + a4_a6;
 }

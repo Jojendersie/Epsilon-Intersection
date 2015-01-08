@@ -5,18 +5,18 @@
 namespace ei {
 
     /// \brief Do two spheres intersect, touch or is on inside the other?
-    /// \details Performance index: TODO
+    /// \details Performance index: 4.52
     /// \return true if both spheres have at least one point in common.
     bool intersects( const Sphere& _sphere0, const Sphere& _sphere1 );         // TESTED
 
     /// \brief Does a point lie inside a sphere/on the boundary?
-    /// \details Performance index: TODO
+    /// \details Performance index: 3.62
     /// \return true if the point is inside or on the boundary.
     bool intersects( const Vec3& _point, const Sphere& _sphere );              // TESTED
     inline bool intersects( const Sphere& _sphere, const Vec3& _point )  { return intersects( _point, _sphere ); }
 
     /// \brief Does a sphere lie inside a box/touches the boundary?
-    /// \details Performance index: TODO
+    /// \details Performance index: 7.12
     /// \return true if the sphere and the box have at least one point in common.
     bool intersects( const Sphere& _sphere, const Box& _box );                 // TESTED
     inline bool intersects( const Box& _box, const Sphere& _sphere )  { return intersects( _sphere, _box ); }
