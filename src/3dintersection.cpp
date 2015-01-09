@@ -33,6 +33,21 @@ namespace ei {
     }
 
     // ********************************************************************* //
+    bool intersects( const Box& _box0, const Box& _box1 )
+    {
+        eiAssert(all(_box0.min <= _box0.max), "Box0 is invalid.");
+        eiAssert(all(_box1.min <= _box1.max), "Box1 is invalid.");
+        // There must be an intersection if the sum of side length is larger
+        // than that of the bounding box.
+//        return all((max(_box0.max, _box1.max) - min(_box0.min, _box1.min))
+//            <= ((_box0.max - _box0.min) + (_box1.max - _box1.min)));
+        // Non-vector variant is faster
+        return (max(_box0.max.x, _box1.max.x) - min(_box0.min.x, _box1.min.x)) <= ((_box0.max.x - _box0.min.x) + (_box1.max.x - _box1.min.x))
+            && (max(_box0.max.y, _box1.max.y) - min(_box0.min.y, _box1.min.y)) <= ((_box0.max.y - _box0.min.y) + (_box1.max.y - _box1.min.y))
+            && (max(_box0.max.z, _box1.max.z) - min(_box0.min.z, _box1.min.z)) <= ((_box0.max.z - _box0.min.z) + (_box1.max.z - _box1.min.z));
+    }
+
+    // ********************************************************************* //
     bool intersects( const Vec3& _point, const Ellipsoid& _ellipsoid )
     {
         // Use ellipsoid equation.

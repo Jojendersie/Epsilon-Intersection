@@ -4,31 +4,36 @@
 
 namespace ei {
 
-    /// \brief Do two spheres intersect, touch or is on inside the other?
-    /// \details Performance index: 4.52
+    /// \brief Do two spheres intersect, touch or is one inside the other?
+    /// \details Performance index: 3.95
     /// \return true if both spheres have at least one point in common.
     bool intersects( const Sphere& _sphere0, const Sphere& _sphere1 );         // TESTED
 
     /// \brief Does a point lie inside a sphere/on the boundary?
-    /// \details Performance index: 3.62
+    /// \details Performance index: 3.33
     /// \return true if the point is inside or on the boundary.
     bool intersects( const Vec3& _point, const Sphere& _sphere );              // TESTED
     inline bool intersects( const Sphere& _sphere, const Vec3& _point )  { return intersects( _point, _sphere ); }
 
     /// \brief Does a sphere lie inside a box/touches the boundary?
-    /// \details Performance index: 7.12
+    /// \details Performance index: 12.2
     /// \return true if the sphere and the box have at least one point in common.
     bool intersects( const Sphere& _sphere, const Box& _box );                 // TESTED
     inline bool intersects( const Box& _box, const Sphere& _sphere )  { return intersects( _sphere, _box ); }
 
+    /// \brief Do two boxes intersect, touch or is one inside the other?
+    /// \details Performance index: 16.7
+    /// \return true if both boxes have at least one point in common.
+    bool intersects( const Box& _box0, const Box& _box1 );                     // TESTED
+
     /// \brief Does a point lie inside an ellipsoid/on the boundary?
-    /// \details Performance index: 5.68
+    /// \details Performance index: 6.9
     /// \return true if the point is inside or on the boundary.
     bool intersects( const Vec3& _point, const Ellipsoid& _ellipsoid );        // TESTED
     inline bool intersects( const Ellipsoid& _ellipsoid, const Vec3& _point )  { return intersects( _point, _ellipsoid ); }
 
     /// \brief Do a ray and an ellipsoid intersect or touch?
-    /// \details Performance index: 23.1, 23.9 (Numbers for increasing
+    /// \details Performance index: 22.7, 25.1 (Numbers for increasing
     ///     usage of optional parameters)
     /// \param [out,opt] _distance The ray parameter (distance) for the first
     ///     intersection point in positive direction.
@@ -42,7 +47,7 @@ namespace ei {
     inline bool intersects( const Ellipsoid& _ellipsoid, const Ray& _ray, float& _distance )  { return intersects( _ray, _ellipsoid, _distance ); }
 
     /// \brief Do a ray and a box intersect or touch?
-    /// \details Performance index: 17.1, 18.0 (Numbers for increasing
+    /// \details Performance index: 27.6, 27.2 (Numbers for increasing
     ///     usage of optional parameters)
     /// \param [out,opt] _distance The ray parameter (distance) for the first
     ///     intersection point in positive direction.
@@ -62,7 +67,7 @@ namespace ei {
     inline bool intersects( const Box& _box, const Ray& _ray, float& _distance, float& _distanceExit )  { return intersects( _ray, _box, _distance, _distanceExit ); }
 
     /// \brief Do a ray and a triangle intersect or touch?
-    /// \details Performance index: 12.3, 13.7, TODO (Numbers for increasing
+    /// \details Performance index: 11.9, 16.1, TODO (Numbers for increasing
     ///     usage of optional parameters)
     /// \param [out,opt] _distance The ray parameter (distance) for the first
     ///     intersection point in positive direction.

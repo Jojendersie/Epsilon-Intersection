@@ -10,7 +10,7 @@ namespace egg = ei;
 
 
 // Define the assertions depending on the option level.
-#if defined(DEBUG) || defined(_DEBUG) || !defined(NDEBUG)
+#if defined(DEBUG) || defined(_DEBUG)
 #   ifdef EI_DEBUG_BREAK
 #   undef EI_DEBUG_BREAK
 #   endif

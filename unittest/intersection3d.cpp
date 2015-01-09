@@ -149,13 +149,30 @@ bool test_3dintersections()
 
     // Test sphere <-> sphere intersection
     {
+        Box box0( Vec3(0.0f), Vec3(1.0f) );
+        Box box1( Vec3(0.25f), Vec3(0.5f) );
+        Box box2( Vec3(0.5f), Vec3(1.5f) );
+        Box box3( Vec3(-1.0f), Vec3(0.0f) );
+        Box box4( Vec3(0.4f, -1.0f, 0.4f), Vec3(0.6f, 2.0f, 0.6f) );
+        Box box5( Vec3(2.0f, -1.0f, 0.0f), Vec3(3.0f, 1.0f, 1.0f) );
+        TEST( intersects( box0, box1 ), "box1 is inside box0!" );
+        TEST( intersects( box0, box2 ), "box2 intersects box0!" );
+        TEST( intersects( box0, box3 ), "box3 touches box0!" );
+        TEST( intersects( box0, box4 ), "box4 intersects box0!" );
+        TEST( !intersects( box0, box5 ), "box5 does not intersect box0!" );
+
+        performance<Box,Box>();
+    }
+
+    // Test sphere <-> sphere intersection
+    {
         Sphere sph0( Vec3(0.0f, 1.0f, 0.0f), 1.0f );
         Sphere sph1( Vec3(0.0f, 1.1f, 0.0f), 0.5f );
         Sphere sph2( Vec3(0.0f, -1.0f, 0.0f), 1.0f );
         Sphere sph3( Vec3(0.0f, -1.0f, 0.0f), 0.9f );
         TEST( intersects( sph0, sph1 ), "sph1 is inside sph0!" );
         TEST( intersects( sph0, sph2 ), "sph2 touches sph0!" );
-        TEST( !intersects( sph0, sph3 ), "sph0 and sph3 does not intersect!" );
+        TEST( !intersects( sph0, sph3 ), "sph0 and sph3 do not intersect!" );
 
         performance<Sphere,Sphere>();
     }

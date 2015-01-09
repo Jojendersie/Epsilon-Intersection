@@ -20,3 +20,33 @@ config -- elementarytypes -- matrix -|- 2dtypes -- 2dfunctions -- 2dintersection
                                      |- 3dtypes -- 3dfunctions -- 3dintersection
 Hence each one includes all its parents. You always need to include only the
 latest one.
+
+
+3. Available Methods
+-------------------------------------------------------------------------------
+
+The following table gives an overview over the implemented intersection methods.
+The numbers are the performance indices (relative numbers) and can be used to
+compare the method execution speed.
+Benchmarkconfig: i7-4950S, VS2013, /O2, Win32
+
+2D
+
+3D           | Box  | Cap. | Disc | DOP  | Ell. | Fru. | Line | OBox | OEl. | Pla. | Poi. | Ray  | Sph. | The. | Tri. |
+-------------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|
+Box          | 16.7 |      |      |      |      |      |      |      |      |      |      | 27.6 | 12.2 |      |      |
+Capsule      | ---- |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
+Disc         | ---- | ---- |      |      |      |      |      |      |      |      |      |      |      |      |      |
+DOP          | ---- | ---- | ---- |      |      |      |      |      |      |      |      |      |      |      |      |
+Ellipsoid    | ---- | ---- | ---- | ---- |      |      |      |      |      |      | 6.90 | 22.7 |      |      |      |
+Frustum      | ---- | ---- | ---- | ---- | ---- |      |      |      |      |      |      |      |      |      |      |
+Line         | ---- | ---- | ---- | ---- | ---- | ---- |      |      |      |      |      |      |      |      |      |
+OBox         | ---- | ---- | ---- | ---- | ---- | ---- | ---- |      |      |      |      |      |      |      |      |
+OEllipsoid   | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |      |      |      |      |      |      |      |
+Plane        | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |      |      |      |      |      |      |
+Point        | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |      |      | 3.33 |      |      |
+Ray          | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |      |      |      | 11.9 |
+Sphere       | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | 3.95 |      |      |
+Thetrahedron | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |      |      |
+Triangle     | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |      |
+-------------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|
