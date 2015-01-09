@@ -1136,7 +1136,7 @@ RVec<T,N> cartesianCoords( const RVec<T,N>& _v0 )
 template<typename T, unsigned N>
 Matrix<T,N,1> transform( const Matrix<T,N,1>& _what, const Matrix<T,N+1,N+1>& _space )
 {
-    Matrix<T,1,N+1> t;
+    Matrix<T,N+1,1> t;
     // Multiply Matrix * Vector(_what,1)
     for(uint y = 0; y <= N; ++y)
     {
@@ -1147,7 +1147,7 @@ Matrix<T,N,1> transform( const Matrix<T,N,1>& _what, const Matrix<T,N+1,N+1>& _s
             t[y] += _space(y,x) * _what[x];
     }
     // Create a reduced vector with divided components
-    Matrix<T,1,N> result;
+    Matrix<T,N,1> result;
     for(uint i = 0; i < N; ++i)
         result[i] = t[i] / t[N];
     return result;
@@ -1156,7 +1156,7 @@ Matrix<T,N,1> transform( const Matrix<T,N,1>& _what, const Matrix<T,N+1,N+1>& _s
 template<typename T, unsigned N>
 Matrix<T,1,N> transform( const Matrix<T,1,N>& _what, const Matrix<T,N+1,N+1>& _space )
 {
-    Matrix<T,N+1,1> t;
+    Matrix<T,1,N+1> t;
     // Multiply Vector(_what,1) * Matrix
     for(uint x = 0; x <= N; ++x)
     {
@@ -1167,7 +1167,7 @@ Matrix<T,1,N> transform( const Matrix<T,1,N>& _what, const Matrix<T,N+1,N+1>& _s
             t[x] += _what[y] * _space(y,x);
     }
     // Create a reduced vector with divided components
-    Matrix<T,N,1> result;
+    Matrix<T,1,N> result;
     for(uint i = 0; i < N; ++i)
         result[i] = t[i] / t[N];
     return result;
@@ -1177,7 +1177,7 @@ Matrix<T,1,N> transform( const Matrix<T,1,N>& _what, const Matrix<T,N+1,N+1>& _s
 template<typename T, unsigned N>
 Matrix<T,N,1> transformDir( const Matrix<T,N,1>& _what, const Matrix<T,N+1,N+1>& _space )
 {
-    Matrix<T,1,N> result;
+    Matrix<T,N,1> result;
     // Multiply Matrix * Vector(_what,0)
     for(uint y = 0; y < N; ++y)
     {
@@ -1193,7 +1193,7 @@ Matrix<T,N,1> transformDir( const Matrix<T,N,1>& _what, const Matrix<T,N+1,N+1>&
 template<typename T, unsigned N>
 Matrix<T,1,N> transformDir( const Matrix<T,1,N>& _what, const Matrix<T,N+1,N+1>& _space )
 {
-    Matrix<T,N,1> result;
+    Matrix<T,1,N> result;
     // Multiply Vector(_what,0) * Matrix
     for(uint x = 0; x < N; ++x)
     {
