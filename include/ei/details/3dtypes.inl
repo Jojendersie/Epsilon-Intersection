@@ -176,13 +176,13 @@ inline Ray::Ray(const Vec3& _origin, const Vec3& _direction) :
 
 
 // ************************************************************************* //
-inline Line::Line(const Vec3& _a, const Vec3& _b) :
+inline Segment::Segment(const Vec3& _a, const Vec3& _b) :
     a(_a),
     b(_b)
 {
 }
 
-inline Line::Line(const Ray& _ray, float _distance) :
+inline Segment::Segment(const Ray& _ray, float _distance) :
     a(_ray.origin),
     b(_ray.origin + _ray.direction * _distance)
 {
@@ -192,16 +192,14 @@ inline Line::Line(const Ray& _ray, float _distance) :
 
 // ************************************************************************* //
 inline Capsule::Capsule(const Vec3& _a, const Vec3& _b, float _radius) :
-    a(_a),
-    b(_b),
+    seg(_a, _b),
     radius(_radius)
 {
     eiAssertWeak(_radius >= 0.0f, "Radius must be positive!");
 }
 
-inline Capsule::Capsule(const Line& _line, float _radius) :
-    a(_line.a),
-    b(_line.b),
+inline Capsule::Capsule(const Segment& _line, float _radius) :
+    seg(_line),
     radius(_radius)
 {
     eiAssertWeak(_radius >= 0.0f, "Radius must be positive!");

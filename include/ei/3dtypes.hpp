@@ -14,7 +14,7 @@ namespace ei {
     struct Triangle;
     struct Thetrahedron;
     struct Ray;
-    struct Line;
+    struct Segment;
     struct Frustum;
     struct Ellipsoid;
     struct OEllipsoid;
@@ -231,29 +231,28 @@ namespace ei {
         Ray(const Vec3& _origin, const Vec3& _direction);
     };
 
-    /// \brief A line is the connection between two points
-    struct Line
+    /// \brief A line segment is the connection between two points
+    struct Segment
     {
         Vec3 a;             ///< Start of the line
         Vec3 b;             ///< End of the line
 
         /// \brief Create uninitialized Line.
-        Line() {}
+        Segment() {}
 
         /// \brief Create from two points
-        Line(const Vec3& _a, const Vec3& _b);
+        Segment(const Vec3& _a, const Vec3& _b);
 
         /// \brief Create from bounded ray
         /// \param [in] _distance Length of the ray to define the end point of
         ///     the line.
-        Line(const Ray& _ray, float _distance);
+        Segment(const Ray& _ray, float _distance);
     };
 
     /// \brief A cylinder with hemispherical ends.
     struct Capsule
     {
-        Vec3 a;             ///< Start of the inner line (cylinder center bottom)
-        Vec3 b;             ///< End of the inner line (cylinder center top)
+        Segment seg;        ///< Start and end of the inner line (cylinder center bottom/top)
         float radius;       ///< Size of the boundary (radius of cylinder and hemisphere)
 
         /// \brief Create uninitialized Capsule.
@@ -263,7 +262,7 @@ namespace ei {
         Capsule(const Vec3& _a, const Vec3& _b, float _radius);
 
         /// \brief Create from line and add boundary
-        Capsule(const Line& _line, float _radius);
+        Capsule(const Segment& _line, float _radius);
     };
 
     /// \brief A pyramid frustum with four planes which intersect in one point.

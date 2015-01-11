@@ -5,7 +5,6 @@
 #include <iostream>
 
 using namespace ei;
-using namespace std;
 
 bool test_3dtypes()
 {
@@ -23,19 +22,19 @@ bool test_3dtypes()
         DOP dop( Vec3(1.0f, 0.0f, 0.0f), -0.5f, 1.5f );
         Ellipsoid ell( Vec3(-1.0f, -0.5f, -0.5f), Vec3(1.5f, 0.75f, 0.75f) );
         Ray ray( Vec3(0.0f), Vec3(1.0f, 0.0f, 0.0f) );
-        Line lin( Vec3(0.0f), Vec3(2.0f, 0.0f, 0.0f) );
+        Segment seg( Vec3(0.0f), Vec3(2.0f, 0.0f, 0.0f) );
         Capsule cap( Vec3(0.0f), Vec3(0.0f, 1.0f, 0.0f), 0.5f);
         Frustum fru( Vec3(0.0f), Vec3(0.0f, 0.0f, 1.0f), Vec3(0.0f, 1.0f, 0.0f), 1.0f, 2.0f, 0.0f, 1.0f, 0.0f, 1.0f);
         TEST( volume(sph) == 1.767145868f, "Volume of a sphere wrong!" );
         TEST( volume(box) == 3.0f, "Volume of a box wrong!" );
-        TEST( volume(the) == 0.942809042f, "Volume of a thetrahedron wrong!" );
+        TEST( volume(the) == 0.942809042f, "Volume of a tetrahedron wrong!" );
         TEST( volume(tri) == 0.0f, "Volume of a triangle wrong!" );
         TEST( volume(dis) == 0.0f, "Volume of a disc wrong!" );
         TEST( volume(pla) == 0.0f, "Volume of a plane wrong!" );
         TEST( volume(dop) == 0.0f, "Volume of a DOP wrong!" );
         TEST( volume(ell) == 3.53429174f, "Volume of an ellipsoid wrong!" );
         TEST( volume(ray) == 0.0f, "Volume of a ray wrong!" );
-        TEST( volume(lin) == 0.0f, "Volume of a line wrong!" );
+        TEST( volume(seg) == 0.0f, "Volume of a segment wrong!" );
         TEST( volume(cap) == 1.30899704f, "Volume of a capsule wrong!" );
         TEST( volume(fru) == 0.33333333f, "Volume of a frustum wrong!" );
 
@@ -48,7 +47,7 @@ bool test_3dtypes()
         TEST( surface(dop) == std::numeric_limits<float>::infinity(), "Surface of a DOP wrong!" );
         TEST( abs(surface(ell) / 12.0816f - 1.0f) < 0.012f, "Surface approximation of an ellipsoid too far away!" );
         TEST( surface(ray) == 0.0f, "Surface of a ray wrong!" );
-        TEST( surface(lin) == 0.0f, "Surface of a line wrong!" );
+        TEST( surface(seg) == 0.0f, "Surface of a segment wrong!" );
         TEST( surface(cap) == 6.283185307f, "Surface of a capsule wrong!" );
         Vec3 a(1.0f, 0.0f, 1.0f), b(2.0f, 0.0f, 1.0f), c(2.0f, 1.0f, 1.0f), d(1.0f, 1.0f, 1.0f);
         float refA3_A5 = 0.5f * (len(cross(a, b)) + len(cross(c, d)));
@@ -105,6 +104,29 @@ bool test_3dtypes()
         TEST( all(box1.max == box4.max), "Sphere bounding max is wrong!" );
         TEST( all(box5.min == Vec3(-2.0f, -1.0f, -1.0f)), "2Box bounding min is wrong!" );
         TEST( all(box5.max == Vec3(7.0f)), "2Box bounding max is wrong!" );
+    }
+
+    // ********************************************************************* //
+    // Test distance()
+    {
+        Vec3 poi0(0.0f, 1.0f, 1.0f);
+        Vec3 poi1(1.0f, 1.0f, 1.0f);
+        Vec3 poi2(1.0f, 3.0f, 3.0f);
+        Segment seg0(Vec3(0.0f, 0.0f, 0.0f), Vec3(0.0f, 2.0f, 2.0f));
+        Segment seg1(poi1, poi2);
+        Segment seg2(Vec3(-1.0f, 1.0f, 0.0f), Vec3(1.0f, 1.0f, 0.0f));
+        Segment seg3(Vec3(-1.0f, 1.0f, 1.0f), Vec3(1.0f, 1.0f, 1.0f));
+        Capsule cap0(Vec3(0.0f, 0.0f, 0.0f), Vec3(0.0f, 0.0f, 1.0f), 0.5f);
+        Capsule cap1(Vec3(0.0f, 1.0f, 0.5f), Vec3(0.0f, 1.0f, 2.0f), 0.25f);
+        TEST( distance(poi0, poi0) == 0.0f, "Distance between two equal points is 0!");
+        TEST( distance(poi0, poi1) == 1.0f, "Distance between poi0 and poi1 is 1!");
+        TEST( distance(poi0, seg0) == 0.0f, "Distance between poi0 and seg0 is 0!");
+        TEST( distance(poi1, seg0) == 1.0f, "Distance between poi1 and seg0 is 1!");
+        TEST( distance(poi2, seg0) == sqrt(3.0f), "Distance between poi2 and seg0 is sqrt(3.0f)!");
+        TEST( distance(seg0, seg1) == 1.0f, "Distance between seg0 and seg1 is 1!");
+        TEST( distance(seg0, seg2) == 0.707106769f, "Distance between seg0 and seg2 is 1/sqrt(2)!");
+        TEST( distance(seg0, seg3) == 0.0f, "Distance between seg0 and seg3 is 0!");
+        TEST( distance(cap0, cap1) == 0.25f, "Distance between cap0 and cap1 is 0.25!");
     }
 
     return result;

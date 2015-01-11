@@ -26,6 +26,11 @@ namespace ei {
     /// \return true if both boxes have at least one point in common.
     bool intersects( const Box& _box0, const Box& _box1 );                     // TESTED
 
+    /// \brief Do two capsules intersect, touch or is one inside the other?
+    /// \details Performance index: TODO
+    /// \return true if both spheres have at least one point in common.
+    bool intersects( const Capsule& _capsule0, const Capsule& _capsule1 );     // TESTED
+
     /// \brief Does a point lie inside an ellipsoid/on the boundary?
     /// \details Performance index: 6.9
     /// \return true if the point is inside or on the boundary.

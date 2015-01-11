@@ -1,10 +1,10 @@
 ﻿#pragma once
 
-#define TEST(expression, message) \
-    if( !(expression) )           \
-    {                             \
-        cerr << message << '\n';  \
-        result = false;           \
+#define TEST(expression, message)      \
+    if( !(expression) )                \
+    {                                  \
+        std::cerr << message << '\n';  \
+        result = false;                \
     }
 
 ε::uint64 ticks();

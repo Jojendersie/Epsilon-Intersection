@@ -48,6 +48,12 @@ namespace ei {
     }
 
     // ********************************************************************* //
+    bool intersects( const Capsule& _capsule0, const Capsule& _capsule1 )
+    {
+        return distance(_capsule0.seg, _capsule1.seg) <= (_capsule0.radius + _capsule1.radius);
+    }
+
+    // ********************************************************************* //
     bool intersects( const Vec3& _point, const Ellipsoid& _ellipsoid )
     {
         // Use ellipsoid equation.

@@ -177,6 +177,18 @@ bool test_3dintersections()
         performance<Sphere,Sphere>();
     }
 
+    // Test capsule <-> capsule intersection
+    {
+        Capsule cap0(Vec3(0.0f, 0.0f, 0.0f), Vec3(0.0f, 0.0f, 1.0f), 0.5f);
+        Capsule cap1(Vec3(0.0f, 1.0f, 0.5f), Vec3(0.0f, 1.0f, 1.0f), 0.25f);
+        Capsule cap2(Vec3(0.0f, 1.0f, 0.5f), Vec3(1.0f, 1.0f, 0.5f), 0.5f);
+        TEST( intersects( cap1, cap2 ), "cap1 intersects cap2!" );
+        TEST( intersects( cap0, cap2 ), "cap2 touches cap0!" );
+        TEST( !intersects( cap0, cap1 ), "cap0 and cap1 do not intersect!" );
+
+        performance<Capsule,Capsule>();
+    }
+
     // Test sphere <-> point intersection
     {
         Vec3 v0( 0.0f, 1.0f, 1.0f );

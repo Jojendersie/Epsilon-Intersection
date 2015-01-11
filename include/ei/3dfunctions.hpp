@@ -14,7 +14,7 @@ namespace ei
     float volume(const DOP& _dop);                                             // TESTED
     float volume(const Ellipsoid& _ellipsoid);                                 // TESTED
     float volume(const Ray& _ray);                                             // TESTED
-    float volume(const Line& _line);                                           // TESTED
+    float volume(const Segment& _line);                                        // TESTED
     float volume(const Capsule& _capsule);                                     // TESTED
     float volume(const Frustum& _frustum);                                     // TESTED
 
@@ -28,9 +28,16 @@ namespace ei
     float surface(const DOP& _dop);                                            // TESTED
     float surface(const Ellipsoid& _ellipsoid);                                // TESTED
     float surface(const Ray& _ray);                                            // TESTED
-    float surface(const Line& _line);                                          // TESTED
+    float surface(const Segment& _line);                                       // TESTED
     float surface(const Capsule& _capsule);                                    // TESTED
     float surface(const Frustum& _frustum);                                    // TESTED
+
+    /// \brief Get the euclidean distance between two objects
+    float distance(const Vec3& _point0, const Vec3& _point1);                  // TESTED
+    float distance(const Vec3& _point, const Segment& _line);                  // TESTED
+    inline float distance(const Segment& _line, const Vec3& _point)   { return distance(_point, _line); }
+    float distance(const Segment& _line0, const Segment& _line1);              // TESTED
+    float distance(const Capsule& _capsule0, const Capsule& _capsule1);        // TESTED
 
     // Include inline implementations
 #   include "details/3dfunctions.inl"
