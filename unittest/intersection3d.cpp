@@ -1,146 +1,9 @@
 #include "ei/3dintersection.hpp"
 #include "unittest.hpp"
-
-#include <iostream>
-#include <vector>
+#include "performance3d.hpp"
 
 using namespace ei;
 using namespace std;
-
-// ************************************************************************* //
-// Function to create reasonable random geometry in the [-1,1] cube
-template<class T> void random(T& _out)
-{
-}
-
-template<> void random<Vec3>(Vec3& _out)
-{
-    _out = Vec3(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f);
-}
-
-template<> void random<Sphere>(Sphere& _out)
-{
-    _out = Sphere(Vec3(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f), rnd() * 0.2f + 0.05f);
-}
-
-template<> void random<Ellipsoid>(Ellipsoid& _out)
-{
-    _out.center = Vec3(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f);
-    _out.radii = Vec3(rnd() * 0.2f + 0.05f, rnd() * 0.2f + 0.05f, rnd() * 0.2f + 0.05f);
-}
-
-template<> void random<Ray>(Ray& _out)
-{
-    _out.origin = Vec3(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f);
-    float cosTheta = rnd() * 2.0f - 1.0f;
-    float phi = rnd() * 2.0f * PI;
-    float sinTheta = sqrt(1 - sq(cosTheta));
-    _out.direction = Vec3(sinTheta * cos(phi), cosTheta, sinTheta * sin(phi));
-}
-
-template<> void random<Box>(Box& _out)
-{
-    Vec3 w(rnd() * 0.3f + 0.05f, rnd() * 0.3f + 0.05f, rnd() * 0.3f + 0.05f);
-    _out.min = Vec3(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f);
-    _out.max = _out.min + w;
-    _out.min = _out.min - w;
-}
-
-template<class T> const char* name() { return typeid(T).name(); }
-template<> const char* name<Vec3>() { return "Point"; }
-template<> const char* name<Ray>() { return "Ray"; }
-template<> const char* name<Sphere>() { return "Sphere"; }
-template<> const char* name<Ellipsoid>() { return "Ellipsoid"; }
-template<> const char* name<Box>() { return "Box"; }
-template<> const char* name<Triangle>() { return "Triangle"; }
-
-#ifdef _DEBUG
-    const int PERF_ITERATIONS = 100;
-    const int TEST_PER_ITERATION = 100;
-#else
-    const int PERF_ITERATIONS = 5000;
-    const int TEST_PER_ITERATION = 1000;
-#endif
-
-// ************************************************************************* //
-// Benchmark for basic intersection types
-template<class T0, class T1> void performance()
-{
-    float perfIndex = 0.0f;
-    uint64 totalTicks = 0;
-    for(int t = 0; t < PERF_ITERATIONS; ++t)
-    {
-        // Fill data set for x intersections
-        std::vector<T0> geo0(TEST_PER_ITERATION);
-        std::vector<T1> geo1(TEST_PER_ITERATION);
-        for(int i = 0; i < TEST_PER_ITERATION; ++i)
-        {
-            random(geo0[i]);
-            random(geo1[i]);
-        }
-
-        // Start
-        uint64 a = ticks();
-        volatile bool res;
-        for(int i = 0; i < TEST_PER_ITERATION; ++i)
-            res = intersects(geo0[i], geo1[i]);
-        uint64 b = ticks();
-        // Measure dot products to compare
-        Vec3* source0 = reinterpret_cast<Vec3*>(geo0.data());
-        Vec3* source1 = reinterpret_cast<Vec3*>(geo1.data());
-        volatile float xres;
-        for(int j = 0; j < 10; ++j)
-            for(int i = 0; i < TEST_PER_ITERATION; ++i)
-                 xres = dot(source0[i], source1[i]);
-        uint64 c = ticks();
-        perfIndex += (b-a) * 10.0f / (c-b);
-        totalTicks += b-a;
-    }
-    std::cerr << "Performance " << name<T0>() << " <-> " << name<T1>() << ": "
-        << perfIndex/PERF_ITERATIONS << " absolute ticks: " << totalTicks / float(PERF_ITERATIONS * TEST_PER_ITERATION) << std::endl;
-}
-
-// ************************************************************************* //
-// Benchmark for basic intersection types with single float return value
-template<class T0, class T1> void performanceRet1f()
-{
-    float perfIndex = 0.0f;
-    uint64 totalTicks = 0;
-    for(int t = 0; t < PERF_ITERATIONS; ++t)
-    {
-        // Fill data set for x intersections
-        std::vector<T0> geo0(TEST_PER_ITERATION);
-        std::vector<T1> geo1(TEST_PER_ITERATION);
-        for(int i = 0; i < TEST_PER_ITERATION; ++i)
-        {
-            random(geo0[i]);
-            random(geo1[i]);
-        }
-
-        // Start
-        uint64 a = ticks();
-        volatile bool res;
-        float rt;
-        volatile float eat;
-        for(int i = 0; i < TEST_PER_ITERATION; ++i) {
-            res = intersects(geo0[i], geo1[i], rt);
-            eat = rt;
-        }
-        uint64 b = ticks();
-        // Measure dot products to compare
-        Vec3* source0 = reinterpret_cast<Vec3*>(geo0.data());
-        Vec3* source1 = reinterpret_cast<Vec3*>(geo1.data());
-        volatile float xres;
-        for(int j = 0; j < 10; ++j)
-            for(int i = 0; i < TEST_PER_ITERATION; ++i)
-                 xres = dot(source0[i], source1[i]);
-        uint64 c = ticks();
-        perfIndex += (b-a) * 10.0f / (c-b);
-        totalTicks += b-a;
-    }
-    std::cerr << "Performance " << name<T0>() << " <-> " << name<T1>() << " with ret1f: "
-        << perfIndex/PERF_ITERATIONS << " absolute ticks: " << totalTicks / float(PERF_ITERATIONS * TEST_PER_ITERATION) << std::endl;
-}
 
 
 bool test_3dintersections()
@@ -161,7 +24,7 @@ bool test_3dintersections()
         TEST( intersects( box0, box4 ), "box4 intersects box0!" );
         TEST( !intersects( box0, box5 ), "box5 does not intersect box0!" );
 
-        performance<Box,Box>();
+        performance<Box,Box>(intersects, "intersects");
     }
 
     // Test sphere <-> sphere intersection
@@ -174,7 +37,7 @@ bool test_3dintersections()
         TEST( intersects( sph0, sph2 ), "sph2 touches sph0!" );
         TEST( !intersects( sph0, sph3 ), "sph0 and sph3 do not intersect!" );
 
-        performance<Sphere,Sphere>();
+        performance<Sphere,Sphere>(intersects, "intersects");
     }
 
     // Test capsule <-> capsule intersection
@@ -186,7 +49,7 @@ bool test_3dintersections()
         TEST( intersects( cap0, cap2 ), "cap2 touches cap0!" );
         TEST( !intersects( cap0, cap1 ), "cap0 and cap1 do not intersect!" );
 
-        performance<Capsule,Capsule>();
+        performance<Capsule,Capsule>(intersects, "intersects");
     }
 
     // Test sphere <-> point intersection
@@ -197,7 +60,7 @@ bool test_3dintersections()
         TEST( intersects( v0, sph0 ), "Point in sphere failed!" );
         TEST( !intersects( v1, sph0 ), "Point outside sphere failed!" );
 
-        performance<Vec3,Sphere>();
+        performance<Vec3,Sphere>(intersects, "intersects");
     }
 
     // Test sphere <-> box intersection
@@ -208,7 +71,7 @@ bool test_3dintersections()
         TEST( intersects( sph0, box0 ), "Box sphere intersection failed!" );
         TEST( !intersects( sph1, box0 ), "sph1 is outside box0 failed!" );
 
-        performance<Sphere, Box>();
+        performance<Sphere, Box>(intersects, "intersects");
     }
 
     // Test ellipsoid <-> point intersection
@@ -219,7 +82,7 @@ bool test_3dintersections()
         TEST( intersects( v0, ell0 ), "Point in degenerated ellipsoid failed!" );
         TEST( !intersects( v1, ell0 ), "Point outside degenerated ellipsoid failed!" );
 
-        performance<Vec3,Ellipsoid>();
+        performance<Vec3,Ellipsoid>(intersects, "intersects");
     }
 
     // Test ellipsoid <-> ray intersection
@@ -250,8 +113,8 @@ bool test_3dintersections()
         TEST( intersects( ray2.origin + ray2.direction * (d+1e-6f), ell1 ), "Hit point outside ell1!" );
         TEST( !intersects( ray2.origin + ray2.direction * (d-1e-6f), ell1 ), "Point should be outside ell1!" );
 
-        performance<Ray,Ellipsoid>();
-        performanceRet1f<Ray,Ellipsoid>();
+        performance<Ray,Ellipsoid,bool>(intersects, "intersects");
+        performance<Ray,Ellipsoid,float,bool>(intersects, "intersects");
     }
 
     // Test box <-> ray intersection
@@ -274,8 +137,8 @@ bool test_3dintersections()
         //TEST( intersects( ray3, box1, d ) && d == 0.25f, "ray3 should hit box1 with a distance of 0.25!" );
         TEST( intersects( ray0, box0, d ) && d == sqrt(2.0f), "ray0 should hit box0 with a distance of sqrt(2)!" );
 
-        performance<Ray,Box>();
-        performanceRet1f<Ray,Box>();
+        performance<Ray,Box,bool>(intersects, "intersects");
+        performance<Ray,Box,float,bool>(intersects, "intersects");
     }
 
     // Test triangle <-> ray intersection
@@ -298,8 +161,8 @@ bool test_3dintersections()
         intersects( ray1, tri1, d, bary );
         TEST( approx(ray1.origin+ray1.direction*d, tri1.v0*bary.x + tri1.v1*bary.y + tri1.v2*bary.z, 1e-5f), "The hit point from barycentric coordinates and ray parameter should be the same (ray1, tri1)." );
 
-        performance<Ray,Triangle>();
-        performanceRet1f<Ray,Triangle>();
+        performance<Ray,Triangle,bool>(intersects, "intersects");
+        performance<Ray,Triangle,float,bool>(intersects, "intersects");
     }
 
     return result;
