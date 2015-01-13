@@ -269,4 +269,33 @@ namespace ei {
         _distance = dot( normal, o ) / dist2A;
         return _distance >= 0.0f;
     }
+
+    // ********************************************************************* //
+    bool intersects( const Sphere& _sphere, const Triangle& _triangle )
+    {
+        Vec3 a = _triangle.v1-_triangle.v0;
+        Vec3 b = _triangle.v2-_triangle.v1;
+        Vec3 c = _triangle.v2-_triangle.v0;
+        Vec3 n = normalize(cross(c, a));
+
+        // Distance to the plane
+        float dist = dot(n, _sphere.center-_triangle.v0);
+        if(dist > _sphere.radius) return false;
+
+        // The point is inside if it is not on the right hand of any edge
+        Vec3 p_v0 = _sphere.center - _triangle.v0;
+        Vec3 p_v1 = _sphere.center - _triangle.v1;
+        bool outSideA = dot(cross(p_v0, a), n) < 0.0f;
+        bool outSideB = dot(cross(p_v1, b), n) < 0.0f;
+        bool outSideC = dot(cross(c, p_v0), n) < 0.0f;   // Inverse sign because of use from p-v0
+
+        if(!(outSideA || outSideB || outSideC))
+            return true;
+
+        // Minimum is somewhere on the three edges.
+        dist =           lensq(p_v0) - sq(dot(p_v0, a)) / lensq(a);
+        dist = min(dist, lensq(p_v1) - sq(dot(p_v1, b)) / lensq(b));
+        dist = min(dist, lensq(p_v0) - sq(dot(p_v0, c)) / lensq(c));
+        return dist <= sq(_sphere.radius);
+    }
 }

@@ -53,18 +53,15 @@ float distance(const Vec3& _point, const Triangle& _triangle)
     Vec3 c = _triangle.v2-_triangle.v0;
     Vec3 n = cross(c, a);
 
-    // Distance to the plane
-    //float dist = dot(n, _point-_triangle.v0);
-    // TODO: sphere intersection :early exit
-
     // The point is inside if it is not on the right hand of any edge
     Vec3 p_v0 = _point - _triangle.v0;
     Vec3 p_v1 = _point - _triangle.v1;
-    bool outSideA = dot(cross(p_v0, a), n) <= 0.0f;
-    bool outSideB = dot(cross(p_v1, b), n) <= 0.0f;
-    bool outSideC = dot(cross(c, p_v0), n) <= 0.0f;   // Inverse sign because of use from p-v0
+    bool outSideA = dot(cross(p_v0, a), n) < 0.0f;
+    bool outSideB = dot(cross(p_v1, b), n) < 0.0f;
+    bool outSideC = dot(cross(c, p_v0), n) < 0.0f;   // Inverse sign because of use from p-v0
 
     if(!(outSideA || outSideB || outSideC))
+        // Distance to the plane
         return dot(normalize(n), _point-_triangle.v0);
 
     // Minimum is somewhere on the three edges.

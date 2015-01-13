@@ -165,5 +165,20 @@ bool test_3dintersections()
         performance<Ray,Triangle,float,bool>(intersects, "intersects");
     }
 
+    // Test sphere <-> triangle intersection
+    {
+        Triangle tri( Vec3(-1.0f, 0.0f, 0.0f), Vec3(1.0f, 0.0f, 0.0f), Vec3(0.0f, 1.0f, 0.0f) );
+        Sphere sph0( Vec3(0.0f, 0.0f, 0.0f), 1.0f );
+        Sphere sph1( Vec3(0.0f, 1.1f, 0.0f), 0.1f );
+        Sphere sph2( Vec3(1.0f, 1.0f, 0.0f), 0.5f );
+        Sphere sph3( Vec3(0.0f, 0.0f, -3.0f), 1.0f );
+        TEST( intersects( tri, sph0 ), "sph0 intersects tri!" );
+        TEST( intersects( tri, sph1 ), "sph1 touches tri!" );
+        TEST( !intersects( tri, sph2 ), "sph2 misses tri!" );
+        TEST( !intersects( tri, sph3 ), "sph3 misses tri!" );
+
+        performance<Sphere,Triangle>(intersects, "intersects");
+    }
+
     return result;
 }

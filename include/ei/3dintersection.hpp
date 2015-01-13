@@ -78,7 +78,7 @@ namespace ei {
     ///     intersection point in positive direction.
     /// \param [out,opt] _barycentric The barycentric coordinates of the hit point
     ///     on the triangle.
-    /// \return true if there is at least one comon point between ray and triangle.
+    /// \return true if there is at least one common point between ray and triangle.
     ///     This point has a ray parameter >= 0 (no negative direction).
     bool intersects( const Ray& _ray, const Triangle& _triangle );                                          // TESTED
     bool intersects( const Ray& _ray, const Triangle& _triangle, float& _distance );                        // TESTED
@@ -86,4 +86,10 @@ namespace ei {
     inline bool intersects( const Triangle& _triangle, const Ray& _ray )  { return intersects( _ray, _triangle ); }
     inline bool intersects( const Triangle& _triangle, const Ray& _ray, float& _distance )  { return intersects( _ray, _triangle, _distance ); }
     inline bool intersects( const Triangle& _triangle, const Ray& _ray, float& _distance, Vec3& _barycentric )  { return intersects( _ray, _triangle, _distance, _barycentric ); }
+
+    /// \brief Does the sphere touches the triangle?
+    /// \details Performance index: TODO
+    /// \return true if the point is inside or on the boundary.
+    bool intersects( const Sphere& _sphere, const Triangle& _triangle );
+    inline bool intersects( const Triangle& _triangle, const Sphere& _sphere )          { return intersects(_sphere, _triangle); }
 }
