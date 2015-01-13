@@ -79,6 +79,18 @@ float distance(const Vec3& _point, const Sphere& _sphere)
 }
 
 // ************************************************************************* //
+float distance(const Vec3& _point, const Capsule& _capsule)
+{
+    return distance(_point, _capsule.seg) - _capsule.radius;
+}
+
+// ************************************************************************* //
+float distance(const Sphere& _sphere, const Capsule& _capsule)
+{
+    return max(0.0f, distance(_sphere.center, _capsule.seg) - _capsule.radius - _sphere.radius);
+}
+
+// ************************************************************************* //
 float distance(const Segment& _line0, const Segment& _line1)
 {
     // http://geomalgorithms.com/a07-_distance.html
