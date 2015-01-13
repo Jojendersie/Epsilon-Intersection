@@ -90,6 +90,6 @@ namespace ei {
     /// \brief Does the sphere touches the triangle?
     /// \details Performance index: TODO
     /// \return true if the point is inside or on the boundary.
-    bool intersects( const Sphere& _sphere, const Triangle& _triangle );
+    bool intersects( const Sphere& _sphere, const Triangle& _triangle );       // TESTED
     inline bool intersects( const Triangle& _triangle, const Sphere& _sphere )          { return intersects(_sphere, _triangle); }
 }

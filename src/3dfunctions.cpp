@@ -73,6 +73,12 @@ float distance(const Vec3& _point, const Triangle& _triangle)
 }
 
 // ************************************************************************* //
+float distance(const Vec3& _point, const Sphere& _sphere)
+{
+    return distance(_sphere.center, _point) - _sphere.radius;
+}
+
+// ************************************************************************* //
 float distance(const Segment& _line0, const Segment& _line1)
 {
     // http://geomalgorithms.com/a07-_distance.html

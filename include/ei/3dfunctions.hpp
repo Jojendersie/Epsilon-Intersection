@@ -37,11 +37,13 @@ namespace ei
     ///     other geometries return 0 if they intersect.
     float distance(const Vec3& _point0, const Vec3& _point1);                  // TESTED
     float distance(const Vec3& _point, const Segment& _line);                  // TESTED
-    inline float distance(const Segment& _line, const Vec3& _point)            { return distance(_point, _line); }
-    float distance(const Vec3& _point, const Triangle& _triangle);
-    inline float distance(const Triangle& _triangle, const Vec3& _point)       { return distance(_point, _triangle); }
+    float distance(const Vec3& _point, const Triangle& _triangle);             // TESTED
+    float distance(const Vec3& _point, const Sphere& _sphere);
     float distance(const Segment& _line0, const Segment& _line1);              // TESTED
     float distance(const Capsule& _capsule0, const Capsule& _capsule1);        // TESTED
+    inline float distance(const Segment& _line, const Vec3& _point)            { return distance(_point, _line); }
+    inline float distance(const Triangle& _triangle, const Vec3& _point)       { return distance(_point, _triangle); }
+    inline float distance(const Sphere& _sphere, const Vec3& _point)           { return distance(_point, _sphere); }
 
     // Include inline implementations
 #   include "details/3dfunctions.inl"

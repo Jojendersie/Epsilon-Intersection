@@ -121,18 +121,22 @@ bool test_3dtypes()
         Capsule cap0(Vec3(0.0f, 0.0f, 0.0f), Vec3(0.0f, 0.0f, 1.0f), 0.5f);
         Capsule cap1(Vec3(0.0f, 1.0f, 0.5f), Vec3(0.0f, 1.0f, 2.0f), 0.25f);
         Triangle tri0(Vec3(0.0f), Vec3(1.0f, 0.0f, 0.0f), Vec3(0.0f, 0.0f, 1.0f));
-        TEST( distance(poi0, poi0) == 0.0f, "Distance between two equal points is 0!");
-        TEST( distance(poi0, poi1) == 1.0f, "Distance between poi0 and poi1 is 1!");
-        TEST( distance(poi0, seg0) == 0.0f, "Distance between poi0 and seg0 is 0!");
-        TEST( distance(poi1, seg0) == 1.0f, "Distance between poi1 and seg0 is 1!");
-        TEST( distance(poi2, seg0) == sqrt(3.0f), "Distance between poi2 and seg0 is sqrt(3.0f)!");
-        TEST( distance(seg0, seg1) == 1.0f, "Distance between seg0 and seg1 is 1!");
-        TEST( distance(seg0, seg2) == 0.707106769f, "Distance between seg0 and seg2 is 1/sqrt(2)!");
-        TEST( distance(seg0, seg3) == 0.0f, "Distance between seg0 and seg3 is 0!");
-        TEST( distance(cap0, cap1) == 0.25f, "Distance between cap0 and cap1 is 0.25!");
-        TEST( distance(poi0, tri0) == 1.0f, "Distance between poi0 and tri0 is 1.0!");
-        TEST( distance(poi1, tri0) == sqrt(1.5f), "Distance between poi1 and tri0 is sqrt(1.5f)!");
-        TEST( distance(poi3, tri0) == 0.5f, "Distance between poi3 and tri0 is 0.5!");
+        Sphere sph0(poi0, 1.0f);
+        TEST( distance(poi0, poi0) == 0.0f, "Distance between two equal points is 0!" );
+        TEST( distance(poi0, poi1) == 1.0f, "Distance between poi0 and poi1 is 1!" );
+        TEST( distance(poi0, seg0) == 0.0f, "Distance between poi0 and seg0 is 0!" );
+        TEST( distance(poi1, seg0) == 1.0f, "Distance between poi1 and seg0 is 1!" );
+        TEST( distance(poi2, seg0) == sqrt(3.0f), "Distance between poi2 and seg0 is sqrt(3.0f)!" );
+        TEST( distance(seg0, seg1) == 1.0f, "Distance between seg0 and seg1 is 1!" );
+        TEST( distance(seg0, seg2) == 0.707106769f, "Distance between seg0 and seg2 is 1/sqrt(2)!" );
+        TEST( distance(seg0, seg3) == 0.0f, "Distance between seg0 and seg3 is 0!" );
+        TEST( distance(cap0, cap1) == 0.25f, "Distance between cap0 and cap1 is 0.25!" );
+        TEST( distance(poi0, tri0) == 1.0f, "Distance between poi0 and tri0 is 1.0!" );
+        TEST( distance(poi1, tri0) == sqrt(1.5f), "Distance between poi1 and tri0 is sqrt(1.5f)!" );
+        TEST( distance(poi3, tri0) == 0.5f, "Distance between poi3 and tri0 is 0.5!" );
+        TEST( distance(poi0, sph0) == -1.0f, "Distance between poi0 and sph0 is -1.0f!");
+        TEST( distance(poi1, sph0) == 0.0f, "Distance between poi1 and sph0 is 0.0f!");
+        TEST( distance(poi2, sph0) == 2.0f, "Distance between poi2 and sph0 is 2.0f!");
 
         performance<Vec3,Triangle,float>(distance, "distance");
     }
