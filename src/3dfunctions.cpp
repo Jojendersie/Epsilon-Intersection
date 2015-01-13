@@ -51,36 +51,11 @@ float distance(const Vec3& _point, const Triangle& _triangle)
     Vec3 a = _triangle.v1-_triangle.v0;
     Vec3 b = _triangle.v2-_triangle.v1;
     Vec3 c = _triangle.v2-_triangle.v0;
-    Vec3 n = normalize(cross(c, a));
+    Vec3 n = cross(c, a);
 
     // Distance to the plane
-    float dist = dot(n, _point-_triangle.v0);
+    //float dist = dot(n, _point-_triangle.v0);
     // TODO: sphere intersection :early exit
-
-    // The alternative method below is faster
-    // Projected point one the plane
-    /*Vec3 p = _point - n * dist;
-
-    // Find closest point on all edges (the inside test comes later)
-    Vec3 p_v0 = p - _triangle.v0;
-    Vec3 p_v1 = p - _triangle.v1;
-    Vec3 ne1 = _triangle.v0 + a * saturate( dot( p_v0, a) / lensq(a) );
-    Vec3 ne2 = _triangle.v0 + c * saturate( dot( p_v0, c) / lensq(c) );
-    Vec3 ne3 = _triangle.v1 + b * saturate( dot( p_v1, b) / lensq(b) );
-
-    // The vertex on the opposite side of the edge cannot lie in the same
-    // direction as the nearest point if P lies inside the triangle.
-    bool bInside = dot( ne1-p, _triangle.v2-p ) < 0.0f;
-    bInside &= dot( ne2-p, p_v1 ) > 0.0f;   // Inverse sign because of use from P-v1
-    bInside &= dot( ne3-p, p_v0 ) > 0.0f;   // Inverse sign because of use from P-v0
-    if( bInside ) return dist;
-
-    // Search for a minimum distance to an edge or vertex
-    dist = lensq(ne1-_point);
-    dist = min(dist, lensq(ne2-_point));
-    dist = min(dist, lensq(ne3-_point));
-
-    return sqrt(dist);//*/
 
     // The point is inside if it is not on the right hand of any edge
     Vec3 p_v0 = _point - _triangle.v0;
@@ -90,33 +65,14 @@ float distance(const Vec3& _point, const Triangle& _triangle)
     bool outSideC = dot(cross(c, p_v0), n) <= 0.0f;   // Inverse sign because of use from p-v0
 
     if(!(outSideA || outSideB || outSideC))
-        return dist;
-    /* //seems faster without this early exit:
-    if(outSideA && outSideB)
-    {
-        // Closest side cannot be c. Test a, b for minimum.
-        dist = lensq(p_v0) - sq(dot(p_v0, a)) / lensq(a);
-        dist = min(dist, lensq(p_v1) - sq(dot(p_v1, b)) / lensq(b));
-        return sqrt(dist);
-    } else if(outSideA && outSideC)
-    {
-        // Closest side cannot be b. Test a, c for minimum.
-        dist = lensq(p_v0) - sq(dot(p_v0, a)) / lensq(a);
-        dist = min(dist, lensq(p_v0) - sq(dot(p_v0, c)) / lensq(c));
-        return sqrt(dist);
-    } else if(outSideB && outSideC)
-    {
-        // Closest side cannot be a. Test b, c for minimum.
-        dist = lensq(p_v1) - sq(dot(p_v1, b)) / lensq(b);
-        dist = min(dist, lensq(p_v0) - sq(dot(p_v0, c)) / lensq(c));
-        return sqrt(dist);
-    }*/
+        return dot(normalize(n), _point-_triangle.v0);
 
     // Minimum is somewhere on the three edges.
-    dist = lensq(p_v0) - sq(dot(p_v0, a)) / lensq(a);
+    float dist;
+    dist =           lensq(p_v0) - sq(dot(p_v0, a)) / lensq(a);
     dist = min(dist, lensq(p_v1) - sq(dot(p_v1, b)) / lensq(b));
     dist = min(dist, lensq(p_v0) - sq(dot(p_v0, c)) / lensq(c));
-    return sqrt(dist);//*/
+    return sqrt(dist);
 }
 
 // ************************************************************************* //

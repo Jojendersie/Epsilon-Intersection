@@ -43,6 +43,14 @@ template<> inline void random<ε::Box>(ε::Box& _out)
     _out.min = _out.min - w;
 }
 
+template<> inline void random<ε::Triangle>(ε::Triangle& _out)
+{
+    ε::Vec3 pos(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f);
+    _out.v0 = pos + ε::Vec3(rnd() * 0.5f - 0.25f, rnd() * 0.5f - 0.25f, rnd() * 0.5f - 0.25f);
+    _out.v1 = pos + ε::Vec3(rnd() * 0.5f - 0.25f, rnd() * 0.5f - 0.25f, rnd() * 0.5f - 0.25f);
+    _out.v2 = pos + ε::Vec3(rnd() * 0.5f - 0.25f, rnd() * 0.5f - 0.25f, rnd() * 0.5f - 0.25f);
+}
+
 // Functions to assign names to types
 template<class T> const char* name() { return typeid(T).name(); }
 template<> inline const char* name<ε::Vec3>() { return "Point"; }
