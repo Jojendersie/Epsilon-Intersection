@@ -40,6 +40,7 @@ namespace ei
     float distance(const Vec3& _point, const Triangle& _triangle);             // TESTED
     float distance(const Vec3& _point, const Sphere& _sphere);                 // TESTED
     float distance(const Vec3& _point, const Capsule& _capsule);               // TESTED
+    float distance(const Sphere& _sphere, const Segment& _segment);            // TESTED
     float distance(const Sphere& _sphere, const Capsule& _capsule);            // TESTED
     float distance(const Segment& _line0, const Segment& _line1);              // TESTED
     float distance(const Capsule& _capsule0, const Capsule& _capsule1);        // TESTED

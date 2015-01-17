@@ -299,6 +299,7 @@ namespace ei {
         return dist <= sq(_sphere.radius);
     }
 
+    // ********************************************************************* //
     bool intersects( const Sphere& _sphere, const Capsule& _capsule )
     {
         return distance(_sphere.center, _capsule.seg) <= _capsule.radius + _sphere.radius;

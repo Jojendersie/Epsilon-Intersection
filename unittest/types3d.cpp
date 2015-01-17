@@ -144,7 +144,10 @@ bool test_3dtypes()
         TEST( distance(poi0, cap1) == -0.25f, "Distance between poi0 and cap0 is -0.25!");
         TEST( distance(sph0, cap0) == 0.0f, "Distance between sph0 and cap0 is 0!");
         TEST( distance(sph0, cap1) == 0.0f, "Distance between sph0 and cap1 is 0!");
-        TEST( distance(sph1, cap0) == 2.741657387f, "Distance between sph1 and cap0 is 0!");
+        TEST( distance(sph1, cap0) == 2.741657387f, "Distance between sph1 and cap0 is 2.741657387!");
+        TEST( distance(sph0, seg0) == 0.0f, "Distance between sph0 and seg0 is 0!");
+        TEST( distance(sph0, cap0.seg) == 0.0f, "Distance between sph0 and cap0.seg is 0.5!");
+        TEST( distance(sph1, seg2) == 3.10555124f, "Distance between sph1 and seg2 is sqrt(13)-0.5!");
 
         performance<Vec3,Triangle,float>(distance, "distance");
     }

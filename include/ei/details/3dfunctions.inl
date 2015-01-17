@@ -133,3 +133,33 @@ inline float distance(const Vec3& _point0, const Vec3& _point1)
 {
     return len(_point1 - _point0);
 }
+
+// ************************************************************************* //
+inline float distance(const Vec3& _point, const Sphere& _sphere)
+{
+    return distance(_sphere.center, _point) - _sphere.radius;
+}
+
+// ************************************************************************* //
+inline float distance(const Vec3& _point, const Capsule& _capsule)
+{
+    return distance(_point, _capsule.seg) - _capsule.radius;
+}
+
+// ************************************************************************* //
+inline float distance(const Sphere& _sphere, const Segment& _segment)
+{
+    return max(0.0f, distance(_sphere.center, _segment) - _sphere.radius);
+}
+
+// ************************************************************************* //
+inline float distance(const Sphere& _sphere, const Capsule& _capsule)
+{
+    return max(0.0f, distance(_sphere.center, _capsule.seg) - _capsule.radius - _sphere.radius);
+}
+
+// ************************************************************************* //
+inline float distance(const Capsule& _capsule0, const Capsule& _capsule1)
+{
+    return max(0.0f, distance(_capsule0.seg, _capsule1.seg) - _capsule0.radius - _capsule1.radius);
+}

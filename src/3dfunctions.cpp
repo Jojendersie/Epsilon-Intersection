@@ -73,24 +73,6 @@ float distance(const Vec3& _point, const Triangle& _triangle)
 }
 
 // ************************************************************************* //
-float distance(const Vec3& _point, const Sphere& _sphere)
-{
-    return distance(_sphere.center, _point) - _sphere.radius;
-}
-
-// ************************************************************************* //
-float distance(const Vec3& _point, const Capsule& _capsule)
-{
-    return distance(_point, _capsule.seg) - _capsule.radius;
-}
-
-// ************************************************************************* //
-float distance(const Sphere& _sphere, const Capsule& _capsule)
-{
-    return max(0.0f, distance(_sphere.center, _capsule.seg) - _capsule.radius - _sphere.radius);
-}
-
-// ************************************************************************* //
 float distance(const Segment& _line0, const Segment& _line1)
 {
     // http://geomalgorithms.com/a07-_distance.html
@@ -126,12 +108,6 @@ float distance(const Segment& _line0, const Segment& _line1)
     float t = (a * q - b * p) / -n;
     // len(_line0.a + saturate(s) * u - (_line1.a + saturate(t) * v))
     return len(saturate(s) * u - w - saturate(t) * v);
-}
-
-// ************************************************************************* //
-float distance(const Capsule& _capsule0, const Capsule& _capsule1)
-{
-    return max(0.0f, distance(_capsule0.seg, _capsule1.seg) - _capsule0.radius - _capsule1.radius);
 }
 
 }
