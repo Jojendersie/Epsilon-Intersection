@@ -298,4 +298,9 @@ namespace ei {
         dist = min(dist, lensq(p_v0) - sq(dot(p_v0, c)) / lensq(c));
         return dist <= sq(_sphere.radius);
     }
+
+    bool intersects( const Sphere& _sphere, const Capsule& _capsule )
+    {
+        return distance(_sphere.center, _capsule.seg) <= _capsule.radius + _sphere.radius;
+    }
 }

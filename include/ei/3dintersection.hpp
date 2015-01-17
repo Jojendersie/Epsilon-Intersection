@@ -89,7 +89,13 @@ namespace ei {
 
     /// \brief Does the sphere touches the triangle?
     /// \details Performance index: TODO
-    /// \return true if the point is inside or on the boundary.
+    /// \return true if the sphere and the triangle have at least on point in common.
     bool intersects( const Sphere& _sphere, const Triangle& _triangle );       // TESTED
     inline bool intersects( const Triangle& _triangle, const Sphere& _sphere )          { return intersects(_sphere, _triangle); }
+
+    /// \brief Intersection test between sphere and capsule.
+    /// \details Performance index: TODO
+    /// \return true if the sphere and the capsule have at least on point in common.
+    bool intersects( const Sphere& _sphere, const Capsule& _capsule );         // TESTED
+    inline bool intersects( const Capsule& _capsule, const Sphere& _sphere )          { return intersects(_sphere, _capsule); }
 }
