@@ -43,6 +43,7 @@ namespace ei
     float distance(const Vec3& _point, const Box& _box);                       // TESTED
     float distance(const Sphere& _sphere, const Segment& _segment);            // TESTED
     float distance(const Sphere& _sphere, const Capsule& _capsule);            // TESTED
+    float distance(const Sphere& _sphere, const Box& _box);                    // TESTED
     float distance(const Segment& _line0, const Segment& _line1);              // TESTED
     float distance(const Capsule& _capsule0, const Capsule& _capsule1);        // TESTED
     inline float distance(const Segment& _line, const Vec3& _point)            { return distance(_point, _line); }
@@ -51,6 +52,7 @@ namespace ei
     inline float distance(const Capsule& _capsule, const Vec3& _point)         { return distance(_point, _capsule); }
     inline float distance(const Capsule& _capsule, const Sphere& _sphere)      { return distance(_sphere, _capsule); }
     inline float distance(const Box& _box, const Vec3& _point)                 { return distance(_point, _box); }
+    inline float distance(const Box& _box, const Sphere& _sphere)              { return distance(_sphere, _box); }
 
     // Include inline implementations
 #   include "details/3dfunctions.inl"

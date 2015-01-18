@@ -125,4 +125,13 @@ float distance(const Vec3& _point, const Box& _box)
     return len(max(d,Vec3(0.0f))) + innerDist;
 }
 
+// ************************************************************************* //
+float distance(const Sphere& _sphere, const Box& _box)
+{
+    eiAssert(all(_box.min <= _box.max), "Invalid box!");
+    eiAssert(_sphere.radius >= 0.0f, "Invalid sphere!");
+    Vec3 d = max(_box.min - _sphere.center, _sphere.center - _box.max);
+    return max(len(max(d, Vec3(0.0f))) - _sphere.radius, 0.0f);
+}
+
 }
