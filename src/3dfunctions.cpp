@@ -110,4 +110,19 @@ float distance(const Segment& _line0, const Segment& _line1)
     return len(saturate(s) * u - w - saturate(t) * v);
 }
 
+// ************************************************************************* //
+float distance(const Vec3& _point, const Box& _box)
+{
+    eiAssert(all(_box.min <= _box.max), "Invalid box!");
+    // Connection vector to box corner
+    Vec3 d = _box.min - _point;
+    if(d.x < 0.0f) d.x = _point.x - _box.max.x;
+    if(d.y < 0.0f) d.y = _point.y - _box.max.y;
+    if(d.z < 0.0f) d.z = _point.z - _box.max.z;
+    // Inner distance if all single distances are negative
+    float innerDist = min(0.0f, max(d.x, max(d.y, d.z)));
+    // Point is outside if len is greater than 0
+    return len(max(d,Vec3(0.0f))) + innerDist;
+}
+
 }
