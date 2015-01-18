@@ -147,6 +147,24 @@ inline float distance(const Vec3& _point, const Capsule& _capsule)
 }
 
 // ************************************************************************* //
+inline float distance(const Vec3& _point, const Plane& _plane)
+{
+    eiAssert(approx(1.0f, len(_plane.n)), "The plane is not normalized!");
+    return dot(_plane.n, _point) + _plane.d;
+}
+
+// ************************************************************************* //
+inline float distance(const Sphere& _sphere, const Plane& _plane)
+{
+    eiAssert(approx(1.0f, len(_plane.n)), "The plane is not normalized!");
+    eiAssert(_sphere.radius >= 0.0f, "Invalid sphere!");
+    float d = dot(_plane.n, _sphere.center) + _plane.d;
+    // Keep sign for the plane distances
+    if(d < 0.0f) return min(d + _sphere.radius, 0.0f);
+    else return max(d - _sphere.radius, 0.0f);
+}
+
+// ************************************************************************* //
 inline float distance(const Sphere& _sphere, const Segment& _segment)
 {
     return max(0.0f, distance(_sphere.center, _segment) - _sphere.radius);

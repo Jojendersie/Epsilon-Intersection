@@ -154,7 +154,7 @@ namespace ei {
     struct Plane
     {
         Vec3 n;     ///< The normal on the plane
-        float d;    ///< The distance to the origin
+        float d;    ///< The distance to the origin such that dot(n,x) + d = 0 for all point in the plane
 
         /// \brief Create uninitialized Plane.
         Plane() {}
