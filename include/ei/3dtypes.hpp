@@ -310,8 +310,8 @@ namespace ei {
         /// \brief Create from standard frustum parametrization
         FastFrustum(const Vec3& _apex, const Vec3& _direction, const Vec3& _up, float _l, float _r, float _b, float _t, float _n, float _f);
 
-        /// \brief Overwrite the current data (autogeneration not possible)
-        Frustum& operator = (const Frustum& _frustum);
+        /// \brief Overwrite the current data (autogeneration not possible because of const members)
+        FastFrustum& operator = (const FastFrustum& _frustum);
     };
 
     // Include inline implementations
