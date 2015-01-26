@@ -1115,6 +1115,7 @@ RVec<T,N> sphericalCoords( const RVec<T,N>& _v0 )
 template<typename T, unsigned N>
 Vec<T,N> cartesianCoords( const Vec<T,N>& _v0 )
 {
+	eiAssertWeak(_v0[0] > 0.0f, "Expected the length to be greater 0!");
     Vec<T,N> result;
     float tmp = _v0[0];
     for(uint i = 0; i < N-1; ++i)

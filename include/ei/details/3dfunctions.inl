@@ -15,22 +15,22 @@ inline float volume(const Thetrahedron& _thetrahedron)
     return dot(_thetrahedron.v3-_thetrahedron.v0, cross(_thetrahedron.v2-_thetrahedron.v0, _thetrahedron.v1-_thetrahedron.v0)) / 6.0f;
 }
 
-inline float volume(const Triangle& _triangle)
+inline float volume(const Triangle&)
 {
     return 0.0f;
 }
 
-inline float volume(const Disc& _disc)
+inline float volume(const Disc&)
 {
     return 0.0f;
 }
 
-inline float volume(const Plane& _plane)
+inline float volume(const Plane&)
 {
     return 0.0f;
 }
 
-inline float volume(const DOP& _dop)
+inline float volume(const DOP&)
 {
     return 0.0f;
 }
@@ -40,12 +40,12 @@ inline float volume(const Ellipsoid& _ellipsoid)
     return 4.0f / 3.0f * PI * _ellipsoid.radii.x * _ellipsoid.radii.y * _ellipsoid.radii.z;
 }
 
-inline float volume(const Ray& _ray)
+inline float volume(const Ray&)
 {
     return 0.0f;
 }
 
-inline float volume(const Segment& _line)
+inline float volume(const Segment&)
 {
     return 0.0f;
 }
@@ -93,12 +93,12 @@ inline float surface(const Disc& _disc)
     return PI * _disc.radius;
 }
 
-inline float surface(const Plane& _plane)
+inline float surface(const Plane&)
 {
     return INF;
 }
 
-inline float surface(const DOP& _dop)
+inline float surface(const DOP&)
 {
     return INF;
 }
@@ -113,12 +113,12 @@ inline float surface(const Ellipsoid& _ellipsoid)
     return 4.0f * PI * pow((pr.x * pr.y + pr.x * pr.z + pr.y * pr.z) / 3.0f, 0.622083981f);
 }
 
-inline float surface(const Ray& _ray)
+inline float surface(const Ray&)
 {
     return 0.0f;
 }
 
-inline float surface(const Segment& _line)
+inline float surface(const Segment&)
 {
     return 0.0f;
 }
