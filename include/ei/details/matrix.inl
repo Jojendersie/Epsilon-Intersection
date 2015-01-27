@@ -316,6 +316,21 @@ T Matrix<T, M, N>::operator() (uint _row, uint _col) const
     return m_data[_row * N + _col];
 }
 
+template<typename T, uint M, uint N>
+Matrix<T,1,N>& Matrix<T, M, N>::operator() (uint _row)
+{
+    eiAssertWeak(_row < M, "Index out of bounds!");
+    return reinterpret_cast<Matrix<T,1,N>&>(m_data[_row * N]);
+}
+
+template<typename T, uint M, uint N>
+const Matrix<T,1,N>& Matrix<T, M, N>::operator() (uint _row) const
+{
+    eiAssertWeak(_row < M, "Index out of bounds!");
+    return reinterpret_cast<const Matrix<T,1,N>&>(m_data[_row * N]);
+}
+
+
 // ************************************************************************* //
 template<typename T, uint M, uint N>
 T& Matrix<T, M, N>::operator[] (uint _index)
@@ -1296,6 +1311,22 @@ inline Mat4x4 axis( const Vec4& _x, const Vec4& _y, const Vec4& _z, const Vec4& 
                   _y.x, _y.y, _y.z, _y.w,
                   _z.x, _z.y, _z.z, _z.w,
                   _w.x, _w.y, _w.z, _w.w);
+}
+
+// ************************************************************************* //
+inline Mat2x2 basis( const Vec2& _vector )
+{
+    return Mat2x2(_vector.x, _vector.y,
+                  -_vector.y, _vector.x);
+}
+
+inline Mat3x3 basis( const Vec3& _vector )
+{
+    eiAssert(approx(len(_vector), 1.0f), "Expected normalized direction vector!");
+    Vec3 y;
+    if(abs(_vector.x) >= 1.0f) y = Vec3(0.0f, 1.0f, 0.0f);
+    else y = normalize(Vec3(0.0f, -_vector.z, _vector.y));
+    return axis(_vector, y, cross(_vector, y));
 }
 
 // ************************************************************************* //

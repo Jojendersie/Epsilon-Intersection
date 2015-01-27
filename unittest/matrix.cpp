@@ -421,14 +421,44 @@ bool test_matrix()
     }
 
     // ********************************************************************* //
+    // Test orthonormal basis
+    {
+        Mat2x2 m0 = basis(Vec2(1.0f, 0.0f));
+        TEST( m0(1,0) == 0.0f && m0(1,1) == 1.0f, "2D orthonormal basis of (1,0) wrong!" );
+        m0 = basis(normalize(Vec2(1.0f, -2.0f)));
+        TEST( dot(m0(0), m0(1)) == 0.0f, "2D orthonormal basis of (1,-2) wrong!" );
+        // In 3D the spat product must be 1
+        Mat3x3 m1 = basis(Vec3(0.0f, 1.0f, 0.0f));
+        TEST( approx(dot(m1(0), m1(1)), 0.0f) && approx(dot(m1(0), m1(0)), 1.0f)
+            && approx(dot(m1(0), m1(2)), 0.0f) && approx(dot(m1(1), m1(1)), 1.0f)
+            && approx(dot(m1(2), m1(1)), 0.0f) && approx(dot(m1(2), m1(2)), 1.0f),
+            "The basis of (0,1,0) is not orthonormal!" );
+        m1 = basis(Vec3(0.0f, 0.0f, 1.0f));
+        TEST( approx(dot(m1(0), m1(1)), 0.0f) && approx(dot(m1(0), m1(0)), 1.0f)
+            && approx(dot(m1(0), m1(2)), 0.0f) && approx(dot(m1(1), m1(1)), 1.0f)
+            && approx(dot(m1(2), m1(1)), 0.0f) && approx(dot(m1(2), m1(2)), 1.0f),
+            "The basis of (0,0,1) is not orthonormal!" );
+        m1 = basis(Vec3(-1.0f, 0.0f, 0.0f));
+        TEST( approx(dot(m1(0), m1(1)), 0.0f) && approx(dot(m1(0), m1(0)), 1.0f)
+            && approx(dot(m1(0), m1(2)), 0.0f) && approx(dot(m1(1), m1(1)), 1.0f)
+            && approx(dot(m1(2), m1(1)), 0.0f) && approx(dot(m1(2), m1(2)), 1.0f),
+            "The basis of (-1,0,0) is not orthonormal!" );
+        m1 = basis(normalize(Vec3(0.5f, -0.7f, 0.1f)));
+        TEST( approx(dot(m1(0), m1(1)), 0.0f) && approx(dot(m1(0), m1(0)), 1.0f)
+            && approx(dot(m1(0), m1(2)), 0.0f) && approx(dot(m1(1), m1(1)), 1.0f)
+            && approx(dot(m1(2), m1(1)), 0.0f) && approx(dot(m1(2), m1(2)), 1.0f),
+            "The basis of normalize(0.5,-0.7,0.1) is not orthonormal!" );
+    }
+
+    // ********************************************************************* //
     // Test spherical coordinates
     {
-        Vec2 v0(1.0f, 0.0f);		Vec2 s0(1.0f, 0.0f);
-        Vec2 v1(1.0f, 1.0f);		Vec2 s1(PHYTAGORAS, PI/4.0f);
-        Vec2 v2(-3.0f, -4.0f);		Vec2 s2(5.0f, 4.06888771f);
-        Vec3 v3(1.0f, 0.0f, 0.0f);	Vec3 s3(1.0f, 0.0f, 0.0f);
-        Vec3 v4(-1.0f, 2.0f, 3.0f);	Vec3 s4(3.741657387f, 1.84134603f, 0.982793723f);
-        Vec3 v5(0.0f, 1.0f, -1.0f);	Vec3 s5(PHYTAGORAS, PI/2.0f, 5.49778748f);
+        Vec2 v0(1.0f, 0.0f);        Vec2 s0(1.0f, 0.0f);
+        Vec2 v1(1.0f, 1.0f);        Vec2 s1(PHYTAGORAS, PI/4.0f);
+        Vec2 v2(-3.0f, -4.0f);      Vec2 s2(5.0f, 4.06888771f);
+        Vec3 v3(1.0f, 0.0f, 0.0f);  Vec3 s3(1.0f, 0.0f, 0.0f);
+        Vec3 v4(-1.0f, 2.0f, 3.0f); Vec3 s4(3.741657387f, 1.84134603f, 0.982793723f);
+        Vec3 v5(0.0f, 1.0f, -1.0f); Vec3 s5(PHYTAGORAS, PI/2.0f, 5.49778748f);
         Vec<float,5> v6(0.0f, -2.0f, 2.5f, -1.0f, 0.0f);
 
         TEST( all(sphericalCoords(v0) == s0), "Spherical coordinates of v0 wrong!" );

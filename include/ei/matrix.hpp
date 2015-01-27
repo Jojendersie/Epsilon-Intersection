@@ -139,6 +139,11 @@ namespace ei {
         T& operator() (uint _row, uint _col);                                  // TESTED
         T operator() (uint _row, uint _col) const;                             // TESTED
 
+        /// \brief Single row access
+        /// \param [in] _row Index of the row in [0,M-1].
+        Matrix<T,1,N>& operator() (uint _row);                                 // TESTED
+        const Matrix<T,1,N>& operator() (uint _row) const;                     // TESTED
+
         /// \brief Access an element by a single index treating the matrix as 1D.
         /// \param [in] _index Index in the range [0, N * M - 1].
         /// \returns Reference with read or write access to the element
@@ -727,6 +732,11 @@ namespace ei {
     Mat3x3 axis( const Vec3& _x, const Vec3& _y, const Vec3& _z );             // TESTED
     Mat4x4 axisH( const Vec3& _x, const Vec3& _y, const Vec3& _z );
     Mat4x4 axis( const Vec4& _x, const Vec4& _y, const Vec4& _z, const Vec4& _w );
+
+    // ********************************************************************* //
+    /// \brief Create an orthonormal basis for a single direction vector
+    Mat2x2 basis( const Vec2& _vector );                                       // TESTED
+    Mat3x3 basis( const Vec3& _vector );                                       // TESTED
 
     // ********************************************************************* //
     /// \brief Rotation matrix in 2D.
