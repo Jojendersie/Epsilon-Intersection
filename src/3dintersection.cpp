@@ -235,9 +235,9 @@ namespace ei {
         Vec3 d = cross( _ray.direction, o );
 
         float barycentricCoord1 = dot( d, e1 ) / dist2A;
-        if(barycentricCoord1 < 0.0f) return false;
+        if(barycentricCoord1 < -EPSILON || barycentricCoord1 != barycentricCoord1) return false;
         float barycentricCoord2 = dot( d, e0 ) / dist2A;
-        if(barycentricCoord2 < 0.0f) return false;
+        if(barycentricCoord2 < -EPSILON || barycentricCoord2 != barycentricCoord2) return false;
         if(barycentricCoord1 + barycentricCoord2 > 1.0f) return false;
         
         // Projection to plane. The 2A from normal is canceled out
@@ -259,11 +259,12 @@ namespace ei {
         Vec3 d = cross( _ray.direction, o );
 
         _barycentric.y = dot( d, e1 ) / dist2A;
-        if(_barycentric.y < 0.0f) return false;
+        if(_barycentric.y < -EPSILON) return false;
         _barycentric.z = dot( d, e0 ) / dist2A;
-        if(_barycentric.z < 0.0f) return false;
+        if(_barycentric.z < -EPSILON) return false;
         _barycentric.x = 1.0f - (_barycentric.y + _barycentric.z);
-        if(_barycentric.x < 0.0f) return false;
+		// Do one check on NaN - if any other coordinate is NaN x will be NaN too
+        if(_barycentric.x < -EPSILON || _barycentric.x != _barycentric.x) return false;
         
         // Projection to plane. The 2A from normal is canceled out
         _distance = dot( normal, o ) / dist2A;
