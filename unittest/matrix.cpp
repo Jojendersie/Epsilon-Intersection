@@ -367,6 +367,24 @@ bool test_matrix()
     }
 
     // ********************************************************************* //
+    // Test round, ceil, floor, sqrt, pow
+    {
+        Vec4 v0(1.5f, 2.0f, -0.5f, 1.414f);
+        IVec4 v1(2, 2, 0, 1);    // round(v0)
+        IVec4 v2(2, 2, 0, 2);    // ceil(v0)
+        IVec4 v3(1, 2, -1, 1);   // floor(v0)
+        TEST( all(round(v0) == v1), "Rounding v0 is wrong!" );
+        TEST( all(ceil(v0) == v2), "Rounding v0 up is wrong!" );
+        TEST( all(floor(v0) == v3), "Rounding v0 down is wrong!" );
+
+        Vec3 v4(1.0f, 4.0f, 2.0f);
+        Vec3 v5(1.0f, 2.0f, PHYTAGORAS);
+        TEST( all(sqrt(v4) == v5), "sqrt of v4 is wrong!" );
+        TEST( all(pow(v4,0.5f) == v5), "v4 to the power of 0.5 is wrong!" );
+        TEST( approx(pow(v5,2.0f), v4), "v5 to the power of 2 is wrong!" );
+    }
+
+    // ********************************************************************* //
     // Test lerp, bilerp
     {
         Vec3 v0(0.0f);

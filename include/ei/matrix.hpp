@@ -452,7 +452,7 @@ namespace ei {
     ///    norm for matrices.
     /// \returns Euclidean length (scalar).
     template<typename T, unsigned M, unsigned N>
-    decltype(sqrt(std::declval<T>())) len(const Matrix<T,M,N>& _mat0);         // TESTED
+    decltype(std::sqrt(std::declval<T>())) len(const Matrix<T,M,N>& _mat0);         // TESTED
 
     // ********************************************************************* //
     /// \brief Normalizes a vector or matrix with respect to len.
@@ -510,17 +510,37 @@ namespace ei {
     // ********************************************************************* //
     /// \brief Round all components towards negative infinity
     template<typename T, unsigned M, unsigned N>
-    Matrix<typename details::Int<sizeof(T)>::stype,M,N> floor(const Matrix<T,M,N>& _mat);
+    Matrix<typename details::Int<sizeof(T)>::stype,M,N> floor(const Matrix<T,M,N>& _mat);   // TESTED
 
     // ********************************************************************* //
     /// \brief Round all components towards negative infinity
     template<typename T, unsigned M, unsigned N>
-    Matrix<typename details::Int<sizeof(T)>::stype,M,N> ceil(const Matrix<T,M,N>& _mat);
+    Matrix<typename details::Int<sizeof(T)>::stype,M,N> ceil(const Matrix<T,M,N>& _mat);    // TESTED
 
     // ********************************************************************* //
     /// \brief Round all components towards next number (x.5 rounds up)
     template<typename T, unsigned M, unsigned N>
-    Matrix<typename details::Int<sizeof(T)>::stype,M,N> round(const Matrix<T,M,N>& _mat);
+    Matrix<typename details::Int<sizeof(T)>::stype,M,N> round(const Matrix<T,M,N>& _mat);   // TESTED
+
+    // ********************************************************************* //
+    /// \brief Compute the square root for each component
+    template<typename T, unsigned N>
+    Matrix<T,1,N> sqrt(const Matrix<T,1,N>& _v0);                              // TESTED
+    template<typename T, unsigned M>
+    Matrix<T,M,1> sqrt(const Matrix<T,M,1>& _v0);                              // TESTED
+    // The above declaration unfortunatelly hides the elementary one -> make it
+    // visible again
+    using std::sqrt;
+
+    // ********************************************************************* //
+    /// \brief Compute the power for each component
+    template<typename T, unsigned N>
+    Matrix<T,1,N> pow(const Matrix<T,1,N>& _v0, float _exponent);              // TESTED
+    template<typename T, unsigned M>
+    Matrix<T,M,1> pow(const Matrix<T,M,1>& _v0, float _exponent);              // TESTED
+    // The above declaration unfortunatelly hides the elementary one -> make it
+    // visible again
+    using std::pow;
 
     // ********************************************************************* //
     /// \brief Sum of all components.

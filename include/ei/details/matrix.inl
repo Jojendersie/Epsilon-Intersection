@@ -751,7 +751,7 @@ inline T lensq(const Matrix<T,M,N>& _mat0)
 
 // ************************************************************************* //
 template<typename T, uint M, uint N>
-inline decltype(sqrt(std::declval<T>())) len(const Matrix<T,M,N>& _mat0)
+inline decltype(std::sqrt(std::declval<T>())) len(const Matrix<T,M,N>& _mat0)
 {
     return sqrt(dot(_mat0, _mat0));
 }
@@ -858,6 +858,44 @@ inline Matrix<typename details::Int<sizeof(T)>::stype,M,N> round(const Matrix<T,
     Matrix<typename details::Int<sizeof(T)>::stype,M,N> result;
     for(uint i = 0; i < N * M; ++i)
         result[i] = round(_mat[i]);
+    return result;
+}
+
+// ************************************************************************* //
+template<typename T, unsigned N>
+Matrix<T,1,N> sqrt(const Matrix<T,1,N>& _v0)
+{
+    Matrix<T,1,N> result;
+    for(uint i = 0; i < N; ++i)
+        result[i] = sqrt(_v0[i]);
+    return result;
+}
+
+template<typename T, unsigned M>
+Matrix<T,M,1> sqrt(const Matrix<T,M,1>& _v0)
+{
+    Matrix<T,M,1> result;
+    for(uint i = 0; i < M; ++i)
+        result[i] = sqrt(_v0[i]);
+    return result;
+}
+
+// ************************************************************************* //
+template<typename T, unsigned N>
+Matrix<T,1,N> pow(const Matrix<T,1,N>& _v0, float _exponent)
+{
+    Matrix<T,1,N> result;
+    for(uint i = 0; i < N; ++i)
+        result[i] = pow(_v0[i], _exponent);
+    return result;
+}
+
+template<typename T, unsigned M>
+Matrix<T,M,1> pow(const Matrix<T,M,1>& _v0, float _exponent)
+{
+    Matrix<T,M,1> result;
+    for(uint i = 0; i < M; ++i)
+        result[i] = pow(_v0[i], _exponent);
     return result;
 }
 
