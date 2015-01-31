@@ -234,6 +234,8 @@ namespace ei {
         Matrix<bool,M,N> operator>= (const Matrix<T,M,N>& _mat1) const;        // TESTED
     };
 
+
+
     // ********************************************************************* //
     // Vector operators
 
@@ -394,6 +396,39 @@ namespace ei {
     typedef Matrix<uint32, 3, 3> UMat3x3;
     /// \brief 4x4 matrix of type uint32.
     typedef Matrix<uint32, 4, 4> UMat4x4;
+
+
+
+    // ********************************************************************* //
+    //                            QUATERNION TYPE                            //
+    // ********************************************************************* //
+    
+    // ********************************************************************* //
+    // 4D complex number equivalent for the representation of rotations
+    class Quaternion
+    {
+    public:
+        /// \brief Construct uninitialized
+        Quaternion() {}
+
+        /// \brief Construct from normalized axis and angle
+        Quaternion( const Vec3& _axis, float _angle );
+
+        /// \brief Create from Euler angles
+        /// \details The rotations are applied in the order x, y, z:
+        ///     rotationZ(_z) * rotationY(_y) * rotationX(_x)
+        Quaternion( float _x, float _y, float _z );
+
+        /// \brief Create from rotation matrix (does a decomposition if the
+        ///     matrix contains scaling).
+        Quaternion( const Mat3x3& _matrix );
+
+    private:
+        float i, j, k, r;
+    };
+
+
+
 
     // ********************************************************************* //
     //                               FUNCTIONS                               //
@@ -912,6 +947,7 @@ namespace ei {
 namespace ei {
     // Include implementation.
 #   include "details/matrix.inl"
+#   include "details/quaternion.inl"
 
     /// \brief Alias for identity<float,2>().
     inline Mat2x2 identity2x2()    { return identity<float,2>(); }
