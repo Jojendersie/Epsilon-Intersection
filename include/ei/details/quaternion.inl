@@ -1,18 +1,20 @@
 
 // ************************************************************************* //
-Quaternion::Quaternion( const Vec3& _axis, float _angle )
+inline Quaternion::Quaternion( const Vec3& _axis, float _angle )
 {
     eiAssert( approx(lensq(_axis), 1.0f), "Expected a normalized axis vector!" );
     _angle *= 0.5f;
     float sinA = sin(_angle);
     r = cos(_angle);
+    // Assert normalization condition
+    if( r < 0.0f ) {r = -r; sinA = -sinA;}
     i = sinA * _axis.x;
     j = sinA * _axis.y;
     k = sinA * _axis.z;
 }
 
 // ************************************************************************* //
-Quaternion::Quaternion( float _x, float _y, float _z )
+inline Quaternion::Quaternion( float _x, float _y, float _z )
 {
     double halfAngle;
 
@@ -28,22 +30,29 @@ Quaternion::Quaternion( float _x, float _y, float _z )
     double sinZ = sin(halfAngle);
     double cosZ = cos(halfAngle);
 
-    double cYcZ = cosY * cosZ;
-    double sYcZ = sinY * cosZ;
-    double cYsZ = cosY * sinZ;
-    double sYsZ = sinY * sinZ;
+    double cXcY = cosX * cosY;
+    double cXsY = cosX * sinY;
+    double sXcY = sinX * cosY;
+    double sXsY = sinX * sinY;
 
-    i = float(sinX * cYcZ - cosX * sYsZ);
-    j = float(cosX * sYcZ + sinX * cYsZ);
-    k = float(cosX * cYsZ - sinX * sYcZ);
-    r = float(cosX * cYcZ + sinX * sYsZ);
+    i = float(sinZ * cXcY - cosZ * sXsY);
+    j = float(cosZ * cXsY + sinZ * sXcY);
+    k = float(cosZ * sXcY - sinZ * cXsY);
+    r = float(cosZ * cXcY + sinZ * sXsY);
 
-    return normalize();
+    // Assert normalization condition
+    if( r < 0.0f )
+    {
+        r = -r;
+        i = -i;
+        j = -j;
+        k = -k;
+    }
 }
 
 
 // ************************************************************************* //
-Quaternion::Quaternion( const Mat3x3& _m )
+inline Quaternion::Quaternion( const Mat3x3& _m )
 {
     // Ignore de-orthogonalization
 
@@ -85,4 +94,16 @@ Quaternion::Quaternion( const Mat3x3& _m )
     i = sqrt( max( 0.0f, 1.0f + _m.m00 - _m.m11 - _m.m22 ) ) * 0.5f * sign(_m.m21 - _m.m12);
     j = sqrt( max( 0.0f, 1.0f - _m.m00 + _m.m11 - _m.m22 ) ) * 0.5f * sign(_m.m02 - _m.m20);
     k = sqrt( max( 0.0f, 1.0f - _m.m00 - _m.m11 + _m.m22 ) ) * 0.5f * sign(_m.m10 - _m.m01);
+}
+
+// ************************************************************************* //
+inline bool Quaternion::operator== (const Quaternion& _q1) const
+{
+    return r==_q1.r && i==_q1.i && j==_q1.j && k==_q1.k;
+}
+
+// ************************************************************************* //
+inline bool Quaternion::operator!= (const Quaternion& _q1) const
+{
+    return r!=_q1.r || i!=_q1.i || j!=_q1.j || k!=_q1.k;
 }

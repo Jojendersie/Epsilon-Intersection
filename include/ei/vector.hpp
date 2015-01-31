@@ -7,6 +7,8 @@
 
 namespace ei {
 
+    class Quaternion;
+
     /// \brief MxN row-major matrix class.
     /// \details The matrix is the basis for all matrix and vector types. It
     ///     supports all kinds of matrix <-> matrix and matrix <-> scalar
@@ -126,6 +128,9 @@ namespace ei {
         Matrix(T1 _s0, Matrix<T2,1,3> _v123);                                  // TESTED
         template<typename T1, typename T2, ENABLE_IF(M == 1 && N == 4)>
         Matrix(Matrix<T1,1,3> _v012, T2 _s3);                                  // TESTED
+
+        template<ENABLE_IF(M == 3 && N == 3)>
+        explicit Matrix(const Quaternion& _quaternion);
 
         /// \brief Access a single element with two indices.
         /// \details Computes the data index _row * N + _col. Therefore
@@ -404,7 +409,10 @@ namespace ei {
     // ********************************************************************* //
     
     // ********************************************************************* //
-    // 4D complex number equivalent for the representation of rotations
+    /// \brief 4D complex number equivalent for the representation of rotations
+    /// \details The normalized form has len(q) == 1 and r>0. The second criteria
+    ///     makes the rotation unique because q and -q both represent the same
+    ///     rotation.
     class Quaternion
     {
     public:
@@ -423,7 +431,11 @@ namespace ei {
         ///     matrix contains scaling).
         Quaternion( const Mat3x3& _matrix );
 
-    private:
+        /// \brief Compare component wise, if two quaternions are identical.
+        bool operator== (const Quaternion& _q1) const;
+        /// \brief Compare component wise, if two quaternions are different.
+        bool operator!= (const Quaternion& _q1) const;
+
         float i, j, k, r;
     };
 
@@ -445,6 +457,13 @@ namespace ei {
     template<typename T, unsigned M, unsigned N>
     bool approx(const Matrix<T,M,N>& _mat0,
                 const Matrix<T,M,N>& _mat1,
+                float _epsilon = 1e-6f);
+
+    // ********************************************************************* //
+    /// \brief Check if the absolute difference between all elements is smaller
+    ///    or equal than epsilon.
+    bool approx(const Quaternion& _q0,
+                const Quaternion& _q1,
                 float _epsilon = 1e-6f);
 
     // ********************************************************************* //
@@ -824,7 +843,10 @@ namespace ei {
     Mat3x3 rotation( const Vec3& _axis, float _angle );
     Mat4x4 rotationH( const Vec3& _axis, float _angle );
 
-    // TODO: from quaternion
+    // ********************************************************************* //
+    /// \brief Rotation matrix from quaternion.
+    Mat3x3 rotation( const Quaternion& _quaternion );
+    Mat4x4 rotationH( const Quaternion& _quaternion );
 
     // ********************************************************************* //
     /// \brief Reflect a vector at a plane.

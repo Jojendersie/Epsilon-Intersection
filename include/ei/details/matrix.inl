@@ -298,6 +298,32 @@ Matrix<T, M, N>::Matrix(Matrix<T1,1,3> _v012, T2 _s3)
 }
 
 // ************************************************************************* //
+template<typename T, uint M, uint N>
+template<class>
+Matrix<T, M, N>::Matrix(const Quaternion& _quaternion)
+{
+    // Rotation composition from quaternion (remaining rest direct in matrix)
+    // See http://de.wikipedia.org/wiki/Quaternion#Bezug_zu_orthogonalen_Matrizen for
+    // details.
+    float f2i  = 2.0f * _quaternion.i;
+    float f2j  = 2.0f * _quaternion.j;
+    float f2k  = 2.0f * _quaternion.k;
+    float f2ri = f2i  * _quaternion.r;
+    float f2rj = f2j  * _quaternion.r;
+    float f2rk = f2k  * _quaternion.r;
+    float f2ii = f2i  * _quaternion.i;
+    float f2ij = f2j  * _quaternion.i;
+    float f2ik = f2k  * _quaternion.i;
+    float f2jj = f2j  * _quaternion.j;
+    float f2jk = f2k  * _quaternion.j;
+    float f2kk = f2k  * _quaternion.k;
+
+    m00 = 1.0f - ( f2jj + f2kk ); m01 = f2ij - f2rk;            m02 = f2ik + f2rj;
+    m10 = f2ij + f2rk;            m11 = 1.0f - ( f2ii + f2kk ); m12 = f2jk - f2ri;
+    m20 = f2ik - f2rj;            m21 = f2jk + f2ri;            m22 = 1.0f - ( f2ii + f2jj );
+}
+
+// ************************************************************************* //
 //                               OPERATORS                                   //
 // ************************************************************************* //
 
@@ -693,6 +719,17 @@ inline bool approx(const Matrix<T,M,N>& _mat0,
     for(uint i = 0; i < N * M; ++i)
         if(abs(_mat1[i] - _mat0[i]) > _epsilon) return false;
     return true;
+}
+
+// ************************************************************************* //
+inline bool approx(const Quaternion& _q0,
+                   const Quaternion& _q1,
+                   float _epsilon)
+{
+    return abs(_q0.r - _q1.r) <= _epsilon
+        && abs(_q0.i - _q1.i) <= _epsilon
+        && abs(_q0.j - _q1.j) <= _epsilon
+        && abs(_q0.k - _q1.k) <= _epsilon;
 }
 
 // ********************************************************************* //
@@ -1454,6 +1491,17 @@ inline Mat3x3 rotation( const Vec3& _v, float _angle )
 inline Mat4x4 rotationH( const Vec3& _v, float _angle )
 {
     return details::incrementDims(rotation( _v, _angle ));
+}
+
+// ************************************************************************* //
+inline Mat3x3 rotation( const Quaternion& _quaternion )
+{
+    return Mat3x3(_quaternion);
+}
+
+inline Mat4x4 rotationH( const Quaternion& _quaternion )
+{
+    return details::incrementDims(Mat3x3(_quaternion));
 }
 
 // ************************************************************************* //

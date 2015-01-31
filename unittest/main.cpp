@@ -3,6 +3,7 @@ using namespace std;
 
 bool test_elementaries();
 bool test_matrix();
+bool test_quaternion();
 bool test_2dtypes();
 bool test_2dintersections();
 bool test_3dtypes();
@@ -15,6 +16,9 @@ int main()
 
     if( test_matrix() )
         cerr << "Successfully completed: Matrix type." << std::endl;
+
+    if( test_quaternion() )
+        cerr << "Successfully completed: Quaternion type." << std::endl;
 
     if( test_2dtypes() )
         cerr << "Successfully completed: 2D types test." << std::endl;
