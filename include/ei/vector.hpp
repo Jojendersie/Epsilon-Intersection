@@ -431,6 +431,13 @@ namespace ei {
         ///     matrix contains scaling).
         Quaternion( const Mat3x3& _matrix );                                   // TESTED
 
+        /// \brief Create from quaternion coefficients
+        Quaternion( float _r, float _i, float _j, float _k );
+
+        // TODO: from vector to vector (rotated such that the from vector is aligned with the to vector
+
+        // TODO: lookAt parametrization
+
         /// \brief Compare component wise, if two quaternions are identical.
         bool operator== (const Quaternion& _q1) const;
         /// \brief Compare component wise, if two quaternions are different.
@@ -462,6 +469,16 @@ namespace ei {
     // ********************************************************************* //
     /// \brief Scalar multiplication from left
     inline Quaternion operator* (float _s, Quaternion _q) {return _q *= _s; }
+
+    // ********************************************************************* //
+    /// \brief Complex conjugate: invert sign of complex components
+    Quaternion conjugate(const Quaternion& _q);                                // TESTED
+
+    /// \brief Get the rotation axis from a quaternion
+    Vec3 axis(const Quaternion& _q);
+
+    /// \brief Get the angle from a quaternion
+    float angle(const Quaternion& _q);
 
 
     // ********************************************************************* //
@@ -525,8 +542,8 @@ namespace ei {
     /// \brief Computes the sum of squared components.
     /// \details This is equivalent to dot(_mat0, _mat0).
     /// \returns Squared euclidean length (scalar).
-    template<typename T, unsigned M, unsigned N>
-    T lensq(const Matrix<T,M,N>& _mat0);                                       // TESTED
+    template<typename T>
+    auto lensq(const T& _elem0) -> decltype(dot(_elem0, _elem0));              // TESTED
 
     // ********************************************************************* //
     /// \brief Computes the root of the sum of squared components.

@@ -721,17 +721,6 @@ inline bool approx(const Matrix<T,M,N>& _mat0,
     return true;
 }
 
-// ************************************************************************* //
-inline bool approx(const Quaternion& _q0,
-                   const Quaternion& _q1,
-                   float _epsilon)
-{
-    return abs(_q0.r - _q1.r) <= _epsilon
-        && abs(_q0.i - _q1.i) <= _epsilon
-        && abs(_q0.j - _q1.j) <= _epsilon
-        && abs(_q0.k - _q1.k) <= _epsilon;
-}
-
 // ********************************************************************* //
 template<typename T, unsigned M, unsigned N, typename T1>
 inline RESULT_TYPE(*) dot(const Matrix<T,M,N>& _mat0,
@@ -745,7 +734,7 @@ inline RESULT_TYPE(*) dot(const Matrix<T,M,N>& _mat0,
 
 // ********************************************************************* //
 inline float dot(const Quaternion& _q0,
-          const Quaternion& _q1)
+                 const Quaternion& _q1)
 {
     return _q0.r*_q1.r + _q0.i*_q1.i + _q0.j*_q1.j + _q0.k*_q1.k;
 }
@@ -787,10 +776,10 @@ inline RESULT_TYPE(*) cross(const Matrix<T,2,1>& _v0,
 }
 
 // ************************************************************************* //
-template<typename T, uint M, uint N>
-inline T lensq(const Matrix<T,M,N>& _mat0)
+template<typename T>
+inline auto lensq(const T& _elem0) -> decltype(dot(_elem0, _elem0))
 {
-    return dot(_mat0, _mat0);
+    return dot(_elem0, _elem0);
 }
 
 // ************************************************************************* //

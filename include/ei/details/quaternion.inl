@@ -96,6 +96,11 @@ inline Quaternion::Quaternion( const Mat3x3& _m )
     k = sqrt( max( 0.0f, 1.0f - _m.m00 - _m.m11 + _m.m22 ) ) * 0.5f * sign(_m.m10 - _m.m01);
 }
 
+inline Quaternion::Quaternion( float _r, float _i, float _j, float _k ) :
+    r(_r), i(_i), j(_j), k(_k)
+{
+}
+
 // ************************************************************************* //
 inline bool Quaternion::operator== (const Quaternion& _q1) const
 {
@@ -146,4 +151,34 @@ inline Quaternion& Quaternion::operator/= (float _s)
 {
     i/=_s; j/=_s; k/=_s; r/=_s;
     return *this;
+}
+
+
+
+
+// ********************************************************************* //
+inline Quaternion conjugate(const Quaternion& _q)
+{
+    return Quaternion(_q.r, -_q.i, -_q.j, -_q.k);
+}
+
+inline Vec3 axis(const Quaternion& _q)
+{
+    return Vec3(-_q.i, -_q.j, -_q.k) / max(EPSILON, sqrt(1.0f-_q.r*_q.r));
+}
+
+inline float angle(const Quaternion& _q)
+{
+    return acos(_q.r) * 2.0f;
+}
+
+// ************************************************************************* //
+inline bool approx(const Quaternion& _q0,
+                   const Quaternion& _q1,
+                   float _epsilon)
+{
+    return abs(_q0.r - _q1.r) <= _epsilon
+        && abs(_q0.i - _q1.i) <= _epsilon
+        && abs(_q0.j - _q1.j) <= _epsilon
+        && abs(_q0.k - _q1.k) <= _epsilon;
 }
