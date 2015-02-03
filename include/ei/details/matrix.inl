@@ -744,6 +744,13 @@ inline RESULT_TYPE(*) dot(const Matrix<T,M,N>& _mat0,
 }
 
 // ********************************************************************* //
+inline float dot(const Quaternion& _q0,
+          const Quaternion& _q1)
+{
+    return _q0.r*_q1.r + _q0.i*_q1.i + _q0.j*_q1.j + _q0.k*_q1.k;
+}
+
+// ********************************************************************* //
 template<typename T, typename T1>
 inline Matrix<RESULT_TYPE(*),1,3> cross(const Matrix<T,1,3>& _v0,
                                         const Matrix<T1,1,3>& _v1)
@@ -787,17 +794,17 @@ inline T lensq(const Matrix<T,M,N>& _mat0)
 }
 
 // ************************************************************************* //
-template<typename T, uint M, uint N>
-inline decltype(std::sqrt(std::declval<T>())) len(const Matrix<T,M,N>& _mat0)
+template<typename T>
+inline auto len(const T& _elem0) -> decltype(std::sqrt(dot(_elem0, _elem0)))
 {
-    return sqrt(dot(_mat0, _mat0));
+    return sqrt(dot(_elem0, _elem0));
 }
 
 // ************************************************************************* //
-template<typename T, uint M, uint N>
-inline Matrix<T,M,N> normalize(const Matrix<T,M,N>& _mat0)
+template<typename T>
+inline T normalize(const T& _elem0)
 {
-    return _mat0 / len(_mat0);
+    return _elem0 / len(_elem0);
     // TODO: Test if this one is faster
     //return _mat0 * (1.0f / len(_mat0));
 }

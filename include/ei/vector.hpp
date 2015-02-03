@@ -420,26 +420,48 @@ namespace ei {
         Quaternion() {}
 
         /// \brief Construct from normalized axis and angle
-        Quaternion( const Vec3& _axis, float _angle );
+        Quaternion( const Vec3& _axis, float _angle );                         // TESTED
 
         /// \brief Create from Euler angles
         /// \details The rotations are applied in the order x, y, z:
         ///     rotationZ(_z) * rotationY(_y) * rotationX(_x)
-        Quaternion( float _x, float _y, float _z );
+        Quaternion( float _x, float _y, float _z );                            // TESTED
 
         /// \brief Create from rotation matrix (does a decomposition if the
         ///     matrix contains scaling).
-        Quaternion( const Mat3x3& _matrix );
+        Quaternion( const Mat3x3& _matrix );                                   // TESTED
 
         /// \brief Compare component wise, if two quaternions are identical.
         bool operator== (const Quaternion& _q1) const;
         /// \brief Compare component wise, if two quaternions are different.
         bool operator!= (const Quaternion& _q1) const;
+        /// \brief Quaternion multiplication is a combination of rotations.
+        /// \details Non commutative (a*b != a*b)
+        Quaternion& operator*= (const Quaternion& _q1);
+        /// \brief Scale the quaternion
+        Quaternion& operator*= (float _s);
+        /// \brief Quaternion division   a/=b  <=>  a=a*(b^-1)=a*conjugated(b).
+        Quaternion& operator/= (const Quaternion& _q1);
+        /// \brief Scale the quaternion
+        Quaternion& operator/= (float _s);
+        /// \brief Vector like addition
+        Quaternion& operator+= (const Quaternion& _q1);
+        /// \brief Vector like subtraction
+        Quaternion& operator-= (const Quaternion& _q1);
+
+        Quaternion operator* (Quaternion _q1) const { return _q1 *= *this; }
+        Quaternion operator* (float _s) const       { return Quaternion(*this) *= _s; }
+        Quaternion operator/ (Quaternion _q1) const { return _q1 /= *this; }
+        Quaternion operator/ (float _s) const       { return Quaternion(*this) /= _s; }
+        Quaternion operator+ (Quaternion _q1) const { return _q1 += *this; }
+        Quaternion operator- (Quaternion _q1) const { return _q1 -= *this; }
 
         float i, j, k, r;
     };
 
-
+    // ********************************************************************* //
+    /// \brief Scalar multiplication from left
+    inline Quaternion operator* (float _s, Quaternion _q) {return _q *= _s; }
 
 
     // ********************************************************************* //
@@ -474,6 +496,12 @@ namespace ei {
                        const Matrix<T1,M,N>& _mat1);                           // TESTED
 
     // ********************************************************************* //
+    /// \brief Computes the sum of component wise products.
+    /// \returns Scalar value of the sum of component products.
+    float dot(const Quaternion& _q0,
+              const Quaternion& _q1);
+
+    // ********************************************************************* //
     /// \brief Computes the cross product of two 3d vectors (RHS).
     /// \returns Perpendicular vector with length |v0|·|v1|·sin(∡(v0,v1)).
     template<typename T, typename T1>
@@ -502,18 +530,18 @@ namespace ei {
 
     // ********************************************************************* //
     /// \brief Computes the root of the sum of squared components.
-    /// \details This is the euclidean length for vectors and the Frobenius
-    ///    norm for matrices.
+    /// \details This is the euclidean length for vectors and Quaternions and
+    ///    the Frobenius norm for matrices.
     /// \returns Euclidean length (scalar).
-    template<typename T, unsigned M, unsigned N>
-    decltype(std::sqrt(std::declval<T>())) len(const Matrix<T,M,N>& _mat0);         // TESTED
+    template<typename T>
+    auto len(const T& _elem0) -> decltype(std::sqrt(dot(_elem0, _elem0)));     // TESTED
 
     // ********************************************************************* //
-    /// \brief Normalizes a vector or matrix with respect to len.
-    /// \details This is equivalent to _mat0 / len(_mat0).
+    /// \brief Normalizes a vector, quaternion or matrix with respect to len.
+    /// \details This is equivalent to elem0 / len(_elem0).
     /// \returns Normalized vector or matrix.
-    template<typename T, unsigned M, unsigned N>
-    Matrix<T,M,N> normalize(const Matrix<T,M,N>& _mat0);
+    template<typename T>
+    T normalize(const T& _mat0);                                               // TESTED
 
     // ********************************************************************* //
     /// \brief Component wise maximum.

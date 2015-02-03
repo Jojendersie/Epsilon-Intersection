@@ -19,5 +19,12 @@ bool test_quaternion()
     TEST( approx(Mat3x3(q1), m1), "Matrix(q1) does not equals m1 as expected!" );
     TEST( approx(q1, Quaternion(m1)), "q1 does not equals Quaternion(m1) as expected!" );
 
+    TEST( approx(dot(q0, q0), 1.0f), "Quaternion dot product invalid" );
+    TEST( approx(len(q0), 1.0f), "Quaternion len invalid" );
+    q0 *= 2.0f;
+    TEST( approx(len(q0), 2.0f), "Quaternion len after multiplication invalid" );
+    q0 = normalize(q0);
+    TEST( approx(len(q0), 1.0f), "Quaternion len after normalization invalid" );
+
     return result;
 }

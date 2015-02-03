@@ -107,3 +107,43 @@ inline bool Quaternion::operator!= (const Quaternion& _q1) const
 {
     return r!=_q1.r || i!=_q1.i || j!=_q1.j || k!=_q1.k;
 }
+
+// ************************************************************************* //
+inline Quaternion& Quaternion::operator*= (const Quaternion& _q1)
+{
+    float nr = r*_q1.r - i*_q1.i - j*_q1.j - k*_q1.k;
+    float ni = r*_q1.i + i*_q1.r + j*_q1.k - k*_q1.j;
+    float nj = r*_q1.j + j*_q1.r + k*_q1.i - i*_q1.k;
+           k = r*_q1.k + k*_q1.r + i*_q1.j - j*_q1.i;
+    r = nr;
+    i = ni;
+    j = nj;
+    return *this;
+}
+
+// ************************************************************************* //
+inline Quaternion& Quaternion::operator*= (float _s)
+{
+    i*=_s; j*=_s; k*=_s; r*=_s;
+    return *this;
+}
+
+// ************************************************************************* //
+inline Quaternion& Quaternion::operator/= (const Quaternion& _q1)
+{
+    float nr =   r*_q1.r + i*_q1.i + j*_q1.j + k*_q1.k;
+    float ni = - r*_q1.i + i*_q1.r - j*_q1.k + k*_q1.j;
+    float nj = - r*_q1.j + j*_q1.r - k*_q1.i + i*_q1.k;
+           k = - r*_q1.k + k*_q1.r - i*_q1.j + j*_q1.i;
+    r = nr;
+    i = ni;
+    j = nj;
+    return *this;
+}
+
+// ************************************************************************* //
+inline Quaternion& Quaternion::operator/= (float _s)
+{
+    i/=_s; j/=_s; k/=_s; r/=_s;
+    return *this;
+}
