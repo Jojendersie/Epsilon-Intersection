@@ -83,7 +83,17 @@ inline typename details::Int<sizeof(T)>::stype ceil(T _x)
 template<typename T, class>
 inline typename details::Int<sizeof(T)>::stype round(T _x)
 {
-    return floor(_x + static_cast<T>(0.5));
+    // Round up
+    //return floor(_x + static_cast<T>(0.5));
+    // Round to even
+    typename details::Int<sizeof(T)>::stype r = static_cast<typename details::Int<sizeof(T)>::stype>(_x);
+    r -= static_cast<typename details::Int<sizeof(T)>::stype>((_x<static_cast<T>(0)) && (_x!=static_cast<T>(r)));   // Subtract 1 if _x < 0 -> r is floor(_x)
+    T f = _x - r;    // Fractional part (positive)
+    if(f < static_cast<T>(0.5)) return r;
+    if(f > static_cast<T>(0.5)) return r+1;
+    // f is 0.5
+    if(r & 1) return r + 1;
+    return r;
 }
 
 // ************************************************************************* //
