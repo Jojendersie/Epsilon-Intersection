@@ -98,16 +98,16 @@ inline typename details::Int<sizeof(T)>::stype round(T _x)
 
 // ************************************************************************* //
 template<typename T0, typename T1>
-decltype(std::declval<T0>() * std::declval<T1>()) lerp(T0 _x0, T0 _x1, T1 _t)
+auto lerp(T0 _x0, T0 _x1, T1 _t) -> decltype(_x0*_t)
 {
     return _x0 + (_x1 - _x0) * _t;
 }
 
 // ************************************************************************* //
 template<typename T0, typename T1>
-decltype(std::declval<T0>() * std::declval<T1>()) bilerp(T0 _x00, T0 _x01,
-                                                         T0 _x10, T0 _x11,
-                                                         T1 _t0, T1 _t1)
+auto bilerp(T0 _x00, T0 _x01,
+            T0 _x10, T0 _x11,
+            T1 _t0, T1 _t1) -> decltype(_x00*_t0)
 {
     return lerp(lerp(_x00, _x01, _t0),
                 lerp(_x10, _x11, _t0), _t1);

@@ -481,10 +481,10 @@ namespace ei {
     Quaternion conjugate(const Quaternion& _q);                                // TESTED
 
     /// \brief Get the rotation axis from a quaternion
-    Vec3 axis(const Quaternion& _q);
+    Vec3 axis(const Quaternion& _q);                                           // TESTED
 
     /// \brief Get the angle (radians) from a quaternion
-    float angle(const Quaternion& _q);
+    float angle(const Quaternion& _q);                                         // TESTED
 
     // ********************************************************************* //
     /// \brief Get the Euler angles (radians) from a quaternion
@@ -506,14 +506,14 @@ namespace ei {
     template<typename T, unsigned M, unsigned N>
     bool approx(const Matrix<T,M,N>& _mat0,
                 const Matrix<T,M,N>& _mat1,
-                float _epsilon = 1e-6f);
+                float _epsilon = 1e-6f);                                       // TESTED
 
     // ********************************************************************* //
     /// \brief Check if the absolute difference between all elements is smaller
     ///    or equal than epsilon.
     bool approx(const Quaternion& _q0,
                 const Quaternion& _q1,
-                float _epsilon = 1e-6f);
+                float _epsilon = 1e-6f);                                       // TESTED
 
     // ********************************************************************* //
     /// \brief Computes the sum of component wise products.
@@ -711,6 +711,20 @@ namespace ei {
         bilerp(Matrix<T0,M,N> _x00, Matrix<T0,M,N> _x01,
                Matrix<T0,M,N> _x10, Matrix<T0,M,N> _x11,
                T1 _t0, T1 _t1);                                                // TESTED
+
+    // ********************************************************************* //
+    /// \brief Spherical linear interpolation with constant angular speed
+    /// \details Spherical interpolation is not defined, if the angle between
+    ///     both vectors is pi. In that case this still method performs
+    ///     an interpoltion but without normalization.
+    ///
+    ///     Formulas from Ken Shoemake "Antimating rotation with quaternion
+    ///     curves" SIGGRAPH 85
+    template<typename T0, typename T1, unsigned N>
+    auto slerp(const Matrix<T0,1,N>& _v0, const Matrix<T0,1,N>& _v1, T1 _t) -> decltype(_v0*_t);
+    template<typename T0, typename T1, unsigned M>
+    auto slerp(const Matrix<T0,M,1>& _v0, const Matrix<T0,M,1>& _v1, T1 _t) -> decltype(_v0*_t);    // TESTED
+    Quaternion slerp(const Quaternion& _q0, const Quaternion& _q1, float _t);  // TESTED
 
 
     // ********************************************************************* //

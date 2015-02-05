@@ -173,6 +173,19 @@ inline Quaternion& Quaternion::operator/= (float _s)
     return *this;
 }
 
+// ********************************************************************* //
+inline Quaternion& Quaternion::operator+= (const Quaternion& _q1)
+{
+    i+=_q1.i; j+=_q1.j; k+=_q1.k; r+=_q1.r;
+    return *this;
+}
+
+// ********************************************************************* //
+inline Quaternion& Quaternion::operator-= (const Quaternion& _q1)
+{
+    i-=_q1.i; j-=_q1.j; k-=_q1.k; r-=_q1.r;
+    return *this;
+}
 
 
 
@@ -234,4 +247,18 @@ inline bool approx(const Quaternion& _q0,
         && abs(_q0.i - _q1.i) <= _epsilon
         && abs(_q0.j - _q1.j) <= _epsilon
         && abs(_q0.k - _q1.k) <= _epsilon;
+}
+
+// ************************************************************************* //
+inline Quaternion slerp(const Quaternion& _q0, const Quaternion& _q1, float _t)
+{
+    float theta = acos( clamp(dot(_q0,_q1), -1.0f, 1.0f) );
+    float so = sin( theta );
+    if(so == 0.0f) so = 1.0f;
+    float f0 = sin( theta * (1.0f-_t) ) / so;
+    float f1 = sin( theta * _t ) / so;
+    return Quaternion(_q0.r * f0 + _q1.r * f1,
+                      _q0.i * f0 + _q1.i * f1,
+                      _q0.j * f0 + _q1.j * f1,
+                      _q0.k * f0 + _q1.k * f1);
 }

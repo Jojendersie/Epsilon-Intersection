@@ -1010,6 +1010,36 @@ Matrix<decltype(std::declval<T0>() * std::declval<T1>()),M,N>
 }
 
 // ************************************************************************* //
+template<typename T0, typename T1, unsigned N>
+auto slerp(const Matrix<T0,1,N>& _v0, const Matrix<T0,1,N>& _v1, T1 _t) -> decltype(_v0*_t)
+{
+    T1 theta = acos( clamp(dot(_v0,_v1), static_cast<T1>(-1.0), static_cast<T1>(1.0)) );
+    T1 so = sin( theta );
+    if(so == static_cast<T1>(0)) so = 1.0f;
+    T1 f0 = sin( theta * (static_cast<T1>(1.0)-_t) ) / so;
+    T1 f1 = sin( theta * _t ) / so;
+    decltype(_v0*_t) result;
+    for(uint i=0; i<N; ++i)
+        result[i] = _v0[i]*f0 + _v1[i]*f1;
+    return result;
+}
+
+template<typename T0, typename T1, unsigned M>
+auto slerp(const Matrix<T0,M,1>& _v0, const Matrix<T0,M,1>& _v1, T1 _t) -> decltype(_v0*_t)
+{
+    T1 theta = acos( clamp(dot(_v0,_v1), static_cast<T1>(-1.0), static_cast<T1>(1.0)) );
+    T1 so = sin( theta );
+    if(so == static_cast<T1>(0)) so = 1.0f;
+    T1 f0 = sin( theta * (static_cast<T1>(1.0)-_t) ) / so;
+    T1 f1 = sin( theta * _t ) / so;
+    decltype(_v0*_t) result;
+    for(uint i=0; i<M; ++i)
+        result[i] = _v0[i]*f0 + _v1[i]*f1;
+    return result;
+}
+
+
+// ************************************************************************* //
 template<unsigned M, unsigned N>
 bool any(const Matrix<bool,M,N>& _mat0)
 {

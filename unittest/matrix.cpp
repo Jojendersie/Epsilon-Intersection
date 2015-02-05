@@ -388,15 +388,23 @@ bool test_matrix()
     }
 
     // ********************************************************************* //
-    // Test lerp, bilerp
+    // Test lerp, bilerp, slerp
     {
         Vec3 v0(0.0f);
         Vec3 v1(1.0f);
         Vec3 v2(2.0f);
+        Vec3 v3(-1.0f);
+        Vec3 v4(0.0f, 1.0f, 0.0f);
+        Vec3 v5(1.0f, 0.0f, 0.0f);
+        Vec3 v6(0.382683432f, 0.923879533f, 0.0f);
+        Vec3 v7(0.25f, 0.75f, 0.0f);
         TEST( all(lerp(v0, v2, 0.5f) == v1), "Linear interpolation failed." );
         TEST( all(bilerp(v0, v1, v1, v2, 0.5f, 0.5f) == v1), "Bilinear interpolation failed." );
         TEST( lerp(1, 4, 0.5f) == 2.5f, "Linear interpolation failed." );
+        TEST( all(lerp(v4, v5, 0.25f) == v7), "Linear interpolation by 0.25 failed." );
         TEST( bilerp(1, 3, 5, 7, 0.5f, 0.5f) == 4.0f, "Bilinear interpolation failed." );
+        TEST( approx(slerp(v4, v5, 0.25f), v6), "Spherical linear interpolation failed." );
+        TEST( approx(dot(slerp(v1, v3, 0.5f), v1), 0.0f), "Spherical linear interpolation for degenerated case failed." );
     }
 
     // ********************************************************************* //

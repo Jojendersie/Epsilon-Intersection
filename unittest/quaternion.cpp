@@ -35,6 +35,11 @@ bool test_quaternion()
     Quaternion q2 = conjugate(q0);
     TEST( q0.r == q2.r && q0.i == -q2.i && q0.j == -q2.j && q0.k == -q2.k, "Conjugated quaternion wrong!" );
 
+    Quaternion q4( 0.1f, 0.1f, -0.7f );
+    Quaternion q5( 0.25f, 0.4f, -0.7f );
+    // Unfortunatelly the slerp is very unprecise -> large epsilon
+    TEST( approx(slerp(q1, q4, 0.25f), q5, 4e-3f), "Slerp for quaternions failed!" );
+
     Vec3 v0(1.0f, 0.0f, 0.0f);
     Vec3 v1(0.0f, 1.0f, 0.0f);
     Quaternion q4(Vec3(1.0f, 0.0f, 0.0f), Vec3(0.0f, 1.0f, 0.0f));

@@ -166,7 +166,7 @@ namespace ei {
     /// \param _t [in] Interpolation parameter. Can be scalar or vector.
     /// \returns x + (y - x) * t where the type is derived from the operands.
     template<typename T0, typename T1>
-    decltype(std::declval<T0>() * std::declval<T1>()) lerp(T0 _x0, T0 _x1, T1 _t); // TESTED
+    auto lerp(T0 _x0, T0 _x1, T1 _t) -> decltype(_x0*_t);                      // TESTED
 
     // ********************************************************************* //
     /// \brief Bilinear interpolation optimized for scalars.
@@ -182,9 +182,9 @@ namespace ei {
     /// \param _t1 [in] Scalar interpolation parameter ("y-direction").
     /// \returns lerp(lerp(_x00, _x01, _t0), lerp(_x10, _x11, _t0), _t1).
     template<typename T0, typename T1>
-    decltype(std::declval<T0>() * std::declval<T1>()) bilerp(T0 _x00, T0 _x01,
-                                                             T0 _x10, T0 _x11,
-                                                             T1 _t0, T1 _t1);  // TESTED
+    auto bilerp(T0 _x00, T0 _x01,
+                T0 _x10, T0 _x11,
+                T1 _t0, T1 _t1) -> decltype(_x00*_t0);                         // TESTED
 
     // Include implementation.
 #   include "details/elementary.inl"
