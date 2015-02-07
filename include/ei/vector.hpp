@@ -434,7 +434,12 @@ namespace ei {
         /// \brief Create from quaternion coefficients
         Quaternion( float _r, float _i, float _j, float _k );
 
-        // TODO: from vector to vector (rotated such that the from vector is aligned with the to vector
+        /// \brief Rotate from vector to vector (rotated such that the from
+        ///     vector is aligned with the to vector).
+        /// \param [in] _from One certain direction vector before rotation.
+        /// \param [in] _to Target direction vector. The from direction should
+        ///     be aligned with the target after rotation.
+        Quaternion( const Vec3& _from, const Vec3& _to );                      // TESTED
 
         // TODO: lookAt parametrization
 

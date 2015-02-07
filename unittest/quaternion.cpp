@@ -33,5 +33,11 @@ bool test_quaternion()
     Quaternion q2 = conjugate(q0);
     TEST( q0.r == q2.r && q0.i == -q2.i && q0.j == -q2.j && q0.k == -q2.k, "Conjugated quaternion wrong!" );
 
+    Vec3 v0(1.0f, 0.0f, 0.0f);
+    Vec3 v1(0.0f, 1.0f, 0.0f);
+    Quaternion q4(Vec3(1.0f, 0.0f, 0.0f), Vec3(0.0f, 1.0f, 0.0f));
+    Mat3x3 m2(q4);
+    TEST( approx(m2 * v0, v1), "Quaternion From-To parametrization or matrix transformation invalid!" );
+
     return result;
 }

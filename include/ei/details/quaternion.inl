@@ -102,6 +102,26 @@ inline Quaternion::Quaternion( float _r, float _i, float _j, float _k ) :
 }
 
 // ************************************************************************* //
+inline Quaternion::Quaternion( const Vec3& _from, const Vec3& _to )
+{
+    // Get lengths for normalization
+    float lf = len(_from);
+    float lt = len(_to);
+    Vec3 axis = cross(_from, _to);
+    // Compute sin(alpha)^2 from cross product lf * lt * sin(alpha) and normalize
+    float sa = len(axis);
+    axis /= sa;
+    sa /= lf * lt;
+    // sin(alpha) = sin(2*theta)
+    float theta = asin(sa) * 0.5f;
+    float st = sin(theta);
+    r = sqrt((1.0f - st) * (1.0f + st));      // cos(theta)
+    i = st * axis.x;
+    j = st * axis.y;
+    k = st * axis.z;
+}
+
+// ************************************************************************* //
 inline bool Quaternion::operator== (const Quaternion& _q1) const
 {
     return r==_q1.r && i==_q1.i && j==_q1.j && k==_q1.k;
