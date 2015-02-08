@@ -193,6 +193,39 @@ inline float angle(const Quaternion& _q)
 }
 
 // ************************************************************************* //
+inline Vec3 angles(const Quaternion& _q)
+{
+    Vec3 angles;
+    // Derivation from http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToEuler/index.htm
+    // but changed angles because of else convention
+    const double m20half = _q.j * _q.r - _q.i * _q.k;
+
+    if(approx(m20half, 0.5))
+    {
+        angles.x = float(-2.0 * atan2(_q.i, _q.r));
+        angles.y = PI/2.0f;
+        angles.z = 0.0f;
+    }
+    else if(approx(m20half, -0.5))
+    {
+        angles.x = float(2.0 * atan2(_q.i, _q.r));
+        angles.y = -PI/2.0f;
+        angles.z = 0.0f;
+    }
+    else
+    {
+        const double sqr = _q.r * _q.r;
+        const double sqi = _q.i * _q.i;
+        const double sqj = _q.j * _q.j;
+        const double sqk = _q.k * _q.k;
+        angles.x = (float)atan2(2.0 * (_q.i * _q.j + _q.k * _q.r),  sqi - sqj - sqk + sqr);
+        angles.y = (float)asin( clamp(m20half * 2.0, -1.0, 1.0) );
+        angles.z = (float)atan2(2.0 * (_q.j * _q.k + _q.i * _q.r), -sqi - sqj + sqk + sqr);
+    }
+    return angles;
+}
+
+// ************************************************************************* //
 inline bool approx(const Quaternion& _q0,
                    const Quaternion& _q1,
                    float _epsilon)

@@ -426,6 +426,7 @@ namespace ei {
         /// \details The rotations are applied in the order x, y, z:
         ///     rotationZ(_z) * rotationY(_y) * rotationX(_x)
         Quaternion( float _x, float _y, float _z );                            // TESTED
+        Quaternion( const Vec3& _eulerAngles ) : Quaternion(_eulerAngles.x, _eulerAngles.y, _eulerAngles.z) {}
 
         /// \brief Create from rotation matrix (does a decomposition if the
         ///     matrix contains scaling).
@@ -482,8 +483,12 @@ namespace ei {
     /// \brief Get the rotation axis from a quaternion
     Vec3 axis(const Quaternion& _q);
 
-    /// \brief Get the angle from a quaternion
+    /// \brief Get the angle (radians) from a quaternion
     float angle(const Quaternion& _q);
+
+    // ********************************************************************* //
+    /// \brief Get the Euler angles (radians) from a quaternion
+    Vec3 angles(const Quaternion& _q);
 
 
     // ********************************************************************* //
