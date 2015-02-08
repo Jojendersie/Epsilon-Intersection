@@ -888,10 +888,11 @@ namespace ei {
 
     // ********************************************************************* //
     /// \brief Rotation matrix in 3D/homogeneous space from 3 angles:
-    ///     rotationZ(_yaw) * rotationY(_pitch) * rotationX(_roll).
-    // TODO: test gimbal lock
-    Mat3x3 rotation( float _yaw, float _pitch, float _roll );
-    Mat4x4 rotationH( float _yaw, float _pitch, float _roll );
+    ///     rotationZ(_z) * rotationY(_y) * rotationX(_x).
+    Mat3x3 rotation( float _x, float _y, float _z );
+    Mat4x4 rotationH( float _x, float _y, float _z );
+    inline Mat3x3 rotation( const Vec3& _eulerAngles )         { return rotation(_eulerAngles.x, _eulerAngles.y, _eulerAngles.z); }
+    inline Mat4x4 rotationH( const Vec3& _eulerAngles )        { return rotationH(_eulerAngles.x, _eulerAngles.y, _eulerAngles.z); }
 
     // ********************************************************************* //
     /// \brief Rotation matrix in 3D/homogeneous space for an arbitrary axis.

@@ -1455,22 +1455,22 @@ inline Mat4x4 rotationZH( float _angle )
 }
 
 // ************************************************************************* //
-inline Mat3x3 rotation( float _yaw, float _pitch, float _roll )
+inline Mat3x3 rotation( float _x, float _y, float _z )
 {
-    float sinA = sin(_yaw);
-    float cosA = cos(_yaw);
-    float sinB = sin(_pitch);
-    float cosB = cos(_pitch);
-    float sinC = sin(_roll);
-    float cosC = cos(_roll);
+    float sinA = sin(_z);
+    float cosA = cos(_z);
+    float sinB = sin(_y);
+    float cosB = cos(_y);
+    float sinC = sin(_x);
+    float cosC = cos(_x);
     return Mat3x3(cosA * cosB, cosA * sinB * sinC - sinA * cosC, cosA * sinB * cosC + sinA * sinC,
                   sinA * cosB, sinA * sinB * sinC + cosA * cosC, sinA * sinB * cosC - cosA * sinC,
                   -sinB,       cosB * sinC,                      cosB * cosC                     );
 }
 
-inline Mat4x4 rotationH( float _yaw, float _pitch, float _roll )
+inline Mat4x4 rotationH( float _x, float _y, float _z )
 {
-    return details::incrementDims(rotation( _yaw, _pitch, _roll ));
+    return details::incrementDims(rotation( _x, _y, _z ));
 }
 
 // ************************************************************************* //

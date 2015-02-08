@@ -30,15 +30,15 @@ inline Quaternion::Quaternion( float _x, float _y, float _z )
     double sinZ = sin(halfAngle);
     double cosZ = cos(halfAngle);
 
-    double cXcY = cosX * cosY;
-    double cXsY = cosX * sinY;
-    double sXcY = sinX * cosY;
-    double sXsY = sinX * sinY;
+    double cZcY = cosZ * cosY;
+    double cZsY = cosZ * sinY;
+    double sZcY = sinZ * cosY;
+    double sZsY = sinZ * sinY;
 
-    i = float(sinZ * cXcY - cosZ * sXsY);
-    j = float(cosZ * cXsY + sinZ * sXcY);
-    k = float(cosZ * sXcY - sinZ * cXsY);
-    r = float(cosZ * cXcY + sinZ * sXsY);
+    i = float(sinX * cZcY - cosX * sZsY);
+    j = float(cosX * cZsY + sinX * sZcY);
+    k = float(cosX * sZcY - sinX * cZsY);
+    r = float(cosX * cZcY + sinX * sZsY);
 
     // Assert normalization condition
     if( r < 0.0f )
@@ -202,15 +202,15 @@ inline Vec3 angles(const Quaternion& _q)
 
     if(approx(m20half, 0.5))
     {
-        angles.x = float(-2.0 * atan2(_q.i, _q.r));
+        angles.x = 0.0f;
         angles.y = PI/2.0f;
-        angles.z = 0.0f;
+        angles.z = float(-2.0 * atan2(_q.i, _q.r));
     }
     else if(approx(m20half, -0.5))
     {
-        angles.x = float(2.0 * atan2(_q.i, _q.r));
+        angles.x = 0.0f;
         angles.y = -PI/2.0f;
-        angles.z = 0.0f;
+        angles.z = float(2.0 * atan2(_q.i, _q.r));
     }
     else
     {
@@ -218,9 +218,9 @@ inline Vec3 angles(const Quaternion& _q)
         const double sqi = _q.i * _q.i;
         const double sqj = _q.j * _q.j;
         const double sqk = _q.k * _q.k;
-        angles.x = (float)atan2(2.0 * (_q.i * _q.j + _q.k * _q.r),  sqi - sqj - sqk + sqr);
+        angles.x = (float)atan2(2.0 * (_q.j * _q.k + _q.i * _q.r), -sqi - sqj + sqk + sqr);
         angles.y = (float)asin( clamp(m20half * 2.0, -1.0, 1.0) );
-        angles.z = (float)atan2(2.0 * (_q.j * _q.k + _q.i * _q.r), -sqi - sqj + sqk + sqr);
+        angles.z = (float)atan2(2.0 * (_q.i * _q.j + _q.k * _q.r),  sqi - sqj - sqk + sqr);
     }
     return angles;
 }

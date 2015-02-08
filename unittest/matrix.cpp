@@ -470,6 +470,20 @@ bool test_matrix()
             && approx(dot(m1(2), m1(1)), 0.0f) && approx(dot(m1(2), m1(2)), 1.0f),
             "The basis of normalize(0.5,-0.7,0.1) is not orthonormal!" );
     }
+    
+    // ********************************************************************* //
+    // Test transformations
+    {
+        Vec3 vx(1.0f, 0.0f, 0.0f);
+        Vec3 vy(0.0f, 1.0f, 0.0f);
+        Vec3 vz(0.0f, 0.0f, 1.0f);
+        TEST( approx(rotation(PI/2, 0.0f, 0.0f) * vy, vz), "Rotation matrix from Euler angles invalid!" );
+        TEST( approx(rotation(-PI/2, 0.0f, 0.0f) * vz, vy), "Rotation matrix from Euler angles invalid!" );
+        TEST( approx(rotation(0.0f, -PI/2, 0.0f) * vx, vz), "Rotation matrix from Euler angles invalid!" );
+        TEST( approx(rotation(0.0f, PI/2, 0.0f) * vz, vx), "Rotation matrix from Euler angles invalid!" );
+        TEST( approx(rotation(0.0f, 0.0f, PI/2) * vx, vy), "Rotation matrix from Euler angles invalid!" );
+        TEST( approx(rotation(0.0f, 0.0f, -PI/2) * vy, vx), "Rotation matrix from Euler angles invalid!" );
+    }
 
     // ********************************************************************* //
     // Test spherical coordinates
