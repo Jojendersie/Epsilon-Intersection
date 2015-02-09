@@ -840,6 +840,10 @@ namespace ei {
     template<typename T, unsigned N>
     Matrix<T,1,N> transform( const Matrix<T,1,N>& _what, const Matrix<T,N,N>& _space );
 
+    /// \brief Apply a rotation by a quaternion
+    Vec3 transform( const Vec3& _what, const Quaternion& _quaternion );
+    Vec3 transform( const RVec3& _what, const Quaternion& _quaternion );
+
     // ********************************************************************* //
     /// \brief Create a translation matrix in homogeneous coordinate space.
     /// \param [in] _vector Translate by/Add this vector.

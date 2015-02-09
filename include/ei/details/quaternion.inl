@@ -262,3 +262,23 @@ inline Quaternion slerp(const Quaternion& _q0, const Quaternion& _q1, float _t)
                       _q0.j * f0 + _q1.j * f1,
                       _q0.k * f0 + _q1.k * f1);
 }
+
+// ************************************************************************* //
+inline Vec3 transform( const Vec3& _v, const Quaternion& _q )
+{
+    // q v q-1 with v=(0, _v.x, _v.y, _v.z) expanded with Maxima
+    return Vec3(
+        _v.x*_q.r*_q.r-2*_v.y*_q.k*_q.r+2*_q.j*_v.z*_q.r-_v.x*_q.k*_q.k+2*_q.i*_v.z*_q.k-_v.x*_q.j*_q.j+2*_q.i*_v.y*_q.j+_v.x*_q.i*_q.i,
+        _v.y*_q.r*_q.r+2*_v.x*_q.k*_q.r-2*_q.i*_v.z*_q.r-_v.y*_q.k*_q.k+2*_q.j*_v.z*_q.k+_v.y*_q.j*_q.j+2*_v.x*_q.i*_q.j-_q.i*_q.i*_v.y,
+        _v.z*_q.r*_q.r-2*_v.x*_q.j*_q.r+2*_q.i*_v.y*_q.r+_v.z*_q.k*_q.k+2*_v.y*_q.j*_q.k+2*_v.x*_q.i*_q.k-_q.j*_q.j*_v.z-_q.i*_q.i*_v.z
+    );
+}
+
+inline Vec3 transform( const RVec3& _v, const Quaternion& _q )
+{
+    return Vec3(
+        _v.x*_q.r*_q.r-2*_v.y*_q.k*_q.r+2*_q.j*_v.z*_q.r-_v.x*_q.k*_q.k+2*_q.i*_v.z*_q.k-_v.x*_q.j*_q.j+2*_q.i*_v.y*_q.j+_v.x*_q.i*_q.i,
+        _v.y*_q.r*_q.r+2*_v.x*_q.k*_q.r-2*_q.i*_v.z*_q.r-_v.y*_q.k*_q.k+2*_q.j*_v.z*_q.k+_v.y*_q.j*_q.j+2*_v.x*_q.i*_q.j-_q.i*_q.i*_v.y,
+        _v.z*_q.r*_q.r-2*_v.x*_q.j*_q.r+2*_q.i*_v.y*_q.r+_v.z*_q.k*_q.k+2*_v.y*_q.j*_q.k+2*_v.x*_q.i*_q.k-_q.j*_q.j*_v.z-_q.i*_q.i*_v.z
+    );
+}

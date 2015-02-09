@@ -42,9 +42,13 @@ bool test_quaternion()
 
     Vec3 v0(1.0f, 0.0f, 0.0f);
     Vec3 v1(0.0f, 1.0f, 0.0f);
-    Quaternion q4(Vec3(1.0f, 0.0f, 0.0f), Vec3(0.0f, 1.0f, 0.0f));
-    Mat3x3 m2(q4);
+    Vec3 v2 = normalize(Vec3(1.0f, 2.0f, -1.0f));
+    Quaternion q6(v0, v1);
+    Quaternion q7(v2, v1);
+    Mat3x3 m2(q6);
     TEST( approx(m2 * v0, v1), "Quaternion From-To parametrization or matrix transformation invalid!" );
+    TEST( approx(transform(v0, q6), v1), "Direct quaternion transformation v0->v1 failed!" );
+    TEST( approx(transform(v2, q7), v1), "Direct quaternion transformation v2->v1 failed!" );
 
     return result;
 }
