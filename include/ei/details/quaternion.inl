@@ -48,6 +48,8 @@ inline Quaternion::Quaternion( float _x, float _y, float _z )
         j = -j;
         k = -k;
     }
+
+    //*this = normalize(*this);
 }
 
 
@@ -252,9 +254,17 @@ inline bool approx(const Quaternion& _q0,
 // ************************************************************************* //
 inline Quaternion slerp(const Quaternion& _q0, const Quaternion& _q1, float _t)
 {
+    // http://en.wikipedia.org/wiki/Slerp
     float theta = acos( clamp(dot(_q0,_q1), -1.0f, 1.0f) );
     float so = sin( theta );
-    if(so == 0.0f) so = 1.0f;
+    if(approx(so, 0.0f))
+    {
+        // Converges towards linear interpolation for small so
+        return Quaternion(_q0.r + (_q1.r - _q0.r) * _t,
+                          _q0.i + (_q1.i - _q0.i) * _t,
+                          _q0.j + (_q1.j - _q0.j) * _t,
+                          _q0.k + (_q1.k - _q0.k) * _t);
+    }
     float f0 = sin( theta * (1.0f-_t) ) / so;
     float f1 = sin( theta * _t ) / so;
     return Quaternion(_q0.r * f0 + _q1.r * f1,
