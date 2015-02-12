@@ -98,4 +98,10 @@ namespace ei {
     /// \return true if the sphere and the capsule have at least on point in common.
     bool intersects( const Sphere& _sphere, const Capsule& _capsule );         // TESTED
     inline bool intersects( const Capsule& _capsule, const Sphere& _sphere )          { return intersects(_sphere, _capsule); }
+
+    /// \brief Intersection test between point and capsule.
+    /// \details Performance index: TODO
+    /// \return true if the point and the capsule have at least on point in common.
+    bool intersects( const Vec3& _point, const Capsule& _capsule );            // TESTED
+    inline bool intersects( const Capsule& _capsule, const Vec3& _point )          { return intersects(_point, _capsule); }
 }

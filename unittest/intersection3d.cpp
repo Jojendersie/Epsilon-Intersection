@@ -195,5 +195,18 @@ bool test_3dintersections()
         performance<Sphere,Capsule>(intersects, "intersects");
     }
 
+    // Test point <-> capsule intersection
+    {
+        Capsule cap( Vec3(-1.0f, 0.0f, 0.0f), Vec3(0.0f, 1.0f, 0.0f), 0.5f );
+        Vec3 poi0( 0.0f, 0.0f, 0.0f );
+        Vec3 poi1( -0.5f, 0.5f, 0.0f );
+        Vec3 poi2( 0.0f, 1.5f, 0.0f );
+        TEST( !intersects( poi0, cap ), "poi0 outside cap!" );
+        TEST( intersects( poi1, cap ), "poi1 central inside cap!" );
+        TEST( intersects( poi1, cap ), "poi1 touches cap!" );
+
+        performance<Vec3,Capsule>(intersects, "intersects");
+    }
+
     return result;
 }

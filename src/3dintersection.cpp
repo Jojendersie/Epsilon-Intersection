@@ -305,4 +305,10 @@ namespace ei {
     {
         return distance(_sphere.center, _capsule.seg) <= _capsule.radius + _sphere.radius;
     }
+
+    // ********************************************************************* //
+    bool intersects( const Vec3& _point, const Capsule& _capsule )
+    {
+        return distance(_point, _capsule.seg) <= _capsule.radius;
+    }
 }
