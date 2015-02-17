@@ -153,6 +153,36 @@ namespace ei {
     typename details::Int<sizeof(T)>::stype round(T _x);
 
     // ********************************************************************* //
+    /// \brief Get the fraction in (-1,1) with f-int(f).
+    /// \param _x [in] The number to be splitted.
+    template<typename T>
+    T frac(T _x);                                                              // TESTED
+
+    // ********************************************************************* //
+    /// \brief Divide a number into the integer and fractional part.
+    /// \param _x [in] The number to be splitted.
+    /// \param _int [out] The integer part of the number.
+    /// \returns The fraction of the number in (-1,1).
+    template<typename T>
+    T intfrac(T _x, typename details::Int<sizeof(T)>::stype& _int);            // TESTED
+
+    // ********************************************************************* //
+    /// \brief Divide a number into an integer and a positive fractional part.
+    /// \details This method uses f-floor(f) instead of f-int(f) and therefore
+    ///      has a continous behavior around zero
+    /// \param _x [in] The number to be splitted.
+    /// \param _int [out] The integer part of the number.
+    /// \returns The fraction of the number in [0,1).
+    template<typename T>
+    T floorfrac(T _x, typename details::Int<sizeof(T)>::stype& _int);          // TESTED
+
+    // ********************************************************************* //
+    /// \brief Get the smallest positive number m such that x=y*c+m with c in Z.
+    /// \returns The mathematically defined positive modulus.
+    template<typename T>
+    T mod(T _x, T _y);                                                         // TESTED
+
+    // ********************************************************************* //
     /// \brief Linear interpolation.
     /// \details There are two formulations:
     ///    * x * (1 - t) + y * t
