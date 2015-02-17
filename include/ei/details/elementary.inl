@@ -96,6 +96,77 @@ inline typename details::Int<sizeof(T)>::stype round(T _x)
     return r;
 }
 
+// ********************************************************************* //
+template<typename T>
+T frac(T _x)
+{
+    return _x - static_cast<typename details::Int<sizeof(T)>::stype>(_x);
+}
+
+// ********************************************************************* //
+template<typename T>
+T intfrac(T _x, typename details::Int<sizeof(T)>::stype& _int)
+{
+    _int = static_cast<typename details::Int<sizeof(T)>::stype>(_x);
+    return _x - _int;
+}
+
+// ********************************************************************* //
+template<typename T>
+T floorfrac(T _x, typename details::Int<sizeof(T)>::stype& _int)
+{
+    _int = floor(_x);
+    return _x - _int;
+}
+
+// ********************************************************************* //
+template<typename T>
+T mod(T _x, T _y)
+{
+    eiAssert(_y != 0.0f, "Modulu 0 is not defined!");
+    T m = fmod(_x, _y);
+    return m < 0 ? m+abs(_y) : m;
+}
+
+// Pure integer specializations
+template<>
+inline int8 mod<int8>(int8 _x, int8 _y)
+{
+    eiAssert(_y != 0, "Modulu 0 is not defined!");
+    int8 m = _x % _y;
+    return m < 0 ? m+abs(_y) : m;
+}
+template<>
+inline int16 mod<int16>(int16 _x, int16 _y)
+{
+    eiAssert(_y != 0, "Modulu 0 is not defined!");
+    int16 m = _x % _y;
+    return m < 0 ? m+abs(_y) : m;
+}
+template<>
+inline int32 mod<int32>(int32 _x, int32 _y)
+{
+    eiAssert(_y != 0, "Modulu 0 is not defined!");
+    int32 m = _x % _y;
+    return m < 0 ? m+abs(_y) : m;
+}
+template<>
+inline int64 mod<int64>(int64 _x, int64 _y)
+{
+    eiAssert(_y != 0, "Modulu 0 is not defined!");
+    int64 m = _x % _y;
+    return m < 0 ? m+abs(_y) : m;
+}
+
+template<>
+inline uint8 mod<uint8>(uint8 _x, uint8 _y) { return _x % _y; }
+template<>
+inline uint16 mod<uint16>(uint16 _x, uint16 _y) { return _x % _y; }
+template<>
+inline uint32 mod<uint32>(uint32 _x, uint32 _y) { return _x % _y; }
+template<>
+inline uint64 mod<uint64>(uint64 _x, uint64 _y) { return _x % _y; }
+
 // ************************************************************************* //
 template<typename T0, typename T1>
 auto lerp(T0 _x0, T0 _x1, T1 _t) -> decltype(_x0*_t)

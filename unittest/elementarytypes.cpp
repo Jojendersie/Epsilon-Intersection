@@ -57,5 +57,44 @@ bool test_elementaries()
         "'int64' is not an integer\n"
     );
 
+    // frac, intfrac, floorfrac, mod
+    {
+        float x0 = 1.25f;
+        float x1 = 3.0f;
+        float x2 = -0.75f;
+        float y0 = 1.0f;
+        float y1 = 2.5f;
+        float y2 = -1.5f;
+
+        TEST( frac(x0) == 0.25f, "frac of x0 wrong!");
+        TEST( frac(x1) == 0.0f, "frac of x1 wrong!");
+        TEST( frac(x2) == -0.75f, "frac of x2 wrong!");
+        int i;
+        TEST( intfrac(x0, i) == 0.25f && i==1, "intfrac of x0 wrong!");
+        TEST( intfrac(x1, i) == 0.0f && i==3, "intfrac of x1 wrong!");
+        TEST( intfrac(x2, i) == -0.75f && i==0, "intfrac of x2 wrong!");
+
+        TEST( floorfrac(x0, i) == 0.25f && i==1, "floorfrac of x0 wrong!");
+        TEST( floorfrac(x1, i) == 0.0f && i==3, "floorfrac of x1 wrong!");
+        TEST( floorfrac(x2, i) == 0.25f && i==-1, "floorfrac of x2 wrong!");
+
+        TEST( mod(x0, y0) == 0.25f, "mod(x0, y0) wrong!");
+        TEST( mod(x0, y2) == 1.25f, "mod(x0, y2) wrong!");
+        TEST( mod(x1, y0) == 0.0f, "mod(x1, y0) wrong!");
+        TEST( mod(x1, y1) == 0.5f, "mod(x1, y1) wrong!");
+        TEST( mod(x1, y2) == 0.0f, "mod(x1, y2) wrong!");
+        TEST( mod(x2, y0) == 0.25f, "mod(x2, y0) wrong!");
+        TEST( mod(x2, y2) == 0.75f, "mod(x2, y2) wrong!");
+        TEST( mod(7, 3) == 1, "mod(7, 3) wrong!");
+        TEST( mod(7, -3) == 1, "mod(7, -3) wrong!");
+        TEST( mod(-7, 3) == 2, "mod(-7, 3) wrong!");
+        TEST( mod(-7, -3) == 2, "mod(-7, -3) wrong!");
+        TEST( mod(4, 2) == 0, "mod(4, 2) wrong!");
+        TEST( mod(-4, 2) == 0, "mod(-4, 2) wrong!");
+
+        uint16 a = 7, b = 3;
+        TEST( mod(a, b) == 1, "mod(a, b) wrong!");
+    }
+
     return result;
 }
