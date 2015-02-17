@@ -311,4 +311,138 @@ namespace ei {
     {
         return distance(_point, _capsule.seg) <= _capsule.radius;
     }
+
+    // ********************************************************************* //
+    bool intersects( const Vec3& _point, const FastFrustum& _frustum )
+    {
+        if(distance(_point, _frustum.nf) > 0.0f) return false;
+        if(distance(_point, _frustum.l) < 0.0f) return false;
+        if(distance(_point, _frustum.r) < 0.0f) return false;
+        if(distance(_point, _frustum.b) < 0.0f) return false;
+        if(distance(_point, _frustum.t) < 0.0f) return false;
+        return true;
+    }
+
+    // ********************************************************************* //
+    bool intersects( const Sphere& _sphere, const FastFrustum& _frustum )
+    {
+        // The usual test by comparing all distances to the sphere radius are
+        // wrong because they yield false positives when the sphere is outside
+        // but intersects all 3 planes in a corner.
+
+        // The following computes the distance of the sphere and early outs
+        // if the distance is larger than the radius.
+        /*float dsq = sq(_sphere.radius);
+        dsq -= sq(max(0.0f, distance(_sphere.center, _frustum.nf)));
+        if(dsq < 0.0f) return false;
+        dsq -= sq(min(0.0f, distance(_sphere.center, _frustum.l)));
+        if(dsq < 0.0f) return false;
+        dsq -= sq(min(0.0f, distance(_sphere.center, _frustum.r)));
+        if(dsq < 0.0f) return false;
+        dsq -= sq(min(0.0f, distance(_sphere.center, _frustum.b)));
+        if(dsq < 0.0f) return false;
+        dsq -= sq(min(0.0f, distance(_sphere.center, _frustum.t)));
+        if(dsq < 0.0f) return false;
+        return true;*/
+
+        // Projection approach: track the closest point.
+        // Whenever the center is outside and the sphere intersects a plane
+        // project the current closest point along the current possible space.
+        Vec3 refPoint = _sphere.center;
+        Vec3 refData; // Semantic depends on state 0:unused, 1:plane normal, 2:ray direction
+        int state = 0;
+        float d = distance(refPoint, _frustum.nf);
+        if(abs(d) > 0.0f)
+        {
+            if(abs(d) > _sphere.radius) return false;
+            // Intersects but is outside -> project.
+            refPoint -= d * _frustum.nf.n;
+            refData = _frustum.nf.n;
+            state = 1;
+        }
+        d = distance(refPoint, _frustum.l);
+        if(d < 0.0f)
+        {
+            if(d < -_sphere.radius) return false;
+            // Intersects but is outside -> react different on state.
+            if(state == 0) {
+                refPoint -= d * _frustum.l.n;
+                refData = _frustum.l.n;
+            } else {
+                // Move inside last plane as projection
+                Vec3 dir = cross(_frustum.l.n, refData);
+                Vec3 projDir = cross(dir, refData);
+                refPoint -= projDir * (d / -dot(projDir, _frustum.l.n));
+                refData = dir;
+            }
+            ++state;
+        }
+        d = distance(refPoint, _frustum.b);
+        if(d < 0.0f)
+        {
+            if(d < -_sphere.radius) return false;
+            // Intersects but is outside -> react different on state.
+            if(state == 0) {
+                refPoint -= d * _frustum.b.n;
+                refData = _frustum.b.n;
+            } else if(state == 1) {
+                // Move inside last plane as projection
+                Vec3 dir = cross(_frustum.b.n, refData);
+                Vec3 projDir = cross(dir, refData);
+                refPoint -= projDir * (d / -dot(projDir, _frustum.b.n));
+                refData = dir;
+            } else {
+                // Find ray plane intersection
+                refPoint += refData * (d / -dot(refData, _frustum.b.n));
+                return lensq(refPoint - _sphere.center) <= _sphere.radius * _sphere.radius;
+            }
+            ++state;
+        }
+        d = distance(refPoint, _frustum.r);
+        if(d < 0.0f)
+        {
+            if(d < -_sphere.radius) return false;
+            // Intersects but is outside -> react different on state.
+            if(state == 0) {
+                refPoint -= d * _frustum.r.n;
+                refData = _frustum.r.n;
+            } else if(state == 1) {
+                // Move inside last plane as projection
+                Vec3 dir = cross(_frustum.r.n, refData);
+                Vec3 projDir = cross(dir, refData);
+                refPoint -= projDir * (d / -dot(projDir, _frustum.r.n));
+                refData = dir;
+            } else {
+                // Find ray plane intersection
+                refPoint += refData * (d / -dot(refData, _frustum.r.n));
+                return lensq(refPoint - _sphere.center) <= _sphere.radius * _sphere.radius;
+            }
+            ++state;
+        }
+        d = distance(refPoint, _frustum.t);
+        if(d < 0.0f)
+        {
+            if(d < -_sphere.radius) return false;
+            // Intersects but is outside -> react different on state.
+            if(state == 0) {
+                refPoint -= d * _frustum.t.n;
+                refData = _frustum.t.n;
+            } else if(state == 1) {
+                // Move inside last plane as projection
+                Vec3 dir = cross(_frustum.t.n, refData);
+                Vec3 projDir = cross(dir, refData);
+                refPoint -= projDir * (d / -dot(projDir, _frustum.t.n));
+                refData = dir;
+            } else {
+                // Find ray plane intersection
+                refPoint += refData * (d / -dot(refData, _frustum.t.n));
+                return lensq(refPoint - _sphere.center) <= _sphere.radius * _sphere.radius;
+            }
+            ++state;
+        }
+
+        if(state == 2)
+            return lensq(refPoint - _sphere.center) <= _sphere.radius * _sphere.radius;
+        return true;
+    }
 }

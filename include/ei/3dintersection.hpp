@@ -104,4 +104,16 @@ namespace ei {
     /// \return true if the point and the capsule have at least on point in common.
     bool intersects( const Vec3& _point, const Capsule& _capsule );            // TESTED
     inline bool intersects( const Capsule& _capsule, const Vec3& _point )          { return intersects(_point, _capsule); }
+
+    /// \brief Intersection test between point and frustum.
+    /// \details Performance index: TODO
+    /// \return true if the point and the frustum have at least on point in common.
+    bool intersects( const Vec3& _point, const FastFrustum& _frustum );        // TESTED
+    inline bool intersects( const FastFrustum& _frustum, const Vec3& _point )          { return intersects(_point, _frustum); }
+
+    /// \brief Intersection test between sphere and frustum.
+    /// \details Performance index: TODO
+    /// \return true if the sphere and the frustum have at least on point in common.
+    bool intersects( const Sphere& _sphere, const FastFrustum& _frustum );
+    inline bool intersects( const FastFrustum& _frustum, const Sphere& _sphere )          { return intersects(_sphere, _frustum); }
 }

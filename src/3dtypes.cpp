@@ -11,7 +11,7 @@ namespace ei {
         Vec3 far = _frustum.f * _frustum.direction + _frustum.apex;
         const_cast<DOP&>(nf) = DOP(_frustum.direction, _frustum.n * _frustum.direction + _frustum.apex, far);
         // Get third axis and central off point
-        Vec3 right = cross(_frustum.direction, _frustum.up);
+        Vec3 right = cross(_frustum.up, _frustum.direction);
         // Use two vectors in the planes to derive the normal.
         Vec3 onPlane = far + _frustum.l*right;
         const_cast<Plane&>(l) = Plane(normalize(cross(_frustum.up, onPlane)), onPlane);

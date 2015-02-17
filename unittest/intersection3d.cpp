@@ -203,9 +203,49 @@ bool test_3dintersections()
         Vec3 poi2( 0.0f, 1.5f, 0.0f );
         TEST( !intersects( poi0, cap ), "poi0 outside cap!" );
         TEST( intersects( poi1, cap ), "poi1 central inside cap!" );
-        TEST( intersects( poi1, cap ), "poi1 touches cap!" );
+        TEST( intersects( poi2, cap ), "poi2 touches cap!" );
 
         performance<Vec3,Capsule>(intersects, "intersects");
+    }
+
+    // Test point <-> frustum intersection
+    {
+        Frustum fru0( Vec3(0.0f), Vec3(0.0f, 0.0f, 1.0f), Vec3(0.0f, 1.0f, 0.0f), 1.0f, 2.0f, 0.0f, 1.0f, 0.0f, 1.0f );
+        FastFrustum ffr0( fru0 );
+        Vec3 poi0( 0.0f, 0.0f, 0.0f );
+        Vec3 poi1( 1.5f, 0.5f, 0.9f );
+        Vec3 poi2( -1.0f, 1.5f, 0.0f );
+        TEST( intersects( poi0, ffr0 ), "poi0 touches fru0!" );
+        TEST( intersects( poi1, ffr0 ), "poi1 inside fru0!" );
+        TEST( !intersects( poi2, ffr0 ), "poi2 outside fru0!" );
+
+        //performance<Vec3,Capsule>(intersects, "intersects");
+    }
+
+    // Test sphere <-> frustum intersection
+    {
+        Frustum fru0( Vec3(0.0f), Vec3(0.0f, 0.0f, 1.0f), Vec3(0.0f, 1.0f, 0.0f), 1.0f, 2.0f, 0.0f, 1.0f, 0.0f, 1.0f );
+        FastFrustum ffr0( fru0 );
+        Sphere sph0( Vec3(0.0f, 0.0f, 0.0f), 0.1f );    // around origin
+        Sphere sph1( Vec3(1.5f, 0.5f, 0.8f), 0.1f );    // full inside
+        Sphere sph2( Vec3(-1.0f, 2.5f, 0.0f), 0.5f );
+        Sphere sph3( Vec3(3.0f, 1.5f, 1.25f), 0.5f );   // this one intersects three planes and should fail in the conventional test
+        Sphere sph4( Vec3(-1.5f, -0.5f, -1.0f), 1.5f ); // intersects five planes and is outside
+        Sphere sph5( Vec3(-1.5f, -0.5f, -1.0f), 2.0f ); // contains origin
+        Sphere sph6( Vec3(0.0f, 0.25f, 0.5f), 0.5f );   // intersects left plane
+        Sphere sph7( Vec3(0.0f, 1.0f, 0.5f), 0.75f );   // intersects upper left edge
+        Sphere sph8( Vec3(0.0f, 1.0f, 0.5f), 0.7f );    // intersects two planes but is outside
+        TEST( intersects( sph0, ffr0 ), "sph0 intersects fru0!" );
+        TEST( intersects( sph1, ffr0 ), "sph1 inside fru0!" );
+        TEST( !intersects( sph2, ffr0 ), "sph2 outside fru0!" );
+        TEST( !intersects( sph3, ffr0 ), "sph3 outside fru0!" );
+        TEST( !intersects( sph4, ffr0 ), "sph4 outside fru0!" );
+        TEST( intersects( sph5, ffr0 ), "sph5 intersects fru0!" );
+        TEST( intersects( sph6, ffr0 ), "sph6 intersects fru0!" );
+        TEST( intersects( sph7, ffr0 ), "sph7 intersects fru0!" );
+        TEST( !intersects( sph8, ffr0 ), "sph8 outside fru0!" );
+
+        //performance<Vec3,Capsule>(intersects, "intersects");
     }
 
     return result;

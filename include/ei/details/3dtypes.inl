@@ -132,18 +132,15 @@ inline Plane::Plane(const Vec3& _v0, const Vec3& _v1, const Vec3& _v2)
 // ************************************************************************* //
 inline DOP::DOP(const Vec3& _normal, float _d0, float _d1) :
     n(_normal),
-    d0(_d0),
-    d1(_d1)
+    d0(max(_d0, _d1)),
+    d1(min(_d0, _d1))
 {
     eiAssert(approx(len(_normal), 1.0f), "Expected normalized vector for the normal!");
 }
 
 inline DOP::DOP(const Vec3& _normal, const Vec3& _support0, const Vec3& _support1) :
-    n(_normal),
-    d0(-dot(_normal, _support0)),
-    d1(-dot(_normal, _support1))
+    DOP(_normal, -dot(_normal, _support0), -dot(_normal, _support1))
 {
-    eiAssert(approx(len(_normal), 1.0f), "Expected normalized vector for the normal!");
 }
 
 

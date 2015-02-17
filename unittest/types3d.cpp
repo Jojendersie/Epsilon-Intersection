@@ -24,8 +24,8 @@ bool test_3dtypes()
         Ellipsoid ell( Vec3(-1.0f, -0.5f, -0.5f), Vec3(1.5f, 0.75f, 0.75f) );
         Ray ray( Vec3(0.0f), Vec3(1.0f, 0.0f, 0.0f) );
         Segment seg( Vec3(0.0f), Vec3(2.0f, 0.0f, 0.0f) );
-        Capsule cap( Vec3(0.0f), Vec3(0.0f, 1.0f, 0.0f), 0.5f);
-        Frustum fru( Vec3(0.0f), Vec3(0.0f, 0.0f, 1.0f), Vec3(0.0f, 1.0f, 0.0f), 1.0f, 2.0f, 0.0f, 1.0f, 0.0f, 1.0f);
+        Capsule cap( Vec3(0.0f), Vec3(0.0f, 1.0f, 0.0f), 0.5f );
+        Frustum fru( Vec3(0.0f), Vec3(0.0f, 0.0f, 1.0f), Vec3(0.0f, 1.0f, 0.0f), 1.0f, 2.0f, 0.0f, 1.0f, 0.0f, 1.0f );
         TEST( volume(sph) == 1.767145868f, "Volume of a sphere wrong!" );
         TEST( volume(box) == 3.0f, "Volume of a box wrong!" );
         TEST( volume(the) == 0.942809042f, "Volume of a tetrahedron wrong!" );
@@ -127,6 +127,9 @@ bool test_3dtypes()
         Sphere sph2(Vec3(-1.0f), 0.5f);
         Box box0(Vec3(0.0f), Vec3(2.0f));
         Plane pla0( Vec3(0.0f, 1.0f, 0.0f), -1.0f);
+        DOP dop0( Vec3(0.0f, 1.0f, 0.0f), Vec3(0.0f, 2.0f, 0.0f), Vec3(0.0f, 4.0f, 0.0f) );
+        DOP dop1( Vec3(0.0f, 1.0f, 0.0f), Vec3(0.0f, 4.0f, 0.0f), Vec3(0.0f, 2.0f, 0.0f) );
+        DOP dop2( Vec3(0.0f, 1.0f, 0.0f), Vec3(0.0f, -2.0f, 0.0f), Vec3(0.0f, 2.0f, 0.0f) );
         TEST( distance(poi0, poi0) == 0.0f, "Distance between two equal points is 0!" );
         TEST( distance(poi0, poi1) == 1.0f, "Distance between poi0 and poi1 is 1!" );
         TEST( distance(poi0, seg0) == 0.0f, "Distance between poi0 and seg0 is 0!" );
@@ -162,6 +165,11 @@ bool test_3dtypes()
         TEST( distance(sph0, pla0) == 0.0f, "Distance between sph0 and pla0 is 0.0!");
         TEST( distance(sph1, pla0) == 1.5f, "Distance between sph1 and pla0 is 1.5!");
         TEST( distance(sph2, pla0) == -1.5f, "Distance between sph2 and pla0 is -1.5!");
+        TEST( distance(poi4, dop0) == -2.0f, "Distance between poi4 and dop0 is -2.0!");
+        TEST( distance(poi4, dop1) == -2.0f, "Distance between poi4 and dop1 is -2.0!");
+        TEST( distance(poi4, dop2) == 0.0f, "Distance between poi4 and dop2 is 0.0!");
+        TEST( distance(poi0, dop2) == 0.0f, "Distance between poi0 and dop2 is -1.0!");
+        TEST( distance(poi2, dop2) == 1.0f, "Distance between poi2 and dop2 is 1.0!");
 
         performance<Vec3,Triangle,float>(distance, "distance");
     }

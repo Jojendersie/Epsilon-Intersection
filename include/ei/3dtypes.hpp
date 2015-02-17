@@ -180,7 +180,7 @@ namespace ei {
     {
         Vec3 n;     ///< The normal on the first plane
         float d0;   ///< The distance to the origin of the first plane
-        float d1;   ///< The distance to the origin of the second plane
+        float d1;   ///< The distance to the origin of the second plane. d0 >= d1
 
         /// \brief Create uninitialized DOP.
         DOP() {}
@@ -299,18 +299,18 @@ namespace ei {
     struct FastFrustum
     {
         const DOP nf;         ///< Parallel near and far planes
-        const Plane l;        ///< left plane
-        const Plane r;        ///< right plane
-        const Plane b;        ///< bottom plane
-        const Plane t;        ///< top plane
+        const Plane l;        ///< left plane (normal points inward)
+        const Plane r;        ///< right plane (normal points inward)
+        const Plane b;        ///< bottom plane (normal points inward)
+        const Plane t;        ///< top plane (normal points inward)
 
         /// \brief Construction from dynamic variant
-        FastFrustum(const Frustum& _frustum);
+        FastFrustum(const Frustum& _frustum);                                  // TESTTED
 
         /// \brief Create from standard frustum parametrization
         FastFrustum(const Vec3& _apex, const Vec3& _direction, const Vec3& _up, float _l, float _r, float _b, float _t, float _n, float _f);
 
-        /// \brief Overwrite the current data (autogeneration not possible because of const members)
+        /// \brief Overwrite the current data (auto generation not possible because of const members)
         FastFrustum& operator = (const FastFrustum& _frustum);
     };
 

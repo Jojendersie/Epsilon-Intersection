@@ -42,6 +42,9 @@ namespace ei
     float distance(const Vec3& _point, const Capsule& _capsule);               // TESTED
     float distance(const Vec3& _point, const Box& _box);                       // TESTED
     float distance(const Vec3& _point, const Plane& _plane);                   // TESTED
+    /// \returns -x if dot(n,_point) larger then both, x if smaller and 0 if it
+    ///     is between both planes
+    float distance(const Vec3& _point, const DOP& _dop);                   
     float distance(const Sphere& _sphere, const Segment& _segment);            // TESTED
     float distance(const Sphere& _sphere, const Capsule& _capsule);            // TESTED
     float distance(const Sphere& _sphere, const Box& _box);                    // TESTED
@@ -57,6 +60,7 @@ namespace ei
     inline float distance(const Box& _box, const Sphere& _sphere)              { return distance(_sphere, _box); }
     inline float distance(const Plane& _plane, const Vec3& _point)             { return distance(_point, _plane); }
     inline float distance(const Plane& _plane, const Sphere& _sphere)          { return distance(_sphere, _plane); }
+    inline float distance(const DOP& _dop, const Vec3& _point)                 { return distance(_point, _dop); }
 
     // Include inline implementations
 #   include "details/3dfunctions.inl"

@@ -154,6 +154,21 @@ inline float distance(const Vec3& _point, const Plane& _plane)
 }
 
 // ************************************************************************* //
+inline float distance(const Vec3& _point, const DOP& _dop)
+{
+    eiAssert(approx(1.0f, len(_dop.n)), "The plane is not normalized!");
+    float d = dot(_dop.n, _point);
+    if(d < -_dop.d0) return d + _dop.d0;
+    if(d > -_dop.d1) return d + _dop.d1;
+    return 0.0f;
+    // There are three cases which all result in the same expression.
+    // if(d < -_dop.d0) return -d - _dop.d0;
+    // if(d > -_dop.d1) return d + _dop.d1;
+    // Point is between both planes, return the shorter (negative) distance
+    //return max(-d - _dop.d0, d + _dop.d1);
+}
+
+// ************************************************************************* //
 inline float distance(const Sphere& _sphere, const Plane& _plane)
 {
     eiAssert(approx(1.0f, len(_plane.n)), "The plane is not normalized!");
