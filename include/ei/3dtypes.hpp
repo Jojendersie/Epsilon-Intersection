@@ -299,13 +299,14 @@ namespace ei {
     struct FastFrustum
     {
         const DOP nf;         ///< Parallel near and far planes
-        const Plane l;        ///< left plane (normal points inward)
-        const Plane r;        ///< right plane (normal points inward)
-        const Plane b;        ///< bottom plane (normal points inward)
-        const Plane t;        ///< top plane (normal points inward)
+        const Plane l;        ///< Left plane (normal points inward)
+        const Plane r;        ///< Right plane (normal points inward)
+        const Plane b;        ///< Bottom plane (normal points inward)
+        const Plane t;        ///< Top plane (normal points inward)
+        const Vec3 vertices[8]; ///< All vertices in the orderd: nlb, nlt, nrb, nlt, flb, flt, frb, frt
 
         /// \brief Construction from dynamic variant
-        FastFrustum(const Frustum& _frustum);                                  // TESTTED
+        FastFrustum(const Frustum& _frustum);                                  // TESTED
 
         /// \brief Create from standard frustum parametrization
         FastFrustum(const Vec3& _apex, const Vec3& _direction, const Vec3& _up, float _l, float _r, float _b, float _t, float _n, float _f);
