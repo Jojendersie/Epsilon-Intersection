@@ -257,5 +257,26 @@ bool test_3dintersections()
         //performance<Vec3,Capsule>(intersects, "intersects");
     }
 
+    // Test box <-> frustum intersection
+    {
+        FastFrustum ffr0( Vec3(1.0f, 2.0f, 3.0f), normalize(Vec3(1.0f, 0.0f, 1.0f)), Vec3(0.0f, 1.0f, 0.0f), -1.0f, 1.0f, -0.5f, 0.5f, 0.5f, 2.0f );
+        Box box0( Vec3(-0.5f), Vec3(0.5f) );
+        Box box1( Vec3(-10.0f, 0.0f, -10.0f), Vec3(100.0f, 1.4f, 100.0f) );
+        Box box2( Vec3(0.5f), Vec3(15.5f) );
+        Box box3( Vec3(2.0f, 2.0f, 4.0f), Vec3(2.1f, 2.1f, 4.1f) );
+        Box box4( Vec3(2.0f, 0.0f, 2.0f), Vec3(4.0f, 4.0f, 3.5f) );
+        Box box5( Vec3(3.5f, 2.0f, 3.0f), Vec3(4.0f, 2.1f, 4.0f) );
+        Box box6( Vec3(1.0f, 2.0f, 4.0f), Vec3(1.5f, 3.0f, 7.0f) );
+        Box box7( Vec3(3.0f, 2.25f, 3.5f), Vec3(3.5f, 2.75f, 4.0f) );
+        TEST( !intersects( box0, ffr0 ), "box0 outside fru0!" );
+        TEST( !intersects( box1, ffr0 ), "box1 outside fru0!" );
+        TEST( intersects( box2, ffr0 ), "fru0 inside box2!" );
+        TEST( intersects( box3, ffr0 ), "box3 inside fru0!" );
+        TEST( intersects( box4, ffr0 ), "box4 intersects fru0!" );
+        TEST( !intersects( box5, ffr0 ), "box5 outside fru0!" );
+        TEST( intersects( box6, ffr0 ), "box6 intersects fru0!" );
+        TEST( intersects( box7, ffr0 ), "box7 intersects fru0!" );
+    }
+
     return result;
 }

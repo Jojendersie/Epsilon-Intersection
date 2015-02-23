@@ -114,6 +114,12 @@ namespace ei {
     /// \brief Intersection test between sphere and frustum.
     /// \details Performance index: TODO
     /// \return true if the sphere and the frustum have at least on point in common.
-    bool intersects( const Sphere& _sphere, const FastFrustum& _frustum );
+    bool intersects( const Sphere& _sphere, const FastFrustum& _frustum );     // TESTED
     inline bool intersects( const FastFrustum& _frustum, const Sphere& _sphere )          { return intersects(_sphere, _frustum); }
+
+    /// \brief Intersection test between box and frustum.
+    /// \details Performance index: TODO
+    /// \return true if the box and the frustum have at least on point in common.
+    bool intersects( const Box& _box, const FastFrustum& _frustum );           // TESTED
+    inline bool intersects( const FastFrustum& _frustum, const Box& _box )          { return intersects(_box, _frustum); }
 }

@@ -263,7 +263,7 @@ namespace ei {
         _barycentric.z = dot( d, e0 ) / dist2A;
         if(_barycentric.z < -EPSILON) return false;
         _barycentric.x = 1.0f - (_barycentric.y + _barycentric.z);
-		// Do one check on NaN - if any other coordinate is NaN x will be NaN too
+        // Do one check on NaN - if any other coordinate is NaN x will be NaN too
         if(_barycentric.x < -EPSILON || _barycentric.x != _barycentric.x) return false;
         
         // Projection to plane. The 2A from normal is canceled out
@@ -443,6 +443,119 @@ namespace ei {
 
         if(state == 2)
             return lensq(refPoint - _sphere.center) <= _sphere.radius * _sphere.radius;
+        return true;
+    }
+
+    // ********************************************************************* //
+    inline bool separates( const Vec3& _dir, const Vec3* _box, const Vec3* _fru )
+    {
+        // Min and max values for the projected vertices of box and frustum
+        float bmin = dot(_dir, _box[0]), fmin = dot(_dir, _fru[0]);
+        float bmax = bmin, fmax = fmin;
+        for(int i=1; i<8; ++i)
+        {
+            float d = dot(_dir, _box[i]);
+            if(d < bmin) bmin = d;
+            else if(d > bmax) bmax = d;
+            d = dot(_dir, _fru[i]);
+            if(d < fmin) fmin = d;
+            else if(d > fmax) fmax = d;
+        }
+        return bmin > fmax || bmax < fmin;
+    }
+
+    bool intersects( const Box& _box, const FastFrustum& _frustum )
+    {
+        // The usual box test (first part) results in false positives if a box
+        // is between 0 or 1 plane pairs and intersects the others (3 or 2)
+        // outside the frustum.
+        // One failsafe algorithm is to find a separating plane. If none can be
+        // found the two convex objects intersect. For polyhedron the number
+        // of possible plane normals is finite (a side of one of the objects or
+        // a cross product between two edges of the different objects.
+
+        // Test against box sides first (cheaper because of axis alignment)
+        int out[6] = {0}; // track point status for early out
+        for(int i=0; i<8; ++i)
+        {
+            int in = 0;
+            if( _frustum.vertices[i].x < _box.min.x ) ++out[0]; else ++in;
+            if( _frustum.vertices[i].x > _box.max.x ) ++out[1]; else ++in;
+            if( _frustum.vertices[i].y < _box.min.y ) ++out[2]; else ++in;
+            if( _frustum.vertices[i].y > _box.max.y ) ++out[3]; else ++in;
+            if( _frustum.vertices[i].z < _box.min.z ) ++out[4]; else ++in;
+            if( _frustum.vertices[i].z > _box.max.z ) ++out[5]; else ++in;
+            // One vertex inside the box?
+            if(in == 6) return true;
+        }
+        // Fully separated by one of the sides?
+        for(int i=0; i<6; ++i) {
+            if(out[i] == 8) return false;
+            out[i] = 0;
+        }
+
+        // Test against frustum sides
+        Vec3 boxv[8] = {_box.min, Vec3(_box.min.x, _box.min.y, _box.max.z),
+                        Vec3(_box.min.x, _box.max.y, _box.min.z), Vec3(_box.min.x, _box.max.y, _box.max.z),
+                        Vec3(_box.max.x, _box.min.y, _box.min.z), Vec3(_box.max.x, _box.min.y, _box.max.z),
+                        Vec3(_box.max.x, _box.max.y, _box.min.z), _box.max};
+        for(int i=0; i<8; ++i)
+        {
+            int in = 0;
+            float d = distance(_frustum.nf, boxv[i]);
+            if( d < 0.0f ) ++out[0];
+            else if( d > 0.0f ) ++out[1];
+            else in+=2;
+            if( distance(_frustum.l, boxv[i]) < 0.0f ) ++out[2]; else ++in;
+            if( distance(_frustum.r, boxv[i]) < 0.0f ) ++out[3]; else ++in;
+            if( distance(_frustum.b, boxv[i]) < 0.0f ) ++out[4]; else ++in;
+            if( distance(_frustum.t, boxv[i]) < 0.0f ) ++out[5]; else ++in;
+            if(in == 6) return true;
+        }
+        for(int i=0; i<6; ++i)
+            if(out[i] == 8) return false;
+
+        // Test against the other possible planes
+        Vec3 n; // current plane normal
+        n = cross(Vec3(1.0f, 0.0f, 0.0f), _frustum.vertices[1] - _frustum.vertices[0]);
+        if(separates(n, boxv, _frustum.vertices)) return false;
+        n = cross(Vec3(1.0f, 0.0f, 0.0f), _frustum.vertices[2] - _frustum.vertices[0]);
+        if(separates(n, boxv, _frustum.vertices)) return false;
+        n = cross(Vec3(1.0f, 0.0f, 0.0f), _frustum.vertices[4] - _frustum.vertices[0]);
+        if(separates(n, boxv, _frustum.vertices)) return false;
+        n = cross(Vec3(1.0f, 0.0f, 0.0f), _frustum.vertices[5] - _frustum.vertices[1]);
+        if(separates(n, boxv, _frustum.vertices)) return false;
+        n = cross(Vec3(1.0f, 0.0f, 0.0f), _frustum.vertices[6] - _frustum.vertices[2]);
+        if(separates(n, boxv, _frustum.vertices)) return false;
+        n = cross(Vec3(1.0f, 0.0f, 0.0f), _frustum.vertices[7] - _frustum.vertices[3]);
+        if(separates(n, boxv, _frustum.vertices)) return false;
+
+        n = cross(Vec3(0.0f, 1.0f, 0.0f), _frustum.vertices[1] - _frustum.vertices[0]);
+        if(separates(n, boxv, _frustum.vertices)) return false;
+        n = cross(Vec3(0.0f, 1.0f, 0.0f), _frustum.vertices[2] - _frustum.vertices[0]);
+        if(separates(n, boxv, _frustum.vertices)) return false;
+        n = cross(Vec3(0.0f, 1.0f, 0.0f), _frustum.vertices[4] - _frustum.vertices[0]);
+        if(separates(n, boxv, _frustum.vertices)) return false;
+        n = cross(Vec3(0.0f, 1.0f, 0.0f), _frustum.vertices[5] - _frustum.vertices[1]);
+        if(separates(n, boxv, _frustum.vertices)) return false;
+        n = cross(Vec3(0.0f, 1.0f, 0.0f), _frustum.vertices[6] - _frustum.vertices[2]);
+        if(separates(n, boxv, _frustum.vertices)) return false;
+        n = cross(Vec3(0.0f, 1.0f, 0.0f), _frustum.vertices[7] - _frustum.vertices[3]);
+        if(separates(n, boxv, _frustum.vertices)) return false;
+
+        n = cross(Vec3(0.0f, 0.0f, 1.0f), _frustum.vertices[1] - _frustum.vertices[0]);
+        if(separates(n, boxv, _frustum.vertices)) return false;
+        n = cross(Vec3(0.0f, 0.0f, 1.0f), _frustum.vertices[2] - _frustum.vertices[0]);
+        if(separates(n, boxv, _frustum.vertices)) return false;
+        n = cross(Vec3(0.0f, 0.0f, 1.0f), _frustum.vertices[4] - _frustum.vertices[0]);
+        if(separates(n, boxv, _frustum.vertices)) return false;
+        n = cross(Vec3(0.0f, 0.0f, 1.0f), _frustum.vertices[5] - _frustum.vertices[1]);
+        if(separates(n, boxv, _frustum.vertices)) return false;
+        n = cross(Vec3(0.0f, 0.0f, 1.0f), _frustum.vertices[6] - _frustum.vertices[2]);
+        if(separates(n, boxv, _frustum.vertices)) return false;
+        n = cross(Vec3(0.0f, 0.0f, 1.0f), _frustum.vertices[7] - _frustum.vertices[3]);
+        if(separates(n, boxv, _frustum.vertices)) return false;
+
         return true;
     }
 }
