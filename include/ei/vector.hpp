@@ -473,6 +473,11 @@ namespace ei {
     };
 
     // ********************************************************************* //
+    /// \brief Returns identity element of the Hamilton-product. (Does not
+    ///     rotate anything.)
+    inline Quaternion qidentity() { return Quaternion(0.0f, 0.0f, 0.0f, 1.0f); }
+
+    // ********************************************************************* //
     /// \brief Scalar multiplication from left
     inline Quaternion operator* (float _s, Quaternion _q) {return _q *= _s; }
 

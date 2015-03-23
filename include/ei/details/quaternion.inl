@@ -194,7 +194,7 @@ inline Quaternion& Quaternion::operator-= (const Quaternion& _q1)
 // ********************************************************************* //
 inline Quaternion conjugate(const Quaternion& _q)
 {
-    return Quaternion(_q.r, -_q.i, -_q.j, -_q.k);
+    return Quaternion(-_q.i, -_q.j, -_q.k, _q.r);
 }
 
 inline Vec3 axis(const Quaternion& _q)
@@ -260,17 +260,17 @@ inline Quaternion slerp(const Quaternion& _q0, const Quaternion& _q1, float _t)
     if(approx(so, 0.0f))
     {
         // Converges towards linear interpolation for small so
-        return Quaternion(_q0.r + (_q1.r - _q0.r) * _t,
-                          _q0.i + (_q1.i - _q0.i) * _t,
+        return Quaternion(_q0.i + (_q1.i - _q0.i) * _t,
                           _q0.j + (_q1.j - _q0.j) * _t,
-                          _q0.k + (_q1.k - _q0.k) * _t);
+                          _q0.k + (_q1.k - _q0.k) * _t,
+                          _q0.r + (_q1.r - _q0.r) * _t);
     }
     float f0 = sin( theta * (1.0f-_t) ) / so;
     float f1 = sin( theta * _t ) / so;
-    return Quaternion(_q0.r * f0 + _q1.r * f1,
-                      _q0.i * f0 + _q1.i * f1,
+    return Quaternion(_q0.i * f0 + _q1.i * f1,
                       _q0.j * f0 + _q1.j * f1,
-                      _q0.k * f0 + _q1.k * f1);
+                      _q0.k * f0 + _q1.k * f1,
+                      _q0.r * f0 + _q1.r * f1);
 }
 
 // ************************************************************************* //
