@@ -469,7 +469,10 @@ namespace ei {
         Quaternion operator+ (Quaternion _q1) const { return _q1 += *this; }
         Quaternion operator- (Quaternion _q1) const { return _q1 -= *this; }
 
-        float i, j, k, r;
+        union {
+            struct {float i, j, k, r;};     ///< Elements of 4D complex number
+            float z[4];                     ///< Array access, index 3 is the real part
+        };
     };
 
     // ********************************************************************* //
