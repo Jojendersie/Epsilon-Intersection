@@ -98,8 +98,8 @@ inline Quaternion::Quaternion( const Mat3x3& _m )
     k = sqrt( max( 0.0f, 1.0f - _m.m00 - _m.m11 + _m.m22 ) ) * 0.5f * sign(_m.m10 - _m.m01);
 }
 
-inline Quaternion::Quaternion( float _r, float _i, float _j, float _k ) :
-    r(_r), i(_i), j(_j), k(_k)
+inline Quaternion::Quaternion( float _i, float _j, float _k, float _r ) :
+    i(_i), j(_j), k(_k), r(_r)
 {
 }
 
