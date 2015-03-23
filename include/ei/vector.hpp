@@ -433,7 +433,7 @@ namespace ei {
         Quaternion( const Mat3x3& _matrix );                                   // TESTED
 
         /// \brief Create from quaternion coefficients
-        Quaternion( float _r, float _i, float _j, float _k );
+        Quaternion( float _i, float _j, float _k, float _r );
 
         /// \brief Rotate from vector to vector (rotated such that the from
         ///     vector is aligned with the to vector).
