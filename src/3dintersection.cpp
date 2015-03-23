@@ -473,6 +473,7 @@ namespace ei {
         // found the two convex objects intersect. For polyhedron the number
         // of possible plane normals is finite (a side of one of the objects or
         // a cross product between two edges of the different objects.
+        // http://www.geometrictools.com/Documentation/MethodOfSeparatingAxes.pdf
 
         // Test against box sides first (cheaper because of axis alignment)
         int out[6] = {0}; // track point status for early out
