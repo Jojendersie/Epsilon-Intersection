@@ -419,6 +419,11 @@ namespace ei {
         /// \brief Construct uninitialized
         Quaternion() {}
 
+        /// \brief Copy construction
+        Quaternion( const Quaternion& _other ) = default;
+        /// \brief Copying assignment
+        Quaternion& operator = ( const Quaternion& _rhs ) = default;
+
         /// \brief Construct from normalized axis and angle
         Quaternion( const Vec3& _axis, float _angle );                         // TESTED
 
@@ -478,7 +483,7 @@ namespace ei {
     // ********************************************************************* //
     /// \brief Returns identity element of the Hamilton-product. (Does not
     ///     rotate anything.)
-    inline Quaternion qidentity() { return Quaternion(0.0f, 0.0f, 0.0f, 1.0f); }
+    inline Quaternion qidentity() { return Quaternion(0.0f, 0.0f, 0.0f, 1.0f); } // TESTED
 
     // ********************************************************************* //
     /// \brief Scalar multiplication from left
