@@ -134,4 +134,48 @@ float distance(const Sphere& _sphere, const Box& _box)
     return max(len(max(d, Vec3(0.0f))) - _sphere.radius, 0.0f);
 }
 
+
+
+
+// ************************************************************************* //
+// OBJECT TRANSFORMATIONS
+// ************************************************************************* //
+
+OBox transform(const Box& _box, const Quaternion& _rotation)
+{
+    OBox box(_box);
+    box.orientation *= _rotation;
+    box.center = transform(box.center, _rotation);
+    return box;
+}
+
+OBox transform(const OBox& _box, const Quaternion& _rotation)
+{
+    return OBox(transform(_box.center, _rotation), _box.sides, _box.orientation * _rotation);
+}
+
+Box transform(const Box& _box, const Vec3& _translation)
+{
+    return Box(_box.min + _translation, _box.max + _translation);
+}
+
+OBox transform(const OBox& _box, const Vec3& _translation)
+{
+    return OBox(_box.center + _translation, _box.sides, _box.orientation);
+}
+
+OBox transform(const Box& _box, const Quaternion& _rotation, const Vec3& _translation)
+{
+    OBox box(_box);
+    box.orientation *= _rotation;
+    box.center = transform(box.center, _rotation) + _translation;
+    return box;
+}
+
+OBox transform(const OBox& _box, const Quaternion& _rotation, const Vec3& _translation)
+{
+    return OBox(transform(_box.center, _rotation) + _translation,
+        _box.sides, _box.orientation * _rotation);
+}
+
 }

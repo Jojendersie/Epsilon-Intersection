@@ -62,6 +62,16 @@ namespace ei
     inline float distance(const Plane& _plane, const Sphere& _sphere)          { return distance(_sphere, _plane); }
     inline float distance(const DOP& _dop, const Vec3& _point)                 { return distance(_point, _dop); }
 
+    /// \brief Transform a box (rotation).
+    OBox transform(const Box& _box, const Quaternion& _rotation);
+    OBox transform(const OBox& _box, const Quaternion& _rotation);
+    /// \brief Transform a box (translation).
+    Box transform(const Box& _box, const Vec3& _translation);
+    OBox transform(const OBox& _box, const Vec3& _translation);
+    /// \brief Transform a box (first rotate then translation).
+    OBox transform(const Box& _box, const Quaternion& _rotation, const Vec3& _translation);
+    OBox transform(const OBox& _box, const Quaternion& _rotation, const Vec3& _translation);
+
     // Include inline implementations
 #   include "details/3dfunctions.inl"
 }
