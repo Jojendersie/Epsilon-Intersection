@@ -93,18 +93,30 @@ bool test_3dtypes()
         Ellipsoid ell( Vec3(-1.0f, -0.5f, -0.5f), Vec3(1.0f, 0.5f, 0.5f) );
         Triangle tri( Vec3(-2.0f, -0.5f, -0.5f), Vec3(0.0, -1.0f, 0.0f), Vec3(0.0f, 0.0f, -1.0f) );
         Sphere sph( Vec3(5.0f), 2.0f );
+        OBox obo0( Vec3(0.0f), Vec3(1.0f, 2.0f, 3.0f), Quaternion(Vec3(0.0f, 0.0f, 1.0f), PI/2) );
+        OBox obo1( Vec3(1.0f), Vec3(1.0f, 1.0f, 1.0f), Quaternion(Vec3(0.0f, 0.0f, 1.0f), PI/4) );
         Box box2( ell );
         Box box3( tri );
         Box box4( sph );
         Box box5( box0, box1 );
+        Box box6( obo0 );
+        Box box7( obo1 );
+        // Box box8( OBox(box4) ); // <- This is a function? VC12 bug or standard?
+        Box box8 = Box(OBox(box4));
         TEST( all(box0.min == box2.min), "Ellipsoid bounding min is wrong!" );
         TEST( all(box0.max == box2.max), "Ellipsoid bounding min is wrong!" );
         TEST( all(box0.min == box3.min), "Triangle bounding min is wrong!" );
         TEST( all(box0.max == box3.max), "Triangle bounding max is wrong!" );
         TEST( all(box1.min == box4.min), "Sphere bounding min is wrong!" );
         TEST( all(box1.max == box4.max), "Sphere bounding max is wrong!" );
-        TEST( all(box5.min == Vec3(-2.0f, -1.0f, -1.0f)), "2Box bounding min is wrong!" );
-        TEST( all(box5.max == Vec3(7.0f)), "2Box bounding max is wrong!" );
+        TEST( all(box5.min == Vec3(-2.0f, -1.0f, -1.0f)), "Box bounding min is wrong!" );
+        TEST( all(box5.max == Vec3(7.0f)), "Box bounding max is wrong!" );
+        TEST( all(box6.min == Vec3(-1.0f, -0.5f, -1.5f)), "OBox bounding min is wrong!" );
+        TEST( all(box6.max == Vec3(1.0f, 0.5f, 1.5f)), "OBox bounding max is wrong!" );
+        TEST( all(box7.min == Vec3(0.292893219f, 0.292893219f, 0.5f)), "OBox2 bounding min is wrong!" );
+        TEST( all(box7.max == Vec3(1.707106781f, 1.707106781f, 1.5f)), "OBox2 bounding max is wrong!" );
+        TEST( all(box8.min == box4.min), "Box(OBox(box4)) introduces a bias to min!" );
+        TEST( all(box8.max == box4.max), "Box(OBox(box4)) introduces a bias to max!" );
     }
 
     // ********************************************************************* //

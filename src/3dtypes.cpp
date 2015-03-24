@@ -3,6 +3,31 @@
 namespace ei {
 
     // ********************************************************************* //
+    Box::Box( const OBox& _box )
+    {
+        // Effectively generate all 8 corners and find min/max coordinates.
+        // Relative to the center two diagonal opposite corners only differ
+        // in the sign (even after rotation).
+        Vec3 diag = _box.sides * 0.5f;
+        Vec3 trDiag;
+        Mat3x3 rot(_box.orientation);
+        trDiag = rot * Vec3(diag.x, diag.y, diag.z);
+        min = ei::min(trDiag, -trDiag);
+        max = ei::max(trDiag, -trDiag);
+        trDiag = rot * Vec3(diag.x, diag.y, -diag.z);
+        min = ei::min(ei::min(trDiag, -trDiag), min);
+        max = ei::max(ei::max(trDiag, -trDiag), max);
+        trDiag = rot * Vec3(diag.x, -diag.y, diag.z);
+        min = ei::min(ei::min(trDiag, -trDiag), min);
+        max = ei::max(ei::max(trDiag, -trDiag), max);
+        trDiag = rot * Vec3(diag.x, -diag.y, -diag.z);
+        min = ei::min(ei::min(trDiag, -trDiag), min);
+        max = ei::max(ei::max(trDiag, -trDiag), max);
+        min += _box.center;
+        max += _box.center;
+    }
+
+    // ********************************************************************* //
     FastFrustum::FastFrustum(const Frustum& _frustum)
     {
         // Initialization of planes is difficult in the list, so the const-cast

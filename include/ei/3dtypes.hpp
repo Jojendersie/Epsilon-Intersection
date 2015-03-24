@@ -86,18 +86,30 @@ namespace ei {
 
         /// \brief Create the bounding box for an ellipsoid
         explicit Box( const Ellipsoid& _ellipsoid );                           // TESTED
+
+        /// \brief Create the bounding box for an oriented box.
+        explicit Box( const OBox& _box );                                      // TESTED
     };
 
     /// \brief Oriented bounding box.
     /// \details If you are going to use oriented bounding boxes you might want
     ///     to use multiple double oriented planes (k-DOPs) instead. The
-    ///     parametrization of the OBox is more natuaral wheras k-DOPs are faster????
-    /*struct OBox
+    ///     parametrization of the OBox is more natural whereas k-DOPs are faster????
+    struct OBox
     {
         Vec3 center;
         Vec3 sides;                 ///< Side lengths of the box
         Quaternion orientation;     ///< Orientation of the box
-    };*/
+
+        /// \brief Create uninitialized box.
+        OBox() {}
+
+        /// \brief Create from parametrization
+        OBox( const Vec3& _center, const Vec3& _sides, const Quaternion& _orientation );
+
+        /// \brief Create an oriented box from a simple box
+        explicit OBox( const Box& _box );
+    };
 
     struct Thetrahedron
     {

@@ -55,6 +55,22 @@ inline Box::Box( const Ellipsoid& _ellipsoid ) :
 
 
 // ************************************************************************* //
+inline OBox::OBox( const Vec3& _center, const Vec3& _sides, const Quaternion& _orientation ) :
+    center(_center),
+    sides(_sides),
+    orientation(_orientation)
+{
+}
+
+inline OBox::OBox( const Box& _box ) :
+    center((_box.max + _box.min) * 0.5f),
+    sides(_box.max - _box.min),
+    orientation(qidentity())
+{
+}
+
+
+// ************************************************************************* //
 inline Thetrahedron::Thetrahedron( const Vec3& _v0, const Vec3& _v1, const Vec3& _v2, const Vec3& _v3 ) :
     v0(_v0),
     v1(_v1),
