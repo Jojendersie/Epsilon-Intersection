@@ -110,7 +110,7 @@ inline Quaternion::Quaternion( const Vec3& _from, const Vec3& _to )
     float lf = len(_from);
     float lt = len(_to);
     Vec3 axis = cross(_from, _to);
-    // Compute sin(alpha)^2 from cross product lf * lt * sin(alpha) and normalize
+    // Compute sin(alpha) from cross product lf * lt * sin(alpha) and normalize
     float sa = len(axis);
     axis /= sa;
     sa /= lf * lt;

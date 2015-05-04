@@ -931,6 +931,11 @@ namespace ei {
     Mat4x4 rotationH( const Vec3& _axis, float _angle );
 
     // ********************************************************************* //
+    /// \brief Rotation matrix from one direction into another.
+    Mat3x3 rotation( const Vec3& _from, const Vec3& _to );                     // TESTED
+    Mat4x4 rotationH( const Vec3& _from, const Vec3& _to );                    // TESTED
+
+    // ********************************************************************* //
     /// \brief Rotation matrix from quaternion.
     Mat3x3 rotation( const Quaternion& _quaternion );
     Mat4x4 rotationH( const Quaternion& _quaternion );

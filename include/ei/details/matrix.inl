@@ -1520,6 +1520,30 @@ inline Mat4x4 rotationH( const Vec3& _v, float _angle )
 }
 
 // ************************************************************************* //
+inline Mat3x3 rotation( const Vec3& _from, const Vec3& _to )
+{
+    // Get lengths for normalization
+    float lf = len(_from);
+    float lt = len(_to);
+    Vec3 axis = cross(_from, _to);
+    // Compute sin(alpha) from cross product lf * lt * sin(alpha) and normalize
+    float sinA = len(axis);
+    axis /= sinA;
+    sinA /= lf * lt;
+    float cosA = sqrt((1.0f - sinA) * (1.0f + sinA));
+    // Create axis-angle matrix
+    float iCosA = 1.0f - cosA;
+    return Mat3x3(axis.x * axis.x * iCosA + cosA,          axis.x * axis.y * iCosA - axis.z * sinA, axis.x * axis.z * iCosA + axis.y * sinA,
+                  axis.x * axis.y * iCosA + axis.z * sinA, axis.y * axis.y * iCosA + cosA,          axis.y * axis.z * iCosA - axis.x * sinA,
+                  axis.x * axis.z * iCosA - axis.y * sinA, axis.y * axis.z * iCosA + axis.x * sinA, axis.z * axis.z * iCosA + cosA         );
+}
+
+inline Mat4x4 rotationH( const Vec3& _from, const Vec3& _to )
+{
+    return details::incrementDims(rotation( _from, _to ));
+}
+
+// ************************************************************************* //
 inline Mat3x3 rotation( const Quaternion& _quaternion )
 {
     return Mat3x3(_quaternion);

@@ -491,6 +491,9 @@ bool test_matrix()
         TEST( approx(rotation(0.0f, PI/2, 0.0f) * vz, vx), "Rotation matrix from Euler angles invalid!" );
         TEST( approx(rotation(0.0f, 0.0f, PI/2) * vx, vy), "Rotation matrix from Euler angles invalid!" );
         TEST( approx(rotation(0.0f, 0.0f, -PI/2) * vy, vx), "Rotation matrix from Euler angles invalid!" );
+
+        TEST( approx(rotation(vx, vx), identity3x3()), "Rotation matrix from vector to vector invalid!" );
+        TEST( approx(rotation(vy, vz), rotation(PI/2, 0.0f, 0.0f)), "Rotation matrix from vector to vector invalid!" );
     }
 
     // ********************************************************************* //
