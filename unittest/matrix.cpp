@@ -494,6 +494,9 @@ bool test_matrix()
 
         TEST( approx(rotation(vx, vx), identity3x3()), "Rotation matrix from vector to vector invalid!" );
         TEST( approx(rotation(vy, vz), rotation(PI/2, 0.0f, 0.0f)), "Rotation matrix from vector to vector invalid!" );
+
+        TEST( approx(housholder(Vec3(-1.0f, 1.0f, 0.0f)) * vy, vx), "Housholder matrix invalid!" );
+        TEST( approx(housholder(Vec3(1.0f, -1.0f, 0.0f)) * vy, vx), "Housholder matrix invalid!" );
     }
 
     // ********************************************************************* //

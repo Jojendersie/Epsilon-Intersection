@@ -933,12 +933,22 @@ namespace ei {
     // ********************************************************************* //
     /// \brief Rotation matrix from one direction into another.
     Mat3x3 rotation( const Vec3& _from, const Vec3& _to );                     // TESTED
-    Mat4x4 rotationH( const Vec3& _from, const Vec3& _to );                    // TESTED
+    Mat4x4 rotationH( const Vec3& _from, const Vec3& _to );
 
     // ********************************************************************* //
     /// \brief Rotation matrix from quaternion.
     Mat3x3 rotation( const Quaternion& _quaternion );
     Mat4x4 rotationH( const Quaternion& _quaternion );
+
+    // ********************************************************************* //
+    /// \brief Reflection matrix for a plane through the origin.
+    /// \details Use this to construct mirror matrices. To simply reflect a
+    ///     vector use the reflect() method (faster). Beware: _normal and _at
+    ///     in the two methods are orthogonal.
+    /// \param [in] _normal Normal of the reflecting plane (at the origin).
+    ///     The normal must not be normalized.
+    Mat3x3 housholder( const Vec3& _normal );                                  // TESTED
+    Mat4x4 housholderH( const Vec3& _normal );
 
     // ********************************************************************* //
     /// \brief Reflect a vector at a plane.

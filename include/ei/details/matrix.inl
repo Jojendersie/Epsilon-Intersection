@@ -1555,6 +1555,26 @@ inline Mat4x4 rotationH( const Quaternion& _quaternion )
 }
 
 // ************************************************************************* //
+inline Mat3x3 housholder( const Vec3& _normal )
+{
+    float norm = 2.0f / dot(_normal, _normal);
+    float nx = norm * _normal.x;
+    float ny = norm * _normal.y;
+    float nz = norm * _normal.z;
+    float nxy = nx * _normal.y;
+    float nxz = nx * _normal.z;
+    float nyz = ny * _normal.z;
+    return Mat3x3(1.0f - nx * _normal.x,      - nxy,                 - nxz,
+                       - nxy,            1.0f - ny * _normal.y,      - nyz,
+                       - nxz,                 - nyz,            1.0f - nz * _normal.z);
+}
+
+inline Mat4x4 housholderH( const Vec3& _normal )
+{
+    return details::incrementDims(housholder(_normal));
+}
+
+// ************************************************************************* //
 template<typename T, unsigned N>
 inline Vec<T,N> reflect( const Vec<T,N>& _incident, const Vec<T,N>& _at )
 {
