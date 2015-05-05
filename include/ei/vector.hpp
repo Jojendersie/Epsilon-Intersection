@@ -806,7 +806,13 @@ namespace ei {
     // ********************************************************************* //
     /// \brief Generate the N x N identity matrix.
     template<typename T, unsigned N>
-    Matrix<T,N,N> identity();
+    const Matrix<T,N,N>& identity();                                           // TESTED
+
+    // ********************************************************************* //
+    /// \brief Generate the N x N diagonal matrix.
+    /// \param [in] _v0 A vector with the diagonal entries.
+    template<typename T, unsigned N>
+    Matrix<T,N,N> diag( const Vec<T,N>& _v0 );                                 // TESTED
 
     // ********************************************************************* //
     /// \brief Convert a vector from Cartesian coordinates in spherical

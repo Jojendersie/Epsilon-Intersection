@@ -6,6 +6,12 @@
 using namespace ei;
 using namespace std;
 
+template<typename T>
+static void doNotOptimizeAway(T& _var)
+{
+    static volatile T x = _var;
+}
+
 bool test_matrix()
 {
     bool result = true;
@@ -424,6 +430,32 @@ bool test_matrix()
         Vec2 v4(0.0f, 1.0f);
         TEST( cross(v3, v4) == 1.0f, "2D crossproduct wrong." );
         TEST( cross(v4, v3) == -1.0f, "2D crossproduct wrong." );
+    }
+
+    // ********************************************************************* //
+    // Identity and diagonal
+    {
+        Mat2x2 m0(1.0f, 0.0f, 0.0f, 1.0f);
+        Mat3x3 m1(1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+        Mat4x4 m2(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+        Matrix<float,5,5> m3(0.0f); m3[0] = 1.0f; m3[6] = 1.0f; m3[12] = 1.0f; m3[18] = 1.0f; m3[24] = 1.0f;
+        Mat3x3 m4(1.0f, 0.0f, 0.0f, 0.0f, 2.0f, 0.0f, 0.0f, 0.0f, -1.0f);
+        Mat3x3 m5(diag(Vec3(1.0f, 2.0f, -1.0f)));
+        TEST( all(m0 == identity2x2()), "2x2 identity matrix wrong." );
+        TEST( all(m1 == identity3x3()), "3x3 identity matrix wrong." );
+        TEST( all(m2 == identity4x4()), "4x4 identity matrix wrong." );
+        TEST( all(m3 == ei::identity<float,5>()), "5x5 identity matrix wrong." );
+        TEST( all(m4 == m5), "3x3 diagonal matrix wrong." );
+
+        /*// Test script used to optimize identity()
+        Mat3x3 ret;
+        uint64 a = ticks();
+        for(uint i=0; i<1000000; ++i) {
+            ret = ei::identity<float,3>();
+            doNotOptimizeAway(ret);
+        }
+        uint64 b = ticks();
+        cerr << (int)(b-a) << endl;*/
     }
 
     // ********************************************************************* //

@@ -1169,36 +1169,37 @@ Matrix<T,N,N> invert(const Matrix<T,N,N>& _mat0)
 
 // ************************************************************************* //
 template<typename T, unsigned N>
-Matrix<T,N,N> identity()
+const Matrix<T,N,N>& identity()
 {
-    Matrix<T,N,N> result(T(0));
-    for(uint n = 0; n < N; ++n)
-        result[n*n] = T(1);
+    static Matrix<T,N,N> result(diag(Vec<T,N>(1)));
     return result;
 }
 
-// TODO: test if this specialization is faster of if the compiler optimizes
-// identity() enough
+// Faster implementations for known sizes (does not branch due to static)
 template<>
-inline Matrix<float,2,2> identity<float,2>()
+inline const Matrix<float,2,2>& identity<float,2>()
 {
-    return Mat2x2(1.0f, 0.0f,
-                  0.0f, 1.0f);
+    return details::MAT2X2_IDENTITY;
 }
 template<>
-inline Matrix<float,3,3> identity<float,3>()
+inline const Matrix<float,3,3>& identity<float,3>()
 {
-    return Mat3x3(1.0f, 0.0f, 0.0f,
-                  0.0f, 1.0f, 0.0f,
-                  0.0f, 0.0f, 1.0f);
+    return details::MAT3X3_IDENTITY;
 }
 template<>
-inline Matrix<float,4,4> identity<float,4>()
+inline const Matrix<float,4,4>& identity<float,4>()
 {
-    return Mat4x4(1.0f, 0.0f, 0.0f, 0.0f,
-                  0.0f, 1.0f, 0.0f, 0.0f,
-                  0.0f, 0.0f, 1.0f, 0.0f,
-                  0.0f, 0.0f, 0.0f, 1.0f);
+    return details::MAT4X4_IDENTITY;
+}
+
+// ********************************************************************* //
+template<typename T, unsigned N>
+Matrix<T,N,N> diag( const Vec<T,N>& _v0 )
+{
+    Matrix<T,N,N> result(T(0));
+    for(uint n = 0; n < N; ++n)
+        result[n * N + n] = _v0[n];
+    return result;
 }
 
 // ********************************************************************* //

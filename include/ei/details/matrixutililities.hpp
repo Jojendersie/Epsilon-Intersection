@@ -51,4 +51,22 @@ namespace details {
         result[N] = T(1);
         return result;
     }
+
+    // ********************************************************************* //
+    // Matrix constants
+    static const ei::Matrix<float,2,2> MAT2X2_IDENTITY =
+        ei::Mat2x2(1.0f, 0.0f,
+                   0.0f, 1.0f);
+
+    static const ei::Matrix<float,3,3> MAT3X3_IDENTITY =
+        ei::Mat3x3(1.0f, 0.0f, 0.0f,
+                   0.0f, 1.0f, 0.0f,
+                   0.0f, 0.0f, 1.0f);
+
+    static const ei::Matrix<float,4,4> MAT4X4_IDENTITY =
+        ei::Mat4x4(1.0f, 0.0f, 0.0f, 0.0f,
+                   0.0f, 1.0f, 0.0f, 0.0f,
+                   0.0f, 0.0f, 1.0f, 0.0f,
+                   0.0f, 0.0f, 0.0f, 1.0f);
+
 }
