@@ -7,6 +7,9 @@
 using namespace ei;
 using namespace std;
 
+//#define UNIT_TEST_SUCCESSOR
+//#define UNIT_TEST_PREDECESSOR
+
 bool test_elementaries()
 {
     bool result = true;
@@ -94,6 +97,42 @@ bool test_elementaries()
 
         uint16 a = 7, b = 3;
         TEST( mod(a, b) == 1, "mod(a, b) wrong!");
+    }
+
+    // successor, predecessor
+    {
+#ifdef UNIT_TEST_SUCCESSOR
+        float x = -INF;
+        for(unsigned i=0; i < 2 * ((1u<<31)-(1u<<23)); ++i)
+        {
+            float p = successor(x);
+            TEST( p > x, "successor(" << x << ") < " << p << "!" );
+            x = p;
+        }
+#endif UNIT_TEST_SUCCESSOR
+//        TEST( successor(0.0f) == successor(-0.0f), "successor of 0 or -0 wrong!" );
+
+#ifdef UNIT_TEST_PREDECESSOR
+        float y = INF;
+        for(unsigned i=0; i < 2 * ((1u<<31)-(1u<<23)); ++i)
+        {
+            float p = predecessor(x);
+            TEST( p < y, "predecessor(" << y << ") > " << p << "!" );
+            y = p;
+        }
+#endif UNIT_TEST_PREDECESSOR
+
+        TEST( successor(0.0) == successor(-0.0), "successor (double) of 0 or -0 wrong!" );
+        TEST( successor(1.0f) > 1, "successor (double) of 1 wrong!" );
+        TEST( successor(-1.0f) > -1, "successor (double) of -1 wrong!" );
+        TEST( successor(INF_D) == INF_D, "successor (double) of INF_D wrong!" );
+        TEST( successor(-INF_D) == -1.7976931348623157e+308, "successor (double) of -INF_D wrong!" );
+
+        TEST( predecessor(0.0) == predecessor(-0.0), "predecessor (double) of 0 or -0 wrong!" );
+        TEST( predecessor(1.0f) < 1, "predecessor (double) of 1 wrong!" );
+        TEST( predecessor(-1.0f) < -1, "predecessor (double) of -1 wrong!" );
+        TEST( predecessor(-INF_D) == -INF_D, "predecessor (double) of -INF_D wrong!" );
+        TEST( predecessor(INF_D) == 1.7976931348623157e+308, "predecessor (double) of INF_D wrong!" );
     }
 
     return result;

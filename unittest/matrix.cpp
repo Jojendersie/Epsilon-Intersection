@@ -342,6 +342,15 @@ bool test_matrix()
         TEST( len(v2) == 4.1231056256176606, "Length of an integer vector wrong!" );
         TEST( len(v1) == 0.5f, "Length wrong!" );
         TEST( len(m0) == 3.0f, "Length of a matrix wrong!" );
+
+        /*// Test script used to optimize dot()
+        Vec3 v3(10.0f, -0.2f, 0.5f);
+        uint64 a = ticks();
+        for(uint i=0; i<10000000; ++i) {
+            volatile float f = dot(v0, v3);
+        }
+        uint64 b = ticks();
+        cerr << (int)(b-a) << endl;*/
     }
 
     // ********************************************************************* //

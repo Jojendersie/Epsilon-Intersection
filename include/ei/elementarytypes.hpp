@@ -47,12 +47,21 @@ namespace details {
     class NonScalarType    {};
 
     // Avoid including <limits> by defining infinity itself.
-    union Inf {
+    union ReinterpretFloat {
         float f;
         Int<4>::utype i;
-        Inf(Int<4>::utype _i) : i(_i) {}
+        ReinterpretFloat(Int<4>::utype _i) : i(_i) {}
+        ReinterpretFloat(float _f) : f(_f) {}
     };
-    const Inf F_INF = 0x7f800000;
+    const ReinterpretFloat F_INF = 0x7f800000u;
+
+    union ReinterpretDouble {
+        double f;
+        Int<8>::utype i;
+        ReinterpretDouble(Int<8>::utype _i) : i(_i) {}
+        ReinterpretDouble(double _f) : f(_f) {}
+    };
+    const ReinterpretDouble D_INF = 0x7ff0000000000000ul;
 }
 
 namespace ei {
@@ -65,6 +74,7 @@ namespace ei {
     const float PHYTAGORAS = 1.4142135623f;
     // The cmath header has an ugly macro with name INFINITY -> name conflict
     const float INF = details::F_INF.f;
+    const double INF_D = details::D_INF.f;
     // Unicode names for the above constants
     const float π = PI;
     const float Φ = GOLDEN_RATIO;
@@ -215,6 +225,23 @@ namespace ei {
     auto bilerp(T0 _x00, T0 _x01,
                 T0 _x10, T0 _x11,
                 T1 _t0, T1 _t1) -> decltype(_x00*_t0);                         // TESTED
+
+    // ********************************************************************* //
+    /// \brief Compute the next machine representable number in positive direction.
+    /// \details Iterates overall floating point numbers, even through
+    ///    denormalized range. Thereby the successor of -0 and 0 are both the
+    ///    same smallest positive float. Further -INF is transformed into
+    ///    -FLOAT_MAX and +INF remains +INF.
+    float successor(float _number);                                            // TESTED
+    double successor(double _number);
+
+    /// \brief Compute the next machine representable number in negative direction.
+    /// \details Iterates overall floating point numbers, even through
+    ///    denormalized range. Thereby the predecessor of -0 and 0 are both the
+    ///    same smallest negative float. Further -INF remains -INF and + INF
+    ///    is transformed into FLOAT_MAX.
+    float predecessor(float _number);                                          // TESTED
+    double predecessor(double _number);
 
     // Include implementation.
 #   include "details/elementary.inl"
