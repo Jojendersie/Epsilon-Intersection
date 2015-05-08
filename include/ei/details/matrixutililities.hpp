@@ -69,4 +69,10 @@ namespace details {
                    0.0f, 0.0f, 1.0f, 0.0f,
                    0.0f, 0.0f, 0.0f, 1.0f);
 
+    // Quaternion constants
+    static const ei::TQuaternion<float> QUATERNION_IDENTITY =
+        ei::TQuaternion<float>(0.0f, 0.0f, 0.0f, 1.0f);
+    static const ei::TQuaternion<double> QUATERNIOND_IDENTITY =
+        ei::TQuaternion<double>(0.0, 0.0, 0.0, 1.0);
+
 }

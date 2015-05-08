@@ -7,7 +7,8 @@
 
 namespace ei {
 
-    class Quaternion;
+    template<typename T>
+    class TQuaternion;
 
     /// \brief MxN row-major matrix class.
     /// \details The matrix is the basis for all matrix and vector types. It
@@ -40,9 +41,9 @@ namespace ei {
         // operation without the need of a constructor. This type deduction
         // construct inherits rules as [int + float -> float] from the
         // elementary types.
-#       define RESULT_TYPE(op) typename std::enable_if<					\
-            !std::is_base_of<details::MatrixType, T1>::value &&			\
-            !std::is_base_of<details::MatrixType, T>::value,			\
+#       define RESULT_TYPE(op) typename std::enable_if<                 \
+            !std::is_base_of<details::NonScalarType, T1>::value &&      \
+            !std::is_base_of<details::NonScalarType, T>::value,         \
             decltype(std::declval<T>() op std::declval<T1>())           \
         >::type
 
@@ -130,7 +131,7 @@ namespace ei {
         Matrix(Matrix<T1,1,3> _v012, T2 _s3);                                  // TESTED
 
         template<ENABLE_IF(M == 3 && N == 3)>
-        explicit Matrix(const Quaternion& _quaternion);
+        explicit Matrix(const TQuaternion<T>& _quaternion);
 
         /// \brief Access a single element with two indices.
         /// \details Computes the data index _row * N + _col. Therefore
@@ -355,6 +356,30 @@ namespace ei {
     typedef Matrix<float, 4, 4> Mat4x4;
 
     // ********************************************************************* //
+    // Predefined double vector and matrix types.
+
+    /// \brief 2D column-vector of type double.
+    typedef Matrix<double, 2, 1> DVec2;
+    /// \brief 3D column-vector of type double.
+    typedef Matrix<double, 3, 1> DVec3;
+    /// \brief 4D column-vector of type double.
+    typedef Matrix<double, 4, 1> DVec4;
+
+    /// \brief 2D row-vector of type double.
+    typedef Matrix<double, 1, 2> DRVec2;
+    /// \brief 3D row-vector of type double.
+    typedef Matrix<double, 1, 3> DRVec3;
+    /// \brief 4D row-vector of type double.
+    typedef Matrix<double, 1, 4> DRVec4;
+
+    /// \brief 2x2 matrix of type double.
+    typedef Matrix<double, 2, 2> DMat2x2;
+    /// \brief 3x3 matrix of type double.
+    typedef Matrix<double, 3, 3> DMat3x3;
+    /// \brief 4x4 matrix of type double.
+    typedef Matrix<double, 4, 4> DMat4x4;
+
+    // ********************************************************************* //
     // Predefined 32 bit integer vector and matrix types.
 
     /// \brief 2D column-vector of type int32.
@@ -413,95 +438,106 @@ namespace ei {
     /// \details The normalized form has len(q) == 1 and r>0. The second criteria
     ///     makes the rotation unique because q and -q both represent the same
     ///     rotation.
-    class Quaternion
+    template<typename T>
+    class TQuaternion: public details::NonScalarType
     {
     public:
         /// \brief Construct uninitialized
-        Quaternion() {}
+        TQuaternion() {}
 
         /// \brief Copy construction
-        Quaternion( const Quaternion& _other ) = default;
+        TQuaternion( const TQuaternion& _other ) = default;
         /// \brief Copying assignment
-        Quaternion& operator = ( const Quaternion& _rhs ) = default;
+        TQuaternion& operator = ( const TQuaternion& _rhs ) = default;
 
         /// \brief Construct from normalized axis and angle
-        Quaternion( const Vec3& _axis, float _angle );                         // TESTED
+        TQuaternion( const Vec<T,3>& _axis, T _angle );                        // TESTED
 
         /// \brief Create from Euler angles
         /// \details The rotations are applied in the order x, y, z:
         ///     rotationZ(_z) * rotationY(_y) * rotationX(_x)
-        Quaternion( float _x, float _y, float _z );                            // TESTED
-        Quaternion( const Vec3& _eulerAngles ) : Quaternion(_eulerAngles.x, _eulerAngles.y, _eulerAngles.z) {}
+        TQuaternion( T _x, T _y, T _z );                                       // TESTED
+        TQuaternion( const Vec<T,3>& _eulerAngles ) : TQuaternion(_eulerAngles.x, _eulerAngles.y, _eulerAngles.z) {}
 
         /// \brief Create from rotation matrix (does a decomposition if the
         ///     matrix contains scaling).
-        Quaternion( const Mat3x3& _matrix );                                   // TESTED
+        TQuaternion( const Matrix<T,3,3>& _matrix );                           // TESTED
 
-        /// \brief Create from quaternion coefficients
-        Quaternion( float _i, float _j, float _k, float _r );
+        /// \brief Create from TQuaternion coefficients
+        TQuaternion( T _i, T _j, T _k, T _r );
 
         /// \brief Rotate from vector to vector (rotated such that the from
         ///     vector is aligned with the to vector).
         /// \param [in] _from One certain direction vector before rotation.
         /// \param [in] _to Target direction vector. The from direction should
         ///     be aligned with the target after rotation.
-        Quaternion( const Vec3& _from, const Vec3& _to );                      // TESTED
+        TQuaternion( const Vec<T,3>& _from, const Vec<T,3>& _to );             // TESTED
 
         // TODO: lookAt parametrization
 
         /// \brief Compare component wise, if two quaternions are identical.
-        bool operator== (const Quaternion& _q1) const;
+        bool operator== (const TQuaternion& _q1) const;
         /// \brief Compare component wise, if two quaternions are different.
-        bool operator!= (const Quaternion& _q1) const;
-        /// \brief Quaternion multiplication is a combination of rotations.
+        bool operator!= (const TQuaternion& _q1) const;
+        /// \brief TQuaternion multiplication is a combination of rotations.
         /// \details Non commutative (a*b != a*b)
-        Quaternion& operator*= (const Quaternion& _q1);
-        /// \brief Scale the quaternion
-        Quaternion& operator*= (float _s);
-        /// \brief Quaternion division   a/=b  <=>  a=a*(b^-1)=a*conjugated(b).
-        Quaternion& operator/= (const Quaternion& _q1);
-        /// \brief Scale the quaternion
-        Quaternion& operator/= (float _s);
+        TQuaternion& operator*= (const TQuaternion& _q1);
+        /// \brief Scale the TQuaternion
+        TQuaternion& operator*= (T _s);
+        /// \brief TQuaternion division   a/=b  <=>  a=a*(b^-1)=a*conjugated(b).
+        TQuaternion& operator/= (const TQuaternion& _q1);
+        /// \brief Scale the TQuaternion
+        TQuaternion& operator/= (T _s);
         /// \brief Vector like addition
-        Quaternion& operator+= (const Quaternion& _q1);
+        TQuaternion& operator+= (const TQuaternion& _q1);
         /// \brief Vector like subtraction
-        Quaternion& operator-= (const Quaternion& _q1);
+        TQuaternion& operator-= (const TQuaternion& _q1);
 
-        Quaternion operator* (Quaternion _q1) const { return _q1 *= *this; }
-        Quaternion operator* (float _s) const       { return Quaternion(*this) *= _s; }
-        Quaternion operator/ (Quaternion _q1) const { return _q1 /= *this; }
-        Quaternion operator/ (float _s) const       { return Quaternion(*this) /= _s; }
-        Quaternion operator+ (Quaternion _q1) const { return _q1 += *this; }
-        Quaternion operator- (Quaternion _q1) const { return _q1 -= *this; }
+        TQuaternion operator* (TQuaternion _q1) const { return _q1 *= *this; }
+        TQuaternion operator* (T _s) const            { return TQuaternion(*this) *= _s; }
+        TQuaternion operator/ (TQuaternion _q1) const { return _q1 /= *this; }
+        TQuaternion operator/ (T _s) const            { return TQuaternion(*this) /= _s; }
+        TQuaternion operator+ (TQuaternion _q1) const { return _q1 += *this; }
+        TQuaternion operator- (TQuaternion _q1) const { return _q1 -= *this; }
 
         union {
-            struct {float i, j, k, r;};     ///< Elements of 4D complex number
-            float z[4];                     ///< Array access, index 3 is the real part
+            struct {T i, j, k, r;};         ///< Elements of 4D complex number
+            T z[4];                         ///< Array access, index 3 is the real part
         };
     };
 
     // ********************************************************************* //
     /// \brief Returns identity element of the Hamilton-product. (Does not
     ///     rotate anything.)
-    inline Quaternion qidentity() { return Quaternion(0.0f, 0.0f, 0.0f, 1.0f); } // TESTED
+    const TQuaternion<float>& qidentity();                                         // TESTED
+    const TQuaternion<double>& qidentityD();
 
     // ********************************************************************* //
     /// \brief Scalar multiplication from left
-    inline Quaternion operator* (float _s, Quaternion _q) {return _q *= _s; }
+    template<typename T>
+    TQuaternion<T> operator* (T _s, TQuaternion<T> _q) {return _q *= _s; }
 
     // ********************************************************************* //
     /// \brief Complex conjugate: invert sign of complex components
-    Quaternion conjugate(const Quaternion& _q);                                // TESTED
+    template<typename T>
+    TQuaternion<T> conjugate(const TQuaternion<T>& _q);                        // TESTED
 
-    /// \brief Get the rotation axis from a quaternion
-    Vec3 axis(const Quaternion& _q);                                           // TESTED
+    /// \brief Get the rotation axis from a TQuaternion
+    template<typename T>
+    Vec<T,3> axis(const TQuaternion<T>& _q);                                   // TESTED
 
-    /// \brief Get the angle (radians) from a quaternion
-    float angle(const Quaternion& _q);                                         // TESTED
+    /// \brief Get the angle (radians) from a TQuaternion
+    template<typename T>
+    T angle(const TQuaternion<T>& _q);                                         // TESTED
 
     // ********************************************************************* //
     /// \brief Get the Euler angles (radians) from a quaternion
-    Vec3 angles(const Quaternion& _q);
+    template<typename T>
+    Vec<T,3> angles(const TQuaternion<T>& _q);
+
+    // ********************************************************************* //
+    typedef TQuaternion<float> Quaternion;
+    typedef TQuaternion<double> DQuaternion;
 
 
     // ********************************************************************* //
@@ -514,19 +550,20 @@ namespace ei {
     /// \param [in] _mat0 First operand.
     /// \param [in] _mat1 Second operand.
     /// \param [in] _epsilon Maximum threshold for the difference between two
-    ///    components. The default value is 1e-6f.
+    ///    components. The default value is 1e-6.
     /// \returns true if all differences are less or equal than _epsilon.
     template<typename T, unsigned M, unsigned N>
     bool approx(const Matrix<T,M,N>& _mat0,
                 const Matrix<T,M,N>& _mat1,
-                float _epsilon = 1e-6f);                                       // TESTED
+                T _epsilon = T(1e-6));                                        // TESTED
 
     // ********************************************************************* //
     /// \brief Check if the absolute difference between all elements is smaller
     ///    or equal than epsilon.
-    bool approx(const Quaternion& _q0,
-                const Quaternion& _q1,
-                float _epsilon = 1e-6f);                                       // TESTED
+    template<typename T>
+    bool approx(const TQuaternion<T>& _q0,
+                const TQuaternion<T>& _q1,
+                T _epsilon = T(1e-6));                                         // TESTED
 
     // ********************************************************************* //
     /// \brief Computes the sum of component wise products.
@@ -737,7 +774,8 @@ namespace ei {
     auto slerp(const Matrix<T0,1,N>& _v0, const Matrix<T0,1,N>& _v1, T1 _t) -> decltype(_v0*_t);
     template<typename T0, typename T1, unsigned M>
     auto slerp(const Matrix<T0,M,1>& _v0, const Matrix<T0,M,1>& _v1, T1 _t) -> decltype(_v0*_t);    // TESTED
-    Quaternion slerp(const Quaternion& _q0, const Quaternion& _q1, float _t);  // TESTED
+    template<typename T>
+    TQuaternion<T> slerp(const TQuaternion<T>& _q0, const TQuaternion<T>& _q1, T _t);  // TESTED
 
 
     // ********************************************************************* //
@@ -860,8 +898,10 @@ namespace ei {
     Matrix<T,1,N> transform( const Matrix<T,1,N>& _what, const Matrix<T,N,N>& _space );
 
     /// \brief Apply a rotation by a quaternion
-    Vec3 transform( const Vec3& _what, const Quaternion& _quaternion );
-    Vec3 transform( const RVec3& _what, const Quaternion& _quaternion );
+    template<typename T>
+    Vec<T,3> transform( const Vec<T,3>& _what, const TQuaternion<T>& _quaternion );
+    template<typename T>
+    RVec<T,3> transform( const RVec<T,3>& _what, const TQuaternion<T>& _quaternion );
 
     // ********************************************************************* //
     /// \brief Create a translation matrix in homogeneous coordinate space.

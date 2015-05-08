@@ -57,8 +57,8 @@ inline T sgn(T _x)
 }
 
 // ************************************************************************* //
-template<typename T>
-inline bool approx(T _x0, T _x1, float _epsilon)
+template<typename T, class>
+inline bool approx(T _x0, T _x1, T _epsilon)
 {
     return abs(_x1 - _x0) <= _epsilon;
 }

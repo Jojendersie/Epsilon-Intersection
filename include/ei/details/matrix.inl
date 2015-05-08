@@ -300,23 +300,23 @@ Matrix<T, M, N>::Matrix(Matrix<T1,1,3> _v012, T2 _s3)
 // ************************************************************************* //
 template<typename T, uint M, uint N>
 template<class>
-Matrix<T, M, N>::Matrix(const Quaternion& _quaternion)
+Matrix<T, M, N>::Matrix(const TQuaternion<T>& _quaternion)
 {
     // Rotation composition from quaternion (remaining rest direct in matrix)
     // See http://de.wikipedia.org/wiki/Quaternion#Bezug_zu_orthogonalen_Matrizen for
     // details.
-    float f2i  = 2.0f * _quaternion.i;
-    float f2j  = 2.0f * _quaternion.j;
-    float f2k  = 2.0f * _quaternion.k;
-    float f2ri = f2i  * _quaternion.r;
-    float f2rj = f2j  * _quaternion.r;
-    float f2rk = f2k  * _quaternion.r;
-    float f2ii = f2i  * _quaternion.i;
-    float f2ij = f2j  * _quaternion.i;
-    float f2ik = f2k  * _quaternion.i;
-    float f2jj = f2j  * _quaternion.j;
-    float f2jk = f2k  * _quaternion.j;
-    float f2kk = f2k  * _quaternion.k;
+    T f2i  = 2.0f * _quaternion.i;
+    T f2j  = 2.0f * _quaternion.j;
+    T f2k  = 2.0f * _quaternion.k;
+    T f2ri = f2i  * _quaternion.r;
+    T f2rj = f2j  * _quaternion.r;
+    T f2rk = f2k  * _quaternion.r;
+    T f2ii = f2i  * _quaternion.i;
+    T f2ij = f2j  * _quaternion.i;
+    T f2ik = f2k  * _quaternion.i;
+    T f2jj = f2j  * _quaternion.j;
+    T f2jk = f2k  * _quaternion.j;
+    T f2kk = f2k  * _quaternion.k;
 
     m00 = 1.0f - ( f2jj + f2kk ); m01 = f2ij - f2rk;            m02 = f2ik + f2rj;
     m10 = f2ij + f2rk;            m11 = 1.0f - ( f2ii + f2kk ); m12 = f2jk - f2ri;
@@ -714,7 +714,7 @@ CODE_GEN_MAT_SCALAR_RELATION(>)
 template<typename T, uint M, uint N>
 inline bool approx(const Matrix<T,M,N>& _mat0,
                    const Matrix<T,M,N>& _mat1,
-                   float _epsilon)
+                   T _epsilon)
 {
     for(uint i = 0; i < N * M; ++i)
         if(abs(_mat1[i] - _mat0[i]) > _epsilon) return false;
