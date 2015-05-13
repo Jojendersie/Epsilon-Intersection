@@ -16,6 +16,7 @@ bool test_3dtypes()
     {
         Sphere sph( Vec3(1.0f, 2.0f, 3.14159f), 0.75f );
         Box box( Vec3(1.0f, 1.0f, 1.0f), Vec3(2.0f, 2.5f, 3.0f) );
+        OBox obo( Vec3(0.5f), Vec3(1.0f), Quaternion(π, π/2, π/2) );
         Thetrahedron the( Vec3(1.0f, 0.0f, -1.0f/PHYTAGORAS), Vec3(-1.0f, 0.0f, -1.0f/PHYTAGORAS), Vec3(0.0f, 1.0f, 1.0f/PHYTAGORAS), Vec3(0.0f, -1.0f, 1.0f/PHYTAGORAS));
         Triangle tri( Vec3(0.0f), Vec3(1.0f, 1.0f, 0.0f), Vec3(0.0f, 0.0f, 1.0f) );
         Disc dis( Vec3(1.0f), normalize(Vec3(-1.0f)), 1.0f );
@@ -30,6 +31,7 @@ bool test_3dtypes()
         Frustum fru3( Vec3(0.0f), Vec3(0.0f, 0.0f, 1.0f), Vec3(0.0f, 1.0f, 0.0f), 0.5f, 1.0f, 0.0f, 0.5f, 0.0f, 0.5f );
         TEST( volume(sph) == 1.767145868f, "Volume of a sphere wrong!" );
         TEST( volume(box) == 3.0f, "Volume of a box wrong!" );
+        TEST( volume(obo) == 1.0f, "Volume of a oriented box wrong!" );
         TEST( volume(the) == 0.942809042f, "Volume of a tetrahedron wrong!" );
         TEST( volume(tri) == 0.0f, "Volume of a triangle wrong!" );
         TEST( volume(dis) == 0.0f, "Volume of a disc wrong!" );
@@ -45,6 +47,7 @@ bool test_3dtypes()
 
         TEST( surface(sph) == 7.068583471f, "Surface of a sphere wrong!" );
         TEST( surface(box) == 13.0f, "Surface of a box wrong!" );
+        TEST( surface(obo) == 6.0f, "Surface of a oriented box wrong!" );
         TEST( surface(the) == 6.92820323f, "Surface of a tetrahedron wrong!" );
         TEST( surface(tri) == 0.707106781f, "Surface of a triangle wrong!" );
         TEST( surface(dis) == PI, "Surface of a disc wrong!" );
@@ -61,6 +64,7 @@ bool test_3dtypes()
 
         TEST( all(center(sph) == Vec3(1.0f, 2.0f, 3.14159f)), "Center of sphere wrong!" );
         TEST( all(center(box) == Vec3(1.5f, 1.75f, 2.0f)), "Center of box wrong!" );
+        TEST( all(center(obo) == Vec3(0.5f)), "Center of oriented box wrong!" );
         TEST( all(center(the) == Vec3(0.0f)), "Center of thetrahedron wrong!" );
         TEST( all(center(tri) == Vec3(1.0f/3.0f)), "Center of trinagle wrong!" );
         TEST( all(center(dis) == Vec3(1.0f)), "Center of disc wrong!" );

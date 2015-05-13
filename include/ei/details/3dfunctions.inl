@@ -10,6 +10,11 @@ inline float volume(const Box& _box)
     return size.x * size.y * size.z;
 }
 
+inline float volume(const OBox& _obox)
+{
+    return _obox.sides.x * _obox.sides.y * _obox.sides.z;
+}
+
 inline float volume(const Thetrahedron& _thetrahedron)
 {
     return dot(_thetrahedron.v3-_thetrahedron.v0, cross(_thetrahedron.v2-_thetrahedron.v0, _thetrahedron.v1-_thetrahedron.v0)) / 6.0f;
@@ -65,6 +70,11 @@ inline float surface(const Box& _box)
 {
     Vec3 size = _box.max - _box.min;
     return 2.0f * (size.x * size.y + size.x * size.z + size.y * size.z);
+}
+
+inline float surface(const OBox& _obox)
+{
+    return 2.0f * (_obox.sides.x * _obox.sides.y + _obox.sides.x * _obox.sides.z + _obox.sides.y * _obox.sides.z);
 }
 
 inline float surface(const Thetrahedron& _thetra)
@@ -209,6 +219,11 @@ inline Vec3 center(const Sphere& _sphere)
 inline Vec3 center(const Box& _box)
 {
     return (_box.min + _box.max) * 0.5f;
+}
+
+inline Vec3 center(const OBox& _obox)
+{
+    return _obox.center;
 }
 
 inline Vec3 center(const Thetrahedron& _thetrahedron)
