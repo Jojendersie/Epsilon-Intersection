@@ -39,8 +39,8 @@ inline Box::Box( const Sphere& _sphere ) :
 }
 
 inline Box::Box( const Triangle& _triangle ) :
-    min(ei::min(_triangle.v0, ei::min(_triangle.v1, _triangle.v2))),
-    max(ei::max(_triangle.v0, ei::max(_triangle.v1, _triangle.v2)))
+    min(ei::min(_triangle.v0, _triangle.v1, _triangle.v2)),
+    max(ei::max(_triangle.v0, _triangle.v1, _triangle.v2))
 {
     eiAssertWeak( all(max >= min),
         "min() or max() failed for a vector!" );

@@ -12,11 +12,23 @@ inline T max(T _x, T _y)
     return _x < _y ? _y : _x;
 }
 
+template<typename T, typename... Ttail>
+inline T max(T _first, Ttail... _tail)
+{
+    return max(_first, max(_tail...));
+}
+
 // ************************************************************************* //
 template<typename T>
 inline T min(T _x, T _y)
 {
     return _x > _y ? _y : _x;
+}
+
+template<typename T, typename... Ttail>
+inline T min(T _first, Ttail... _tail)
+{
+    return min(_first, min(_tail...));
 }
 
 // ************************************************************************* //

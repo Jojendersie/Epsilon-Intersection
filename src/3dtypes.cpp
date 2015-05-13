@@ -15,14 +15,14 @@ namespace ei {
         min = ei::min(trDiag, -trDiag);
         max = ei::max(trDiag, -trDiag);
         trDiag = rot * Vec3(diag.x, diag.y, -diag.z);
-        min = ei::min(ei::min(trDiag, -trDiag), min);
-        max = ei::max(ei::max(trDiag, -trDiag), max);
+        min = ei::min(trDiag, -trDiag, min);
+        max = ei::max(trDiag, -trDiag, max);
         trDiag = rot * Vec3(diag.x, -diag.y, diag.z);
-        min = ei::min(ei::min(trDiag, -trDiag), min);
-        max = ei::max(ei::max(trDiag, -trDiag), max);
+        min = ei::min(trDiag, -trDiag, min);
+        max = ei::max(trDiag, -trDiag, max);
         trDiag = rot * Vec3(diag.x, -diag.y, -diag.z);
-        min = ei::min(ei::min(trDiag, -trDiag), min);
-        max = ei::max(ei::max(trDiag, -trDiag), max);
+        min = ei::min(trDiag, -trDiag, min);
+        max = ei::max(trDiag, -trDiag, max);
         min += _box.center;
         max += _box.center;
     }

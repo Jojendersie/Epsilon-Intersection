@@ -98,6 +98,10 @@ namespace ei {
     ///    compared value.
     template<typename T>
     T max(T _x, T _y);                                                         // TESTED
+    /// \brief Get the maximum of any number of arguments
+    /// \details In case of equal arguments the left most one is returned
+    template<typename T, typename... Ttail>
+    T max(T _first, Ttail... _tail);                                           // TESTED
 
     // ********************************************************************* //
     /// \brief Get the minimum from x and y.
@@ -106,6 +110,10 @@ namespace ei {
     ///    compared value.
     template<typename T>
     T min(T _x, T _y);                                                         // TESTED
+    /// \brief Get the maximum of any number of arguments
+    /// \details In case of equal arguments the left most one is returned
+    template<typename T, typename... Ttail>
+    T min(T _first, Ttail... _tail);                                           // TESTED
 
     // ********************************************************************* //
     /// \brief Clamp a value to the boundaries.
