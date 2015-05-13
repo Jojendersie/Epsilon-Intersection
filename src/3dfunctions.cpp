@@ -35,6 +35,29 @@ float surface(const Frustum& _frustum)
 }
 
 // ************************************************************************* //
+Vec3 center(const Frustum& _frustum)
+{
+    // For a full pyramid the centroid is located on the line segment from apex
+    // to base centroid at 3/4 of that segment.
+    Vec3 baseCentroidDir = (_frustum.l + _frustum.r) * 0.5f * cross(_frustum.up, _frustum.direction)
+        + (_frustum.t + _frustum.b) * 0.5f * _frustum.up
+        + _frustum.f * _frustum.direction;
+    // Since this is a trunctad pyramid the height must be determined:
+    // a1 = (r-l) * (t-b)    ground side area
+    // a2 = a1 * sq(n/f)     intercept theorem
+    // Relative distance of centroid to base centroid
+    // d = (a1 + 2*sqrt(a1*a2) + 3*a2) / 4 * (a1 + sqrt(a1*a2) + a2)  http://mathworld.wolfram.com/PyramidalFrustum.html
+    //   = (3*n*n + 2*f*n + f*f) / (n*n + f*n + f*f)
+    // Distance from apex da = 1-d
+    float da = 1 - (3*sq(_frustum.n) + 2*_frustum.n*_frustum.f + sq(_frustum.f))
+                   / (4 * (sq(_frustum.n) + _frustum.n*_frustum.f + sq(_frustum.f)));
+    // baseCentroidDir is the vector from apex to base and ´da´ the relative
+    // distance from near to centroid plane. We need relative distance from
+    // apex to centroid, which is ´(n+da*(f-n))/f´;
+    return _frustum.apex + ((_frustum.n + da*(_frustum.f-_frustum.n))/_frustum.f) * baseCentroidDir;
+}
+
+// ************************************************************************* //
 float distance(const Vec3& _point, const Segment& _line)
 {
     Vec3 u = _line.b - _line.a;

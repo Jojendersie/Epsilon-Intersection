@@ -26,6 +26,8 @@ bool test_3dtypes()
         Segment seg( Vec3(0.0f), Vec3(2.0f, 0.0f, 0.0f) );
         Capsule cap( Vec3(0.0f), Vec3(0.0f, 1.0f, 0.0f), 0.5f );
         Frustum fru( Vec3(0.0f), Vec3(0.0f, 0.0f, 1.0f), Vec3(0.0f, 1.0f, 0.0f), 1.0f, 2.0f, 0.0f, 1.0f, 0.0f, 1.0f );
+        Frustum fru2( Vec3(0.0f), Vec3(0.0f, 0.0f, 1.0f), Vec3(0.0f, 1.0f, 0.0f), 1.0f, 2.0f, 0.0f, 1.0f, 0.5f, 1.0f );
+        Frustum fru3( Vec3(0.0f), Vec3(0.0f, 0.0f, 1.0f), Vec3(0.0f, 1.0f, 0.0f), 0.5f, 1.0f, 0.0f, 0.5f, 0.0f, 0.5f );
         TEST( volume(sph) == 1.767145868f, "Volume of a sphere wrong!" );
         TEST( volume(box) == 3.0f, "Volume of a box wrong!" );
         TEST( volume(the) == 0.942809042f, "Volume of a tetrahedron wrong!" );
@@ -38,6 +40,8 @@ bool test_3dtypes()
         TEST( volume(seg) == 0.0f, "Volume of a segment wrong!" );
         TEST( volume(cap) == 1.30899704f, "Volume of a capsule wrong!" );
         TEST( volume(fru) == 0.33333333f, "Volume of a frustum wrong!" );
+        float vol0 = volume(fru2), vol1 = volume(fru3);
+        TEST( vol0+vol1 == 0.33333333f, "Volume of frusta wrong!" );
 
         TEST( surface(sph) == 7.068583471f, "Surface of a sphere wrong!" );
         TEST( surface(box) == 13.0f, "Surface of a box wrong!" );
@@ -54,6 +58,18 @@ bool test_3dtypes()
         float refA3_A5 = 0.5f * (len(cross(a, b)) + len(cross(c, d)));
         float refA4_A6 = 0.5f * (len(cross(b, c)) + len(cross(d, a)));
         TEST( surface(fru) == refA3_A5 + refA4_A6 + 1.0f, "Surface of a frustum wrong!" );
+
+        TEST( all(center(sph) == Vec3(1.0f, 2.0f, 3.14159f)), "Center of sphere wrong!" );
+        TEST( all(center(box) == Vec3(1.5f, 1.75f, 2.0f)), "Center of box wrong!" );
+        TEST( all(center(the) == Vec3(0.0f)), "Center of thetrahedron wrong!" );
+        TEST( all(center(tri) == Vec3(1.0f/3.0f)), "Center of trinagle wrong!" );
+        TEST( all(center(dis) == Vec3(1.0f)), "Center of disc wrong!" );
+        TEST( all(center(ell) == Vec3(-1.0f, -0.5f, -0.5f)), "Center of ellipsoid wrong!" );
+        TEST( all(center(seg) == Vec3(1.0f, 0.0f, 0.0f)), "Center of line segment wrong!" );
+        TEST( all(center(cap) == Vec3(0.0f, 0.5f, 0.0f)), "Center of capsule wrong!" );
+        TEST( all(center(fru) == Vec3(1.125f, 0.375f, 0.75f)), "Center of frustum wrong!" );
+        Vec3 c0 = center(fru2), c1 = center(fru3);
+        TEST( approx((c0*vol0 + c1*vol1) / (vol0 + vol1), Vec3(1.125f, 0.375f, 0.75f)), "Center of frustum wrong!" );
     }
 
     // Test plane construction

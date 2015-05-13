@@ -72,6 +72,25 @@ namespace ei
     OBox transform(const Box& _box, const Quaternion& _rotation, const Vec3& _translation);
     OBox transform(const OBox& _box, const Quaternion& _rotation, const Vec3& _translation);
 
+    /// \brief Compute the centroid for all kinds of bounded geometry.
+    /// \details The geometric centroid coincides with the center of mass if
+    ///    the mass is uniformly distributed.
+    ///
+    ///    A geometric composition of simple geometry can be combined via
+    ///    sum(center(G_i)*volume(G_i)) / sum(volume(G_i)). Where negative
+    ///    volumes can be used to model holes or to subtract the overlapping
+    ///    regions again.
+    Vec3 center(const Sphere& _sphere);                                        // TESTED
+    Vec3 center(const Box& _box);                                              // TESTED
+    Vec3 center(const Thetrahedron& _thetrahedron);                            // TESTED
+    Vec3 center(const Triangle& _triangle);                                    // TESTED
+    Vec3 center(const Disc& _disc);                                            // TESTED
+    Vec3 center(const Ellipsoid& _ellipsoid);                                  // TESTED
+    Vec3 center(const Segment& _line);                                         // TESTED
+    Vec3 center(const Capsule& _capsule);                                      // TESTED
+    Vec3 center(const Frustum& _frustum);                                      // TESTED
+    //Vec3 center(const FastFrustum& _frustum);
+
     // Include inline implementations
 #   include "details/3dfunctions.inl"
 }

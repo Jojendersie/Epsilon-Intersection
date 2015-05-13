@@ -196,3 +196,47 @@ inline float distance(const Capsule& _capsule0, const Capsule& _capsule1)
 {
     return max(0.0f, distance(_capsule0.seg, _capsule1.seg) - _capsule0.radius - _capsule1.radius);
 }
+
+
+// ************************************************************************* //
+// CENTER METHODS
+// ************************************************************************* //
+inline Vec3 center(const Sphere& _sphere)
+{
+    return _sphere.center;
+}
+
+inline Vec3 center(const Box& _box)
+{
+    return (_box.min + _box.max) * 0.5f;
+}
+
+inline Vec3 center(const Thetrahedron& _thetrahedron)
+{
+    return (_thetrahedron.v0 + _thetrahedron.v1 + _thetrahedron.v2 + _thetrahedron.v3) / 4.0f;
+}
+
+inline Vec3 center(const Triangle& _triangle)
+{
+    return (_triangle.v0 + _triangle.v1 + _triangle.v2) / 3.0f;
+}
+
+inline Vec3 center(const Disc& _disc)
+{
+    return _disc.center;
+}
+
+inline Vec3 center(const Ellipsoid& _ellipsoid)
+{
+    return _ellipsoid.center;
+}
+
+inline Vec3 center(const Segment& _line)
+{
+    return (_line.a + _line.b) * 0.5f;
+}
+
+inline Vec3 center(const Capsule& _capsule)
+{
+    return (_capsule.seg.a + _capsule.seg.b) * 0.5f;
+}
