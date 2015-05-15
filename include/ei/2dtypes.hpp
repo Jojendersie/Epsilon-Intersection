@@ -12,7 +12,7 @@ namespace ei {
     struct Ellipse2D;
     struct OEllipse2D;
     struct Capsule2D;
-    struct Line2D;
+    struct Segment2D;
     struct Ray2D;
 
     /// \brief A list of all supported 2d types
@@ -72,7 +72,7 @@ namespace ei {
         explicit Disc2D( const Capsule2D& _capsule );                          // TESTED
 
         /// \brief Create circumcircle of a line
-        explicit Disc2D( const Line2D& _line );                                // TESTED
+        explicit Disc2D( const Segment2D& _line );                             // TESTED
 
         /// \brief Compare on binary identity
         bool operator== ( const Disc2D& _circle ) const;                       // TESTED
@@ -142,16 +142,17 @@ namespace ei {
         OEllipse2D( const Vec2& _center, const Vec2& _radii, float _angle );   // TESTED
     };
 
-    struct Line2D
+    /// \brief A line segment is the finite connection between two points
+    struct Segment2D
     {
         Vec2 p0;
         Vec2 p1;
 
         /// \brief Create uninitialized line.
-        Line2D() {}
+        Segment2D() {}
 
         /// \brief Create from two points (start and end).
-        Line2D( const Vec2& _p0, const Vec2& _p1 );                            // TESTED
+        Segment2D( const Vec2& _p0, const Vec2& _p1 );                         // TESTED
     };
 
     struct Ray2D

@@ -84,7 +84,7 @@ namespace ei
     ///    regions again.
     Vec3 center(const Sphere& _sphere);                                        // TESTED
     Vec3 center(const Box& _box);                                              // TESTED
-    Vec3 center(const OBox& _obox);
+    Vec3 center(const OBox& _obox);                                            // TESTED
     Vec3 center(const Thetrahedron& _thetrahedron);                            // TESTED
     Vec3 center(const Triangle& _triangle);                                    // TESTED
     Vec3 center(const Disc& _disc);                                            // TESTED

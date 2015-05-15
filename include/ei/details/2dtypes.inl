@@ -66,7 +66,7 @@ inline Disc2D::Disc2D( const Capsule2D& _capsule )
 }
 
 // ************************************************************************* //
-inline Disc2D::Disc2D( const Line2D& _line )
+inline Disc2D::Disc2D( const Segment2D& _line )
 {
     center = (_line.p0 + _line.p1) * 0.5f;
     radius = len(_line.p0 - _line.p1) * 0.5f;
@@ -124,7 +124,7 @@ inline OEllipse2D::OEllipse2D( const Vec2& _center, const Vec2& _radii, float _a
 }
 
 // ************************************************************************* //
-inline Line2D::Line2D( const Vec2& _p0, const Vec2& _p1 ) :
+inline Segment2D::Segment2D( const Vec2& _p0, const Vec2& _p1 ) :
     p0(_p0),
     p1(_p1)
 {

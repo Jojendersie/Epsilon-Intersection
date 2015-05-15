@@ -65,7 +65,7 @@ namespace ei {
     }
 
     // ********************************************************************* //
-    bool intersects( const Line2D& _line0, const Line2D& _line1 )
+    bool intersects( const Segment2D& _line0, const Segment2D& _line1 )
     {
         Vec2 dir0 = _line0.p1 - _line0.p0;
         Vec2 dir1 = _line1.p1 - _line1.p0;
@@ -83,7 +83,7 @@ namespace ei {
         return t >= 0.0f && t <= 1.0f;
     }
 
-    bool intersects( const Line2D& _line0, const Line2D& _line1, Vec2& _outInfo )
+    bool intersects( const Segment2D& _line0, const Segment2D& _line1, Vec2& _outInfo )
     {
         Vec2 dir0 = _line0.p1 - _line0.p0;
         Vec2 dir1 = _line1.p1 - _line1.p0;

@@ -99,12 +99,12 @@ bool test_2dintersections()
     // ********************************************************************* //
     // Test line <-> line
     {
-        Line2D lin0( Vec2(0.0f, 0.0f), Vec2(1.0f, 0.0f) );
-        Line2D lin1( Vec2(0.0f, 1.0f), Vec2(1.0f, 1.0f) );      // parallel
-        Line2D lin2( Vec2(0.5f, 0.0f), Vec2(1.5f, 0.0f) );      // parallel and overlapping
-        Line2D lin3( Vec2(0.5f, 0.5f), Vec2(2.0f, 2.0f) );      // somewhere else (no intersection)
-        Line2D lin4( Vec2(0.0f, 1.0f), Vec2(0.0f, 0.0f) );      // perpendicular touching in an endpoint
-        Line2D lin5( Vec2(0.5f, 0.5f), Vec2(0.75f, -0.5f) );    // intersection
+        Segment2D lin0( Vec2(0.0f, 0.0f), Vec2(1.0f, 0.0f) );
+        Segment2D lin1( Vec2(0.0f, 1.0f), Vec2(1.0f, 1.0f) );      // parallel
+        Segment2D lin2( Vec2(0.5f, 0.0f), Vec2(1.5f, 0.0f) );      // parallel and overlapping
+        Segment2D lin3( Vec2(0.5f, 0.5f), Vec2(2.0f, 2.0f) );      // somewhere else (no intersection)
+        Segment2D lin4( Vec2(0.0f, 1.0f), Vec2(0.0f, 0.0f) );      // perpendicular touching in an endpoint
+        Segment2D lin5( Vec2(0.5f, 0.5f), Vec2(0.75f, -0.5f) );    // intersection
 
         TEST( !intersects(lin0, lin1), "lin0, lin1 false intersection detected!" );
         TEST( intersects(lin0, lin2), "lin0, lin2 intersection not detected!" );

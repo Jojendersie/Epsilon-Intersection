@@ -1,4 +1,4 @@
-﻿#include "ei/2dtypes.hpp"
+﻿#include "ei/2dfunctions.hpp"
 #include "unittest.hpp"
 
 #include <iostream>
@@ -17,7 +17,7 @@ bool test_2dtypes()
     Triangle2D tri0( Vec2(0.5f, 0.0f), Vec2(1.0f, 0.0f), Vec2(0.5f, 1.0f) );
     Ellipse2D ell0( Vec2(2.0f, 2.0f), Vec2(2.0f, 0.5f) );
     OEllipse2D ell1( Vec2(2.0f, 2.0f), Vec2(2.0f, 0.5f), -0.5f );
-    Line2D lin0( Vec2(-1.0f, 0.0f), Vec2(1.0f, 1.0f) );
+    Segment2D seg0( Vec2(-1.0f, 0.0f), Vec2(1.0f, 1.0f) );
     Ray2D ray0( Vec2(0.0f, -5.0f), Vec2(0.0f, 1.0f) );
     Capsule2D cap0( Vec2(-1.0f, 1.0f), Vec2(1.0f, -1.0f), 0.5f );
 
@@ -51,13 +51,31 @@ bool test_2dtypes()
         "Circumcircle of oriented ellipse not correct!"
     );
 
-    TEST( Disc2D( lin0 ) == Disc2D( Vec2(0.0f, 0.5f), sqrt(1.25f) ),
+    TEST( Disc2D( seg0 ) == Disc2D( Vec2(0.0f, 0.5f), sqrt(1.25f) ),
         "Circumcircle of line not correct!"
     );
 
     TEST( Disc2D( cap0 ) == Disc2D( Vec2(0.0f, 0.0f), √2 + 0.5f ),
         "Circumcircle of triangle not correct!"
     );
+
+    TEST( area(dis0) == PI, "Area of dis0 wrong!" );
+    TEST( area(rec0) == 4.0f, "Area of rec0 wrong!" );
+    TEST( area(rec1) == 1.0f, "Area of rec1 wrong!" );
+    TEST( area(tri0) == 0.25f, "Area of tri0 wrong!" );
+    TEST( area(ell0) == PI, "Area of ell0 wrong!" );
+    TEST( area(ell1) == PI, "Area of ell1 wrong!" );
+    TEST( area(seg0) == 0.0f, "Area of seg0 wrong!" );
+    TEST( area(ray0) == 0.0f, "Area of ray0 wrong!" );
+    TEST( area(cap0) == 3.613825288f, "Area of cap0 wrong!" );
+
+    TEST( all(center(dis0) == Vec2(0.0f, 1.0f)), "Center of dis0 wrong!" );
+    TEST( all(center(rec0) == Vec2(0.0f)), "Center of rec0 wrong!" );
+    TEST( all(center(rec1) == Vec2(0.0f)), "Center of rec1 wrong!" );
+    TEST( all(center(tri0) == Vec2(2/3.0f, 1/3.0f)), "Center of tri0 wrong!" );
+    TEST( all(center(ell0) == Vec2(2.0f, 2.0f)), "Center of ell0 wrong!" );
+    TEST( all(center(ell1) == Vec2(2.0f, 2.0f)), "Center of ell1 wrong!" );
+    TEST( all(center(cap0) == Vec2(0.0f)), "Center of cap0 wrong!" );
 
     return result;
 }

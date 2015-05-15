@@ -47,12 +47,12 @@ namespace ei {
     /// \brief Do two lines intersect/touch?
     /// \details Performance index: TODO
     /// \return true if the lines intersect.
-    bool intersects( const Line2D& _line0, const Line2D& _line1 );             // TESTED
+    bool intersects( const Segment2D& _line0, const Segment2D& _line1 );       // TESTED
 
     /// \brief Where do two lines intersect/touch?
     /// \details Performance index: TODO
     /// \param [out] _outInfo The point of the intersection. If the two lines
     ///    overlap the returned point is the center of this overlap.
     /// \return true if the lines intersect.
-    bool intersects( const Line2D& _line0, const Line2D& _line1, Vec2& _outInfo ); // TESTED
+    bool intersects( const Segment2D& _line0, const Segment2D& _line1, Vec2& _outInfo ); // TESTED
 }
