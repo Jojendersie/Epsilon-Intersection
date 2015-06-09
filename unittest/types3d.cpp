@@ -17,7 +17,7 @@ bool test_3dtypes()
         Sphere sph( Vec3(1.0f, 2.0f, 3.14159f), 0.75f );
         Box box( Vec3(1.0f, 1.0f, 1.0f), Vec3(2.0f, 2.5f, 3.0f) );
         OBox obo( Vec3(0.5f), Vec3(1.0f), Quaternion(π, π/2, π/2) );
-        Thetrahedron the( Vec3(1.0f, 0.0f, -1.0f/PHYTAGORAS), Vec3(-1.0f, 0.0f, -1.0f/PHYTAGORAS), Vec3(0.0f, 1.0f, 1.0f/PHYTAGORAS), Vec3(0.0f, -1.0f, 1.0f/PHYTAGORAS));
+        Tetrahedron the( Vec3(1.0f, 0.0f, -1.0f/PHYTAGORAS), Vec3(-1.0f, 0.0f, -1.0f/PHYTAGORAS), Vec3(0.0f, 1.0f, 1.0f/PHYTAGORAS), Vec3(0.0f, -1.0f, 1.0f/PHYTAGORAS));
         Triangle tri( Vec3(0.0f), Vec3(1.0f, 1.0f, 0.0f), Vec3(0.0f, 0.0f, 1.0f) );
         Disc dis( Vec3(1.0f), normalize(Vec3(-1.0f)), 1.0f );
         Plane pla( Vec3(1.0f, 0.0f, 0.0f), Vec3(1.0f, 1.0f, 0.0f) );
@@ -116,6 +116,7 @@ bool test_3dtypes()
         OBox obo0( Vec3(0.0f), Vec3(1.0f, 2.0f, 3.0f), Quaternion(Vec3(0.0f, 0.0f, 1.0f), PI/2) );
         OBox obo1( Vec3(1.0f), Vec3(1.0f, 1.0f, 1.0f), Quaternion(Vec3(0.0f, 0.0f, 1.0f), PI/4) );
         Vec3 points[] = {Vec3(0.0f), Vec3(1.0f), Vec3(0.1f, 0.4f, 0.3f), Vec3(-0.3f, 0.7f, 1.4f)};
+        Tetrahedron tet( Vec3(-2.1f, -0.6f, -0.5f), Vec3(0.0, -1.0f, 0.0f), Vec3(0.0f, -0.1f, -1.0f), Vec3(-0.5f, -1.1f, 0.2f) );
         Box box2( ell );
         Box box3( tri );
         Box box4( sph );
@@ -125,6 +126,7 @@ bool test_3dtypes()
         // Box box8( OBox(box4) ); // <- This is a function? VC12 bug or standard?
         Box box8 = Box(OBox(box4));
         Box box9( points, 4 );
+        Box box10( tet );
         TEST( all(box0.min == box2.min), "Ellipsoid bounding min is wrong!" );
         TEST( all(box0.max == box2.max), "Ellipsoid bounding min is wrong!" );
         TEST( all(box0.min == box3.min), "Triangle bounding min is wrong!" );
@@ -141,6 +143,8 @@ bool test_3dtypes()
         TEST( all(box8.max == box4.max), "Box(OBox(box4)) introduces a bias to max!" );
         TEST( all(box9.min == Vec3(-0.3f, 0.0f, 0.0f)), "Box min of point list wrong!" );
         TEST( all(box9.max == Vec3(1.0f, 1.0f, 1.4f)), "Box max of point list wrong!" );
+        TEST( all(box10.min == Vec3(-2.1f, -1.1f, -1.0f)), "Bounding box min of tetrahedron wrong!" );
+        TEST( all(box10.max == Vec3(0.0f, -0.1f, 0.2f)), "Bounding box max of tetrahedron wrong!" );
     }
 
     // ********************************************************************* //

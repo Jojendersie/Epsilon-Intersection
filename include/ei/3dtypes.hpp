@@ -12,7 +12,7 @@ namespace ei {
     struct OBox;
     struct Disc;
     struct Triangle;
-    struct Thetrahedron;
+    struct Tetrahedron;
     struct Ray;
     struct Segment;
     struct Frustum;
@@ -85,6 +85,9 @@ namespace ei {
         /// \brief Create the bounding box for a triangle.
         explicit Box( const Triangle& _triangle );                             // TESTED
 
+        /// \brief Create the bounding box of a tetrahedron
+        explicit Box( const Tetrahedron& _tetrahedron );
+
         /// \brief Create the bounding box for an ellipsoid
         explicit Box( const Ellipsoid& _ellipsoid );                           // TESTED
 
@@ -115,7 +118,7 @@ namespace ei {
         explicit OBox( const Box& _box );
     };
 
-    struct Thetrahedron
+    struct Tetrahedron
     {
         Vec3 v0;
         Vec3 v1;
@@ -126,11 +129,11 @@ namespace ei {
         Vec3& v(int _index);
         const Vec3& v(int _index) const;
 
-        /// \brief Create uninitialized thetrahedron.
-        Thetrahedron() {}
+        /// \brief Create uninitialized tetrahedron.
+        Tetrahedron() {}
 
         /// \brief Create from four vertices
-        Thetrahedron(const Vec3& _v0, const Vec3& _v1, const Vec3& _v2, const Vec3& _v3);
+        Tetrahedron(const Vec3& _v0, const Vec3& _v1, const Vec3& _v2, const Vec3& _v3);
     };
 
     /// \brief A triangle in 3D space.

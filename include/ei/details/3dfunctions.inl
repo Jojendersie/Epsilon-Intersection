@@ -15,7 +15,7 @@ inline float volume(const OBox& _obox)
     return _obox.sides.x * _obox.sides.y * _obox.sides.z;
 }
 
-inline float volume(const Thetrahedron& _thetrahedron)
+inline float volume(const Tetrahedron& _thetrahedron)
 {
     return dot(_thetrahedron.v3-_thetrahedron.v0, cross(_thetrahedron.v2-_thetrahedron.v0, _thetrahedron.v1-_thetrahedron.v0)) / 6.0f;
 }
@@ -77,7 +77,7 @@ inline float surface(const OBox& _obox)
     return 2.0f * (_obox.sides.x * _obox.sides.y + _obox.sides.x * _obox.sides.z + _obox.sides.y * _obox.sides.z);
 }
 
-inline float surface(const Thetrahedron& _thetra)
+inline float surface(const Tetrahedron& _thetra)
 {
     // Analogous to a triangle (repeated four times)
     Vec3 a = _thetra.v1 - _thetra.v0;
@@ -226,7 +226,7 @@ inline Vec3 center(const OBox& _obox)
     return _obox.center;
 }
 
-inline Vec3 center(const Thetrahedron& _thetrahedron)
+inline Vec3 center(const Tetrahedron& _thetrahedron)
 {
     return (_thetrahedron.v0 + _thetrahedron.v1 + _thetrahedron.v2 + _thetrahedron.v3) / 4.0f;
 }

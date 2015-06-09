@@ -8,7 +8,7 @@ namespace ei
     float volume(const Sphere& _sphere);                                       // TESTED
     float volume(const Box& _box);                                             // TESTED
     float volume(const OBox& _obox);
-    float volume(const Thetrahedron& _thetrahedron);                           // TESTED
+    float volume(const Tetrahedron& _thetrahedron);                           // TESTED
     float volume(const Triangle& _triangle);                                   // TESTED
     float volume(const Disc& _disc);                                           // TESTED
     float volume(const Plane& _plane);                                         // TESTED
@@ -23,7 +23,7 @@ namespace ei
     float surface(const Sphere& _sphere);                                      // TESTED
     float surface(const Box& _box);                                            // TESTED
     float surface(const OBox& _obox);
-    float surface(const Thetrahedron& _thetrahedron);                          // TESTED
+    float surface(const Tetrahedron& _thetrahedron);                          // TESTED
     float surface(const Triangle& _triangle);                                  // TESTED
     float surface(const Disc& _disc);                                          // TESTED
     float surface(const Plane& _plane);                                        // TESTED
@@ -85,7 +85,7 @@ namespace ei
     Vec3 center(const Sphere& _sphere);                                        // TESTED
     Vec3 center(const Box& _box);                                              // TESTED
     Vec3 center(const OBox& _obox);                                            // TESTED
-    Vec3 center(const Thetrahedron& _thetrahedron);                            // TESTED
+    Vec3 center(const Tetrahedron& _thetrahedron);                            // TESTED
     Vec3 center(const Triangle& _triangle);                                    // TESTED
     Vec3 center(const Disc& _disc);                                            // TESTED
     Vec3 center(const Ellipsoid& _ellipsoid);                                  // TESTED

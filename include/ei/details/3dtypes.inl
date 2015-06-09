@@ -46,6 +46,14 @@ inline Box::Box( const Triangle& _triangle ) :
         "min() or max() failed for a vector!" );
 }
 
+inline Box::Box( const Tetrahedron& _tetrahedron ) :
+    min(ei::min(_tetrahedron.v0, _tetrahedron.v1, _tetrahedron.v2, _tetrahedron.v3)),
+    max(ei::max(_tetrahedron.v0, _tetrahedron.v1, _tetrahedron.v2, _tetrahedron.v3))
+{
+    eiAssertWeak( all(max >= min),
+        "min() or max() failed for a vector!" );
+}
+
 inline Box::Box( const Ellipsoid& _ellipsoid ) :
     min(_ellipsoid.center - _ellipsoid.radii),
     max(_ellipsoid.center + _ellipsoid.radii)
@@ -71,7 +79,7 @@ inline OBox::OBox( const Box& _box ) :
 
 
 // ************************************************************************* //
-inline Thetrahedron::Thetrahedron( const Vec3& _v0, const Vec3& _v1, const Vec3& _v2, const Vec3& _v3 ) :
+inline Tetrahedron::Tetrahedron( const Vec3& _v0, const Vec3& _v1, const Vec3& _v2, const Vec3& _v3 ) :
     v0(_v0),
     v1(_v1),
     v2(_v2),
@@ -79,13 +87,13 @@ inline Thetrahedron::Thetrahedron( const Vec3& _v0, const Vec3& _v1, const Vec3&
 {
 }
 
-inline Vec3& Thetrahedron::v(int _index)
+inline Vec3& Tetrahedron::v(int _index)
 {
     eiAssertWeak(_index >= 0 && _index < 4, "A thetrahedron only has 4 vertices!");
     return reinterpret_cast<Vec3*>(this)[_index];
 }
 
-inline const Vec3& Thetrahedron::v(int _index) const
+inline const Vec3& Tetrahedron::v(int _index) const
 {
     eiAssertWeak(_index >= 0 && _index < 4, "A thetrahedron only has 3 vertices!");
     return reinterpret_cast<const Vec3*>(this)[_index];
