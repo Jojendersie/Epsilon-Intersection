@@ -115,6 +115,7 @@ bool test_3dtypes()
         Sphere sph( Vec3(5.0f), 2.0f );
         OBox obo0( Vec3(0.0f), Vec3(1.0f, 2.0f, 3.0f), Quaternion(Vec3(0.0f, 0.0f, 1.0f), PI/2) );
         OBox obo1( Vec3(1.0f), Vec3(1.0f, 1.0f, 1.0f), Quaternion(Vec3(0.0f, 0.0f, 1.0f), PI/4) );
+        Vec3 points[] = {Vec3(0.0f), Vec3(1.0f), Vec3(0.1f, 0.4f, 0.3f), Vec3(-0.3f, 0.7f, 1.4f)};
         Box box2( ell );
         Box box3( tri );
         Box box4( sph );
@@ -123,6 +124,7 @@ bool test_3dtypes()
         Box box7( obo1 );
         // Box box8( OBox(box4) ); // <- This is a function? VC12 bug or standard?
         Box box8 = Box(OBox(box4));
+        Box box9( points, 4 );
         TEST( all(box0.min == box2.min), "Ellipsoid bounding min is wrong!" );
         TEST( all(box0.max == box2.max), "Ellipsoid bounding min is wrong!" );
         TEST( all(box0.min == box3.min), "Triangle bounding min is wrong!" );
@@ -137,6 +139,8 @@ bool test_3dtypes()
         TEST( all(box7.max == Vec3(1.707106781f, 1.707106781f, 1.5f)), "OBox2 bounding max is wrong!" );
         TEST( all(box8.min == box4.min), "Box(OBox(box4)) introduces a bias to min!" );
         TEST( all(box8.max == box4.max), "Box(OBox(box4)) introduces a bias to max!" );
+        TEST( all(box9.min == Vec3(-0.3f, 0.0f, 0.0f)), "Box min of point list wrong!" );
+        TEST( all(box9.max == Vec3(1.0f, 1.0f, 1.4f)), "Box max of point list wrong!" );
     }
 
     // ********************************************************************* //

@@ -64,6 +64,7 @@ namespace ei {
     };
 
     /// \brief Axis aligned box.
+    /// \details Box invariant: the max must always be larger or equal than min.
     struct Box
     {
         Vec3 min;
@@ -89,6 +90,9 @@ namespace ei {
 
         /// \brief Create the bounding box for an oriented box.
         explicit Box( const OBox& _box );                                      // TESTED
+
+        /// \brief Create an optimal box for a set of points
+        Box( const Vec3* _points, uint32 _numPoints );                         // TESTED
     };
 
     /// \brief Oriented bounding box.
