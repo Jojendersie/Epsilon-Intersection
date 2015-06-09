@@ -12,6 +12,12 @@ inline Sphere::Sphere( const Box& _box ) :
     eiAssert( all(_box.max >= _box.min), "Invalid bounding box." );
 }
 
+inline Sphere::Sphere( const Vec3& _p0, const Vec3& _p1 ) :
+    center((_p0 + _p1) * 0.5f),
+    radius(len(_p0 - _p1) * 0.5f)
+{
+}
+
 
 // ************************************************************************* //
 inline Box::Box( const Vec3& _min, const Vec3& _max ) :

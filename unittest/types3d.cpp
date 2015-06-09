@@ -102,6 +102,10 @@ bool test_3dtypes()
         Box box( Vec3(-2.0f, -1.0f, -1.0f), Vec3(0.0f, 0.0f, 0.0f) );
         Sphere sph0( Vec3(-1.0f, -0.5f, -0.5f), 1.224744871f );
         Sphere sph1( box );
+        Vec3 points[] = {Vec3(0.0f), Vec3(1.0f), Vec3(0.1f, 0.4f, 0.3f), Vec3(-0.3f, 0.7f, 1.4f)};
+        Sphere sph2(points, 4);
+        for(int i = 0; i < 4; ++i)
+            TEST(distance(sph2, points[i]) <= 1e-6f, "Bounding sphere does not enclose all points!");
         TEST( all(sph0.center == sph1.center), "Center of sphere wrong!" );
         TEST( sph0.radius == sph1.radius, "Radius of sphere wrong!" );
     }

@@ -61,6 +61,20 @@ namespace ei {
 
         /// \brief Create the bounding sphere of a box
         explicit Sphere( const Box& _box );                                    // TESTED
+
+        /// \brief Create the bounding sphere for two points
+        Sphere( const Vec3& _p0, const Vec3& _p1 );
+
+        /// \brief Create the bounding sphere for three points
+        Sphere( const Vec3& _p0, const Vec3& _p1, const Vec3& _p2 );
+
+        /// \brief Create the bounding sphere for four points
+        Sphere( const Vec3& _p0, const Vec3& _p1, const Vec3& _p2, const Vec3& _p3 );
+
+        /// \brief Create the bounding sphere for n points using Welzl's
+        ///     algorithm.
+        /// \details The algorithm has expected linear run time.
+        Sphere( const Vec3* _points, uint32 _numPoints );
     };
 
     /// \brief Axis aligned box.

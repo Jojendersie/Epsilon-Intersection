@@ -3,6 +3,148 @@
 namespace ei {
 
     // ********************************************************************* //
+    Sphere::Sphere( const Vec3& _p0, const Vec3& _p1, const Vec3& _p2 )
+    {
+        // The center of the circumscribed circle is at (barycentric coordinates)
+        // v0*sin(2 alpha) + v1*sin(2 beta) + v2*sin(2 gamma) and has the radius
+        // abc/4A.
+        Vec3 c = _p0 - _p1;	float csq = lensq(c);
+        Vec3 a = _p1 - _p2;	float asq = lensq(a);
+        Vec3 b = _p2 - _p0;	float bsq = lensq(b);
+
+        // One of the sides could be the longest side - the minimum sphere is
+        // defined through only two points.
+        // This can also handle the coplanar case.
+        if( csq + bsq <= asq ) *this = Sphere(_p1, _p2);
+        else if( asq + bsq <= csq ) *this = Sphere(_p1, _p0);
+        else if( asq + csq <= bsq ) *this = Sphere(_p2, _p0);
+        else {
+            float area2Sq = 2*lensq(cross(a, c));
+            center = 
+                     _p0 * (-dot(c,b)*asq/area2Sq)
+                   + _p1 * (-dot(c,a)*bsq/area2Sq)
+                   + _p2 * (-dot(b,a)*csq/area2Sq);
+            radius = sqrt(asq*bsq*csq/(2*area2Sq));
+        }
+    }
+
+    // ********************************************************************* //
+    Sphere::Sphere( const Vec3& _p0, const Vec3& _p1, const Vec3& _p2, const Vec3& _p3 )
+    {
+        // It is possible that not all 4 points lie on the surface of the sphere.
+        // Just two of them could already define a sphere enclosing all other.
+        // So we need to compute any combination of possible spheres (14), but
+        // luckily we know a direct solution for any combination of 3 points.
+        // The reduces the work to 4 cases: build a bounding sphere for 3 points
+        // and have a look if the fourth point is inside.
+        *this = Sphere( _p1, _p2, _p3 );
+        float rsq = radius*radius;
+        if( lensq(_p3 - center) > rsq ) {
+            *this = Sphere( _p0, _p1, _p3 );
+            if( lensq(_p2 - center) > rsq ) {
+                *this = Sphere( _p0, _p2, _p3 );
+                if( lensq(_p1 - center) > rsq ) {
+                    *this = Sphere( _p1, _p2, _p3 );
+                    if( lensq(_p0 - center) > rsq ) {
+                        // All 4 points are on the boundary -> construct sphere
+                        // from 4 points.
+                        Vec3 a = _p1 - _p0;
+                        Vec3 b = _p2 - _p0;
+                        Vec3 c = _p3 - _p0;
+
+                        Mat3x3 m = Mat3x3( _p1[0], _p1[1], _p1[2],
+                                           _p2[0], _p2[1], _p2[2],
+                                           _p3[0], _p3[1], _p3[2] );
+
+                        float denominator = 0.5f / determinant( m );
+
+                        Vec3 o = (lensq(c) * cross(a,b) +
+                                  lensq(b) * cross(c,a) +
+                                  lensq(a) * cross(b,c)) * denominator;
+
+                        center = _p0 + o;
+                        radius = len(o);
+                    }
+                }
+            }
+        }
+    }
+
+    // ********************************************************************* //
+    struct SingleLinkedPointList
+    {
+        Vec3 p;
+        int next;   ///< -1 for the last element
+    };
+
+    static Sphere minimalBoundingSphere( SingleLinkedPointList* _points, uint32 _first, uint32 _n, uint32 _boundarySet )
+    {
+        Sphere mbs;
+        eiAssertWeak(_boundarySet > 0, "Expected at least one point.");
+
+        // If the boundary list is full or all points where added stop
+        switch(_boundarySet)
+        {
+        case 1: mbs = Sphere(_points[_first].p, 0.0f);
+            break;
+        case 2: {
+            Vec3 v0 = _points[_first].p; uint32 next = _points[_first].next;
+            mbs = Sphere(v0, _points[next].p);
+            break;
+        }
+        case 3: {
+            Vec3 v0 = _points[_first].p; uint32 next = _points[_first].next;
+            Vec3 v1 = _points[next].p; next = _points[next].next;
+            mbs = Sphere(v0, v1, _points[next].p);
+            break;
+        }
+        case 4: {
+            Vec3 v0 = _points[_first].p; uint32 next = _points[_first].next;
+            Vec3 v1 = _points[next].p; next = _points[next].next;
+            Vec3 v2 = _points[next].p; next = _points[next].next;
+            return Sphere(v0, v1, v2, _points[next].p);
+        }
+        }
+
+        uint32 it = _first;
+        uint32 last = _first; // At the beginning this is wrong but does not cause damage, afterwards it will be ovewritten by real numbers
+        for(uint32 i = 0; i < _boundarySet; ++i) {last = it; it = _points[it].next;}
+        for(uint32 i = _boundarySet; i < _n; ++i)
+        {
+            // Save next pointer to advance from this point even if the list is changed
+            uint32 next = _points[it].next;
+            eiAssert(it != 0xffffffff, "Iteration should not have stopped.");
+            if(lensq(mbs.center - _points[it].p) > mbs.radius * mbs.radius)
+            {
+                // Move to front
+                _points[last].next = _points[it].next;
+                _points[it].next = _first;
+                _first = it;
+                // Rebuild the first i elements
+                mbs = minimalBoundingSphere(_points, it, i, _boundarySet+1);
+            }
+            last = it;
+            it = next;
+        }
+
+        return mbs;
+    }
+
+    Sphere::Sphere( const Vec3* _points, uint32 _numPoints )
+    {
+        eiAssert( _numPoints > 0, "The point list must have at least one point." );
+        // Create a single linked list for the move to front heuristic
+        SingleLinkedPointList* list = new SingleLinkedPointList[_numPoints];
+        for(uint32 i = 0; i < _numPoints; ++i) {
+            list[i].p = _points[i];
+            list[i].next = i+1;
+        }
+        list[_numPoints-1].next = -1;
+        *this = minimalBoundingSphere(list, 0, _numPoints, 1);
+        delete[] list;
+    }
+
+    // ********************************************************************* //
     Box::Box( const OBox& _box )
     {
         // Effectively generate all 8 corners and find min/max coordinates.
