@@ -586,7 +586,7 @@ bool test_matrix()
         UVec3 p;
         Vec3 x;
         TEST( !decomposeLUp(A1, LU, p), "Matrix A1 is singular!");
-        TEST( decomposeLUp(A0, LU, p), "Matrix A0 is decomposible!" );
+        TEST( decomposeLUp(A0, LU, p), "Matrix A0 is decomposable!" );
         x = solveLUp(LU, p, b0);
         TEST( approx(x, x0, 1e-5f), "Solution of equation system A0 x=b0 wrong!");
 
@@ -596,6 +596,27 @@ bool test_matrix()
         X = X * A0;
         TEST( approx(X, identity3x3()), "3x3 Matrix inverse bad!");
         TEST( approx(invert(A2) * A2, identity4x4(), 2e-5f), "4x4 Matrix inverse bad!");
+    }
+
+    // ********************************************************************* //
+    // Test determinants
+    {
+        Mat2x2 m0(3.0f, 8.0f, 4.0f, 6.0f);
+        Mat3x3 m1(-2.0f, 2.0f, -3.0f, -1.0f, 1.0f, 3.0f, 2.0f, 0.0f, -1.0f);
+        Mat3x3 m2(6.0f, 1.0f, 1.0f, 4.0f, -2.0f, 5.0f, 2.0f, 8.0f, 7.0f);
+        Mat3x3 m3(1.0f, 2.0f, 1.0f, 3.0f, 0.0f, 4.0f, 8.0f, 4.0f, 10.0f);
+        Mat4x4 m4(1.0f, 2.0f, 2.0f, 1.0f, 0.0f, 2.0f, 0.0f, 0.0f, -1.0f, -4.0f, -2.0f, -1.0f, 1.0f, 4.0f, 4.0f, 1.0f);
+        Mat4x4 m5(1.0f, 0.0f, 2.0f, -1.0f, 3.0f, 0.0f, 0.0f, 5.0f, 2.0f, 1.0f, 4.0f, -3.0f, 1.0f, 0.0f, 5.0f, 0.0f);
+        Mat4x4 m6(3.0f, 0.0f, 0.0f, 5.0f, 1.0f, 0.0f, 2.0f, -1.0f, 2.0f, 1.0f, 4.0f, -3.0f, 1.0f, 0.0f, 5.0f, 0.0f);
+        Mat4x4 m7(3.0f, 2.0f, 0.0f, 1.0f, 4.0f, 0.0f, 1.0f, 2.0f, 3.0f, 0.0f, 2.0f, 1.0f, 9.0f, 2.0f, 3.0f, 1.0f);
+        TEST( determinant(m0) == -14.0f, "Determinant of m0 wrong!" );
+        TEST( determinant(m1) == 18.0f, "Determinant of m1 wrong!" );
+        TEST( determinant(m2) == -306.0f, "Determinant of m2 wrong!" );
+        TEST( determinant(m3) == 0.0f, "Determinant of m3 wrong!" );
+        TEST( determinant(m4) == 0.0f, "Determinant of m4 wrong!" );
+        TEST( determinant(m5) == 30.0f, "Determinant of m5 wrong!" );
+        TEST( determinant(m6) == -30.0f, "Determinant of m6 wrong!" );
+        TEST( approx(determinant(m7), 24.0f, 4.0e-6f), "Determinant of m7 wrong!" );
     }
 
     return result;

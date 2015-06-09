@@ -1162,6 +1162,41 @@ Matrix<T,N,N> invert(const Matrix<T,N,N>& _mat0)
     else return identity<T,N>();
 }
 
+// ************************************************************************* //
+template<typename T>
+T determinant(const Matrix<T,2,2>& _A)
+{
+    return _A[0]*_A[3] - _A[1]*_A[2];
+}
+
+// ************************************************************************* //
+template<typename T>
+T determinant(const Matrix<T,3,3>& _A)
+{
+    return _A[0]*_A[4]*_A[8] + _A[1]*_A[5]*_A[6] + _A[2]*_A[3]*_A[7]
+          -_A[2]*_A[4]*_A[6] - _A[1]*_A[3]*_A[8] - _A[0]*_A[5]*_A[7];
+}
+
+template<typename T, unsigned N>
+T determinant(const Matrix<T,N,N>& _A)
+{
+    Matrix<T,N,N> LU;
+    Vec<uint32,N> p;
+    if( decomposeLUp( _A, LU, p ) )
+    {
+        // The diagonal product of L gives the value
+        T det = -LU[0];
+        // The number of permutations the sign (#p even -> positive)
+        if( p[0] != 0 ) det = -det;
+        for(int i = 1; i < N; ++i) {
+            det *= LU[i + N * i];
+            if( p[i] != i ) det = -det;
+        }
+        return det;
+    }
+    return static_cast<T>(0);
+}
+
 
 // ************************************************************************* //
 //                              TRANSFORMATIONS                              //

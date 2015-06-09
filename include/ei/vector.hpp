@@ -766,9 +766,9 @@ namespace ei {
     /// \brief Spherical linear interpolation with constant angular speed
     /// \details Spherical interpolation is not defined, if the angle between
     ///     both vectors is pi. In that case this still method performs
-    ///     an interpoltion but without normalization.
+    ///     an interpolation but without normalization.
     ///
-    ///     Formulas from Ken Shoemake "Antimating rotation with quaternion
+    ///     Formulas from Ken Shoemake "Animating rotation with quaternion
     ///     curves" SIGGRAPH 85
     template<typename T0, typename T1, unsigned N>
     auto slerp(const Matrix<T0,1,N>& _v0, const Matrix<T0,1,N>& _v1, T1 _t) -> decltype(_v0*_t);
@@ -835,6 +835,13 @@ namespace ei {
     /// \return Inverse matrix or identity.
     template<typename T, unsigned N>
     Matrix<T,N,N> invert(const Matrix<T,N,N>& _mat0);                          // TESTED
+
+    // ********************************************************************* //
+    /// \brief Compute the determinant of a matrix.
+    /// \details This uses fixed implementations for N=2 and N=3 and LU
+    ///     decomposition for N > 3.
+    template<typename T, unsigned N>
+    T determinant(const Matrix<T,N,N>& _A);                                    // TESTED
 
 
     // ********************************************************************* //
