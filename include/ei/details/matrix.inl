@@ -717,7 +717,7 @@ inline bool approx(const Matrix<T,M,N>& _mat0,
                    T _epsilon)
 {
     for(uint i = 0; i < N * M; ++i)
-        if(abs(_mat1[i] - _mat0[i]) > _epsilon) return false;
+        if(!(abs(_mat1[i] - _mat0[i]) <= _epsilon)) return false;
     return true;
 }
 
@@ -1559,13 +1559,15 @@ inline Mat4x4 rotationH( const Vec3& _v, float _angle )
 inline Mat3x3 rotation( const Vec3& _from, const Vec3& _to )
 {
     // Get lengths for normalization
-    float lf = len(_from);
-    float lt = len(_to);
+    eiAssert(approx(len(_from), 1.0f), "Expected a normalized direction vector '_from'.");
+    eiAssert(approx(len(_to), 1.0f), "Expected a normalized direction vector '_from'.");
+    //float lf = len(_from);
+    //float lt = len(_to);
     Vec3 axis = cross(_from, _to);
     // Compute sin(alpha) from cross product lf * lt * sin(alpha) and normalize
     float sinA = len(axis);
-    axis /= sinA;
-    sinA /= lf * lt;
+    if(sinA) axis /= sinA;
+    //sinA /= lf * lt;
     float cosA = sqrt((1.0f - sinA) * (1.0f + sinA));
     // Create axis-angle matrix
     float iCosA = 1.0f - cosA;
