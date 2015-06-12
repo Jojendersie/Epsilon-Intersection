@@ -1,6 +1,7 @@
 #include <iostream>
 using namespace std;
 
+bool test_fixedpoint();
 bool test_elementaries();
 bool test_matrix();
 bool test_quaternion();
@@ -11,6 +12,9 @@ bool test_3dintersections();
 
 int main()
 {
+    if( test_fixedpoint() )
+        cerr << "Successfully completed: Fixed point types." << std::endl;
+
     if( test_elementaries() )
         cerr << "Successfully completed: Elementary types." << std::endl;
 
