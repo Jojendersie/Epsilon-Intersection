@@ -229,6 +229,22 @@ Vec<T,3> axis(const TQuaternion<T>& _q)
 }
 
 template<typename T>
+Vec<T,3> xaxis(const TQuaternion<T>& _q)
+{
+    return Vec<T,3>( T(1)-T(2)*(_q.j*_q.j+_q.k*_q.k), T(2)*(_q.i*_q.j+_q.k*_q.r), T(2)*(_q.i*_q.k-_q.j*_q.r) );
+}
+template<typename T>
+Vec<T,3> yaxis(const TQuaternion<T>& _q)
+{
+    return Vec<T,3>( T(2)*(_q.i*_q.j-_q.k*_q.r), T(1)-T(2)*(_q.i*_q.i+_q.k*_q.k), T(2)*(_q.j*_q.k+_q.i*_q.r) );
+}
+template<typename T>
+Vec<T,3> zaxis(const TQuaternion<T>& _q)
+{
+    return Vec<T,3>( T(2)*(_q.i*_q.k+_q.j*_q.r), T(2)*(_q.j*_q.k-_q.i*_q.r), T(1)-T(2)*(_q.i*_q.i+_q.j*_q.j) );
+}
+
+template<typename T>
 T angle(const TQuaternion<T>& _q)
 {
     return acos(_q.r) * T(2);

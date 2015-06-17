@@ -526,6 +526,20 @@ namespace ei {
     template<typename T>
     Vec<T,3> axis(const TQuaternion<T>& _q);                                   // TESTED
 
+    /// \brief Get the x axis of the corresponding orthogonal system (rotation
+    ///     matrix)
+    template<typename T>
+    Vec<T,3> xaxis(const TQuaternion<T>& _q);                                  // TESTED
+    /// \brief Get the y axis of the corresponding orthogonal system (rotation
+    ///     matrix)
+    template<typename T>
+    Vec<T,3> yaxis(const TQuaternion<T>& _q);                                  // TESTED
+    /// \brief Get the z axis of the corresponding orthogonal system (rotation
+    ///     matrix)
+    template<typename T>
+    Vec<T,3> zaxis(const TQuaternion<T>& _q);                                  // TESTED
+    // TODO: row vector axis
+
     /// \brief Get the angle (radians) from a TQuaternion
     template<typename T>
     T angle(const TQuaternion<T>& _q);                                         // TESTED
