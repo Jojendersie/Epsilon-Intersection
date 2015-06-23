@@ -63,48 +63,59 @@ TQuaternion<T>::TQuaternion( const Matrix<T,3,3>& _m )
 
     // Build TQuaternion<T> from rotation matrix
     // Src: http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/
-    /*float trace = M.m11 + M.m22 + M.m33;
+    T trace = _m.m00 + _m.m11 + _m.m22;
     if( trace > 0 )
     {
-        float s = 0.5f / sqrt( trace + 1.0f );
-        i = ( M.m32 - M.m23 ) * s;
-        j = ( M.m13 - M.m31 ) * s;
-        k = ( M.m21 - M.m12 ) * s;
-        r = 0.25f / s;
+        float s = T(0.5) / sqrt( trace + T(1) );
+        i = ( _m.m21 - _m.m12 ) * s;
+        j = ( _m.m02 - _m.m20 ) * s;
+        k = ( _m.m10 - _m.m01 ) * s;
+        r = T(0.25) / s;
     } else {
-        if( M.m11 > M.m22 && M.m11 > M.m33 )
+        if( _m.m00 > _m.m11 && _m.m00 > _m.m22 )
         {
-            float s = 2.0f * sqrtf( 1.0f + M.m11 - M.m22 - M.m33 );
-            i = 0.25f * s;
-            j = ( M.m12 + M.m21 ) / s;
-            k = ( M.m13 + M.m31 ) / s;
-            r = ( M.m32 - M.m23 ) / s;
-        } else if( M.m22 > M.m33 )
+            float s = T(2) * sqrt( T(1) + _m.m00 - _m.m11 - _m.m22 );
+            i = T(0.25) * s;
+            j = ( _m.m01 + _m.m10 ) / s;
+            k = ( _m.m02 + _m.m20 ) / s;
+            r = ( _m.m21 - _m.m12 ) / s;
+        } else if( _m.m11 > _m.m22 )
         {
-            float s = 2.0f * sqrtf( 1.0f + M.m22 - M.m11 - M.m33 );
-            i = ( M.m12 + M.m21 ) / s;
-            j = 0.25f * s;
-            k = ( M.m23 + M.m32 ) / s;
-            r = ( M.m13 - M.m31 ) / s;
+            float s = T(2) * sqrt( T(1) + _m.m11 - _m.m00 - _m.m22 );
+            i = ( _m.m01 + _m.m10 ) / s;
+            j = T(0.25) * s;
+            k = ( _m.m12 + _m.m21 ) / s;
+            r = ( _m.m02 - _m.m20 ) / s;
         } else {
-            float s = 2.0f * sqrtf( 1.0f + M.m33 - M.m11 - M.m22 );
-            i = ( M.m13 + M.m31 ) / s;
-            j = ( M.m23 + M.m32 ) / s;
-            k = 0.25f * s;
-            r = ( M.m21 - M.m12 ) / s;
+            float s = T(2) * sqrt( T(1) + _m.m22 - _m.m00 - _m.m11 );
+            i = ( _m.m02 + _m.m20 ) / s;
+            j = ( _m.m12 + _m.m21 ) / s;
+            k = T(0.25) * s;
+            r = ( _m.m10 - _m.m01 ) / s;
         }
-    }*/
+    }//*/
 
-    r = sqrt( max( T(0), T(1) + _m.m00 + _m.m11 + _m.m22 ) ) * T(0.5);
-    i = sqrt( max( T(0), T(1) + _m.m00 - _m.m11 - _m.m22 ) ) * T(0.5) * sign(_m.m21 - _m.m12);
-    j = sqrt( max( T(0), T(1) - _m.m00 + _m.m11 - _m.m22 ) ) * T(0.5) * sign(_m.m02 - _m.m20);
-    k = sqrt( max( T(0), T(1) - _m.m00 - _m.m11 + _m.m22 ) ) * T(0.5) * sign(_m.m10 - _m.m01);
+    /*r = sqrt( max( T(0), T(1) + _m.m00 + _m.m11 + _m.m22 ) ) * T(0.5);
+    i = sqrt( max( T(0), T(1) + _m.m00 - _m.m11 - _m.m22 ) ) * T(0.5) * sgn(_m.m21 - _m.m12);
+    j = sqrt( max( T(0), T(1) - _m.m00 + _m.m11 - _m.m22 ) ) * T(0.5) * sgn(_m.m02 - _m.m20);
+    k = sqrt( max( T(0), T(1) - _m.m00 - _m.m11 + _m.m22 ) ) * T(0.5) * sgn(_m.m10 - _m.m01);//*/
+
+    // Assert additional normalization condition
+    if( r < static_cast<T>(0) ) {i = -i; j = -j; k = -k; r = -r;}
 }
 
 template<typename T>
 TQuaternion<T>::TQuaternion( T _i, T _j, T _k, T _r ) :
     i(_i), j(_j), k(_k), r(_r)
 {
+    // Assert additional normalization condition
+    if( r < static_cast<T>(0) )
+    {
+        i = -i;
+        j = -j;
+        k = -k;
+        r = -r;
+    }
 }
 
 // ************************************************************************* //
