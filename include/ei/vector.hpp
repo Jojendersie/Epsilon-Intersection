@@ -857,6 +857,9 @@ namespace ei {
     template<typename T, unsigned N>
     T determinant(const Matrix<T,N,N>& _A);                                    // TESTED
 
+    // ********************************************************************* //
+    // TODO orthonormalize()
+
 
     // ********************************************************************* //
     //                            TRANSFORMATIONS                            //

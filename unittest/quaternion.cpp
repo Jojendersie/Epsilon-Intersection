@@ -23,7 +23,6 @@ bool test_quaternion()
     TEST( approx(axis(q3), normalize(Vec3(-1.0f, -2.0f, 1.0f))), "Axis of quaternion q3 wrongly extracted!" );
     TEST( approx(angle(q0), PI), "Angle of quaternion q0 wrongly extracted!" );
     TEST( approx(angle(q3), PI), "Angle of quaternion q3 wrongly extracted!" );
-    Quaternion x(angles(q1));
     TEST( approx(angles(q1), Vec3(0.3f, 0.5f, -0.7f)), "Euler angles conversion of quaternion wrong!" );
     TEST( approx(xaxis(q1), Vec3(m1(0,0), m1(0,1), m1(0,2))), "X-axis of quaternion q1 wrong!" );
     TEST( approx(yaxis(q1), Vec3(m1(1,0), m1(1,1), m1(1,2))), "Y-axis of quaternion q1 wrong!" );

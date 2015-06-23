@@ -111,21 +111,17 @@ TQuaternion<T>::TQuaternion( T _i, T _j, T _k, T _r ) :
 template<typename T>
 TQuaternion<T>::TQuaternion( const Vec<T,3>& _from, const Vec<T,3>& _to )
 {
-    // Get lengths for normalization
-    T lf = len(_from);
-    T lt = len(_to);
-    Vec3 axis = cross(_from, _to);
-    // Compute sin(alpha) from cross product lf * lt * sin(alpha) and normalize
-    T sa = len(axis);
-    axis /= sa;
-    sa /= lf * lt;
-    // sin(alpha) = sin(2*theta)
-    T theta = asin(sa) * T(0.5);
-    T st = sin(theta);
-    r = sqrt((T(1) - st) * (T(1) + st));      // cos(theta)
-    i = st * axis.x;
-    j = st * axis.y;
-    k = st * axis.z;
+    Vec<T,3> from = normalize(_from);
+    Vec<T,3> to = normalize(_to);
+    // half angle trick from http://physicsforgames.blogspot.de/2010/03/quaternion-tricks.html
+    Vec<T,3> half = normalize(from + to);
+
+    // cos(theta) = dot product since both vectors are normalized
+    r = dot(from, half);
+    // Axis from cross product -> already multiplied with sin(theta)
+    i = from.y*half.z - from.z*half.y;
+    j = from.z*half.x - from.x*half.z;
+    k = from.x*half.y - from.y*half.x;
 }
 
 // ************************************************************************* //
@@ -323,20 +319,41 @@ TQuaternion<T> slerp(const TQuaternion<T>& _q0, const TQuaternion<T>& _q1, T _t)
 template<typename T>
 Vec<T,3> transform( const Vec<T,3>& _v, const TQuaternion<T>& _q )
 {
-    // q v q-1 with v=(0, _v.x, _v.y, _v.z) expanded with Maxima
+    // http://physicsforgames.blogspot.de/2010/03/quaternion-tricks.html
+    float x1 = _q.j*_v.z - _q.k*_v.y;
+    float y1 = _q.k*_v.x - _q.i*_v.z;
+    float z1 = _q.i*_v.y - _q.j*_v.x;
+
     return Vec<T,3>(
+        _v.x + 2.0f * (_q.r*x1 + _q.j*z1 - _q.k*y1),
+        _v.y + 2.0f * (_q.r*y1 + _q.k*x1 - _q.i*z1),
+        _v.z + 2.0f * (_q.r*z1 + _q.i*y1 - _q.j*x1)
+    );
+
+    // q v q-1 with v=(0, _v.x, _v.y, _v.z) expanded with Maxima
+/*    return Vec<T,3>(
         _v.x*_q.r*_q.r-2*_v.y*_q.k*_q.r+2*_q.j*_v.z*_q.r-_v.x*_q.k*_q.k+2*_q.i*_v.z*_q.k-_v.x*_q.j*_q.j+2*_q.i*_v.y*_q.j+_v.x*_q.i*_q.i,
         _v.y*_q.r*_q.r+2*_v.x*_q.k*_q.r-2*_q.i*_v.z*_q.r-_v.y*_q.k*_q.k+2*_q.j*_v.z*_q.k+_v.y*_q.j*_q.j+2*_v.x*_q.i*_q.j-_q.i*_q.i*_v.y,
         _v.z*_q.r*_q.r-2*_v.x*_q.j*_q.r+2*_q.i*_v.y*_q.r+_v.z*_q.k*_q.k+2*_v.y*_q.j*_q.k+2*_v.x*_q.i*_q.k-_q.j*_q.j*_v.z-_q.i*_q.i*_v.z
-    );
+    );*/
 }
 
 template<typename T>
 RVec<T,3> transform( const RVec<T,3>& _v, const TQuaternion<T>& _q )
 {
-    return RVec<T,3>(
+    float x1 = _q.j*_v.z - _q.k*_v.y;
+    float y1 = _q.k*_v.x - _q.i*_v.z;
+    float z1 = _q.i*_v.y - _q.j*_v.x;
+
+    return Vec<T,3>(
+        _v.x + 2.0f * (_q.r*x1 + _q.j*z1 - _q.k*y1),
+        _v.y + 2.0f * (_q.r*y1 + _q.k*x1 - _q.i*z1),
+        _v.z + 2.0f * (_q.r*z1 + _q.i*y1 - _q.j*x1)
+    );
+
+/*    return RVec<T,3>(
         _v.x*_q.r*_q.r-2*_v.y*_q.k*_q.r+2*_q.j*_v.z*_q.r-_v.x*_q.k*_q.k+2*_q.i*_v.z*_q.k-_v.x*_q.j*_q.j+2*_q.i*_v.y*_q.j+_v.x*_q.i*_q.i,
         _v.y*_q.r*_q.r+2*_v.x*_q.k*_q.r-2*_q.i*_v.z*_q.r-_v.y*_q.k*_q.k+2*_q.j*_v.z*_q.k+_v.y*_q.j*_q.j+2*_v.x*_q.i*_q.j-_q.i*_q.i*_v.y,
         _v.z*_q.r*_q.r-2*_v.x*_q.j*_q.r+2*_q.i*_v.y*_q.r+_v.z*_q.k*_q.k+2*_v.y*_q.j*_q.k+2*_v.x*_q.i*_q.k-_q.j*_q.j*_v.z-_q.i*_q.i*_v.z
-    );
+    );*/
 }
