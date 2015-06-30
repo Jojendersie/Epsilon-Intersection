@@ -100,6 +100,8 @@ TQuaternion<T>::TQuaternion( const Matrix<T,3,3>& _m )
     j = sqrt( max( T(0), T(1) - _m.m00 + _m.m11 - _m.m22 ) ) * T(0.5) * sgn(_m.m02 - _m.m20);
     k = sqrt( max( T(0), T(1) - _m.m00 - _m.m11 + _m.m22 ) ) * T(0.5) * sgn(_m.m10 - _m.m01);//*/
 
+    *this = normalize(*this);
+
     // Assert additional normalization condition
     if( r < static_cast<T>(0) ) {i = -i; j = -j; k = -k; r = -r;}
 }

@@ -182,48 +182,50 @@ namespace ei {
     }
 
     // ********************************************************************* //
-	OBox::OBox( const Quaternion& _orientation, const Box& _box ) :
-		center((_box.min + _box.max) * 0.5f),
-		orientation(_orientation)
-	{
-		// Project corner points to the cube sides by transforming them into
-		// local space, such that the box is axis aligned again.
-		Mat3x3 inverseRotation(conjugate(_orientation));
-		// Since we already know the center we only need to track one extremal
-		// point to find the side lenght.
-		Vec3 max;
-		max = inverseRotation * _box.min;
-		max = ei::max(max, inverseRotation * Vec3(_box.min.x, _box.min.y, _box.max.z));
-		max = ei::max(max, inverseRotation * Vec3(_box.min.x, _box.max.y, _box.min.z));
-		max = ei::max(max, inverseRotation * Vec3(_box.min.x, _box.max.y, _box.max.z));
-		max = ei::max(max, inverseRotation * Vec3(_box.max.x, _box.min.y, _box.min.z));
-		max = ei::max(max, inverseRotation * Vec3(_box.max.x, _box.min.y, _box.max.z));
-		max = ei::max(max, inverseRotation * Vec3(_box.max.x, _box.max.y, _box.min.z));
-		max = ei::max(max, inverseRotation * _box.max);
-		sides = (max - center) * 2.0f;
-	}
+    OBox::OBox( const Quaternion& _orientation, const Box& _box ) :
+        center((_box.min + _box.max) * 0.5f),
+        orientation(_orientation)
+    {
+        // Project corner points to the cube sides by transforming them into
+        // local space, such that the box is axis aligned again.
+        Mat3x3 rotation(_orientation);
+        // Since we already know the center we only need to track one extremal
+        // point to find the side length.
+        Vec3 bmin = _box.min - center;
+        Vec3 bmax = _box.max - center;
+        sides = rotation * bmin;
+        sides = max(sides, rotation * Vec3(bmin.x, bmin.y, bmax.z));
+        sides = max(sides, rotation * Vec3(bmin.x, bmax.y, bmin.z));
+        sides = max(sides, rotation * Vec3(bmin.x, bmax.y, bmax.z));
+        sides = max(sides, rotation * Vec3(bmax.x, bmin.y, bmin.z));
+        sides = max(sides, rotation * Vec3(bmax.x, bmin.y, bmax.z));
+        sides = max(sides, rotation * Vec3(bmax.x, bmax.y, bmin.z));
+        sides = max(sides, rotation * bmax);
+        sides *= 2.0f;
+    }
 
     // ********************************************************************* //
-	OBox::OBox( const Quaternion& _orientation, const Vec3* _points, uint32 _numPoints ) :
-		orientation(_orientation)
-	{
-		eiAssert( _numPoints > 0, "The point list must have at least one point." );
+    OBox::OBox( const Quaternion& _orientation, const Vec3* _points, uint32 _numPoints ) :
+        orientation(_orientation)
+    {
+        eiAssert( _numPoints > 0, "The point list must have at least one point." );
 
-		// Project all points to the cube sides by transforming them into local
-		// space, such that the box is axis aligned again.
-		Mat3x3 inverseRotation(conjugate(_orientation));
-		Vec3 min, max;
-		min = max = inverseRotation * _points[0];
-		for(uint32 i = 1; i < _numPoints; ++i)
-		{
-			Vec3 p = inverseRotation * _points[i];
-			min = ei::min(min, p);
-			max = ei::max(max, p);
-		}
+        // Project all points to the cube sides by transforming them into local
+        // space, such that the box is axis aligned again.
+        Mat3x3 rotation(_orientation);
+        Vec3 min, max;
+        min = max = rotation * _points[0];
+        for(uint32 i = 1; i < _numPoints; ++i)
+        {
+            Vec3 p = rotation * _points[i];
+            min = ei::min(min, p);
+            max = ei::max(max, p);
+        }
 
-		center = (min + max) * 0.5f;
-		sides = max - min;
-	}
+        // Center known with respect to local rotation, go back to world space.
+        center = transform((min + max) * 0.5f, conjugate(_orientation));
+        sides = max - min;
+    }
 
     // ********************************************************************* //
     FastFrustum::FastFrustum(const Frustum& _frustum)
