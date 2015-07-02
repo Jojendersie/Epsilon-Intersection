@@ -107,6 +107,12 @@ TQuaternion<T>::TQuaternion( const Matrix<T,3,3>& _m )
 }
 
 template<typename T>
+TQuaternion<T>::TQuaternion( const Vec<T,3>& _xAxis, const Vec<T,3>& _yAxis, const Vec<T,3>& _zAxis ) :
+    TQuaternion<T>(axis(_xAxis, _yAxis, _zAxis))
+{
+}
+
+template<typename T>
 TQuaternion<T>::TQuaternion( T _i, T _j, T _k, T _r ) :
     i(_i), j(_j), k(_k), r(_r)
 {

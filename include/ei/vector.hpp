@@ -463,6 +463,9 @@ namespace ei {
         ///     matrix contains scaling).
         TQuaternion( const Matrix<T,3,3>& _matrix );                           // TESTED
 
+        /// \brief Create from orthogonal basis vectors.
+        TQuaternion( const Vec<T,3>& _xAxis, const Vec<T,3>& _yAxis, const Vec<T,3>& _zAxis );
+
         /// \brief Create from TQuaternion coefficients
         TQuaternion( T _i, T _j, T _k, T _r );
 

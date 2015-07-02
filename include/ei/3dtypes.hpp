@@ -131,11 +131,19 @@ namespace ei {
         /// \brief Create an oriented box from a simple box
         explicit OBox( const Box& _box );
 
-		/// \brief Create an oriented box which contains a aabox
-		OBox( const Quaternion& _orientation, const Box& _box );
+        /// \brief Create an oriented box which contains a aabox
+        OBox( const Quaternion& _orientation, const Box& _box );
 
-		/// \brief Create an oriented box which contains a set of points
-		OBox( const Quaternion& _orientation, const Vec3* _points, uint32 _numPoints );
+        /// \brief Create an oriented box which contains a set of points
+        OBox( const Quaternion& _orientation, const Vec3* _points, uint32 _numPoints );
+
+        /// \brief Find the best oriented box by brute force.
+        /// \details Uses O(n^4) brute force algorithm. The exact runtime is
+        ///     T(n * binomial(n,3)) = T((n^4 - 3n^3 + 2n^2)/6).
+        /// \param [in] _points The point set for which the box is searched.
+        /// \param [in] _numPoints Size of the point array.
+        /// \param [in] _tries Number of random tries for the orientation.
+        OBox( const Vec3* _points, uint32 _numPoints );
     };
 
     struct Tetrahedron

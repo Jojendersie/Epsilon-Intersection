@@ -228,6 +228,47 @@ namespace ei {
     }
 
     // ********************************************************************* //
+    OBox::OBox( const Vec3* _points, uint32 _numPoints )
+    {
+        if(_numPoints == 1)
+        {
+            sides = Vec3(0.0f);
+            center = *_points;
+            orientation = qidentity();
+        } else if(_numPoints == 2) {
+            Vec3 connection = _points[1] - _points[0];
+            sides = Vec3(len(connection), 0.0f, 0.0f);
+            orientation = Quaternion(connection/sides.x, Vec3(1.0f, 0.0f, 0.0f));
+            center = _points[0] + 0.5f * connection;
+        } else {
+            sides = Vec3(1e30f);
+            Quaternion testOrientation;
+            // Try each combination of three vertices to setup an orientation
+            for(uint32 i = 0; i < _numPoints-2; ++i)
+            {
+                for(uint32 j = i+1; j < _numPoints-1; ++j)
+                {
+                    Vec3 xAxis = normalize(_points[i] - _points[j]);
+                    for(uint32 k = j+1; k < _numPoints; ++k)
+                    {
+                        Vec3 yAxis = cross(xAxis, _points[i] - _points[k]);
+                        float l = len(yAxis);
+                        if( l < 1e-6f ) testOrientation = Quaternion(xAxis, Vec3(1.0f, 0.0f, 0.0f)); // Colinear points
+                        else {
+                            yAxis /= l;
+                            testOrientation = Quaternion(xAxis, yAxis, cross(xAxis, yAxis));
+                        }
+                        OBox currentFit(testOrientation, _points, _numPoints);
+                        // If the new box is better than the current copy it.
+                        if(prod(currentFit.sides) < prod(sides))
+                            *this = currentFit;
+                    }
+                }
+            }
+        }
+    }
+
+    // ********************************************************************* //
     FastFrustum::FastFrustum(const Frustum& _frustum)
     {
         // Initialization of planes is difficult in the list, so the const-cast

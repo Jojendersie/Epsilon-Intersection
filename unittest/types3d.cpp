@@ -151,6 +151,35 @@ bool test_3dtypes()
         TEST( all(box10.max == Vec3(0.0f, -0.1f, 0.2f)), "Bounding box max of tetrahedron wrong!" );
     }
 
+    // Test oriented bounding box
+    {
+        Vec3 poi0[] = {Vec3(0.0f), Vec3(1.0f), Vec3(2.0f), Vec3(0.5f), Vec3(3.5f), Vec3(4.0f)}; // Diagonal points
+        Vec3 poi1[] = {Vec3(-1.0f, 0.0f, -1.0f), Vec3(1.0f, 0.0f, -1.0f), Vec3(-1.0f, 0.0f, 1.0f), Vec3(1.0f, 0.0f, 1.0f), Vec3(0.0f, 1.0f, 0.0f), Vec3(0.0f, -1.0f, 0.0f)}; // Random points
+        std::vector<Vec3> poi2;
+        Mat3x3 rot = rotation(1.0f, 0.3f, -2.0f);
+        Box box0(Vec3(0.0f), Vec3(0.0f)); // Create a non rotated optimal box to check later
+        for( int i = 0; i < 20; ++i )
+        {
+            Vec3 newPoi;
+            random(newPoi);
+            box0.min = min(box0.min, newPoi);
+            box0.max = max(box0.max, newPoi);
+            poi2.push_back(rot * newPoi);
+        }
+        OBox obo0( poi0, 6 );
+        OBox obo1( poi1, 6 );
+        OBox obo2( poi2.data(), 20 );
+        OBox obo3( poi0+2, 1 );
+        OBox obo4( poi1, 2 );
+        OBox obo5( poi0, 3 );
+        TEST( approx(volume(obo0), 0.0f), "Oriented box 0 not optimal!" );
+        TEST( approx(volume(obo1), 4.0f), "Oriented box 1 not optimal!" );
+        TEST( volume(obo2) <= volume(box0), "Oriented box 2 not optimal!" );
+        TEST( all(obo3.sides == Vec3(0.0f)), "Oriented box 3 not as expected!" );
+        TEST( approx(obo4.sides.x, 2.0f), "Oriented box 4 not as expected!" );
+        TEST( approx(sum(obo5.sides), 2.0f*sqrt(3.0f), 1e6f), "Oriented box 5 not as expected!" );
+    }
+
     // ********************************************************************* //
     // Test distance()
     {
