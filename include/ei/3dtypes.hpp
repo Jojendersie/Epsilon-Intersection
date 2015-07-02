@@ -4,7 +4,7 @@
 
 namespace ei {
 
-    // Predeclarations for all types to enable conversion operators.
+    // Declarations for all types to enable conversion operators.
     struct Sphere;
     struct Plane;
     struct DOP;
@@ -143,7 +143,7 @@ namespace ei {
         /// \param [in] _points The point set for which the box is searched.
         /// \param [in] _numPoints Size of the point array.
         /// \param [in] _tries Number of random tries for the orientation.
-        OBox( const Vec3* _points, uint32 _numPoints );
+        OBox( const Vec3* _points, uint32 _numPoints );                        // TESTED
     };
 
     struct Tetrahedron
@@ -182,7 +182,7 @@ namespace ei {
         Triangle(const Vec3& _v0, const Vec3& _v1, const Vec3& _v2);
     };
 
-    /// \brief A 2D cicular element in 3D space
+    /// \brief A 2D circular element in 3D space
     struct Disc
     {
         Vec3 center;        ///< Center/Position of the disc
@@ -244,7 +244,7 @@ namespace ei {
         DOP(const Vec3& _normal, const Vec3& _support0, const Vec3& _support1);
     };
 
-    /// \brief An axis alignd ellipsoid.
+    /// \brief An axis aligned ellipsoid.
     struct Ellipsoid
     {
         Vec3 center;
@@ -262,11 +262,33 @@ namespace ei {
         explicit Ellipsoid(const Box& _box);                                   // TESTED
     };
 
+    /// \brief An oriented ellipsoid.
+    struct OEllipsoid
+    {
+        Vec3 center;
+        Vec3 radii;         ///< 3 radii greater 0
+        Quaternion orientation;
+
+        /// \brief Create uninitialized Ellipsoid.
+        OEllipsoid() {}
+
+        /// \brief Create an Ellipsoid from parametrization.
+        /// \param [in] _radii The scaling radii. If a radius is <= 1e-30f the
+        ///     constructor replaces it with 1e-30f for reasons of stability.
+        OEllipsoid(const Vec3& _center, const Vec3& _radii, const Quaternion& _orientation);
+
+        /// \brief Create bounding Ellipsoid from axis aligned box.
+        explicit OEllipsoid(const Box& _box);
+
+        /// \brief Create bounding Ellipsoid from oriented box.
+        explicit OEllipsoid(const OBox& _box);
+    };
+
     /// \brief A ray starts in one point and extends to infinity
     struct Ray
     {
         Vec3 origin;        ///< Origin of the ray
-        Vec3 direction;     ///< Normlized direction vector
+        Vec3 direction;     ///< Normalized direction vector
 
         /// \brief Create uninitialized Ray.
         Ray() {}

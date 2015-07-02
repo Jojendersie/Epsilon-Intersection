@@ -7,13 +7,14 @@ namespace ei
     /// \brief Get the volume of any object.
     float volume(const Sphere& _sphere);                                       // TESTED
     float volume(const Box& _box);                                             // TESTED
-    float volume(const OBox& _obox);
-    float volume(const Tetrahedron& _thetrahedron);                           // TESTED
+    float volume(const OBox& _obox);                                           // TESTED
+    float volume(const Tetrahedron& _thetrahedron);                            // TESTED
     float volume(const Triangle& _triangle);                                   // TESTED
     float volume(const Disc& _disc);                                           // TESTED
     float volume(const Plane& _plane);                                         // TESTED
     float volume(const DOP& _dop);                                             // TESTED
     float volume(const Ellipsoid& _ellipsoid);                                 // TESTED
+    float volume(const OEllipsoid& _oellipsoid);                               // TESTED
     float volume(const Ray& _ray);                                             // TESTED
     float volume(const Segment& _line);                                        // TESTED
     float volume(const Capsule& _capsule);                                     // TESTED
@@ -22,13 +23,14 @@ namespace ei
     /// \brief Get the surface area of any object.
     float surface(const Sphere& _sphere);                                      // TESTED
     float surface(const Box& _box);                                            // TESTED
-    float surface(const OBox& _obox);
-    float surface(const Tetrahedron& _thetrahedron);                          // TESTED
+    float surface(const OBox& _obox);                                          // TESTED
+    float surface(const Tetrahedron& _thetrahedron);                           // TESTED
     float surface(const Triangle& _triangle);                                  // TESTED
     float surface(const Disc& _disc);                                          // TESTED
     float surface(const Plane& _plane);                                        // TESTED
     float surface(const DOP& _dop);                                            // TESTED
     float surface(const Ellipsoid& _ellipsoid);                                // TESTED
+    float surface(const OEllipsoid& _oellipsoid);                              // TESTED
     float surface(const Ray& _ray);                                            // TESTED
     float surface(const Segment& _line);                                       // TESTED
     float surface(const Capsule& _capsule);                                    // TESTED

@@ -192,6 +192,37 @@ inline Ellipsoid::Ellipsoid(const Box& _box)
     radii = max(radii, Vec3(1e-16f));
 }
 
+// ************************************************************************* //
+inline OEllipsoid::OEllipsoid(const Vec3& _center, const Vec3& _radii, const Quaternion& _orientation) :
+    center(_center),
+    radii(_radii),
+    orientation(_orientation)
+{
+}
+
+inline OEllipsoid::OEllipsoid(const Box& _box)
+{
+    eiAssert( all(_box.max >= _box.min), "Invalid box." );
+    center = (_box.max + _box.min) * 0.5f;
+    /// sqrt(n) * side length / 2, where n is the number of dimensions with
+    /// an extension (side length 0 allows to generate ellipses or rays)
+    Vec3 sideLen = _box.max - _box.min;
+    radii = (sqrt((float)sum(sideLen != 0.0f)) * 0.5f) * sideLen;
+    radii = max(radii, Vec3(1e-16f));
+    orientation = qidentity();
+}
+
+inline OEllipsoid::OEllipsoid(const OBox& _box)
+{
+    eiAssert( all(_box.sides >= 0.0f), "Invalid box." );
+    center = _box.center;
+    /// sqrt(n) * side length / 2, where n is the number of dimensions with
+    /// an extension (side length 0 allows to generate ellipses or rays)
+    radii = (sqrt((float)sum(_box.sides != 0.0f)) * 0.5f) * _box.sides;
+    radii = max(radii, Vec3(1e-16f));
+    orientation = _box.orientation;
+}
+
 
 // ************************************************************************* //
 inline Ray::Ray(const Vec3& _origin, const Vec3& _direction) :

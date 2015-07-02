@@ -23,6 +23,7 @@ bool test_3dtypes()
         Plane pla( Vec3(1.0f, 0.0f, 0.0f), Vec3(1.0f, 1.0f, 0.0f) );
         DOP dop( Vec3(1.0f, 0.0f, 0.0f), -0.5f, 1.5f );
         Ellipsoid ell( Vec3(-1.0f, -0.5f, -0.5f), Vec3(1.5f, 0.75f, 0.75f) );
+        OEllipsoid oel( Vec3(-1.0f, -0.5f, -0.5f), Vec3(1.5f, 0.75f, 0.75f), Quaternion(0.235f, -2.352f, 1.43f));
         Ray ray( Vec3(0.0f), Vec3(1.0f, 0.0f, 0.0f) );
         Segment seg( Vec3(0.0f), Vec3(2.0f, 0.0f, 0.0f) );
         Capsule cap( Vec3(0.0f), Vec3(0.0f, 1.0f, 0.0f), 0.5f );
@@ -38,6 +39,7 @@ bool test_3dtypes()
         TEST( volume(pla) == 0.0f, "Volume of a plane wrong!" );
         TEST( volume(dop) == 0.0f, "Volume of a DOP wrong!" );
         TEST( volume(ell) == 3.53429174f, "Volume of an ellipsoid wrong!" );
+        TEST( volume(oel) == 3.53429174f, "Volume of ar oriented ellipsoid wrong!" );
         TEST( volume(ray) == 0.0f, "Volume of a ray wrong!" );
         TEST( volume(seg) == 0.0f, "Volume of a segment wrong!" );
         TEST( volume(cap) == 1.30899704f, "Volume of a capsule wrong!" );
@@ -53,7 +55,8 @@ bool test_3dtypes()
         TEST( surface(dis) == PI, "Surface of a disc wrong!" );
         TEST( surface(pla) == std::numeric_limits<float>::infinity(), "Surface of a plane wrong!" );
         TEST( surface(dop) == std::numeric_limits<float>::infinity(), "Surface of a DOP wrong!" );
-        TEST( abs(surface(ell) / 12.0816f - 1.0f) < 0.012f, "Surface approximation of an ellipsoid too far away!" );
+        TEST( approx(surface(ell), 12.0816f, 0.012f), "Surface approximation of an ellipsoid too far away!" );
+        TEST( approx(surface(oel), 12.0816f, 0.012f), "Surface approximation of an oriented ellipsoid too far away!" );
         TEST( surface(ray) == 0.0f, "Surface of a ray wrong!" );
         TEST( surface(seg) == 0.0f, "Surface of a segment wrong!" );
         TEST( surface(cap) == 6.283185307f, "Surface of a capsule wrong!" );
