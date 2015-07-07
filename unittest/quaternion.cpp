@@ -36,6 +36,10 @@ bool test_quaternion()
     TEST( approx(len(q0), 1.0f), "Quaternion len after normalization invalid" );
     Quaternion q2 = conjugate(q0);
     TEST( q0.r == q2.r && q0.i == -q2.i && q0.j == -q2.j && q0.k == -q2.k, "Conjugated quaternion wrong!" );
+    q2 = ~q0;
+    TEST( q0.r == q2.r && q0.i == -q2.i && q0.j == -q2.j && q0.k == -q2.k, "Conjugated quaternion wrong!" );
+    q2 = -q0;
+    TEST( q0.r == -q2.r && q0.i == -q2.i && q0.j == -q2.j && q0.k == -q2.k, "Unary quaternion minus wrong!" );
     TEST( q0*qidentity() == q0, "Quaternion identity (rhs) wrong!" );
     TEST( qidentity()*q0 == q0, "Quaternion identity (lhs) wrong!" );
 

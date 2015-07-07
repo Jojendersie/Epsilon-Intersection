@@ -503,6 +503,11 @@ namespace ei {
         TQuaternion operator+ (TQuaternion _q1) const { return _q1 += *this; }
         TQuaternion operator- (TQuaternion _q1) const { return _q1 -= *this; }
 
+        /// \brief Negate all components, the represented rotation is the same
+        TQuaternion operator- () const;                                        // TESTED
+        /// \brief Conjugate the quaternion
+        TQuaternion operator~ () const;                                        // TESTED
+
         union {
             struct {T i, j, k, r;};         ///< Elements of 4D complex number
             T z[4];                         ///< Array access, index 3 is the real part

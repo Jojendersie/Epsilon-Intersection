@@ -117,13 +117,13 @@ TQuaternion<T>::TQuaternion( T _i, T _j, T _k, T _r ) :
     i(_i), j(_j), k(_k), r(_r)
 {
     // Assert additional normalization condition
-    if( r < static_cast<T>(0) )
+    /*if( r < static_cast<T>(0) )
     {
         i = -i;
         j = -j;
         k = -k;
         r = -r;
-    }
+    }*/
 }
 
 // ************************************************************************* //
@@ -226,6 +226,20 @@ TQuaternion<T>& TQuaternion<T>::operator-= (const TQuaternion<T>& _q1)
 {
     i-=_q1.i; j-=_q1.j; k-=_q1.k; r-=_q1.r;
     return *this;
+}
+
+// ************************************************************************* //
+template<typename T>
+TQuaternion<T> TQuaternion<T>::operator- () const
+{
+    return TQuaternion<T>(-i, -j, -k, -r);
+}
+
+// ************************************************************************* //
+template<typename T>
+TQuaternion<T> TQuaternion<T>::operator~ () const
+{
+    return TQuaternion<T>(-i, -j, -k, r);
 }
 
 
