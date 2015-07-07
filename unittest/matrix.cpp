@@ -632,6 +632,17 @@ bool test_matrix()
         TEST( approx(lensq(cross(m0(0), m0(2))), 1.0f), "x and z are not orthogonal!" );
         TEST( approx(lensq(cross(m0(2), m0(1))), 1.0f), "y and z are not orthogonal!" );
         TEST( !orthonormalize(m1), "m0 is linear dependent (orthonormalization should fail)!" );
+
+        Vec3 v0(1.0f, 0.0f, 2.0f);
+        Vec3 v1(1.0f, 0.5f, 0.0f);
+        Vec3 v2(0.0f, 2.0f, -2.0f);
+        orthonormalize(v0, v1, v2);
+        TEST( approx(lensq(v0), 1.0f), "Non normalized vector v0 after orthonormalization!" );
+        TEST( approx(lensq(v1), 1.0f), "Non normalized vector v1 after orthonormalization!" );
+        TEST( approx(lensq(v2), 1.0f), "Non normalized vector v2 after orthonormalization!" );
+        TEST( approx(lensq(cross(v0, v1)), 1.0f), "v0 and v1 are not orthogonal!" );
+        TEST( approx(lensq(cross(v0, v2)), 1.0f), "v0 and v2 are not orthogonal!" );
+        TEST( approx(lensq(cross(v2, v1)), 1.0f), "v1 and v2 are not orthogonal!" );
     }
 
     return result;

@@ -869,6 +869,9 @@ namespace ei {
     ///     can be orthogonalized.
     template<typename T, unsigned M, unsigned N>
     bool orthonormalize(Matrix<T,M,N>& _mat0);                                 // TESTED
+    /// \brief Gram-Schmidt orthonormalization for a list of vectors.
+    template<typename TVec0, typename... TVecs>
+    bool orthonormalize(TVec0& _vec0, TVecs&... _vecs);                        // TESTED
 
 
     // ********************************************************************* //

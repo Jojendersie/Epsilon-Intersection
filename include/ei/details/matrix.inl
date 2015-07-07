@@ -1231,6 +1231,42 @@ bool orthonormalize(Matrix<T,M,N>& _mat0)
     return true;
 }
 
+/*template<typename TVec0>
+bool orthonormalize(TVec0& _vec0)
+{
+    float norm = len(_vec0);
+    if(norm <= 1e-20f) return false;
+    _vec0 /= norm;
+    return true;
+}*/
+
+} namespace details {
+    // Recursion end
+    template<typename TVec0>
+    void removeProjectedPart(const TVec0& _vec0)
+    {
+    }
+    template<typename TVec0, typename TVec1, typename... TVecs>
+    void removeProjectedPart(const TVec0& _vec0, TVec1& _vec1, TVecs&... _vecs)
+    {
+        _vec1 -= dot(_vec0, _vec1) * _vec0;
+        removeProjectedPart(_vec0, _vecs...);
+    }
+} namespace ei {
+
+template<typename TVec0, typename... TVecs>
+bool orthonormalize(TVec0& _vec0, TVecs&... _vecs)
+{
+    float norm = len(_vec0);
+    if(norm <= 1e-20f) return false;
+    _vec0 /= norm;
+
+    // Remove current vector from all following
+    details::removeProjectedPart(_vec0, _vecs...);
+    // continue with the next vector as reference
+    return orthonormalize(_vecs...);
+}
+
 
 // ************************************************************************* //
 //                              TRANSFORMATIONS                              //
