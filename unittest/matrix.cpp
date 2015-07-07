@@ -619,5 +619,20 @@ bool test_matrix()
         TEST( approx(determinant(m7), 24.0f, 4.0e-6f), "Determinant of m7 wrong!" );
     }
 
+    // Test orthonarmalization
+    {
+        Mat3x3 m0(6.0f, 1.0f, 1.0f, 4.0f, -2.0f, 5.0f, 2.0f, 8.0f, 7.0f);
+        Mat3x3 m1(1.0f, 0.5f, 0.5f, 0.0f, 2.0f, 2.0f, 0.0f, 0.0f, 0.0f);
+        TEST( orthonormalize(m0), "m0 is not linear dependent (orthonormalization should succeed)!" );
+        m0 = transpose(m0);
+        TEST( approx(lensq(m0(0)), 1.0f), "Non normalized vector x in orthonormalized base!" );
+        TEST( approx(lensq(m0(1)), 1.0f), "Non normalized vector y in orthonormalized base!" );
+        TEST( approx(lensq(m0(2)), 1.0f), "Non normalized vector z in orthonormalized base!" );
+        TEST( approx(lensq(cross(m0(0), m0(1))), 1.0f), "x and y are not orthogonal!" );
+        TEST( approx(lensq(cross(m0(0), m0(2))), 1.0f), "x and z are not orthogonal!" );
+        TEST( approx(lensq(cross(m0(2), m0(1))), 1.0f), "y and z are not orthogonal!" );
+        TEST( !orthonormalize(m1), "m0 is linear dependent (orthonormalization should fail)!" );
+    }
+
     return result;
 }

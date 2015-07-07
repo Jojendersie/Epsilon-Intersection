@@ -861,7 +861,14 @@ namespace ei {
     T determinant(const Matrix<T,N,N>& _A);                                    // TESTED
 
     // ********************************************************************* //
-    // TODO orthonormalize()
+    /// \brief Gram-Schmidt orthonormalization for matrices with M >= N.
+    /// \details This method assumes a column space where each column is one
+    ///     vector.
+    ///     The method operates a stabilized Gram-Schmidt inplace.
+    /// \returns false if some columns are linear dependent and not all vectors
+    ///     can be orthogonalized.
+    template<typename T, unsigned M, unsigned N>
+    bool orthonormalize(Matrix<T,M,N>& _mat0);                                 // TESTED
 
 
     // ********************************************************************* //
@@ -1055,8 +1062,6 @@ namespace ei {
     /// \details This method creates an left-hand system (LHS) with positive
     ///    z-axis.
     Mat4x4 camera( const Vec3& _position, const Vec3& _target, const Vec3& _up = Vec3(0.0f, 1.0f, 0.0f));
-
-    // TODO: orthonormalize()
 
     // ********************************************************************* //
     /// \brief Create OpenGL perspective projection matrix from 6 sides.

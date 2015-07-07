@@ -1197,6 +1197,40 @@ T determinant(const Matrix<T,N,N>& _A)
     return static_cast<T>(0);
 }
 
+// ************************************************************************* //
+template<typename T, unsigned M, unsigned N>
+bool orthonormalize(Matrix<T,M,N>& _mat0)
+{
+    static_assert( M >= N, "Number of vectors N must be smaller than their dimension to be orthogonal." );
+
+    // For each column
+    for(uint x = 0; x < N; ++x)
+    {
+        // Normalize column
+        float norm = sq(_mat0(0,x));
+        for(uint y = 1; y < M; ++y)
+            norm += sq(_mat0(y,x));
+        if(norm <= 1e-20f) return false;
+        norm = sqrt(norm);
+        for(uint y = 0; y < M; ++y)
+            _mat0(y,x) /= norm;
+
+        // Remove current direction from all following vectors.
+        for(uint j = x+1; j < N; ++j)
+        {
+            // Dot product for projection
+            float projScale = _mat0(0,j) * _mat0(0,x);
+            for(uint y = 1; y < M; ++y)
+                projScale += _mat0(y,j) * _mat0(y,x);
+            // Projection and subtraction in one step.
+            for(uint y = 0; y < M; ++y)
+                _mat0(y,j) -= projScale * _mat0(y,x);
+        }
+    }
+
+    return true;
+}
+
 
 // ************************************************************************* //
 //                              TRANSFORMATIONS                              //
