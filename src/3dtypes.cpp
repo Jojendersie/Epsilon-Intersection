@@ -193,14 +193,14 @@ namespace ei {
         // point to find the side length.
         Vec3 bmin = _box.min - center;
         Vec3 bmax = _box.max - center;
-        sides = rotation * bmin;
-        sides = max(sides, rotation * Vec3(bmin.x, bmin.y, bmax.z));
-        sides = max(sides, rotation * Vec3(bmin.x, bmax.y, bmin.z));
-        sides = max(sides, rotation * Vec3(bmin.x, bmax.y, bmax.z));
-        sides = max(sides, rotation * Vec3(bmax.x, bmin.y, bmin.z));
-        sides = max(sides, rotation * Vec3(bmax.x, bmin.y, bmax.z));
-        sides = max(sides, rotation * Vec3(bmax.x, bmax.y, bmin.z));
-        sides = max(sides, rotation * bmax);
+        sides = abs(rotation * bmin);
+        sides = max(sides, abs(rotation * Vec3(bmin.x, bmin.y, bmax.z)));
+        sides = max(sides, abs(rotation * Vec3(bmin.x, bmax.y, bmin.z)));
+        sides = max(sides, abs(rotation * Vec3(bmin.x, bmax.y, bmax.z)));
+        //sides = max(sides, abs(rotation * Vec3(bmax.x, bmin.y, bmin.z))); // == -(max, min, min)
+        //sides = max(sides, abs(rotation * Vec3(bmax.x, bmin.y, bmax.z))); // == -(max, min, max)
+        //sides = max(sides, abs(rotation * Vec3(bmax.x, bmax.y, bmin.z))); // == -(min, min, max)
+        //sides = max(sides, abs(rotation * bmax)); // == -bmin
         sides *= 2.0f;
     }
 

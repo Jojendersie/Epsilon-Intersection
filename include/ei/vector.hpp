@@ -1097,7 +1097,9 @@ namespace ei {
     /// \brief Create OpenGL orthographic matrix from 6 sides.
     /// \details Assumes an LHS coordinate system.
     ///
-    ///    The OpenGL frustum is defined in the [-1,-1,-1] x [1,1,1] cube.
+    ///    The OpenGL frustum is defined in the [-1,-1,1] x [1,1,-1] cube.
+    ///    Keep in mind, that near > far because the GL-view direction is
+    ///    along the negative z-axis.
     /// \param [in] _l Left plane x-coordinate (at near plane)
     /// \param [in] _r Right plane x-coordinate (at near plane)
     /// \param [in] _b Bottom plane y-coordinate (at near plane)
