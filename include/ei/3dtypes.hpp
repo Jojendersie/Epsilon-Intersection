@@ -133,6 +133,7 @@ namespace ei {
 
         /// \brief Create an oriented box which contains a aabox
         OBox( const Quaternion& _orientation, const Box& _box );
+        OBox( const Mat3x3& _orientation, const Box& _box );
 
         /// \brief Create an oriented box which contains a set of points
         OBox( const Quaternion& _orientation, const Vec3* _points, uint32 _numPoints );

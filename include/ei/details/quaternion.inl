@@ -61,6 +61,9 @@ TQuaternion<T>::TQuaternion( const Matrix<T,3,3>& _m )
 {
     // Ignore de-orthogonalization
 
+    // Check handness
+    eiAssert(dot(cross(_m(0), _m(1)), _m(2)) > 0.0f, "Quaternions cannot handle reflections. The matrix must be RHS.");
+
     // Build TQuaternion<T> from rotation matrix
     // Src: http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/
     T trace = _m.m00 + _m.m11 + _m.m22;

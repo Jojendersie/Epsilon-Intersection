@@ -192,15 +192,27 @@ namespace ei {
         // Since we already know the center we only need to track one extremal
         // point to find the side length.
         Vec3 bmin = _box.min - center;
-        Vec3 bmax = _box.max - center;
         sides = abs(rotation * bmin);
-        sides = max(sides, abs(rotation * Vec3(bmin.x, bmin.y, bmax.z)));
-        sides = max(sides, abs(rotation * Vec3(bmin.x, bmax.y, bmin.z)));
-        sides = max(sides, abs(rotation * Vec3(bmin.x, bmax.y, bmax.z)));
-        //sides = max(sides, abs(rotation * Vec3(bmax.x, bmin.y, bmin.z))); // == -(max, min, min)
-        //sides = max(sides, abs(rotation * Vec3(bmax.x, bmin.y, bmax.z))); // == -(max, min, max)
-        //sides = max(sides, abs(rotation * Vec3(bmax.x, bmax.y, bmin.z))); // == -(min, min, max)
-        //sides = max(sides, abs(rotation * bmax)); // == -bmin
+        sides = max(sides, abs(rotation * Vec3(bmin.x,  bmin.y, -bmin.z)));
+        sides = max(sides, abs(rotation * Vec3(bmin.x, -bmin.y,  bmin.z)));
+        sides = max(sides, abs(rotation * Vec3(bmin.x, -bmin.y, -bmin.z)));
+        sides *= 2.0f;
+    }
+
+    // ********************************************************************* //
+    OBox::OBox( const Mat3x3& _orientation, const Box& _box ) :
+        center((_box.min + _box.max) * 0.5f),
+        orientation(_orientation)
+    {
+        // Project corner points to the cube sides by transforming them into
+        // local space, such that the box is axis aligned again.
+        // Since we already know the center we only need to track one extremal
+        // point to find the side length.
+        Vec3 bmin = _box.min - center;
+        sides = abs(_orientation * bmin);
+        sides = max(sides, abs(_orientation * Vec3(bmin.x,  bmin.y, -bmin.z)));
+        sides = max(sides, abs(_orientation * Vec3(bmin.x, -bmin.y,  bmin.z)));
+        sides = max(sides, abs(_orientation * Vec3(bmin.x, -bmin.y, -bmin.z)));
         sides *= 2.0f;
     }
 
