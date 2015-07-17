@@ -462,6 +462,7 @@ Matrix<RESULT_TYPE(/), 1, N> operator/ (const Matrix<T,1,N>& _mat0, const Matrix
 CODE_GEN_MAT_MAT_OP(|)
 CODE_GEN_MAT_MAT_OP(&)
 CODE_GEN_MAT_MAT_OP(^)
+CODE_GEN_MAT_MAT_OP(%)
 
 // ************************************************************************* //
 template<typename T, uint M, uint N>
@@ -474,24 +475,19 @@ Matrix<T, M, N> Matrix<T, M, N>::operator~ () const
 }
 
 // ************************************************************************* //
-// putting the implementation here causes error C2244 in visual studio.
-template<typename T, uint M, uint N>
-template<typename T1>
-Matrix<T, M, N>& Matrix<T, M, N>::operator+= (const Matrix<T1,M,N>& _mat1)
-{
-    for(uint i = 0; i < N * M; ++i)
-        (*this)[i] += _mat1[i];
-    return *this;
-}
+#define CODE_GEN_MAT_MAT_SEFL_OP(op)                    \
+template<typename T, uint M, uint N>                    \
+template<typename T1>                                   \
+Matrix<T, M, N>& Matrix<T, M, N>::operator op (const Matrix<T1,M,N>& _mat1) \
+{                                                       \
+    for(uint i = 0; i < N * M; ++i)                     \
+        (*this)[i] op _mat1[i];                         \
+    return *this;                                       \
+}                                                       \
 
-template<typename T, uint M, uint N>
-template<typename T1>
-Matrix<T, M, N>& Matrix<T, M, N>::operator-= (const Matrix<T1,M,N>& _mat1)
-{
-    for(uint i = 0; i < N * M; ++i)
-        (*this)[i] -= _mat1[i];
-    return *this;
-}
+// ************************************************************************* //
+CODE_GEN_MAT_MAT_SEFL_OP(+=)
+CODE_GEN_MAT_MAT_SEFL_OP(-=)
 
 // ************************************************************************* //
 template<typename T, uint M, uint N>
@@ -543,44 +539,32 @@ Matrix<T, 1, N>& Matrix<T, M, N>::operator/= (const Matrix<T1,1,N>& _mat1)
 }
 
 // ************************************************************************* //
-template<typename T, uint M, uint N>
-template<typename T1>
-Matrix<T, M, N>& Matrix<T, M, N>::operator+= (T1 _s)
-{
-    for(uint i = 0; i < N * M; ++i)
-        (*this)[i] += _s;
-    return *this;
+CODE_GEN_MAT_MAT_SEFL_OP(|=)
+CODE_GEN_MAT_MAT_SEFL_OP(&=)
+CODE_GEN_MAT_MAT_SEFL_OP(^=)
+CODE_GEN_MAT_MAT_SEFL_OP(%=)
+
+// ************************************************************************* //
+#define CODE_GEN_MAT_SCALAR_SEFL_OP(op)                 \
+template<typename T, uint M, uint N>                    \
+template<typename T1>                                   \
+Matrix<T, M, N>& Matrix<T, M, N>::operator op (T1 _s)   \
+{                                                       \
+    for(uint i = 0; i < N * M; ++i)                     \
+        (*this)[i] op _s;                               \
+    return *this;                                       \
 }
 
 // ************************************************************************* //
-template<typename T, uint M, uint N>
-template<typename T1>
-Matrix<T, M, N>& Matrix<T, M, N>::operator-= (T1 _s)
-{
-    for(uint i = 0; i < N * M; ++i)
-        (*this)[i] -= _s;
-    return *this;
-}
+CODE_GEN_MAT_SCALAR_SEFL_OP(+=)
+CODE_GEN_MAT_SCALAR_SEFL_OP(-=)
+CODE_GEN_MAT_SCALAR_SEFL_OP(*=)
+CODE_GEN_MAT_SCALAR_SEFL_OP(/=)
 
-// ************************************************************************* //
-template<typename T, uint M, uint N>
-template<typename T1>
-Matrix<T, M, N>& Matrix<T, M, N>::operator*= (T1 _s)
-{
-    for(uint i = 0; i < N * M; ++i)
-        (*this)[i] *= _s;
-    return *this;
-}
-
-// ************************************************************************* //
-template<typename T, uint M, uint N>
-template<typename T1>
-Matrix<T, M, N>& Matrix<T, M, N>::operator/= (T1 _s)
-{
-    for(uint i = 0; i < N * M; ++i)
-        (*this)[i] /= _s;
-    return *this;
-}
+CODE_GEN_MAT_SCALAR_SEFL_OP(|=)
+CODE_GEN_MAT_SCALAR_SEFL_OP(&=)
+CODE_GEN_MAT_SCALAR_SEFL_OP(^=)
+CODE_GEN_MAT_SCALAR_SEFL_OP(%=)
 
 // ************************************************************************* //
 template<typename T, uint M, uint N>
@@ -672,6 +656,7 @@ CODE_GEN_MAT_SCALAR_OP(/)
 CODE_GEN_MAT_SCALAR_OP(|)
 CODE_GEN_MAT_SCALAR_OP(&)
 CODE_GEN_MAT_SCALAR_OP(^)
+CODE_GEN_MAT_SCALAR_OP(%)
 
 // ********************************************************************* //
 #define CODE_GEN_MAT_SCALAR_RELATION(op)                                            \
@@ -704,6 +689,8 @@ CODE_GEN_MAT_SCALAR_RELATION(>)
 
 #undef CODE_GEN_MAT_SCALAR_OP
 #undef CODE_GEN_MAT_SCALAR_RELATION
+#undef CODE_GEN_MAT_MAT_SEFL_OP
+#undef CODE_GEN_MAT_SCALAR_SEFL_OP
 
 
 // ************************************************************************* //

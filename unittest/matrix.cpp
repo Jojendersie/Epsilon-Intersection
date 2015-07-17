@@ -178,7 +178,7 @@ bool test_matrix()
     }
 
     // ********************************************************************* //
-    // Test |, &, ^ and ~
+    // Test |, &, ^, % and ~
     {
         Matrix<int, 2, 2> m0(1, 2, 3, 4);
         Matrix<int, 2, 2> m1(5, 6, 7, 8);
@@ -186,9 +186,11 @@ bool test_matrix()
         Matrix<int, 2, 2> m3(1, 2, 3, 0);
         Matrix<int, 2, 2> m4(4, 4, 4, 12);
         Matrix<int, 2, 2> m5(0xfffffffe, 0xfffffffd, 0xfffffffc, 0xfffffffb);
+        Matrix<int, 2, 2> m6(1, 2, 3, 8);
         TEST( all((m0 | m1) == m2), "Component wise | failed!" );
         TEST( all((m0 & m1) == m3), "Component wise & failed!" );
         TEST( all((m0 ^ m1) == m4), "Component wise ^ failed!" );
+        TEST( all((m1 % m4) == m6), "Component wise % failed!" );
         TEST( all((~m0) == m5), "Component wise ~ failed!" );
         // Generates an error message (expected)
         //Matrix<float, 2, 2> m3(3.0f, 1.0f, 4.0f, 1.0f);
@@ -273,18 +275,22 @@ bool test_matrix()
     }
 
     // ********************************************************************* //
-    // Test scalar |, &, ^
+    // Test scalar |, &, ^, %
     {
         Matrix<int, 2, 2> m0(1, 2, 3, 4);
         Matrix<int, 2, 2> m1(5, 6, 7, 4);
         Matrix<int, 2, 2> m2(0, 0, 0, 4);
         Matrix<int, 2, 2> m3(5, 6, 7, 0);
+        Matrix<int, 2, 2> m4(1, 2, 0, 1);
+        Matrix<int, 2, 2> m5(0, 1, 0, 3);
         TEST( all((m0 | 4) == m1), "Component wise | failed!" );
         TEST( all((4 | m0) == m1), "Component wise | failed!" );
         TEST( all((m0 & 4) == m2), "Component wise & failed!" );
         TEST( all((4 & m0) == m2), "Component wise & failed!" );
         TEST( all((m0 ^ 4) == m3), "Component wise ^ failed!" );
         TEST( all((4 ^ m0) == m3), "Component wise ^ failed!" );
+        TEST( all((m0 % 3) == m4), "Component wise % failed!" );
+        TEST( all((3 % m0) == m5), "Component wise % failed!" );
         // Generates an error message (expected)
         //Matrix<float, 2, 2> m4(3.0f, 1.0f, 4.0f, 1.0f);
         //Matrix<float, 2, 2> m = m4 | 4.0f;
@@ -322,6 +328,31 @@ bool test_matrix()
         TEST( all((m3 -= 0.5f) == m4 - 0.5f), "Matrix-Scalar -= failed!");
         TEST( all((v1 *= 2.0f) == v2 / 0.5f), "Matrix-Scalar *= failed!");
         TEST( all((v1 /= 2.0f) == v2), "Matrix-Scalar /= failed!");
+    }
+
+    // ********************************************************************* //
+    // Test assignment operators |=, &=, ^=, %=
+    {
+        Matrix<int, 2, 2> m00(1, 2, 3, 4);
+        Matrix<int, 2, 2> m01(1, 2, 3, 4);
+        Matrix<int, 2, 2> m02(1, 2, 3, 4);
+        Matrix<int, 2, 2> m1(5, 6, 7, 8);
+        Matrix<int, 2, 2> m2(5, 6, 7, 12);
+        Matrix<int, 2, 2> m3(1, 2, 3, 0);
+        Matrix<int, 2, 2> m4(4, 4, 4, 12);
+        Matrix<int, 2, 2> m5(1, 2, 3, 8);
+        Matrix<int, 2, 2> m6(5, 7, 7, 13);
+        Matrix<int, 2, 2> m7(1, 0, 1, 0);
+        Matrix<int, 2, 2> m8(12, 12, 12, 4);
+        Matrix<int, 2, 2> m9(1, 2, 0, 2);
+        TEST( all((m00 |= m1) == m2), "Matrix self assigning |= failed!" );
+        TEST( all((m01 &= m1) == m3), "Matrix self assigning &= failed!" );
+        TEST( all((m02 ^= m1) == m4), "Matrix self assigning ^= failed!" );
+        TEST( all((m1 %= m4) == m5), "Matrix self assigning %= failed!" );
+        TEST( all((m2 |= 1) == m6), "Matrix-scalar self assigning |= failed!" );
+        TEST( all((m3 &= 1) == m7), "Matrix-scalar self assigning &= failed!" );
+        TEST( all((m4 ^= 8) == m8), "Matrix-scalar self assigning ^= failed!" );
+        TEST( all((m5 %= 3) == m9), "Matrix-scalar self assigning %= failed!" );
     }
 
     // ********************************************************************* //

@@ -191,6 +191,9 @@ namespace ei {
         Matrix<RESULT_TYPE(^), M, N> operator^ (const Matrix<T1,M,N>& _mat1) const; // TESTED
         /// \brief Component wise binary not.
         Matrix<T, M, N> operator~ () const;                                         // TESTED
+        /// \brief Component wise modulo (rest of integer division).
+        template<typename T1>
+        Matrix<RESULT_TYPE(%), M, N> operator% (const Matrix<T1,M,N>& _mat1) const; // TESTED
 
         /// \brief Self assigning component wise addition.
         template<typename T1>
@@ -212,6 +215,18 @@ namespace ei {
         Matrix<T, M, 1>& operator/= (const Matrix<T1,M,1>& _mat1);             // TESTED
         template<typename T1, ENABLE_IF(M == 1)>
         Matrix<T, 1, N>& operator/= (const Matrix<T1,1,N>& _mat1);             // TESTED
+        /// \brief Self assigning womponent wise binary or.
+        template<typename T1>
+        Matrix<T, M, N>& operator|= (const Matrix<T1,M,N>& _mat1);             // TESTED
+        /// \brief Self assigning womponent wise binary and.
+        template<typename T1>
+        Matrix<T, M, N>& operator&= (const Matrix<T1,M,N>& _mat1);             // TESTED
+        /// \brief Self assigning womponent wise binary xor.
+        template<typename T1>
+        Matrix<T, M, N>& operator^= (const Matrix<T1,M,N>& _mat1);             // TESTED
+        /// \brief Self assigning modulo (rest of integer division)
+        template<typename T1>
+        Matrix<T, M, N>& operator%= (const Matrix<T1,M,N>& _mat1);             // TESTED
 
         /// \brief Self assigning scalar addition.
         template<typename T1>
@@ -225,6 +240,18 @@ namespace ei {
         /// \brief Self assigning scalar division.
         template<typename T1>
         Matrix<T, M, N>& operator/= (T1 _s);                                   // TESTED
+        /// \brief Self assigning scalar or.
+        template<typename T1>
+        Matrix<T, M, N>& operator|= (T1 _s);                                   // TESTED
+        /// \brief Self assigning scalar and.
+        template<typename T1>
+        Matrix<T, M, N>& operator&= (T1 _s);                                   // TESTED
+        /// \brief Self assigning scalar xor.
+        template<typename T1>
+        Matrix<T, M, N>& operator^= (T1 _s);                                   // TESTED
+        /// \brief Self assigning scalar modulo (rest of integer division).
+        template<typename T1>
+        Matrix<T, M, N>& operator%= (T1 _s);                                   // TESTED
 
         /// \brief Compare component wise, if two matrices are identical.
         Matrix<bool,M,N> operator== (const Matrix<T,M,N>& _mat1) const;        // TESTED
@@ -300,6 +327,12 @@ namespace ei {
     /// \brief Binary xor of a scalar and all components.
     template<typename T1, typename T, uint M, uint N>
     Matrix<RESULT_TYPE(^), M, N> operator^ (T1 _s, const Matrix<T,M,N>& _mat); // TESTED
+    /// \brief Modulo of all components and a scalar.
+    template<typename T, uint M, uint N, typename T1>
+    Matrix<RESULT_TYPE(%), M, N> operator% (const Matrix<T,M,N>& _mat, T1 _s); // TESTED
+    /// \brief Modulo of a scalar and all components.
+    template<typename T1, typename T, uint M, uint N>
+    Matrix<RESULT_TYPE(%), M, N> operator% (T1 _s, const Matrix<T,M,N>& _mat); // TESTED
 
     /// \brief Test all components with respect to a scalar.
     template<typename T, uint M, uint N, typename T1>
