@@ -63,6 +63,19 @@ bool test_3dintersections()
         performance<Vec3,Sphere>(intersects, "intersects");
     }
 
+    // Test point <-> box intersection
+    {
+        Box box0( Vec3(-0.25f), Vec3(-0.01f) );
+        Vec3 poi0( 0.0f, 0.0f, 0.0f );
+        Vec3 poi1( -0.01f );
+        Vec3 poi2( -0.05f, -0.1f, -0.15f );
+        TEST( !intersects( poi0, box0 ), "poi0 outside box0!" );
+        TEST( intersects( poi1, box0 ), "poi1 touches box0!" );
+        TEST( intersects( poi2, box0 ), "poi2 inside box0!" );
+
+        performance<Vec3,Box>(intersects, "intersects");
+    }
+
     // Test sphere <-> box intersection
     {
         Sphere sph0( Vec3(0.0f, 1.0f, 0.0f), 1.0f );

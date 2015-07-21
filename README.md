@@ -57,6 +57,8 @@ Available Intersection Methods
 The following table gives an overview over the implemented intersection methods.
 The numbers are performance indices (relative numbers) and can be used to
 compare a method's realtive execution speed.
+Cells with a * are implemented but not measured.
+
 Benchmarkconfigs: i7-4510U, VS2013, /O2, Win32 and the same with an i7-4950S
 
                  | Box  | Cap. | Disc | DOP  | Ell. | Fru. | Line | OBox | OEl. | Pla. | Poi. | Ray  | Sph. | The. | Tri. |
@@ -66,13 +68,13 @@ Benchmarkconfigs: i7-4510U, VS2013, /O2, Win32 and the same with an i7-4950S
 **Disc**         |      |      |      | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
 **DOP**          |      |      |      |      | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
 **Ellipsoid**    |      |      |      |      |      | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
-**Frustum**      |      |      |      |      |      |      | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
+**Frustum**      | *    |      |      |      |      |      | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
 **Line**         |      |      |      |      |      |      |      | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
 **OBox**         |      |      |      |      |      |      |      |      | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
 **OEllipsoid**   |      |      |      |      |      |      |      |      |      | ---- | ---- | ---- | ---- | ---- | ---- |
 **Plane**        |      |      |      |      |      |      |      |      |      |      | ---- | ---- | ---- | ---- | ---- |
-**Point**        |      | 8.09 |      |      | 3.40 |      |      |      |      |      |      | ---- | ---- | ---- | ---- |
-**Ray**          | 15.3 |      |      |      | 11.2 |      |      |      |      |      |      |      | ---- | ---- | ---- |
+**Point**        | 6.03 | 8.09 |      |      | 3.40 | *    |      |      |      |      |      | ---- | ---- | ---- | ---- |
+**Ray**          | 15.3 |      |      |      | 11.2 | *    |      |      |      |      |      |      | ---- | ---- | ---- |
 **Sphere**       | 6.71 | 8.23 |      |      |      |      |      |      |      |      | 1.68 |      | 1.79 | ---- | ---- |
 **Thetrahedron** |      |      |      |      |      |      |      |      |      |      |      |      |      |      | ---- |
 **Triangle**     |      |      |      |      |      |      |      |      |      |      |      | 12.2 | 22.9 |      |      |
