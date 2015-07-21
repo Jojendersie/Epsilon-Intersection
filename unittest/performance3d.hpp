@@ -8,6 +8,7 @@
 // Functions to create reasonable random geometry in the [-1,1] cube
 template<class T> void random(T& _out)
 {
+    throw "Type not implemented!";
 }
 
 template<> inline void random<ε::Vec3>(ε::Vec3& _out)
@@ -51,6 +52,13 @@ template<> inline void random<ε::Triangle>(ε::Triangle& _out)
     _out.v2 = pos + ε::Vec3(rnd() * 0.5f - 0.25f, rnd() * 0.5f - 0.25f, rnd() * 0.5f - 0.25f);
 }
 
+template<> inline void random<ε::Capsule>(ε::Capsule& _out)
+{
+    _out.seg.a = ε::Vec3(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f);
+    _out.seg.b = ε::Vec3(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f);
+    _out.radius = ε::sq(rnd()) * 0.5f;
+}
+
 // Functions to assign names to types
 template<class T> const char* name() { return typeid(T).name(); }
 template<> inline const char* name<ε::Vec3>() { return "Point"; }
@@ -59,6 +67,7 @@ template<> inline const char* name<ε::Sphere>() { return "Sphere"; }
 template<> inline const char* name<ε::Ellipsoid>() { return "Ellipsoid"; }
 template<> inline const char* name<ε::Box>() { return "Box"; }
 template<> inline const char* name<ε::Triangle>() { return "Triangle"; }
+template<> inline const char* name<ε::Capsule>() { return "Capsule"; }
 
 // ************************************************************************* //
 //                          PERFORMANCE TESTING                              //
@@ -97,11 +106,11 @@ template<class P0, class P1, class R> void performance(R (*_func)(const P0&, con
         Vec3* source0 = reinterpret_cast<Vec3*>(geo0.data());
         Vec3* source1 = reinterpret_cast<Vec3*>(geo1.data());
         volatile float xres;
-        for(int j = 0; j < 10; ++j)
+        for(int j = 0; j < 8; ++j)
             for(int i = 0; i < TEST_PER_ITERATION; ++i)
-                 xres = dot(source0[i], source1[i]);
+                 xres = sum(cross(source0[i], source1[i]));
         uint64 c = ticks();
-        perfIndex += (b-a) * 10.0f / (c-b);
+        perfIndex += (b-a) * 8.0f / (c-b);
         totalTicks += b-a;
     }
     std::cerr << "Performance " << _funcName << '(' << name<P0>() << ", " << name<P1>() << "): "
@@ -139,11 +148,11 @@ template<class P0, class P1, class P2, class R> void performance(R (*_func)(cons
         Vec3* source0 = reinterpret_cast<Vec3*>(geo0.data());
         Vec3* source1 = reinterpret_cast<Vec3*>(geo1.data());
         volatile float xres;
-        for(int j = 0; j < 10; ++j)
+        for(int j = 0; j < 8; ++j)
             for(int i = 0; i < TEST_PER_ITERATION; ++i)
-                 xres = dot(source0[i], source1[i]);
+                 xres = sum(cross(source0[i], source1[i]));
         uint64 c = ticks();
-        perfIndex += (b-a) * 10.0f / (c-b);
+        perfIndex += (b-a) * 8.0f / (c-b);
         totalTicks += b-a;
     }
     std::cerr << "Performance " << _funcName << '(' << name<P0>() << ", " << name<P1>() << ", " << name<P2>() << "): "
