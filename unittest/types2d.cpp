@@ -1,4 +1,4 @@
-﻿#include "ei/2dfunctions.hpp"
+﻿#include "ei/2dtypes.hpp"
 #include "unittest.hpp"
 
 #include <iostream>

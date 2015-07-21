@@ -1,5 +1,4 @@
-﻿#include "ei/3dfunctions.hpp"
-#include "ei/3dintersection.hpp"
+﻿#include "ei/3dintersection.hpp"
 #include "unittest.hpp"
 #include "performance3d.hpp"
 

@@ -293,3 +293,211 @@ inline FastFrustum& FastFrustum::operator = (const FastFrustum& _frustum)
     const_cast<Plane&>(b) = _frustum.b;
     const_cast<Plane&>(t) = _frustum.t;
 }
+
+
+// ************************************************************************* //
+// VOLUME AND SURFACE METHODS
+// ************************************************************************* //
+
+inline float volume(const Sphere& _sphere)
+{
+    return 4.0f / 3.0f * PI * _sphere.radius * _sphere.radius * _sphere.radius;
+}
+
+inline float volume(const Box& _box)
+{
+    Vec3 size = _box.max - _box.min;
+    return size.x * size.y * size.z;
+}
+
+inline float volume(const OBox& _obox)
+{
+    return _obox.sides.x * _obox.sides.y * _obox.sides.z;
+}
+
+inline float volume(const Tetrahedron& _thetrahedron)
+{
+    return dot(_thetrahedron.v3-_thetrahedron.v0, cross(_thetrahedron.v2-_thetrahedron.v0, _thetrahedron.v1-_thetrahedron.v0)) / 6.0f;
+}
+
+inline float volume(const Triangle&)
+{
+    return 0.0f;
+}
+
+inline float volume(const Disc&)
+{
+    return 0.0f;
+}
+
+inline float volume(const Plane&)
+{
+    return 0.0f;
+}
+
+inline float volume(const DOP&)
+{
+    return 0.0f;
+}
+
+inline float volume(const Ellipsoid& _ellipsoid)
+{
+    return 4.0f / 3.0f * PI * _ellipsoid.radii.x * _ellipsoid.radii.y * _ellipsoid.radii.z;
+}
+
+inline float volume(const OEllipsoid& _oellipsoid)
+{
+    return 4.0f / 3.0f * PI * _oellipsoid.radii.x * _oellipsoid.radii.y * _oellipsoid.radii.z;
+}
+
+inline float volume(const Ray&)
+{
+    return 0.0f;
+}
+
+inline float volume(const Segment&)
+{
+    return 0.0f;
+}
+
+inline float volume(const Capsule& _capsule)
+{
+    return PI * sq(_capsule.radius) * (_capsule.radius*4.0f/3.0f + len(_capsule.seg.b-_capsule.seg.a));
+}
+
+// ************************************************************************* //
+inline float surface(const Sphere& _sphere)
+{
+    return 4.0f * PI * sq(_sphere.radius);
+}
+
+inline float surface(const Box& _box)
+{
+    Vec3 size = _box.max - _box.min;
+    return 2.0f * (size.x * size.y + size.x * size.z + size.y * size.z);
+}
+
+inline float surface(const OBox& _obox)
+{
+    return 2.0f * (_obox.sides.x * _obox.sides.y + _obox.sides.x * _obox.sides.z + _obox.sides.y * _obox.sides.z);
+}
+
+inline float surface(const Tetrahedron& _thetra)
+{
+    // Analogous to a triangle (repeated four times)
+    Vec3 a = _thetra.v1 - _thetra.v0;
+    Vec3 b = _thetra.v2 - _thetra.v0;
+    Vec3 c = _thetra.v3 - _thetra.v0;
+    Vec3 d = _thetra.v2 - _thetra.v1;
+    Vec3 e = _thetra.v3 - _thetra.v1;
+    return 0.5f * (len( cross(a, b) )
+                 + len( cross(a, c) )
+                 + len( cross(b, c) )
+                 + len( cross(d, e) ));
+}
+
+inline float surface(const Triangle& _triangle)
+{
+    // Heron's formula is much more expensive than cross product because
+    // the 3 side lengths must be computed first.
+    return len( cross(_triangle.v1 - _triangle.v0, _triangle.v2 - _triangle.v0) ) * 0.5f;
+}
+
+inline float surface(const Disc& _disc)
+{
+    return PI * _disc.radius;
+}
+
+inline float surface(const Plane&)
+{
+    return INF;
+}
+
+inline float surface(const DOP&)
+{
+    return INF;
+}
+
+inline float surface(const Ellipsoid& _ellipsoid)
+{
+    // Use approximation (Knud Thomsen's formula) only! Everything else is a
+    // lot larger.
+    Vec3 pr( pow(_ellipsoid.radii.x, 1.6075f),
+             pow(_ellipsoid.radii.y, 1.6075f),
+             pow(_ellipsoid.radii.z, 1.6075f) );
+    return 4.0f * PI * pow((pr.x * pr.y + pr.x * pr.z + pr.y * pr.z) / 3.0f, 0.622083981f);
+}
+
+inline float surface(const OEllipsoid& _oellipsoid)
+{
+    // Use approximation (Knud Thomsen's formula) only! Everything else is a
+    // lot larger.
+    Vec3 pr( pow(_oellipsoid.radii.x, 1.6075f),
+             pow(_oellipsoid.radii.y, 1.6075f),
+             pow(_oellipsoid.radii.z, 1.6075f) );
+    return 4.0f * PI * pow((pr.x * pr.y + pr.x * pr.z + pr.y * pr.z) / 3.0f, 0.622083981f);
+}
+
+inline float surface(const Ray&)
+{
+    return 0.0f;
+}
+
+inline float surface(const Segment&)
+{
+    return 0.0f;
+}
+
+inline float surface(const Capsule& _capsule)
+{
+    return 2 * PI * _capsule.radius * (2 * _capsule.radius + len(_capsule.seg.b-_capsule.seg.a));
+}
+
+
+// ************************************************************************* //
+// CENTER METHODS
+// ************************************************************************* //
+inline Vec3 center(const Sphere& _sphere)
+{
+    return _sphere.center;
+}
+
+inline Vec3 center(const Box& _box)
+{
+    return (_box.min + _box.max) * 0.5f;
+}
+
+inline Vec3 center(const OBox& _obox)
+{
+    return _obox.center;
+}
+
+inline Vec3 center(const Tetrahedron& _thetrahedron)
+{
+    return (_thetrahedron.v0 + _thetrahedron.v1 + _thetrahedron.v2 + _thetrahedron.v3) / 4.0f;
+}
+
+inline Vec3 center(const Triangle& _triangle)
+{
+    return (_triangle.v0 + _triangle.v1 + _triangle.v2) / 3.0f;
+}
+
+inline Vec3 center(const Disc& _disc)
+{
+    return _disc.center;
+}
+
+inline Vec3 center(const Ellipsoid& _ellipsoid)
+{
+    return _ellipsoid.center;
+}
+
+inline Vec3 center(const Segment& _line)
+{
+    return (_line.a + _line.b) * 0.5f;
+}
+
+inline Vec3 center(const Capsule& _capsule)
+{
+    return (_capsule.seg.a + _capsule.seg.b) * 0.5f;
+}

@@ -385,6 +385,68 @@ namespace ei {
         FastFrustum& operator = (const FastFrustum& _frustum);
     };
 
+    /// \brief Get the volume of any object.
+    float volume(const Sphere& _sphere);                                       // TESTED
+    float volume(const Box& _box);                                             // TESTED
+    float volume(const OBox& _obox);                                           // TESTED
+    float volume(const Tetrahedron& _thetrahedron);                            // TESTED
+    float volume(const Triangle& _triangle);                                   // TESTED
+    float volume(const Disc& _disc);                                           // TESTED
+    float volume(const Plane& _plane);                                         // TESTED
+    float volume(const DOP& _dop);                                             // TESTED
+    float volume(const Ellipsoid& _ellipsoid);                                 // TESTED
+    float volume(const OEllipsoid& _oellipsoid);                               // TESTED
+    float volume(const Ray& _ray);                                             // TESTED
+    float volume(const Segment& _line);                                        // TESTED
+    float volume(const Capsule& _capsule);                                     // TESTED
+    float volume(const Frustum& _frustum);                                     // TESTED
+
+    /// \brief Get the surface area of any object.
+    float surface(const Sphere& _sphere);                                      // TESTED
+    float surface(const Box& _box);                                            // TESTED
+    float surface(const OBox& _obox);                                          // TESTED
+    float surface(const Tetrahedron& _thetrahedron);                           // TESTED
+    float surface(const Triangle& _triangle);                                  // TESTED
+    float surface(const Disc& _disc);                                          // TESTED
+    float surface(const Plane& _plane);                                        // TESTED
+    float surface(const DOP& _dop);                                            // TESTED
+    float surface(const Ellipsoid& _ellipsoid);                                // TESTED
+    float surface(const OEllipsoid& _oellipsoid);                              // TESTED
+    float surface(const Ray& _ray);                                            // TESTED
+    float surface(const Segment& _line);                                       // TESTED
+    float surface(const Capsule& _capsule);                                    // TESTED
+    float surface(const Frustum& _frustum);                                    // TESTED
+
+    /// \brief Transform a box (rotation).
+    OBox transform(const Box& _box, const Quaternion& _rotation);
+    OBox transform(const OBox& _box, const Quaternion& _rotation);
+    /// \brief Transform a box (translation).
+    Box transform(const Box& _box, const Vec3& _translation);
+    OBox transform(const OBox& _box, const Vec3& _translation);
+    /// \brief Transform a box (first rotate then translation).
+    OBox transform(const Box& _box, const Quaternion& _rotation, const Vec3& _translation);
+    OBox transform(const OBox& _box, const Quaternion& _rotation, const Vec3& _translation);
+
+    /// \brief Compute the centroid for all kinds of bounded geometry.
+    /// \details The geometric centroid coincides with the center of mass if
+    ///    the mass is uniformly distributed.
+    ///
+    ///    A geometric composition of simple geometry can be combined via
+    ///    sum(center(G_i)*volume(G_i)) / sum(volume(G_i)). Where negative
+    ///    volumes can be used to model holes or to subtract the overlapping
+    ///    regions again.
+    Vec3 center(const Sphere& _sphere);                                        // TESTED
+    Vec3 center(const Box& _box);                                              // TESTED
+    Vec3 center(const OBox& _obox);                                            // TESTED
+    Vec3 center(const Tetrahedron& _thetrahedron);                             // TESTED
+    Vec3 center(const Triangle& _triangle);                                    // TESTED
+    Vec3 center(const Disc& _disc);                                            // TESTED
+    Vec3 center(const Ellipsoid& _ellipsoid);                                  // TESTED
+    Vec3 center(const Segment& _line);                                         // TESTED
+    Vec3 center(const Capsule& _capsule);                                      // TESTED
+    Vec3 center(const Frustum& _frustum);                                      // TESTED
+    //Vec3 center(const FastFrustum& _frustum);
+
     // Include inline implementations
-    #include "details/3dtypes.inl"
+#   include "details/3dtypes.inl"
 }
