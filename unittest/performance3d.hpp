@@ -59,6 +59,16 @@ template<> inline void random<ε::Capsule>(ε::Capsule& _out)
     _out.radius = ε::sq(rnd()) * 0.5f;
 }
 
+template<> inline void random<ε::DOP>(ε::DOP& _out)
+{
+    float cosTheta = rnd() * 2.0f - 1.0f;
+    float phi = rnd() * 2.0f * ε::PI;
+    float sinTheta = sqrt(1 - cosTheta*cosTheta);
+    _out.n = ε::Vec3(sinTheta * cos(phi), cosTheta, sinTheta * sin(phi));
+    _out.d0 = rnd() - 0.5f;
+    _out.d1 = _out.d0 + rnd() - 0.5f;
+}
+
 // Functions to assign names to types
 template<class T> const char* name() { return typeid(T).name(); }
 template<> inline const char* name<ε::Vec3>() { return "Point"; }
@@ -68,6 +78,7 @@ template<> inline const char* name<ε::Ellipsoid>() { return "Ellipsoid"; }
 template<> inline const char* name<ε::Box>() { return "Box"; }
 template<> inline const char* name<ε::Triangle>() { return "Triangle"; }
 template<> inline const char* name<ε::Capsule>() { return "Capsule"; }
+template<> inline const char* name<ε::DOP>() { return "DOP"; }
 
 // ************************************************************************* //
 //                          PERFORMANCE TESTING                              //

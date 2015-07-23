@@ -66,6 +66,11 @@ namespace ei {
     bool intersects( const Vec3& _point, const Ellipsoid& _ellipsoid );        // TESTED
     inline bool intersects( const Ellipsoid& _ellipsoid, const Vec3& _point )  { return intersects( _point, _ellipsoid ); }
 
+    /// \brief Does a point lie inside a DOP or on the boundary?
+    /// \return true if the point is inside or on the boundary.
+    bool intersects( const Vec3& _point, const DOP& _dop );                    // TESTED
+    inline bool intersects( const DOP& _dop, const Vec3& _point )  { return intersects( _point, _dop ); }
+
     /// \brief Do a ray and an ellipsoid intersect or touch?
     /// \param [out,opt] _distance The ray parameter (distance) for the first
     ///     intersection point in positive direction.

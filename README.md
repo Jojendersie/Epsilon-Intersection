@@ -1,4 +1,4 @@
-﻿Epsilon Intersection Library - ε
+Epsilon Intersection Library - ε
 ===============================================================================
 
 ε is a super flexible and simple to use **C++ library** designed for games. It is computing **intersections** of various three dimensional bodies and containes different utilities you could need for culling, ray casting or similar functions. 
@@ -73,8 +73,8 @@ Benchmarkconfigs: i7-4510U, VS2013, /O2, Win32 and the same with an i7-4950S
 **OBox**         |      |      |      |      |      |      |      |      | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
 **OEllipsoid**   |      |      |      |      |      |      |      |      |      | ---- | ---- | ---- | ---- | ---- | ---- |
 **Plane**        |      |      |      |      |      |      |      |      |      |      | ---- | ---- | ---- | ---- | ---- |
-**Point**        | 6.03 | 8.09 |      |      | 3.40 | *    |      |      |      |      |      | ---- | ---- | ---- | ---- |
+**Point**        | 5.88 | 8.09 | ---- | 3.94 | 3.40 | *    | ---- |      |      | ---- | ---- | ---- | ---- | ---- | ---- |
 **Ray**          | 15.3 |      |      |      | 11.2 | *    |      |      |      |      |      |      | ---- | ---- | ---- |
 **Sphere**       | 6.71 | 8.23 |      |      |      |      |      |      |      |      | 1.68 |      | 1.79 | ---- | ---- |
 **Thetrahedron** |      |      |      |      |      |      |      |      |      |      |      |      |      |      | ---- |
-**Triangle**     |      |      |      |      |      |      |      |      |      |      |      | 12.2 | 22.9 |      |      |
+**Triangle**     |      |      |      |      |      |      |      |      |      |      | ---- | 12.2 | 22.9 |      |      |

@@ -81,3 +81,11 @@ inline bool intersects( const Vec3& _point, const Box& _box )
     return _point.z <= _box.max.z;
     //return all(_point >= _box.min) && all(_point <= _box.max);
 }
+
+// ************************************************************************* //
+inline bool intersects( const Vec3& _point, const DOP& _dop )
+{
+    float p = -dot(_point, _dop.n);
+    if( p > _dop.d0 ) return false;
+    return p > _dop.d1;
+}

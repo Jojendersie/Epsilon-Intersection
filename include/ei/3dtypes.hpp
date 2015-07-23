@@ -227,8 +227,8 @@ namespace ei {
     struct DOP
     {
         Vec3 n;     ///< The normal on the first plane
-        float d0;   ///< The distance to the origin of the first plane
-        float d1;   ///< The distance to the origin of the second plane. d0 >= d1
+        float d0;   ///< The negative distance to the origin of the first plane
+        float d1;   ///< The negative distance to the origin of the second plane. d0 >= d1
 
         /// \brief Create uninitialized DOP.
         DOP() {}
