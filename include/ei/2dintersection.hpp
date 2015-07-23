@@ -55,6 +55,4 @@ namespace ei {
     ///    overlap the returned point is the center of this overlap.
     /// \return true if the lines intersect.
     bool intersects( const Segment2D& _line0, const Segment2D& _line1, Vec2& _outInfo ); // TESTED
-
-#   include "details/2dintersection.inl"
 }

@@ -144,6 +144,4 @@ namespace ei {
     /// \return true if the box and the frustum have at least on point in common.
     bool intersects( const Box& _box, const FastFrustum& _frustum );           // TESTED
     inline bool intersects( const FastFrustum& _frustum, const Box& _box )          { return intersects(_box, _frustum); }
-
-#   include "details/3dintersection.inl"
 }
