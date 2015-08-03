@@ -921,6 +921,25 @@ Matrix<T,M,1> pow(const Matrix<T,M,1>& _v0, float _exponent)
 
 // ************************************************************************* //
 template<typename T, unsigned M, unsigned N>
+Matrix<T,M,N> log(const Matrix<T,M,N>& _mat0)
+{
+    Matrix<T,M,N> result;
+    for(uint i = 0; i < M * N; ++i)
+        result[i] = log(_mat0[i]);
+    return result;
+}
+
+template<typename T, unsigned M, unsigned N>
+Matrix<T,M,N> log2(const Matrix<T,M,N>& _mat0)
+{
+    Matrix<T,M,N> result;
+    for(uint i = 0; i < M * N; ++i)
+        result[i] = log2(_mat0[i]);
+    return result;
+}
+
+// ************************************************************************* //
+template<typename T, unsigned M, unsigned N>
 inline decltype(std::declval<T>() + std::declval<T>()) sum(const Matrix<T,M,N>& _mat0)
 {
     decltype(std::declval<T>() + std::declval<T>()) result = _mat0[0];

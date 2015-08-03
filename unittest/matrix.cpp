@@ -413,7 +413,7 @@ bool test_matrix()
     }
 
     // ********************************************************************* //
-    // Test round, ceil, floor, sqrt, pow
+    // Test round, ceil, floor, sqrt, pow, log, log2
     {
         Vec4 v0(1.5f, 2.0f, -0.5f, 1.414f);
         IVec4 v1(2, 2, 0, 1);    // round(v0)
@@ -431,6 +431,8 @@ bool test_matrix()
         TEST( all(sqrt(v4) == v5), "sqrt of v4 is wrong!" );
         TEST( all(pow(v4,0.5f) == v5), "v4 to the power of 0.5 is wrong!" );
         TEST( approx(pow(v5,2.0f), v4), "v5 to the power of 2 is wrong!" );
+        TEST( all(log2(v4) == Vec3(0.0f, 2.0f, 1.0f)), "log2(v4) is wrong!" );
+        TEST( approx(log(v4), Vec3(0.0f, 1.386294361f, 0.693147181f)), "log2(v4) is wrong!" );
     }
 
     // ********************************************************************* //

@@ -757,6 +757,16 @@ namespace ei {
     using std::pow;
 
     // ********************************************************************* //
+    /// \brief Element wise natural logarithm for matrices (basis e).
+    template<typename T, unsigned M, unsigned N>
+    Matrix<T,M,N> log(const Matrix<T,M,N>& _mat0);                             // TESTED
+    /// \brief Element wise logarithm for matrices (basis 2).
+    template<typename T, unsigned M, unsigned N>
+    Matrix<T,M,N> log2(const Matrix<T,M,N>& _mat0);                            // TESTED
+    using std::log;
+    using std::log2;
+
+    // ********************************************************************* //
     /// \brief Sum of all components.
     /// \details Can be used for boolean vectors/matrices too (number of trues).
     /// \returns Scalar sum of all values.
