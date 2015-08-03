@@ -57,44 +57,53 @@ inline TQuaternion<T>::TQuaternion( T _x, T _y, T _z )
 
 // ************************************************************************* //
 template<typename T>
-TQuaternion<T>::TQuaternion( const Matrix<T,3,3>& _m )
+TQuaternion<T>::TQuaternion( const Matrix<T,3,3>& _m ) :
+    TQuaternion<T>(transpose(_m(0)), transpose(_m(1)), transpose(_m(2)))
 {
-    // Ignore de-orthogonalization
+}
 
+template<typename T>
+TQuaternion<T>::TQuaternion( const Vec<T,3>& _xAxis, const Vec<T,3>& _yAxis, const Vec<T,3>& _zAxis )
+{
     // Check handness
-    eiAssert(dot(cross(_m(0), _m(1)), _m(2)) > 0.0f, "Quaternions cannot handle reflections. The matrix must be RHS.");
+    //eiAssert(dot(cross(_xAxis, _yAxis), _m(2)) > 0.0f, "Quaternions cannot handle reflections. The matrix must be RHS.");
+    T handness = dot(cross(_xAxis, _yAxis), _zAxis);
+    Vec<T,3> zAxis;
+    if(handness < T(0)) zAxis = -_zAxis;
+    else zAxis = _zAxis;
+    eiAssert(approx(abs(handness), T(1), 1e-4f), "System is not orthonormal!");
 
     // Build TQuaternion<T> from rotation matrix
     // Src: http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/
-    T trace = _m.m00 + _m.m11 + _m.m22;
+    T trace = _xAxis.x + _yAxis.y + zAxis.z;
     if( trace > 0 )
     {
         float s = T(0.5) / sqrt( trace + T(1) );
-        i = ( _m.m21 - _m.m12 ) * s;
-        j = ( _m.m02 - _m.m20 ) * s;
-        k = ( _m.m10 - _m.m01 ) * s;
+        i = (  zAxis.y - _yAxis.z ) * s;
+        j = ( _xAxis.z -  zAxis.x ) * s;
+        k = ( _yAxis.x - _xAxis.y ) * s;
         r = T(0.25) / s;
     } else {
-        if( _m.m00 > _m.m11 && _m.m00 > _m.m22 )
+        if( _xAxis.x > _yAxis.y && _xAxis.x > zAxis.z )
         {
-            float s = T(2) * sqrt( T(1) + _m.m00 - _m.m11 - _m.m22 );
+            float s = T(2) * sqrt( T(1) + _xAxis.x - _yAxis.y - zAxis.z );
             i = T(0.25) * s;
-            j = ( _m.m01 + _m.m10 ) / s;
-            k = ( _m.m02 + _m.m20 ) / s;
-            r = ( _m.m21 - _m.m12 ) / s;
-        } else if( _m.m11 > _m.m22 )
+            j = ( _xAxis.y + _yAxis.x ) / s;
+            k = ( _xAxis.z +  zAxis.x ) / s;
+            r = (  zAxis.y - _yAxis.z ) / s;
+        } else if( _yAxis.y > zAxis.z )
         {
-            float s = T(2) * sqrt( T(1) + _m.m11 - _m.m00 - _m.m22 );
-            i = ( _m.m01 + _m.m10 ) / s;
+            float s = T(2) * sqrt( T(1) + _yAxis.y - _xAxis.x - zAxis.z );
+            i = ( _xAxis.y + _yAxis.x ) / s;
             j = T(0.25) * s;
-            k = ( _m.m12 + _m.m21 ) / s;
-            r = ( _m.m02 - _m.m20 ) / s;
+            k = ( _yAxis.z +  zAxis.y ) / s;
+            r = ( _xAxis.z -  zAxis.x ) / s;
         } else {
-            float s = T(2) * sqrt( T(1) + _m.m22 - _m.m00 - _m.m11 );
-            i = ( _m.m02 + _m.m20 ) / s;
-            j = ( _m.m12 + _m.m21 ) / s;
+            float s = T(2) * sqrt( T(1) + zAxis.z - _xAxis.x - _yAxis.y );
+            i = ( _xAxis.z +  zAxis.x ) / s;
+            j = ( _yAxis.z +  zAxis.y ) / s;
             k = T(0.25) * s;
-            r = ( _m.m10 - _m.m01 ) / s;
+            r = ( _yAxis.x - _xAxis.y ) / s;
         }
     }//*/
 
@@ -106,27 +115,13 @@ TQuaternion<T>::TQuaternion( const Matrix<T,3,3>& _m )
     *this = normalize(*this);
 
     // Assert additional normalization condition
-    if( r < static_cast<T>(0) ) {i = -i; j = -j; k = -k; r = -r;}
-}
-
-template<typename T>
-TQuaternion<T>::TQuaternion( const Vec<T,3>& _xAxis, const Vec<T,3>& _yAxis, const Vec<T,3>& _zAxis ) :
-    TQuaternion<T>(axis(_xAxis, _yAxis, _zAxis))
-{
+    if( r * handness < static_cast<T>(0) ) {i = -i; j = -j; k = -k; r = -r;}
 }
 
 template<typename T>
 TQuaternion<T>::TQuaternion( T _i, T _j, T _k, T _r ) :
     i(_i), j(_j), k(_k), r(_r)
 {
-    // Assert additional normalization condition
-    /*if( r < static_cast<T>(0) )
-    {
-        i = -i;
-        j = -j;
-        k = -k;
-        r = -r;
-    }*/
 }
 
 // ************************************************************************* //
@@ -140,6 +135,7 @@ TQuaternion<T>::TQuaternion( const Vec<T,3>& _from, const Vec<T,3>& _to )
 
     // cos(theta) = dot product since both vectors are normalized
     r = dot(from, half);
+    eiAssert(r >= T(0), "Normalization condition violated!");
     // Axis from cross product -> already multiplied with sin(theta)
     i = from.y*half.z - from.z*half.y;
     j = from.z*half.x - from.x*half.z;
@@ -175,6 +171,9 @@ bool TQuaternion<T>::operator!= (const TQuaternion<T>& _q1) const
 template<typename T>
 TQuaternion<T>& TQuaternion<T>::operator*= (const TQuaternion<T>& _q1)
 {
+    // Preserve the sign for handness: the result can contain a mirroring, if
+    // and only if one of the two arguments has a mirroring part.
+    T handness = r*_q1.r;
     T nr = r*_q1.r - i*_q1.i - j*_q1.j - k*_q1.k;
     T ni = r*_q1.i + i*_q1.r + j*_q1.k - k*_q1.j;
     T nj = r*_q1.j + j*_q1.r + k*_q1.i - i*_q1.k;
@@ -182,6 +181,7 @@ TQuaternion<T>& TQuaternion<T>::operator*= (const TQuaternion<T>& _q1)
     r = nr;
     i = ni;
     j = nj;
+    if( r * handness < static_cast<T>(0) ) {i = -i; j = -j; k = -k; r = -r;}
     return *this;
 }
 
@@ -189,6 +189,7 @@ TQuaternion<T>& TQuaternion<T>::operator*= (const TQuaternion<T>& _q1)
 template<typename T>
 TQuaternion<T>& TQuaternion<T>::operator*= (T _s)
 {
+    eiAssert(_s >= T(0), "Using a negative scalar changes handness!");
     i*=_s; j*=_s; k*=_s; r*=_s;
     return *this;
 }
@@ -197,6 +198,7 @@ TQuaternion<T>& TQuaternion<T>::operator*= (T _s)
 template<typename T>
 TQuaternion<T>& TQuaternion<T>::operator/= (const TQuaternion<T>& _q1)
 {
+    T handness = r*_q1.r;
     T nr =   r*_q1.r + i*_q1.i + j*_q1.j + k*_q1.k;
     T ni = - r*_q1.i + i*_q1.r - j*_q1.k + k*_q1.j;
     T nj = - r*_q1.j + j*_q1.r - k*_q1.i + i*_q1.k;
@@ -204,6 +206,7 @@ TQuaternion<T>& TQuaternion<T>::operator/= (const TQuaternion<T>& _q1)
     r = nr;
     i = ni;
     j = nj;
+    if( r * handness < static_cast<T>(0) ) {i = -i; j = -j; k = -k; r = -r;}
     return *this;
 }
 
@@ -211,6 +214,7 @@ TQuaternion<T>& TQuaternion<T>::operator/= (const TQuaternion<T>& _q1)
 template<typename T>
 TQuaternion<T>& TQuaternion<T>::operator/= (T _s)
 {
+    eiAssert(_s >= T(0), "Using a negative scalar changes handness!");
     i/=_s; j/=_s; k/=_s; r/=_s;
     return *this;
 }
@@ -273,7 +277,9 @@ Vec<T,3> yaxis(const TQuaternion<T>& _q)
 template<typename T>
 Vec<T,3> zaxis(const TQuaternion<T>& _q)
 {
-    return Vec<T,3>( T(2)*(_q.i*_q.k-_q.j*_q.r), T(2)*(_q.j*_q.k+_q.i*_q.r), T(1)-T(2)*(_q.i*_q.i+_q.j*_q.j) );
+    T h = _q.r < T(0) ? T(-1) : T(1);
+    T h2 = h * 2;
+    return Vec<T,3>( h2*(_q.i*_q.k-_q.j*_q.r), h2*(_q.j*_q.k+_q.i*_q.r), h-h2*(_q.i*_q.i+_q.j*_q.j) );
 }
 
 template<typename T>
@@ -286,6 +292,7 @@ T angle(const TQuaternion<T>& _q)
 template<typename T>
 Vec<T,3> angles(const TQuaternion<T>& _q)
 {
+	// TODO: handness?
     Vec<T,3> angles;
     // Derivation from http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToEuler/index.htm
     // but changed angles because of else convention
@@ -332,6 +339,7 @@ bool approx(const TQuaternion<T>& _q0,
 template<typename T>
 TQuaternion<T> slerp(const TQuaternion<T>& _q0, const TQuaternion<T>& _q1, T _t)
 {
+	// TODO: handness?
     // http://en.wikipedia.org/wiki/Slerp
     T theta = acos( clamp(dot(_q0,_q1), T(-1), T(1)) );
     T so = sin( theta );
@@ -355,15 +363,16 @@ TQuaternion<T> slerp(const TQuaternion<T>& _q0, const TQuaternion<T>& _q1, T _t)
 template<typename T>
 Vec<T,3> transform( const Vec<T,3>& _v, const TQuaternion<T>& _q )
 {
+    T handness = _q.r < T(0) ? T(-1) : T(1);
     // http://physicsforgames.blogspot.de/2010/03/quaternion-tricks.html
-    float x1 = _q.j*_v.z - _q.k*_v.y;
-    float y1 = _q.k*_v.x - _q.i*_v.z;
-    float z1 = _q.i*_v.y - _q.j*_v.x;
+    T x1 = _q.j*_v.z - _q.k*_v.y;
+    T y1 = _q.k*_v.x - _q.i*_v.z;
+    T z1 = _q.i*_v.y - _q.j*_v.x;
 
     return Vec<T,3>(
         _v.x + 2.0f * (_q.r*x1 + _q.j*z1 - _q.k*y1),
         _v.y + 2.0f * (_q.r*y1 + _q.k*x1 - _q.i*z1),
-        _v.z + 2.0f * (_q.r*z1 + _q.i*y1 - _q.j*x1)
+        (_v.z + 2.0f * (_q.r*z1 + _q.i*y1 - _q.j*x1)) * handness
     );
 
     // q v q-1 with v=(0, _v.x, _v.y, _v.z) expanded with Maxima
@@ -377,14 +386,15 @@ Vec<T,3> transform( const Vec<T,3>& _v, const TQuaternion<T>& _q )
 template<typename T>
 RVec<T,3> transform( const RVec<T,3>& _v, const TQuaternion<T>& _q )
 {
-    float x1 = _q.j*_v.z - _q.k*_v.y;
-    float y1 = _q.k*_v.x - _q.i*_v.z;
-    float z1 = _q.i*_v.y - _q.j*_v.x;
+    T handness = _q.r < T(0) ? T(-1) : T(1);
+    T x1 = _q.j*_v.z - _q.k*_v.y;
+    T y1 = _q.k*_v.x - _q.i*_v.z;
+    T z1 = _q.i*_v.y - _q.j*_v.x;
 
     return Vec<T,3>(
         _v.x + 2.0f * (_q.r*x1 + _q.j*z1 - _q.k*y1),
         _v.y + 2.0f * (_q.r*y1 + _q.k*x1 - _q.i*z1),
-        _v.z + 2.0f * (_q.r*z1 + _q.i*y1 - _q.j*x1)
+        (_v.z + 2.0f * (_q.r*z1 + _q.i*y1 - _q.j*x1)) * handness
     );
 
 /*    return RVec<T,3>(

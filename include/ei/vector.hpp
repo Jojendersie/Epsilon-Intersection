@@ -468,9 +468,11 @@ namespace ei {
     
     // ********************************************************************* //
     /// \brief 4D complex number equivalent for the representation of rotations
-    /// \details The normalized form has len(q) == 1 and r>0. The second criteria
-    ///     makes the rotation unique because q and -q both represent the same
-    ///     rotation.
+    /// \details The normalized form has len(q) == 1 and r>0 (RHS) / r<0 (LHS).
+    ///     The second criteria makes the rotation unique because q and -q both
+    ///     represent the same rotation and allows including mirroring.
+    ///     This is not the standard way: Usual quaternions cannot handle
+    ///     mirroring!
     template<typename T>
     class TQuaternion: public details::NonScalarType
     {
