@@ -9,7 +9,6 @@ using namespace std;
 bool test_3dintersections()
 {
     bool result = true;
-	performance<Vec3,OBox>(intersects, "intersects");
 
     // Test sphere <-> sphere intersection
     {

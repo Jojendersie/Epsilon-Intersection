@@ -1750,7 +1750,7 @@ inline Mat4x4 orthographicGL( float _l, float _r, float _b, float _t, float _n, 
 {
     return Mat4x4(2.0f / (_r-_l), 0.0f, 0.0f, -(_r+_l) / (_r-_l),
                   0.0f, 2.0f / (_t-_b), 0.0f, -(_t+_b) / (_t-_b),
-                  0.0f, 0.0f, 2.0f / (_n-_f), -(_f+_n) / (_f-_n),
+                  0.0f, 0.0f, 2.0f / (_f-_n), -(_f+_n) / (_f-_n),
                   0.0f, 0.0f, 0.0f,           1.0f);
 }
 
