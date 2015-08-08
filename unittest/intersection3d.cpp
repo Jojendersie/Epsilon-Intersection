@@ -9,6 +9,7 @@ using namespace std;
 bool test_3dintersections()
 {
     bool result = true;
+	performance<Vec3,OBox>(intersects, "intersects");
 
     // Test sphere <-> sphere intersection
     {
@@ -74,6 +75,21 @@ bool test_3dintersections()
         TEST( intersects( poi2, box0 ), "poi2 inside box0!" );
 
         performance<Vec3,Box>(intersects, "intersects");
+    }
+
+    // Test point <-> obox intersection
+    {
+        OBox box0( Vec3(1.0f), Vec3(0.25f, 1.0f, 1.5f), Quaternion(Vec3(1.0f, 0.0f, 0.0f), PI/2.0f) );
+        Vec3 poi0( Vec3(0.85f, 1.0f, 1.0f) );
+        Vec3 poi1( Vec3(0.875f, 1.25f, 0.5f) );
+        Vec3 poi2( Vec3(0.9f, 1.1f, 0.9f) );
+        Vec3 poi3( Vec3(1.0f, 1.25f, 1.76f) );
+        TEST( !intersects( poi0, box0 ), "poi0 outside box0!" );
+        TEST( intersects( poi1, box0 ), "poi1 touches box0!" );
+        TEST( intersects( poi2, box0 ), "poi2 inside box0!" );
+        TEST( !intersects( poi3, box0 ), "poi3 outside box0!" );
+
+        performance<Vec3,OBox>(intersects, "intersects");
     }
 
     // Test point <-> dop intersection

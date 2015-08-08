@@ -409,6 +409,19 @@ namespace ei {
     }
 
     // ************************************************************************* //
+    bool intersects( const Vec3& _point, const OBox& _obox )
+    {
+        Vec3 alignedPoint = _point - _obox.center;
+        alignedPoint = transform( alignedPoint, _obox.orientation );
+        if(alignedPoint.x < - _obox.sides.x / 2.0f) return false;
+        if(alignedPoint.y < - _obox.sides.y / 2.0f) return false;
+        if(alignedPoint.z < - _obox.sides.z / 2.0f) return false;
+        if(alignedPoint.x >   _obox.sides.x / 2.0f) return false;
+        if(alignedPoint.y >   _obox.sides.y / 2.0f) return false;
+        return alignedPoint.z <= _obox.sides.z / 2.0f;
+    }
+
+    // ************************************************************************* //
     bool intersects( const Vec3& _point, const DOP& _dop )
     {
         float p = -dot(_point, _dop.n);

@@ -16,6 +16,15 @@ template<> inline void random<ε::Vec3>(ε::Vec3& _out)
     _out = ε::Vec3(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f);
 }
 
+template<> inline void random<ε::Quaternion>(ε::Quaternion& _out)
+{
+    float cosTheta = rnd() * 2.0f - 1.0f;
+    float phi = rnd() * 2.0f * ε::PI;
+    float sinTheta = sqrt(1 - cosTheta*cosTheta);
+    float angle = rnd() * 2.0f * ε::π;
+    _out = ε::Quaternion(ε::Vec3(sinTheta * cos(phi), cosTheta, sinTheta * sin(phi)), angle);
+}
+
 template<> inline void random<ε::Sphere>(ε::Sphere& _out)
 {
     _out = ε::Sphere(ε::Vec3(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f), rnd() * 0.2f + 0.05f);
@@ -42,6 +51,13 @@ template<> inline void random<ε::Box>(ε::Box& _out)
     _out.min = ε::Vec3(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f);
     _out.max = _out.min + w;
     _out.min = _out.min - w;
+}
+
+template<> inline void random<ε::OBox>(ε::OBox& _out)
+{
+    _out.sides = ε::Vec3(rnd() * 0.3f + 0.05f, rnd() * 0.3f + 0.05f, rnd() * 0.3f + 0.05f);
+    _out.center = ε::Vec3(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f);
+    random(_out.orientation);
 }
 
 template<> inline void random<ε::Triangle>(ε::Triangle& _out)
@@ -76,6 +92,7 @@ template<> inline const char* name<ε::Ray>() { return "Ray"; }
 template<> inline const char* name<ε::Sphere>() { return "Sphere"; }
 template<> inline const char* name<ε::Ellipsoid>() { return "Ellipsoid"; }
 template<> inline const char* name<ε::Box>() { return "Box"; }
+template<> inline const char* name<ε::OBox>() { return "Oriented Box"; }
 template<> inline const char* name<ε::Triangle>() { return "Triangle"; }
 template<> inline const char* name<ε::Capsule>() { return "Capsule"; }
 template<> inline const char* name<ε::DOP>() { return "DOP"; }

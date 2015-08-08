@@ -71,6 +71,11 @@ namespace ei {
     bool intersects( const Vec3& _point, const DOP& _dop );                    // TESTED
     inline bool intersects( const DOP& _dop, const Vec3& _point )  { return intersects( _point, _dop ); }
 
+    /// \brief Intersection test between point and oriented box.
+    /// \return true if the point and the oriented box have at least on point in common.
+    bool intersects( const Vec3& _point, const OBox& _obox );
+    inline bool intersects( const OBox& _obox, const Vec3& _point )          { return intersects(_point, _obox); }
+
     /// \brief Do a ray and an ellipsoid intersect or touch?
     /// \param [out,opt] _distance The ray parameter (distance) for the first
     ///     intersection point in positive direction.
