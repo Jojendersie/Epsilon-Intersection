@@ -7,7 +7,7 @@
         result = false;                \
     }
 
-ε::uint64 ticks();
+ei::uint64 ticks();
 /// \brief A function to avoid too havy code optimization (code cannot be deleted)
 void eatMyDummy(float _dummy);
 
@@ -15,7 +15,7 @@ void eatMyDummy(float _dummy);
 /// \brief Returns a number in [0,1]
 inline float rnd()
 {
-    static ε::uint64 s_rndState = 47;
+    static ei::uint64 s_rndState = 47;
     s_rndState ^= s_rndState >> 12;
     s_rndState ^= s_rndState << 25;
     s_rndState ^= s_rndState >> 27;

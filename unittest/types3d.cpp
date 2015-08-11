@@ -15,7 +15,7 @@ bool test_3dtypes()
     {
         Sphere sph( Vec3(1.0f, 2.0f, 3.14159f), 0.75f );
         Box box( Vec3(1.0f, 1.0f, 1.0f), Vec3(2.0f, 2.5f, 3.0f) );
-        OBox obo( Vec3(0.5f), Vec3(1.0f), Quaternion(π, π/2, π/2) );
+        OBox obo( Vec3(0.5f), Vec3(1.0f), Quaternion(PI, PI/2, PI/2) );
         Tetrahedron the( Vec3(1.0f, 0.0f, -1.0f/PHYTAGORAS), Vec3(-1.0f, 0.0f, -1.0f/PHYTAGORAS), Vec3(0.0f, 1.0f, 1.0f/PHYTAGORAS), Vec3(0.0f, -1.0f, 1.0f/PHYTAGORAS));
         Triangle tri( Vec3(0.0f), Vec3(1.0f, 1.0f, 0.0f), Vec3(0.0f, 0.0f, 1.0f) );
         Disc dis( Vec3(1.0f), normalize(Vec3(-1.0f)), 1.0f );

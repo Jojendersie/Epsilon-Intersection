@@ -2,7 +2,7 @@
 
 // Just show the namespace once to make sure it exists when aliasing.
 namespace ei {}
-#ifdef USE_UTF8_NAMESPACES
+#ifdef USE_UNICODE_NAMES
     namespace ε = ei;
 #endif
 // An easter egg for german speaking people ;-).

@@ -6,15 +6,10 @@
 // Ugly to include this here but you will miss sqrt,sin,... otherwise
 #include <cmath>
 
-#ifndef USE_ELEMENTARIES_WITHOUT_NAMESPACE
-namespace ei {
-#endif
-
+namespace eitypes {
     /// \brief Short name for unsigned / unsigned int.
     /// \details The number of bit might vary on different systems.
     typedef unsigned int uint;                                                 // TESTED
-
-
 
     // Declaration of fixed sized int8, uint8 and byte = uint8
     typedef details::Int<1>::utype uint8;                                      // TESTED
@@ -32,11 +27,14 @@ namespace ei {
     // Declaration of fixed sized int64, uint64
     typedef details::Int<8>::utype uint64;                                     // TESTED
     typedef details::Int<8>::stype int64;                                      // TESTED
-
-
-#ifndef USE_ELEMENTARIES_WITHOUT_NAMESPACE
 }
+
+#ifdef USE_ELEMENTARIES_WITHOUT_NAMESPACE
+    using namespace eitypes;
 #endif
+namespace ei {
+    using namespace eitypes;
+}
 
 namespace details {
     /// \brief Dummy class to detect correct types for matrix <-> matrix
@@ -76,11 +74,13 @@ namespace ei {
     const float INF = details::F_INF.f;
     const double INF_D = details::D_INF.f;
     // Unicode names for the above constants
+#ifdef USE_UNICODE_NAMES
     const float π = PI;
     const float Φ = GOLDEN_RATIO;
     const float √2 = PHYTAGORAS;
     const float ℇ = E;
     const float ∞ = INF;
+#endif
 
     // ********************************************************************* //
     //                               FUNCTIONS                               //

@@ -11,91 +11,91 @@ template<class T> void random(T& _out)
     throw "Type not implemented!";
 }
 
-template<> inline void random<ε::Vec3>(ε::Vec3& _out)
+template<> inline void random<ei::Vec3>(ei::Vec3& _out)
 {
-    _out = ε::Vec3(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f);
+    _out = ei::Vec3(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f);
 }
 
-template<> inline void random<ε::Quaternion>(ε::Quaternion& _out)
+template<> inline void random<ei::Quaternion>(ei::Quaternion& _out)
 {
     float cosTheta = rnd() * 2.0f - 1.0f;
-    float phi = rnd() * 2.0f * ε::PI;
+    float phi = rnd() * 2.0f * ei::PI;
     float sinTheta = sqrt(1 - cosTheta*cosTheta);
-    float angle = rnd() * 2.0f * ε::π;
-    _out = ε::Quaternion(ε::Vec3(sinTheta * cos(phi), cosTheta, sinTheta * sin(phi)), angle);
+    float angle = rnd() * 2.0f * ei::PI;
+    _out = ei::Quaternion(ei::Vec3(sinTheta * cos(phi), cosTheta, sinTheta * sin(phi)), angle);
 }
 
-template<> inline void random<ε::Sphere>(ε::Sphere& _out)
+template<> inline void random<ei::Sphere>(ei::Sphere& _out)
 {
-    _out = ε::Sphere(ε::Vec3(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f), rnd() * 0.2f + 0.05f);
+    _out = ei::Sphere(ei::Vec3(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f), rnd() * 0.2f + 0.05f);
 }
 
-template<> inline void random<ε::Ellipsoid>(ε::Ellipsoid& _out)
+template<> inline void random<ei::Ellipsoid>(ei::Ellipsoid& _out)
 {
-    _out.center = ε::Vec3(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f);
-    _out.radii = ε::Vec3(rnd() * 0.2f + 0.05f, rnd() * 0.2f + 0.05f, rnd() * 0.2f + 0.05f);
+    _out.center = ei::Vec3(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f);
+    _out.radii = ei::Vec3(rnd() * 0.2f + 0.05f, rnd() * 0.2f + 0.05f, rnd() * 0.2f + 0.05f);
 }
 
-template<> inline void random<ε::Ray>(ε::Ray& _out)
+template<> inline void random<ei::Ray>(ei::Ray& _out)
 {
-    _out.origin = ε::Vec3(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f);
+    _out.origin = ei::Vec3(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f);
     float cosTheta = rnd() * 2.0f - 1.0f;
-    float phi = rnd() * 2.0f * ε::PI;
+    float phi = rnd() * 2.0f * ei::PI;
     float sinTheta = sqrt(1 - cosTheta*cosTheta);
-    _out.direction = ε::Vec3(sinTheta * cos(phi), cosTheta, sinTheta * sin(phi));
+    _out.direction = ei::Vec3(sinTheta * cos(phi), cosTheta, sinTheta * sin(phi));
 }
 
-template<> inline void random<ε::Box>(ε::Box& _out)
+template<> inline void random<ei::Box>(ei::Box& _out)
 {
-    ε::Vec3 w(rnd() * 0.3f + 0.05f, rnd() * 0.3f + 0.05f, rnd() * 0.3f + 0.05f);
-    _out.min = ε::Vec3(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f);
+    ei::Vec3 w(rnd() * 0.3f + 0.05f, rnd() * 0.3f + 0.05f, rnd() * 0.3f + 0.05f);
+    _out.min = ei::Vec3(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f);
     _out.max = _out.min + w;
     _out.min = _out.min - w;
 }
 
-template<> inline void random<ε::OBox>(ε::OBox& _out)
+template<> inline void random<ei::OBox>(ei::OBox& _out)
 {
-    _out.sides = ε::Vec3(rnd() * 0.3f + 0.05f, rnd() * 0.3f + 0.05f, rnd() * 0.3f + 0.05f);
-    _out.center = ε::Vec3(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f);
+    _out.sides = ei::Vec3(rnd() * 0.3f + 0.05f, rnd() * 0.3f + 0.05f, rnd() * 0.3f + 0.05f);
+    _out.center = ei::Vec3(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f);
     random(_out.orientation);
 }
 
-template<> inline void random<ε::Triangle>(ε::Triangle& _out)
+template<> inline void random<ei::Triangle>(ei::Triangle& _out)
 {
-    ε::Vec3 pos(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f);
-    _out.v0 = pos + ε::Vec3(rnd() * 0.5f - 0.25f, rnd() * 0.5f - 0.25f, rnd() * 0.5f - 0.25f);
-    _out.v1 = pos + ε::Vec3(rnd() * 0.5f - 0.25f, rnd() * 0.5f - 0.25f, rnd() * 0.5f - 0.25f);
-    _out.v2 = pos + ε::Vec3(rnd() * 0.5f - 0.25f, rnd() * 0.5f - 0.25f, rnd() * 0.5f - 0.25f);
+    ei::Vec3 pos(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f);
+    _out.v0 = pos + ei::Vec3(rnd() * 0.5f - 0.25f, rnd() * 0.5f - 0.25f, rnd() * 0.5f - 0.25f);
+    _out.v1 = pos + ei::Vec3(rnd() * 0.5f - 0.25f, rnd() * 0.5f - 0.25f, rnd() * 0.5f - 0.25f);
+    _out.v2 = pos + ei::Vec3(rnd() * 0.5f - 0.25f, rnd() * 0.5f - 0.25f, rnd() * 0.5f - 0.25f);
 }
 
-template<> inline void random<ε::Capsule>(ε::Capsule& _out)
+template<> inline void random<ei::Capsule>(ei::Capsule& _out)
 {
-    _out.seg.a = ε::Vec3(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f);
-    _out.seg.b = ε::Vec3(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f);
-    _out.radius = ε::sq(rnd()) * 0.5f;
+    _out.seg.a = ei::Vec3(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f);
+    _out.seg.b = ei::Vec3(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f);
+    _out.radius = ei::sq(rnd()) * 0.5f;
 }
 
-template<> inline void random<ε::DOP>(ε::DOP& _out)
+template<> inline void random<ei::DOP>(ei::DOP& _out)
 {
     float cosTheta = rnd() * 2.0f - 1.0f;
-    float phi = rnd() * 2.0f * ε::PI;
+    float phi = rnd() * 2.0f * ei::PI;
     float sinTheta = sqrt(1 - cosTheta*cosTheta);
-    _out.n = ε::Vec3(sinTheta * cos(phi), cosTheta, sinTheta * sin(phi));
+    _out.n = ei::Vec3(sinTheta * cos(phi), cosTheta, sinTheta * sin(phi));
     _out.d0 = rnd() - 0.5f;
     _out.d1 = _out.d0 + rnd() - 0.5f;
 }
 
 // Functions to assign names to types
 template<class T> const char* name() { return typeid(T).name(); }
-template<> inline const char* name<ε::Vec3>() { return "Point"; }
-template<> inline const char* name<ε::Ray>() { return "Ray"; }
-template<> inline const char* name<ε::Sphere>() { return "Sphere"; }
-template<> inline const char* name<ε::Ellipsoid>() { return "Ellipsoid"; }
-template<> inline const char* name<ε::Box>() { return "Box"; }
-template<> inline const char* name<ε::OBox>() { return "Oriented Box"; }
-template<> inline const char* name<ε::Triangle>() { return "Triangle"; }
-template<> inline const char* name<ε::Capsule>() { return "Capsule"; }
-template<> inline const char* name<ε::DOP>() { return "DOP"; }
+template<> inline const char* name<ei::Vec3>() { return "Point"; }
+template<> inline const char* name<ei::Ray>() { return "Ray"; }
+template<> inline const char* name<ei::Sphere>() { return "Sphere"; }
+template<> inline const char* name<ei::Ellipsoid>() { return "Ellipsoid"; }
+template<> inline const char* name<ei::Box>() { return "Box"; }
+template<> inline const char* name<ei::OBox>() { return "Oriented Box"; }
+template<> inline const char* name<ei::Triangle>() { return "Triangle"; }
+template<> inline const char* name<ei::Capsule>() { return "Capsule"; }
+template<> inline const char* name<ei::DOP>() { return "DOP"; }
 
 // ************************************************************************* //
 //                          PERFORMANCE TESTING                              //

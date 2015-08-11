@@ -1,19 +1,26 @@
 ﻿#pragma once
 
-/// \brief Include or uncomment lines to customize namespaces and similar.
+/// The configuration system of epsilon works as follows:
+///  All files expect to include the config.hpp. The repository only contains
+///  a defaultconfig.hpp. This should be copied and renamed accordingly. Thus,
+///  you can use epsilon as submodule in other repositories. Since the new
+///  (renamed) config file is not part of this repository you can change it as
+///  you want.
 ///
+/// To change an option include or uncomment lines to customize the described
+/// properties.
 
 
 /// \brief All types from elementarytypes.hpp are without namespace.
 /// \details The default is on.
-//#define USE_ELEMENTARIES_WITHOUT_NAMESPACE
+#define USE_ELEMENTARIES_WITHOUT_NAMESPACE
 
 /// \brief Using this option changes the namespace ei:: to ε::.
 /// \details Do not use this if the symbol epsilon above is not shown correctly,
 ///    or enable utf8 in all your files.
 ///
 ///    The default is off.
-#define USE_UTF8_NAMESPACES
+//#define USE_UNICODE_NAMES
 
 
 /// \brief Enable a bunch of debug assertions in the vector code.

@@ -33,6 +33,10 @@ Each header includes all its depenencies. So, dependent on what functionality yo
   * *3dtypes.hpp*: shapes for 3D inclusive surface, volume, center, ... functions. Also adds numerous "conversion" methods e.g. bounding box for a set of points. 
   * *3dintersection.hpp*: adds the distance() and intersection() methods to 3dtypes  
 
+The configuration system of epsilon works as follows:
+
+All files expect to include the config.hpp (or depend on it). The repository only contains a defaultconfig.hpp. This should be copied and renamed accordingly. Thus, you can use epsilon as submodule in other repositories. Since the new (renamed) config file is not part of this repository you can change it as you want.
+
 
 Range of Functions
 -------------------------------------------------------------------------------

@@ -1,10 +1,15 @@
-﻿#include "ei/elementarytypes.hpp"
-
+﻿#define NOMINMAX
 #include <Windows.h>
 
-ε::uint64 ticks()
+#include "ei/elementarytypes.hpp"
+
+/// Also test name clashes in this file: independent of the
+/// USE_ELEMENTARIES_WITHOUT_NAMESPACE option it should compile.
+using namespace ei;
+
+ei::uint64 ticks()
 {
-    ε::uint64 tickCount;
+    uint64 tickCount;
     QueryPerformanceCounter((LARGE_INTEGER*)&tickCount);
     return tickCount;
 }

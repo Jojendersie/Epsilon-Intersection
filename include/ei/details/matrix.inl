@@ -1737,7 +1737,7 @@ inline Mat4x4 perspectiveGL( float l, float r, float b, float t, float n, float 
 inline Mat4x4 perspectiveGL( float _fovY, float _aspectRatio, float _n, float _f )
 {
     // cot(x) == tan(π/2 - x)
-    float h = tan(π * 0.5f -_fovY / 2.0f);
+    float h = tan(PI * 0.5f -_fovY / 2.0f);
     float w = h / _aspectRatio;
     return Mat4x4(w,    0.0f, 0.0f,              0.0f,
                   0.0f, h,    0.0f,              0.0f,
@@ -1767,7 +1767,7 @@ inline Mat4x4 perspectiveDX( float l, float r, float b, float t, float n, float 
 inline Mat4x4 perspectiveDX( float _fovY, float _aspectRatio, float _n, float _f )
 {
     // cot(x) == tan(π/2 - x)
-    float h = tan(π * 0.5f -_fovY / 2.0f);
+    float h = tan(PI * 0.5f -_fovY / 2.0f);
     float w = h / _aspectRatio;
     return Mat4x4(w,    0.0f, 0.0f,         0.0f,
                   0.0f, h,    0.0f,         0.0f,
