@@ -8,6 +8,8 @@ vcprojectfiles/
 *.user
 *.opensdf
 
+config.hpp
+
 ### Compilation and Intermediate Files ###
 bin/
 *.[oa]
