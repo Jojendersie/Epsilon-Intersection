@@ -235,6 +235,20 @@ namespace ei {
                 T1 _t0, T1 _t1) -> decltype(_x00*_t0);                         // TESTED
 
     // ********************************************************************* //
+    /// \brief Evalutate the smoothstep polynomial 3t^2 - 2t^3.
+    /// \param _t [in] The value to be inserted into the polynomial. The useful
+    ///    definition interval is in [0,1].
+    template<typename T>
+    T smoothstep(T _t);
+
+    // ********************************************************************* //
+    /// \brief Evalutate the smootherstep polynomial 6t^5 - 15t^4 + 10t^3.
+    /// \param _t [in] The value to be inserted into the polynomial. The useful
+    ///    definition interval is in [0,1].
+    template<typename T>
+    T smootherstep(T _t);
+
+    // ********************************************************************* //
     /// \brief Compute the next machine representable number in positive direction.
     /// \details Iterates overall floating point numbers, even through
     ///    denormalized range. Thereby the successor of -0 and 0 are both the

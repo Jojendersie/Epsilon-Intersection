@@ -195,3 +195,16 @@ auto bilerp(T0 _x00, T0 _x01,
     return lerp(lerp(_x00, _x01, _t0),
                 lerp(_x10, _x11, _t0), _t1);
 }
+
+// ************************************************************************* //
+template<typename T>
+inline T smoothstep(T _t)
+{
+    return _t * _t * (T(3) - T(2) * _t);
+}
+
+template<typename T>
+inline T smootherstep(T _t)
+{
+    return _t * _t * _t * (_t * (_t * T(6) - T(15)) + T(10));
+}
