@@ -1021,7 +1021,8 @@ auto slerp(const Matrix<T0,1,N>& _v0, const Matrix<T0,1,N>& _v1, T1 _t) -> declt
 {
     T1 theta = acos( clamp(dot(_v0,_v1), static_cast<T1>(-1.0), static_cast<T1>(1.0)) );
     T1 so = sin( theta );
-    if(so == static_cast<T1>(0)) so = 1.0f;
+	// Special cases for so->0 reduce to linear interpolation
+    if(so == static_cast<T1>(0)) return _v0 + (_v1 - _v0) * _t;
     T1 f0 = sin( theta * (static_cast<T1>(1.0)-_t) ) / so;
     T1 f1 = sin( theta * _t ) / so;
     decltype(_v0*_t) result;
@@ -1035,7 +1036,8 @@ auto slerp(const Matrix<T0,M,1>& _v0, const Matrix<T0,M,1>& _v1, T1 _t) -> declt
 {
     T1 theta = acos( clamp(dot(_v0,_v1), static_cast<T1>(-1.0), static_cast<T1>(1.0)) );
     T1 so = sin( theta );
-    if(so == static_cast<T1>(0)) so = 1.0f;
+	// Special cases for so->0 reduce to linear interpolation
+    if(so == static_cast<T1>(0)) return _v0 + (_v1 - _v0) * _t;
     T1 f0 = sin( theta * (static_cast<T1>(1.0)-_t) ) / so;
     T1 f1 = sin( theta * _t ) / so;
     decltype(_v0*_t) result;

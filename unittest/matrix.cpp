@@ -453,6 +453,7 @@ bool test_matrix()
         TEST( bilerp(1, 3, 5, 7, 0.5f, 0.5f) == 4.0f, "Bilinear interpolation failed." );
         TEST( approx(slerp(v4, v5, 0.25f), v6), "Spherical linear interpolation failed." );
         TEST( approx(dot(slerp(v1, v3, 0.5f), v1), 0.0f), "Spherical linear interpolation for degenerated case failed." );
+        TEST( all(slerp(v1, v1, 0.125f) == v1), "Spherical linear interpolation for two equal vectors failed." );
     }
 
     // ********************************************************************* //
