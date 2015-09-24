@@ -37,11 +37,24 @@ bool test_fixedpoint()
     TEST( (Fix<32,16>(0.05f)) == f3 * f6, "Multiplication f3 * f6 failed!" );
     TEST( f7 == f2 / f6, "Division f2 / f6 failed!" );
 
+    // Comparison
+    Fix<32,16> f8 = static_cast<Fix<32,16>>(-8.0f);
+    Fix<32,31> f9(0.5f);
+    TEST( f0 == f1, "0 and -0 should be equal!" );
+    TEST( f0 != f2, "f0 and f2 should be unequal!" );
+    TEST( f3 <= f3, "f3 and f3 are equal!" );
+    TEST( !(f3 < f3), "f3 and f3 are equal!" );
+    TEST( f0 < f3, "f0 is smaller than f3!" );
+    TEST( !(f0 > f3), "f0 is not larger than f3!" );
+    TEST( f0 > f8, "f0 is greater than f8!" );
+    TEST( f5 >= f4, "f5 is greater than f4!" );
+    TEST( f4 < f5, "f4 is smaller than f5!" );
+    TEST( f5 < f9, "f4 is smaller than f9!" );
+
     int i0 = Fix<32,16>::NUM_INT_DIGITS2;
     int i1 = Fix<32,16>::NUM_INT_DIGITS10;
     int i2 = Fix<32,16>::NUM_FRAC_DIGITS2;
     int i3 = Fix<32,16>::NUM_FRAC_DIGITS10;
-
 
 //    char buf[128];
 //    f4.toString(buf);

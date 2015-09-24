@@ -50,9 +50,9 @@ namespace ei
         /// Construct from int
         explicit Fix(int _value);
 
-        /// Cast explicit to float
+        /// Cast explicit (not automatic) to float
         explicit operator float () const;
-        /// Cast explicit to double
+        /// Cast explicit (not automatic) to double
         explicit operator double () const;
 
         /// Convert into a string. The buffer must be allocated and large enough.
@@ -69,13 +69,13 @@ namespace ei
     template<unsigned FractionalBits>
     Fix<32, FractionalBits>::Fix(float _value)
     {
-        intrep = int32(_value * double(1 << FractionalBits));
+        intrep = int32(_value * double(1u << FractionalBits));
     }
 
     template<unsigned FractionalBits>
     Fix<32, FractionalBits>::Fix(double _value)
     {
-        intrep = int32(_value * double(1 << FractionalBits));
+        intrep = int32(_value * double(1u << FractionalBits));
     }
 
     template<unsigned FractionalBits>
@@ -90,14 +90,14 @@ namespace ei
     Fix<32, FractionalBits>::operator float () const
     {
         // Mantissa of double > 32 bit -> save to compute anything in floats
-        return float(intrep / double(1 << FractionalBits));
+        return float(intrep / double(1u << FractionalBits));
     }
 
     template<unsigned FractionalBits>
     Fix<32, FractionalBits>::operator double () const
     {
         // Mantissa of double > 32 bit -> save to compute anything in floats
-        return intrep / double(1 << FractionalBits);
+        return intrep / double(1u << FractionalBits);
     }
 
     // ********************************************************************* //
@@ -149,5 +149,35 @@ namespace ei
     bool operator == (Fix<32,FractionalBits> _lhs, Fix<32,FractionalBits> _rhs)
     {
         return _lhs.intrep == _rhs.intrep;
+    }
+
+    template<unsigned FractionalBits>
+    bool operator != (Fix<32,FractionalBits> _lhs, Fix<32,FractionalBits> _rhs)
+    {
+        return _lhs.intrep != _rhs.intrep;
+    }
+
+    template<unsigned FractionalBits>
+    bool operator <= (Fix<32,FractionalBits> _lhs, Fix<32,FractionalBits> _rhs)
+    {
+        return _lhs.intrep <= _rhs.intrep;
+    }
+
+    template<unsigned FractionalBits>
+    bool operator >= (Fix<32,FractionalBits> _lhs, Fix<32,FractionalBits> _rhs)
+    {
+        return _lhs.intrep >= _rhs.intrep;
+    }
+
+    template<unsigned FractionalBits>
+    bool operator < (Fix<32,FractionalBits> _lhs, Fix<32,FractionalBits> _rhs)
+    {
+        return _lhs.intrep < _rhs.intrep;
+    }
+
+    template<unsigned FractionalBits>
+    bool operator > (Fix<32,FractionalBits> _lhs, Fix<32,FractionalBits> _rhs)
+    {
+        return _lhs.intrep > _rhs.intrep;
     }
 }
