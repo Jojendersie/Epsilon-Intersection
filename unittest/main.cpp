@@ -8,11 +8,15 @@ bool test_2dtypes();
 bool test_2dintersections();
 bool test_3dtypes();
 bool test_3dintersections();
+bool test_stdextensions();
 
 int main()
 {
     if( test_elementaries() )
         cerr << "Successfully completed: Elementary types." << std::endl;
+
+    if( test_stdextensions() )
+        cerr << "Successfully completed: std:extensions." << std::endl;
 
     if( test_matrix() )
         cerr << "Successfully completed: Matrix type." << std::endl;
