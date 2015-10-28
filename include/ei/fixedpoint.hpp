@@ -50,6 +50,16 @@ namespace ei
             NUM_FRAC_DIGITS10 = FractionalBits,
         };
 
+        /// Construct from float
+        explicit Fix(float _value);
+        /// Construct from double
+        explicit Fix(double _value);
+
+        /// Cast explicit (not automatic) to float
+        explicit operator float () const;
+        /// Cast explicit (not automatic) to double
+        explicit operator double () const;
+
         /// TODO: there is no? guarantee what happens with negative numbers on shift
         /// maybe it is necessary to store all but the first as uint32.
         int32 intrep[NUM_INTS];      ///< Internal integer representation with [0] as the most significant word
@@ -93,6 +103,86 @@ namespace ei
     };
 
     // ********************************************************************* //
+    // IMPLEMENTATION Fix<32 * N>                                            //
+    // ********************************************************************* //
+    template<unsigned BitSize, unsigned FractionalBits>
+    Fix<BitSize, FractionalBits>::Fix(float _value)
+    {
+        // Zero out most words (not all might be influenced)
+        for(int i = 0; i < NUM_INTS; ++i) intrep[i] = 0;
+        // Split float into its parts
+        int32 ix = *reinterpret_cast<int32*>(&_value);
+        int32 mantissa = (ix & 0x007fffff);
+        int32 exponent = ((ix >> 23) & 0x000000ff) - 127;
+        int32 sign = ix & 0x80000000;
+        // Not null or denormalized -> add implicit leading bit
+        if(exponent > -127)
+            mantissa |= 0x00800000;
+        // Put it in up to two words shifted
+        int32 rightShift = NUM_INT_DIGITS2 - 8 - exponent;
+        // Shift left -> only first word influenced. Overflow possible.
+        if(rightShift <= 0)
+        {
+            if(details::overflows(mantissa, -rightShift + 1))
+                if(sign) intrep[0] = 0x80000000;
+                else {intrep[0] = 0x7fffffff; for(int i=1; i<NUM_INTS;++i) intrep[i] = 0xffffffff;}
+            else intrep[0] = mantissa << -rightShift;
+        } else {
+            // Otherwise there are at most two words influenced. The range of
+            // influence is in the bits 8+rightshift till 31+rightshift (0 indexed).
+            int lw = (8+rightShift) / 32;
+            int rw = (31+rightShift) / 32;
+            if(lw < NUM_INTS)
+                intrep[lw] = details::xshift(mantissa, rightShift - lw * 32);
+            if(lw != rw && rw < NUM_INTS)
+                intrep[rw] = details::xshift(mantissa, rightShift - rw * 32);
+            if(sign)
+            {
+                int carry = 1;
+                for(int i = NUM_INTS-1; i >= 0; --i)
+                {
+                    intrep[i] = ~intrep[i] + carry;
+                    if(intrep[i]) carry = 0;
+                }
+            }
+        }
+    }
+
+    template<unsigned BitSize, unsigned FractionalBits>
+    Fix<BitSize, FractionalBits>::Fix(double _value)
+    {
+    }
+
+    // ********************************************************************* //
+    // Casts
+    template<unsigned BitSize, unsigned FractionalBits>
+    Fix<BitSize, FractionalBits>::operator float () const
+    {
+        // Find the two most significant words and put them into a 64 bit int.
+        int64 mantissa = 0;
+        int significantWord = 0; // Index of the first word != 0
+        for(; significantWord < NUM_INTS-1; ++significantWord)
+        {
+            if(intrep[significantWord])
+            {
+                mantissa = (int64(intrep[significantWord]) << 32) | uint32(intrep[significantWord+1]);
+                break;
+            }
+        }
+        if(significantWord == NUM_INTS-1)
+            mantissa = int64(intrep[significantWord]) << 32;
+        else ++significantWord;
+
+        // Convert into float and shift by changing the exponent
+        return float(mantissa) * pow(2.0f, int((NUM_INTS-significantWord-1) * 32 - FractionalBits));
+    }
+
+    template<unsigned BitSize, unsigned FractionalBits>
+    Fix<BitSize, FractionalBits>::operator double () const
+    {
+    }
+
+    // ********************************************************************* //
     // IMPLEMENTATION Fix<32>                                                //
     // ********************************************************************* //
 
@@ -118,7 +208,6 @@ namespace ei
         if(val >= double(1u << 31)) intrep = 0x7fffffff;
         else if(val <= -double(1u << 31)) intrep = 0x80000000;
         else intrep = int32(val);
-        intrep = int32(_value * double(1u << FractionalBits));
     }
 
     template<unsigned FractionalBits>

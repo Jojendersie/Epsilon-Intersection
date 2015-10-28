@@ -35,6 +35,7 @@ bool test_fixedpoint()
         Fix<32,31> fnan(NAN);
         Fix<32,31> fmax2(1);
         Fix<32,31> fmin2(-1);
+        Fix<32,31> fmax3(1.0);
         Fix<32,31> fmin3(-3);
         TEST( float(-Fix<32,31>(-0.2)) == 0.2f, "Unary minus of Fix<32,31> failed!" );
         TEST( fmax0.intrep == 0x7fffffff, "Overflow did not yield fix-max!" );
@@ -44,6 +45,7 @@ bool test_fixedpoint()
         TEST( fnan.intrep == 0x80000000, "NaNs are expected to be the maximum negative representable number!" );
         TEST( fmax2.intrep == 0x7fffffff, "From Int: Overflow did not yield fix-max!" );
         TEST( fmin2.intrep == 0x80000000, "From Int: -1 not correctly converted!" );
+        TEST( fmax3.intrep == 0x7fffffff, "From Int: Overflow did not yield fix-max!" );
         TEST( fmin3.intrep == 0x80000000, "From Int: Overflow (negative) did not yield fix-min!" );
 
         // Addition and subtraction
@@ -81,7 +83,19 @@ bool test_fixedpoint()
 
     // 64 BIT
     {
-
+        // Casting
+        Fix<64,45> f0(1.0f);
+        Fix<64,45> f1(-1.0f);
+        Fix<64,45> f2(PI);
+        Fix<64,45> f3(-0.1f);
+        Fix<64,63> f4(2.345f);
+        Fix<64,63> f5(1.0f);
+        TEST( float(f0) == 1.0f, "Converting 1.0f to Fix<64,45> and back to float failed!" );
+        TEST( float(f1) == -1.0f, "Converting -1.0f to Fix<64,45> and back to float failed!" );
+        TEST( float(f2) == PI, "Converting PI to Fix<64,45> and back to float failed!" );
+        TEST( float(f3) == -0.1f, "Converting -0.1f to Fix<64,45> and back to float failed!" );
+        TEST( float(f4) == 1.0f, "Overflow of Fix<64,63> did not yield the max-value!" );
+        TEST( float(f5) == 1.0f, "Overflow of Fix<64,63> did not yield the max-value!" );
     }
 
     return result;
