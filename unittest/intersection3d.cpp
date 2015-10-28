@@ -175,8 +175,12 @@ bool test_3dintersections()
         TEST( intersects( ray3, box1 ), "ray3 should hit box1!" );
 
         float d;
-        //TEST( intersects( ray3, box1, d ) && d == 0.25f, "ray3 should hit box1 with a distance of 0.25!" );
+        TEST( intersects( ray3, box1, d ) && d == 0.0f, "ray3 should hit box1 with a distance of 0.0!" );
         TEST( intersects( ray0, box0, d ) && d == sqrt(2.0f), "ray0 should hit box0 with a distance of sqrt(2)!" );
+
+        HitSide s;
+        TEST( intersects( ray3, box1, d, s ) && s == HitSide::Y_POS, "ray3 should hit box1 at the top face!" );
+        TEST( intersects( ray1, box0, d, s ) && s == HitSide::X_POS, "ray3 should hit box1 at the left face!" );
 
         performance<Ray,Box,bool>(intersects, "intersects");
         performance<Ray,Box,float,bool>(intersects, "intersects");

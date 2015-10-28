@@ -253,6 +253,58 @@ namespace ei {
     }
 
     // ********************************************************************* //
+    bool intersects( const Ray& _ray, const Box& _box, float& _distance, HitSide& _side )
+    {
+        // Box intersection algorithm:
+        // http://people.csail.mit.edu/amy/papers/box-jgt.pdf
+        // Projection to all planes
+        float min0, tmin, max0, tmax;
+        HitSide tside;
+        if( _ray.direction.x >= 0 ) {
+            min0 = (_box.min.x - _ray.origin.x) / _ray.direction.x;
+            max0 = (_box.max.x - _ray.origin.x) / _ray.direction.x;
+            _side = min0 < 0.0f ? HitSide::X_POS : HitSide::X_NEG;
+        } else {
+            max0 = (_box.min.x - _ray.origin.x) / _ray.direction.x;
+            min0 = (_box.max.x - _ray.origin.x) / _ray.direction.x;
+            _side = min0 < 0.0f ? HitSide::X_NEG : HitSide::X_POS;
+        }
+
+        if( _ray.direction.y >= 0 ) {
+            tmin = (_box.min.y - _ray.origin.y) / _ray.direction.y;
+            tmax = (_box.max.y - _ray.origin.y) / _ray.direction.y;
+            tside = min0 < 0.0f ? HitSide::Y_POS : HitSide::Y_NEG;
+        } else {
+            tmax = (_box.min.y - _ray.origin.y) / _ray.direction.y;
+            tmin = (_box.max.y - _ray.origin.y) / _ray.direction.y;
+            tside = min0 < 0.0f ? HitSide::Y_NEG : HitSide::Y_POS;
+        }
+
+        if( (min0 > tmax) || (tmin > max0) )
+            return false;
+        if( tmin > min0 ) { min0 = tmin; _side = tside; }
+        if( tmax < max0 ) max0 = tmax;
+
+        if( _ray.direction.z >= 0 ) {
+            tmin = (_box.min.z - _ray.origin.z) / _ray.direction.z;
+            tmax = (_box.max.z - _ray.origin.z) / _ray.direction.z;
+            tside = min0 < 0.0f ? HitSide::Z_POS : HitSide::Z_NEG;
+        } else {
+            tmax = (_box.min.z - _ray.origin.z) / _ray.direction.z;
+            tmin = (_box.max.z - _ray.origin.z) / _ray.direction.z;
+            tside = min0 < 0.0f ? HitSide::Z_NEG : HitSide::Z_POS;
+        }
+
+        if( (min0 > tmax) || (tmin > max0) )
+            return false;
+        if( 0.0f > max0 || 0.0f > tmax ) return false;
+        if( tmin > min0 ) _side = tside;
+
+        _distance = max(min0, tmin, 0.0f);
+        return true;
+    }
+
+    // ********************************************************************* //
     bool intersects( const Ray& _ray, const Box& _box, float& _distance, float& _distanceExit )
     {
         float t0 = (_box.min.x - _ray.origin.x) / _ray.direction.x;

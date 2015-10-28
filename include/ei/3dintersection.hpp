@@ -1,8 +1,25 @@
-#pragma once
+﻿#pragma once
 
 #include "3dtypes.hpp"
 
 namespace ei {
+
+    /// \brief Descriptor for hit results with boxes.
+    /// \details Sides are relative to the local system of the box.
+    ///     For OBoxs this is not the absolute coordinate. E.g. if a box is
+    ///     rotated by π/2 two coordinates seem to be exchanged.
+    enum struct HitSide
+    {
+        X_NEG = 0x01,         ///< Left.
+        X_POS = 0x02,         ///< Right.
+        X     = 0x03,         ///< Any side in x-direction
+        Y_NEG = 0x04,         ///< Bottom.
+        Y_POS = 0x08,         ///< Top.
+        Y     = 0x0c,         ///< Any side in y-direction
+        Z_NEG = 0x10,         ///< Front.
+        Z_POS = 0x20,         ///< Back.
+        Z     = 0x30,         ///< Any side in z-direction
+    };
 
     /// \brief Get the euclidean distance between two objects.
     /// \details The distance for point-solid queries can be negative. All
@@ -98,12 +115,15 @@ namespace ei {
     ///
     ///     This is always the exit point. If the ray starts on the boundary
     ///     and shows away _distance and _distanceExit are the same (0).
+    /// \param [out,opt] _side Returns which side of the box was hit.
     /// \return true if there is at least one common point between ray and box
     bool intersects( const Ray& _ray, const Box& _box );                       // TESTED
     bool intersects( const Ray& _ray, const Box& _box, float& _distance );
+    bool intersects( const Ray& _ray, const Box& _box, float& _distance, HitSide& _side );
     bool intersects( const Ray& _ray, const Box& _box, float& _distance, float& _distanceExit );
     inline bool intersects( const Box& _box, const Ray& _ray )  { return intersects( _ray, _box ); }
     inline bool intersects( const Box& _box, const Ray& _ray, float& _distance )  { return intersects( _ray, _box, _distance ); }
+    inline bool intersects( const Box& _box, const Ray& _ray, float& _distance, HitSide& _side )  { return intersects( _ray, _box, _distance, _side ); }
     inline bool intersects( const Box& _box, const Ray& _ray, float& _distance, float& _distanceExit )  { return intersects( _ray, _box, _distance, _distanceExit ); }
 
     /// \brief Do a ray and a triangle intersect or touch?
