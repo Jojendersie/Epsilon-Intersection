@@ -29,7 +29,7 @@ namespace eitypes {
     typedef details::Int<8>::stype int64;                                      // TESTED
 }
 
-#ifdef USE_ELEMENTARIES_WITHOUT_NAMESPACE
+#ifdef EI_GLOBAL_ELEMENTARIES
     using namespace eitypes;
 #endif
 namespace ei {
@@ -74,7 +74,7 @@ namespace ei {
     const float INF = details::F_INF.f;
     const double INF_D = details::D_INF.f;
     // Unicode names for the above constants
-#ifdef USE_UNICODE_NAMES
+#ifdef EI_USE_UNICODE_NAMES
     const float π = PI;
     const float Φ = GOLDEN_RATIO;
     const float √2 = PHYTAGORAS;

@@ -7,7 +7,7 @@
 
 // Just show the namespace once to make sure it exists when aliasing.
 namespace ei {}
-#ifdef USE_UNICODE_NAMES
+#ifdef EI_USE_UNICODE_NAMES
     namespace ε = ei;
 #endif
 // An easter egg for german speaking people ;-).
@@ -47,7 +47,7 @@ namespace egg = ei;
 
     /// \brief Optional assert macro for highly frequented code.
     /// \details \see eiAssert()
-#   if ASSERTION_LEVEL > 1
+#   if EI_ASSERTION_LEVEL > 1
 #       define eiAssertWeak(condition, errorMessage) \
             do {                                   \
                 if((condition) == false) {         \
@@ -61,7 +61,7 @@ namespace egg = ei;
     /// \brief Empty replacement if switched off.
     /// \details \see assertlvl1()
 #   define eiAssert(condition, errorMessage) do { } while((void)0,0)
-#   if ASSERTION_LEVEL > 1
+#   if EI_ASSERTION_LEVEL > 1
 #       define eiAssertWeak(condition, errorMessage) do { } while((void)0,0)
 #   endif
 #endif

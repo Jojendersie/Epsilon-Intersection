@@ -12,15 +12,15 @@
 
 
 /// \brief All types from elementarytypes.hpp are without namespace.
-/// \details The default is on.
-#define USE_ELEMENTARIES_WITHOUT_NAMESPACE
+/// \details The default is 'enabled'.
+#define EI_GLOBAL_ELEMENTARIES
 
 /// \brief Using this option changes the namespace ei:: to ε::.
 /// \details Do not use this if the symbol epsilon above is not shown correctly,
 ///    or enable utf8 in all your files.
 ///
-///    The default is off.
-//#define USE_UNICODE_NAMES
+///    The default is 'disabled'.
+//#define EI_USE_UNICODE_NAMES
 
 
 /// \brief Enable a bunch of debug assertions in the vector code.
@@ -31,6 +31,6 @@
 ///    Level 0: Deactivate all assertions. Not recommended.
 ///    Level 1: Use assertions where errors are likely. Default option.
 ///    Level 2: Maximum. Permanent tests everywhere.
-#define ASSERTION_LEVEL		2
+#define EI_ASSERTION_LEVEL		2
 
 #include "details/config.inl"

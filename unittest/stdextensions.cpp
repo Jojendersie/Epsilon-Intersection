@@ -16,13 +16,13 @@ bool test_stdextensions()
     // Compilation of hash functions
     {
         hash<IVec2> hv2;
-        cout << "Hash of IVec2(" << ") is " << hv2(v0);
+        cout << "Hash of IVec2(..." << ") is " << hv2(v0) << '\n';
         hash<Vec3> hv3;
-        cout << "Hash of Vec3(" << ") is " << hv3(v1);
+        cout << "Hash of Vec3(..." << ") is " << hv3(v1) << '\n';
         hash<Vec4> hv4;
-        cout << "Hash of Vec4(" << ") is " << hv4(v2);
+        cout << "Hash of Vec4(..." << ") is " << hv4(v2) << '\n';
         hash<Mat3x3> hv33;
-        cout << "Hash of Mat3x3(" << ") is " << hv33(m0);
+        cout << "Hash of Mat3x3(..." << ") is " << hv33(m0) << '\n';
     }
 
     return true;
