@@ -9,11 +9,33 @@ namespace details {
     {
         return (_count < 0) ? _value << -_count : _value >> _count;
     }
+    ei::uint64 xshift(ei::uint64 _value, int _count)
+    {
+        return (_count < 0) ? _value << -_count : _value >> _count;
+    }
 
+    // Chech if there are bits which overflow when shifted left by a given amount
     bool overflows(ei::uint32 _value, int _leftShift)
     {
-        /// Create a bit mask with 111..0000 wher the number of ones is _leftShift.
+        /// Create a bit mask with 111..0000 where the number of ones is _leftShift.
         return (_value & (0xffffffffu << (32-_leftShift))) != 0;
+    }
+    bool overflows(ei::uint64 _value, int _leftShift)
+    {
+        /// Create a bit mask with 111..0000 where the number of ones is _leftShift.
+        return (_value & (0xffffffffffffffffu << (64-_leftShift))) != 0;
+    }
+
+    // Compute negated two complement value inplace
+    template<int N>
+    void negate(ei::int32* intrep)
+    {
+        int carry = 1;
+        for(int i = N-1; i >= 0; --i)
+        {
+            intrep[i] = ~intrep[i] + carry;
+            if(intrep[i]) carry = 0;
+        }
     }
 }
 
@@ -112,7 +134,7 @@ namespace ei
         for(int i = 0; i < NUM_INTS; ++i) intrep[i] = 0;
         // Split float into its parts
         int32 ix = *reinterpret_cast<int32*>(&_value);
-        int32 mantissa = (ix & 0x007fffff);
+        uint32 mantissa = (ix & 0x007fffff);
         int32 exponent = ((ix >> 23) & 0x000000ff) - 127;
         int32 sign = ix & 0x80000000;
         // Not null or denormalized -> add implicit leading bit
@@ -136,21 +158,45 @@ namespace ei
                 intrep[lw] = details::xshift(mantissa, rightShift - lw * 32);
             if(lw != rw && rw < NUM_INTS)
                 intrep[rw] = details::xshift(mantissa, rightShift - rw * 32);
-            if(sign)
-            {
-                int carry = 1;
-                for(int i = NUM_INTS-1; i >= 0; --i)
-                {
-                    intrep[i] = ~intrep[i] + carry;
-                    if(intrep[i]) carry = 0;
-                }
-            }
+            if(sign) details::negate<NUM_INTS>(intrep);
         }
     }
 
     template<unsigned BitSize, unsigned FractionalBits>
     Fix<BitSize, FractionalBits>::Fix(double _value)
     {
+        // Zero out most words (not all might be influenced)
+        for(int i = 0; i < NUM_INTS; ++i) intrep[i] = 0;
+        // Split double into its parts
+        int64 ix = *reinterpret_cast<int64*>(&_value);
+        uint64 mantissa = (ix & 0x000fffffffffffff);
+        int32 exponent = ((ix >> 52) & 0x000007ff) - 1023;
+        int64 sign = ix & 0x8000000000000000;
+        // Not null or denormalized -> add implicit leading bit
+        if(exponent > -1023)
+            mantissa |= 0x0010000000000000;
+        // Put it in up to three words shifted
+        int32 rightShift = NUM_INT_DIGITS2 - 11 - exponent;
+        // Shift left -> only first two word influenced. Overflow possible.
+        if(rightShift <= 0)
+        {
+            if(details::overflows(mantissa, -rightShift + 1))
+                if(sign) intrep[0] = 0x80000000;
+                else {intrep[0] = 0x7fffffff; for(int i=1; i<NUM_INTS;++i) intrep[i] = 0xffffffff;}
+            else {
+                mantissa <<= -rightShift;
+                intrep[0] = mantissa >> 32;
+                intrep[1] = mantissa & 0xffffffffu;
+            }
+        } else {
+            // Otherwise there are at most three words influenced. The range of
+            // influence is in the bits 11+rightshift till 63+rightshift (0 indexed).
+            int lw = (11+rightShift) / 32;
+            int rw = (63+rightShift) / 32;
+            for(int w = lw; w<=rw && w<NUM_INTS; ++w)
+                intrep[w] = details::xshift(mantissa, rightShift - w * 32 + 32) & 0xffffffffu;
+            if(sign) details::negate<NUM_INTS>(intrep);
+        }
     }
 
     // ********************************************************************* //
@@ -165,7 +211,7 @@ namespace ei
         {
             if(intrep[significantWord])
             {
-                mantissa = (int64(intrep[significantWord]) << 32) | uint32(intrep[significantWord+1]);
+                mantissa = (uint64(intrep[significantWord]) << 32) | uint32(intrep[significantWord+1]);
                 break;
             }
         }
@@ -180,6 +226,32 @@ namespace ei
     template<unsigned BitSize, unsigned FractionalBits>
     Fix<BitSize, FractionalBits>::operator double () const
     {
+        // Make number positive
+        T x = *this;
+        if(intrep[0] & 0x80000000) details::negate<NUM_INTS>(x.intrep);
+        // Find the three most significant words and put them into a 64 bit int.
+        int64 mantissa = 0;
+        int msb = (NUM_INTS-2) * 32; // Index of the first bit != 0
+        for(int w = 0; w < NUM_INTS; ++w)
+        {
+            if(x.intrep[w])
+            {
+                // Get position of the most significant bit -1
+                double tmp = (double)(x.intrep[w]|1);
+                msb = 1054 - (((*reinterpret_cast<uint64*>(&tmp)) >> 52) & 0x7ff) - 1;
+                // Pack mantissa from up to three words
+                mantissa = (uint64(x.intrep[w]) << (32+msb));
+                if(w+1 < NUM_INTS) mantissa |= (uint64(uint32(x.intrep[w+1])) << msb);
+                if(w+2 < NUM_INTS) mantissa |= (uint32(x.intrep[w+2]) >> (32-msb));
+                msb += w*32;
+                break;
+            }
+        }
+
+        // Convert into double and shift by changing the exponent
+        if(intrep[0] & 0x80000000)
+            return -double(mantissa) * pow(2.0, int((NUM_INTS-2) * 32 - msb - FractionalBits));
+        else return double(mantissa) * pow(2.0, int((NUM_INTS-2) * 32 - msb - FractionalBits));
     }
 
     // ********************************************************************* //
@@ -213,7 +285,7 @@ namespace ei
     template<unsigned FractionalBits>
     Fix<32, FractionalBits>::Fix(int _value)
     {
-        if(details::overflows(_value & 0x7fffffff, FractionalBits+1))
+        if(details::overflows(unsigned(_value & 0x7fffffff), FractionalBits+1))
             intrep = _value < 0 ? 0x80000000 : 0x7fffffff;
         else intrep = int32(_value << FractionalBits);
     }

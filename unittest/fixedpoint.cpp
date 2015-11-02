@@ -83,7 +83,7 @@ bool test_fixedpoint()
 
     // 64 BIT
     {
-        // Casting
+        // Casting (float)
         Fix<64,45> f0(1.0f);
         Fix<64,45> f1(-1.0f);
         Fix<64,45> f2(PI);
@@ -94,8 +94,22 @@ bool test_fixedpoint()
         TEST( float(f1) == -1.0f, "Converting -1.0f to Fix<64,45> and back to float failed!" );
         TEST( float(f2) == PI, "Converting PI to Fix<64,45> and back to float failed!" );
         TEST( float(f3) == -0.1f, "Converting -0.1f to Fix<64,45> and back to float failed!" );
-        TEST( float(f4) == 1.0f, "Overflow of Fix<64,63> did not yield the max-value!" );
-        TEST( float(f5) == 1.0f, "Overflow of Fix<64,63> did not yield the max-value!" );
+        TEST( float(f4) == 1.0f, "Overflow of Fix<64,63> from float did not yield the max-value!" );
+        TEST( float(f5) == 1.0f, "Overflow of Fix<64,63> from float did not yield the max-value!" );
+
+        // Casting (double)
+        Fix<64,45> fd0(1.0);
+        Fix<64,45> fd1(-1.0);
+        Fix<64,48> fd2(3.1415926535897932);
+        Fix<64,55> fd3(-0.1);
+        Fix<64,63> fd4(2.345);
+        Fix<64,63> fd5(1.0);
+        TEST( double(fd0) == 1.0, "Converting 1.0 to Fix<64,45> and back to double failed!" );
+        TEST( double(fd1) == -1.0, "Converting -1.0 to Fix<64,45> and back to double failed!" );
+        TEST( double(fd2) == 3.1415926535897932, "Converting PI to Fix<64,45> and back to double failed!" );
+        TEST( double(fd3) == -0.1, "Converting -0.1 to Fix<64,45> and back to double failed!" );
+        TEST( double(fd4) == 1.0, "Overflow of Fix<64,63> from double did not yield the max-value!" );
+        TEST( double(fd5) == 1.0, "Overflow of Fix<64,63> from double did not yield the max-value!" );
     }
 
     return result;
