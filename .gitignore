@@ -8,7 +8,7 @@ vcprojectfiles/
 *.user
 *.opensdf
 
-config.hpp
+eiconfig.hpp
 
 ### Compilation and Intermediate Files ###
 bin/

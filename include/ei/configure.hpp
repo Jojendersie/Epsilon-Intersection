@@ -1,5 +1,10 @@
 ﻿#pragma once
 
+// You must provide an eiconfig.hpp at a location where your build tool finds it.
+// To create that file, copy the defaultconfig.hpp to your chosen location and
+// configure the Epsilon-Intersection library by switching the defines on and off.
+#include <eiconfig.hpp>
+
 // Just show the namespace once to make sure it exists when aliasing.
 namespace ei {}
 #ifdef USE_UNICODE_NAMES

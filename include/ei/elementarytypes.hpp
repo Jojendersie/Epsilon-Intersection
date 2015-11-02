@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "config.hpp"
+#include "configure.hpp"
 #include "details/inttemplate.hpp"
 
 // Ugly to include this here but you will miss sqrt,sin,... otherwise
