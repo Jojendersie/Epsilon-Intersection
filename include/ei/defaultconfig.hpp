@@ -32,5 +32,3 @@
 ///    Level 1: Use assertions where errors are likely. Default option.
 ///    Level 2: Maximum. Permanent tests everywhere.
 #define EI_ASSERTION_LEVEL		2
-
-#include "details/config.inl"
