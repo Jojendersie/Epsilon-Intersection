@@ -25,5 +25,13 @@ bool test_stdextensions()
         cout << "Hash of Mat3x3(..." << ") is " << hv33(m0) << '\n';
     }
 
+    // Comparison objects
+    {
+        equal_to<IVec2> ev2;
+        cout << "equal_to of IVec2(..." << ") is " << ev2(v0, v0) << '\n';
+        equal_to<Mat3x3> ev33;
+        cout << "equal_to of Mat3x3(..." << ") is " << ev33(m0, m0) << '\n';
+    }
+
     return true;
 }

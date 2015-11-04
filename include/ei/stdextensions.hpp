@@ -72,4 +72,15 @@ namespace std {
             return h;
         }
     };
+
+
+    /// \brief Container need to compare items for equality too
+    template <typename T, int M, int N>
+    struct equal_to<ei::Matrix<T, M, N>>
+    {
+        std::size_t operator()(const ei::Matrix<T, M, N>& _lhs, const ei::Matrix<T, M, N>& _rhs) const
+        {
+            return all(_lhs == _rhs);
+        }
+    };
 } // namespace std
