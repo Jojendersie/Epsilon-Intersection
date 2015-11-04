@@ -215,13 +215,13 @@ namespace ei {
         Matrix<T, M, 1>& operator/= (const Matrix<T1,M,1>& _mat1);             // TESTED
         template<typename T1, ENABLE_IF(M == 1)>
         Matrix<T, 1, N>& operator/= (const Matrix<T1,1,N>& _mat1);             // TESTED
-        /// \brief Self assigning womponent wise binary or.
+        /// \brief Self assigning component wise binary or.
         template<typename T1>
         Matrix<T, M, N>& operator|= (const Matrix<T1,M,N>& _mat1);             // TESTED
-        /// \brief Self assigning womponent wise binary and.
+        /// \brief Self assigning component wise binary and.
         template<typename T1>
         Matrix<T, M, N>& operator&= (const Matrix<T1,M,N>& _mat1);             // TESTED
-        /// \brief Self assigning womponent wise binary xor.
+        /// \brief Self assigning component wise binary xor.
         template<typename T1>
         Matrix<T, M, N>& operator^= (const Matrix<T1,M,N>& _mat1);             // TESTED
         /// \brief Self assigning modulo (rest of integer division)
@@ -252,6 +252,11 @@ namespace ei {
         /// \brief Self assigning scalar modulo (rest of integer division).
         template<typename T1>
         Matrix<T, M, N>& operator%= (T1 _s);                                   // TESTED
+        /// \brief Self assigning component wise shift
+        template<typename T1>
+        Matrix<T, M, N>& operator>>= (T1 _s);                                  // TESTED
+        template<typename T1>
+        Matrix<T, M, N>& operator<<= (T1 _s);                                  // TESTED
 
         /// \brief Compare component wise, if two matrices are identical.
         Matrix<bool,M,N> operator== (const Matrix<T,M,N>& _mat1) const;        // TESTED
@@ -333,6 +338,11 @@ namespace ei {
     /// \brief Modulo of a scalar and all components.
     template<typename T1, typename T, uint M, uint N>
     Matrix<RESULT_TYPE(%), M, N> operator% (T1 _s, const Matrix<T,M,N>& _mat); // TESTED
+    /// \brief Component wise shift.
+    template<typename T, uint M, uint N, typename T1>
+    Matrix<RESULT_TYPE(>>), M, N> operator>> (const Matrix<T,M,N>& _mat, T1 _s); // TESTED
+    template<typename T, uint M, uint N, typename T1>
+    Matrix<RESULT_TYPE(<<), M, N> operator<< (const Matrix<T,M,N>& _mat, T1 _s); // TESTED
 
     /// \brief Test all components with respect to a scalar.
     template<typename T, uint M, uint N, typename T1>

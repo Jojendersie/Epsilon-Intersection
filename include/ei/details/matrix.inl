@@ -565,6 +565,8 @@ CODE_GEN_MAT_SCALAR_SEFL_OP(|=)
 CODE_GEN_MAT_SCALAR_SEFL_OP(&=)
 CODE_GEN_MAT_SCALAR_SEFL_OP(^=)
 CODE_GEN_MAT_SCALAR_SEFL_OP(%=)
+CODE_GEN_MAT_SCALAR_SEFL_OP(>>=)
+CODE_GEN_MAT_SCALAR_SEFL_OP(<<=)
 
 // ************************************************************************* //
 template<typename T, uint M, uint N>
@@ -657,6 +659,8 @@ CODE_GEN_MAT_SCALAR_OP(|)
 CODE_GEN_MAT_SCALAR_OP(&)
 CODE_GEN_MAT_SCALAR_OP(^)
 CODE_GEN_MAT_SCALAR_OP(%)
+CODE_GEN_MAT_SCALAR_OP(>>)
+CODE_GEN_MAT_SCALAR_OP(<<)
 
 // ********************************************************************* //
 #define CODE_GEN_MAT_SCALAR_RELATION(op)                                            \

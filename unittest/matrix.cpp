@@ -187,14 +187,22 @@ bool test_matrix()
         Matrix<int, 2, 2> m4(4, 4, 4, 12);
         Matrix<int, 2, 2> m5(0xfffffffe, 0xfffffffd, 0xfffffffc, 0xfffffffb);
         Matrix<int, 2, 2> m6(1, 2, 3, 8);
+        Matrix<int, 2, 2> m7(4, 8, 12, 16);
+        Matrix<int, 2, 2> m8(2, 3, 3, 4);
         TEST( all((m0 | m1) == m2), "Component wise | failed!" );
         TEST( all((m0 & m1) == m3), "Component wise & failed!" );
         TEST( all((m0 ^ m1) == m4), "Component wise ^ failed!" );
         TEST( all((m1 % m4) == m6), "Component wise % failed!" );
         TEST( all((~m0) == m5), "Component wise ~ failed!" );
+        TEST( all(m0 << 2 == m7), "Component wise << failed!" );
+        TEST( all(m1 >> 1 == m8), "Component wise >> failed!" );
+        Matrix<int, 2, 2> t = m0; t <<= 2;
+        TEST( all(t == m7), "Component wise << failed!" );
+        t = m1; t >>= 1;
+        TEST( all(t == m8), "Component wise >> failed!" );
         // Generates an error message (expected)
-        //Matrix<float, 2, 2> m3(3.0f, 1.0f, 4.0f, 1.0f);
-        //Matrix<float, 2, 2> m4(4.0f, 3.0f, 7.0f, 5.0f);
+        //Matrix<float, 2, 2> mf0(3.0f, 1.0f, 4.0f, 1.0f);
+        //Matrix<float, 2, 2> mf1(4.0f, 3.0f, 7.0f, 5.0f);
         //Matrix<float, 2, 2> m = m3 | m4;
     }
 
