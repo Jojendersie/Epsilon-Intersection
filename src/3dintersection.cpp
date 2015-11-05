@@ -152,13 +152,9 @@ namespace ei {
         // Go to sphere for numerical stability
         float r = max(_ellipsoid.radii);
         float t = dot(o, _ray.direction);
-        t = max(0.0f, - t - r);
+        t = - t - r;
         if(t > 0.0f)
-            o += _ray.direction * t;//*/
-
-        /*Vec3 scale = max(Vec3(0.0f), 1.0f - _ellipsoid.radii) * _ray.direction;
-        scale = Vec3(scale.y + scale.z, scale.x + scale.z, scale.x + scale.y);
-        o += scale * _ray.direction;*/
+            o += _ray.direction * t;
 
         // Scale system
         o /= _ellipsoid.radii;
@@ -168,9 +164,9 @@ namespace ei {
         Vec3 d = _ray.direction / _ellipsoid.radii;
         float odotd = dot(o, d);
         float ddotd = dot(d, d);
-        float phalf = odotd / ddotd;
-        float q = (odoto - 1.0f) / ddotd;
-        return phalf * phalf - q >= 0.0f;
+        float phalf = odotd;
+        float q = (odoto - 1.0f);
+        return phalf * (phalf / ddotd) - q >= 0.0f;
     }
 
     // ********************************************************************* //
@@ -471,6 +467,26 @@ namespace ei {
         if(alignedPoint.x >   _obox.sides.x / 2.0f) return false;
         if(alignedPoint.y >   _obox.sides.y / 2.0f) return false;
         return alignedPoint.z <= _obox.sides.z / 2.0f;
+    }
+
+    // ************************************************************************* //
+    bool intersects( const Ray& _ray, const Sphere& _sphere )
+    {
+        // Translate to origin
+        Vec3 o = _ray.origin - _sphere.center;
+
+        // Go close to sphere for numerical stability
+        float odotd = dot(o, _ray.direction);
+        float t = - odotd - _sphere.radius;
+        if(t > 0.0f) {
+            o += _ray.direction * t;
+            odotd = dot(o, _ray.direction);
+        }
+
+        // Does the quadratic equation have a solution?
+        float q = dot(o, o) - _sphere.radius;
+        float phalf = odotd;//dot(o, _ray.direction);
+        return phalf * phalf - q >= 0.0f;
     }
 
     // ************************************************************************* //
