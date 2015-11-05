@@ -472,21 +472,26 @@ namespace ei {
     // ************************************************************************* //
     bool intersects( const Ray& _ray, const Sphere& _sphere )
     {
-        // Translate to origin
+        // Go towards closest point and compare its distance to the radius
         Vec3 o = _ray.origin - _sphere.center;
-
-        // Go close to sphere for numerical stability
         float odotd = dot(o, _ray.direction);
-        float t = - odotd - _sphere.radius;
-        if(t > 0.0f) {
-            o += _ray.direction * t;
-            odotd = dot(o, _ray.direction);
-        }
+        o += _ray.direction * -odotd;
+        return lensq(o) <= _sphere.radius * _sphere.radius;
+    }
 
-        // Does the quadratic equation have a solution?
-        float q = dot(o, o) - _sphere.radius;
-        float phalf = odotd;//dot(o, _ray.direction);
-        return phalf * phalf - q >= 0.0f;
+    bool intersects( const Ray& _ray, const Sphere& _sphere, float& _distance )
+    {
+        // Go towards closest point and compare its distance to the radius
+        Vec3 o = _ray.origin - _sphere.center;
+        float le = len(o) - 1.0f;
+        float odotd = -dot(o, _ray.direction);
+        o += _ray.direction * odotd;
+        float distSq = lensq(o);
+        float rSq = _sphere.radius * _sphere.radius;
+        if(distSq > rSq) return false;
+        // Compute the correct distance via phytagoras
+        _distance = max(0.0f, odotd - sqrt(rSq - distSq));
+        return true;
     }
 
     // ************************************************************************* //

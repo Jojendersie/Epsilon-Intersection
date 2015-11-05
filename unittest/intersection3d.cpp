@@ -9,7 +9,6 @@ using namespace std;
 bool test_3dintersections()
 {
     bool result = true;
-    performance<Ray, Sphere, bool>(intersects, "intersects");
 
     // Test sphere <-> sphere intersection
     {
@@ -131,7 +130,6 @@ bool test_3dintersections()
     {
         Ray ray0( Vec3(0.0f, 1.0f, 2.0f), normalize(Vec3(0.2f, -0.9f, 0.0f)) ); /// Starts inside sph1 and misses sph0
         Ray ray1( Vec3(100000.0f, 50.0f, -256.f), normalize(Vec3(-100000.0f, -50.0f, 256.0f)) ); /// Starting far away and intersecting with the origin, misses sph1
-        //Ray ray1( Vec3(1000.0f, 0.5f, -2.56f), normalize(Vec3(1000.0f, 0.5f, -2.56f)) );
         Ray ray2( Vec3(-5.0f, 10.0f, 23.f), normalize(Vec3(5.0f, -9.0f, -22.0f)) ); /// Targets center of sph1
         Ray ray3( Vec3(25.0f, -40.0f, 30.f), normalize(Vec3(5.0f, 1.0f, -2.0f)) );  /// Should not hit
         Sphere sph0( Vec3(0.0f, 0.0f, 0.0f), 1.0f );
@@ -141,11 +139,21 @@ bool test_3dintersections()
         TEST( intersects( ray1, sph0 ), "ray1 should hit sph0!" );
         TEST( !intersects( ray1, sph1 ), "ray1 should miss sph1!" );
         TEST( intersects( ray2, sph0 ), "ray2 should hit sph0!" );
-        TEST( intersects( ray2, sph0 ), "ray2 should hit sph1!" );
+        TEST( intersects( ray2, sph1 ), "ray2 should hit sph1!" );
         TEST( !intersects( ray3, sph0 ), "ray3 should miss sph0!" );
         TEST( !intersects( ray3, sph1 ), "ray3 should miss sph1!" );
 
-        performance<Ray, Sphere>(intersects, "intersects");
+        float d;
+        TEST( !intersects( ray0, sph0, d ), "2: ray0 should miss sph0!" );
+        TEST( intersects( ray0, sph1, d ) && d==0.0f, "ray0 should hit sph1 in a distance of 0!" );
+        TEST( intersects( ray1, sph0, d ) && approx(d, 99999.3359f, 0.01f), "ray1 should hit sph0 in a distance of 99999.3359f!" );
+        TEST( !intersects( ray1, sph1, d ), "2: ray1 should miss sph1!" );
+        TEST( intersects( ray2, sph0, d ) && d==24.7731895f, "ray2 should hit sph0 in a distance of 24.7731895!" );
+        TEST( intersects( ray2, sph1, d ) && d==23.1899151f, "ray2 should hit sph1 in a distance of 23.1899151!" );
+        TEST( !intersects( ray3, sph0, d ), "2: ray3 should miss sph0!" );
+        TEST( !intersects( ray3, sph1, d ), "2: ray3 should miss sph1!" );
+
+        performance<Ray, Sphere, bool>(intersects, "intersects");
     }
 
     // Test ellipsoid <-> ray intersection

@@ -94,8 +94,15 @@ namespace ei {
     inline bool intersects( const OBox& _obox, const Vec3& _point )          { return intersects(_point, _obox); }
 
     /// \brief Do a ray and a sphere intersect or touch?
+    /// \param [out,opt] _distance The ray parameter (distance) for the first
+    ///     intersection point in positive direction.
+    ///
+    ///     If the ray starts inside 0 is returned.
+    /// \return true if the ray has at least one point in common with thp sphere
     bool intersects( const Ray& _ray, const Sphere& _sphere );
+    bool intersects( const Ray& _ray, const Sphere& _sphere, float& _distance );
     inline bool intersects( const Sphere& _sphere, const Ray& _ray ) { return intersects(_ray, _sphere); }
+    inline bool intersects( const Sphere& _sphere, const Ray& _ray, float& _distance ) { return intersects(_ray, _sphere, _distance); }
 
     /// \brief Do a ray and an ellipsoid intersect or touch?
     /// \param [out,opt] _distance The ray parameter (distance) for the first
