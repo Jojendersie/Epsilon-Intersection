@@ -146,7 +146,7 @@ bool test_3dintersections()
         float d;
         TEST( !intersects( ray0, sph0, d ), "2: ray0 should miss sph0!" );
         TEST( intersects( ray0, sph1, d ) && d==0.0f, "ray0 should hit sph1 in a distance of 0!" );
-        TEST( intersects( ray1, sph0, d ) && approx(d, 99999.3359f, 0.01f), "ray1 should hit sph0 in a distance of 99999.3359f!" );
+        TEST( intersects( ray1, sph0, d ) && approx(d, 99999.3359f), "ray1 should hit sph0 in a distance of 99999.3359f!" );
         TEST( !intersects( ray1, sph1, d ), "2: ray1 should miss sph1!" );
         TEST( intersects( ray2, sph0, d ) && d==24.7731895f, "ray2 should hit sph0 in a distance of 24.7731895!" );
         TEST( intersects( ray2, sph1, d ) && d==23.1899151f, "ray2 should hit sph1 in a distance of 23.1899151!" );

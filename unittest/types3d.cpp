@@ -179,7 +179,7 @@ bool test_3dtypes()
         TEST( volume(obo2) <= volume(box0), "Oriented box 2 not optimal!" );
         TEST( all(obo3.sides == Vec3(0.0f)), "Oriented box 3 not as expected!" );
         TEST( approx(obo4.sides.x, 2.0f), "Oriented box 4 not as expected!" );
-        TEST( approx(sum(obo5.sides), 2.0f*sqrt(3.0f), 1e6f), "Oriented box 5 not as expected!" );
+        TEST( approx(sum(obo5.sides), 2.0f*sqrt(3.0f)), "Oriented box 5 not as expected!" );
         //OBox obo6(rot, box0);
     }
 

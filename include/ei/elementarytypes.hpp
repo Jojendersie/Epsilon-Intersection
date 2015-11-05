@@ -147,10 +147,16 @@ namespace ei {
     T sgn(T _x);                                                               // TESTED
 
     // ********************************************************************* //
-    /// \brief Check if the absolute difference between two scalars is less
+    /// \brief Check if the relative difference between two scalars is less
     ///    or equal than epsilon.
-    /// \param [in] _epsilon Maximum threshold for the difference between two
-    ///    elements. The default value is 1e-6.
+    /// \details Computes 2*|x0-x1|/max(|x0|+|x1|, offset), i.e. the ratio
+    ///     between the absolute difference and the clamped average absolute
+    ///     value.
+    ///
+    ///     For numbers towards 0 the clamping (offset = 0.03125) produces an
+    ///     absolute error again
+    /// \param [in] _epsilon A percentage threshold for the difference
+    ///    between two elements. The default value is 1e-6.
     /// \returns true if the difference is less or equal than _epsilon.
     template<typename T, class = typename std::enable_if<!std::is_base_of<details::NonScalarType, T>::value, class Dummy>::type>
     bool approx(T _x0, T _x1, T _epsilon = T(1e-6));                           // TESTED

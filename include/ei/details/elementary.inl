@@ -72,7 +72,9 @@ inline T sgn(T _x)
 template<typename T, class>
 inline bool approx(T _x0, T _x1, T _epsilon)
 {
-    return abs(_x1 - _x0) <= _epsilon;
+    // Use an offset of 0.03125 for comparisons to zero.
+    T sum = max(abs(_x0) + abs(_x1), static_cast<T>(0.03125));
+    return (static_cast<T>(2) * abs(_x1 - _x0) / sum) <= _epsilon;
 }
 
 // ************************************************************************* //
