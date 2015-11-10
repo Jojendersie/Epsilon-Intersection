@@ -77,9 +77,7 @@ namespace ei {
 #ifdef EI_USE_UNICODE_NAMES
     const float π = PI;
     const float Φ = GOLDEN_RATIO;
-    const float √2 = PHYTAGORAS;
     const float ℇ = E;
-    const float ∞ = INF;
 #endif
 
     // ********************************************************************* //
