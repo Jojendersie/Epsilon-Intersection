@@ -905,6 +905,28 @@ namespace ei {
     template<typename T, unsigned M, unsigned N>
     Matrix<T,M,N> solveLUp(const Matrix<T,M,M>& _LU, const Matrix<uint,M,1>& _p, const Matrix<T,M,N>& _B);  // TESTED
 
+    // ********************************************************************* //
+    /// \brief Compute a spectral decomposition Q^T * diag(d) * Q of a 3x3
+    ///     symmetric matrix A.
+    /// \param [in] _sort Sort eigenvalues and vectors descending.
+    /// \param [out] _Q The orthonormal basis where rows are the eigenvectors
+    ///     corresponding to the eigenvalues _lambda of A.
+    /// \param [out] _lambda Eigenvalues of A.
+    /// \return Number of iterations (50 is the maximum used internally)
+    template<typename T>
+    int decomposeQl(const Matrix<T,3,3>& _A, Matrix<T,3,3>& _Q, Vec<T,3>& _lambda, bool _sort = false);     // TESTED
+
+    // ********************************************************************* //
+    // EXPERIMENT:
+    // Rayleigh iteration is expensive per iteration and cannot guarantee that
+    // the maximum λ will be found. Power iteration converges very slowly.
+    // Since decomposeQl is faster then both eigenmax is discarded.
+    //
+    /// \brief Find the largest eigenvector and eigenvalue of a matrix.
+    /// \details This uses power iteration which does not guaranteed a
+    ///     convergence if eigenvalues are not distinct.
+    //template<typename T, unsigned N>
+    //int eigenmax(const Matrix<T,N,N>& _A, Vec<T,N>& _eigenvec, T& _eigenval);
 
     // ********************************************************************* //
     /// \brief Invert a quadratic matrix.

@@ -568,15 +568,15 @@ bool test_matrix()
         Vec3 vx(1.0f, 0.0f, 0.0f);
         Vec3 vy(0.0f, 1.0f, 0.0f);
         Vec3 vz(0.0f, 0.0f, 1.0f);
-        TEST( approx(rotation(PI/2, 0.0f, 0.0f) * vy, vz), "Rotation matrix from Euler angles invalid!" );
-        TEST( approx(rotation(-PI/2, 0.0f, 0.0f) * vz, vy), "Rotation matrix from Euler angles invalid!" );
-        TEST( approx(rotation(0.0f, -PI/2, 0.0f) * vx, vz), "Rotation matrix from Euler angles invalid!" );
-        TEST( approx(rotation(0.0f, PI/2, 0.0f) * vz, vx), "Rotation matrix from Euler angles invalid!" );
-        TEST( approx(rotation(0.0f, 0.0f, PI/2) * vx, vy), "Rotation matrix from Euler angles invalid!" );
-        TEST( approx(rotation(0.0f, 0.0f, -PI/2) * vy, vx), "Rotation matrix from Euler angles invalid!" );
+        TEST( approx(rotation(PI/2, 0.0f, 0.0f) * vy, vz, 4e-6f), "Rotation matrix from Euler angles (PI/2, 0, 0) invalid!" );
+        TEST( approx(rotation(-PI/2, 0.0f, 0.0f) * vz, vy, 4e-6f), "Rotation matrix from Euler angles (-PI/2, 0, 0) invalid!" );
+        TEST( approx(rotation(0.0f, -PI/2, 0.0f) * vx, vz, 4e-6f), "Rotation matrix from Euler angles (0, -PI/2, 0) invalid!" );
+        TEST( approx(rotation(0.0f, PI/2, 0.0f) * vz, vx, 4e-6f), "Rotation matrix from Euler angles (0, PI/2, 0) invalid!" );
+        TEST( approx(rotation(0.0f, 0.0f, PI/2) * vx, vy, 4e-6f), "Rotation matrix from Euler angles (0, 0, PI/2) invalid!" );
+        TEST( approx(rotation(0.0f, 0.0f, -PI/2) * vy, vx, 4e-6f), "Rotation matrix from Euler angles (0, 0, -PI/2) invalid!" );
 
-        TEST( approx(rotation(vx, vx), identity3x3()), "Rotation matrix from vector to vector invalid!" );
-        TEST( approx(rotation(vy, vz), rotation(PI/2, 0.0f, 0.0f)), "Rotation matrix from vector to vector invalid!" );
+        TEST( approx(rotation(vx, vx), identity3x3()), "Rotation matrix from vector to itself invalid!" );
+        TEST( approx(rotation(vy, vz), rotation(PI/2, 0.0f, 0.0f), 4e-6f), "Rotation matrix from vector to vector invalid!" );
 
         TEST( approx(housholder(Vec3(-1.0f, 1.0f, 0.0f)) * vy, vx), "Housholder matrix invalid!" );
         TEST( approx(housholder(Vec3(1.0f, -1.0f, 0.0f)) * vy, vx), "Housholder matrix invalid!" );
@@ -605,8 +605,8 @@ bool test_matrix()
         TEST( approx(v2, cartesianCoords(s2)), "Cartesian coordinates of s2 wrong!" );
         TEST( approx(v3, cartesianCoords(s3)), "Cartesian coordinates of s3 wrong!" );
         TEST( approx(v4, cartesianCoords(s4)), "Cartesian coordinates of s4 wrong!" );
-        TEST( approx(v5, cartesianCoords(s5)), "Cartesian coordinates of s5 wrong!" );
-        TEST( approx(v6, cartesianCoords(sphericalCoords(v6))), "5D vector coordinate transformation to spherical and back failed!" );
+        TEST( approx(v5, cartesianCoords(s5), 4e-6f), "Cartesian coordinates of s5 wrong!" );
+        TEST( approx(v6, cartesianCoords(sphericalCoords(v6)), 1e-5f), "5D vector coordinate transformation to spherical and back failed!" );
     }
 
     // ********************************************************************* //
@@ -636,9 +636,10 @@ bool test_matrix()
         X = solveLUp(LU, p, identity3x3());
         TEST( all(invert(A0) == X), "Manual inversion and invert function have different results!" );
         X = X * A0;
-        TEST( approx(X, identity3x3()), "3x3 Matrix inverse bad!");
-        TEST( approx(invert(A2) * A2, identity4x4(), 2e-5f), "4x4 Matrix inverse bad!");
+        TEST( approx(X, identity3x3(), 4e-6f), "3x3 Matrix inverse bad!");
+        TEST( approx(invert(A2) * A2, identity4x4(), 4e-5f), "4x4 Matrix inverse bad!");
     }
+
 
     // ********************************************************************* //
     // Test determinants
@@ -661,6 +662,7 @@ bool test_matrix()
         TEST( approx(determinant(m7), 24.0f, 4.0e-6f), "Determinant of m7 wrong!" );
     }
 
+    // ********************************************************************* //
     // Test orthonarmalization
     {
         Mat3x3 m0(6.0f, 1.0f, 1.0f, 4.0f, -2.0f, 5.0f, 2.0f, 8.0f, 7.0f);
@@ -685,6 +687,42 @@ bool test_matrix()
         TEST( approx(lensq(cross(v0, v1)), 1.0f), "v0 and v1 are not orthogonal!" );
         TEST( approx(lensq(cross(v0, v2)), 1.0f), "v0 and v2 are not orthogonal!" );
         TEST( approx(lensq(cross(v2, v1)), 1.0f), "v1 and v2 are not orthogonal!" );
+    }
+
+
+    // ********************************************************************* //
+    // Test eigen vector/value decompositions
+    {
+        Mat2x2 Q0(0.0f, 1.0f, -1.0f, 0.0f);
+        Vec2 d0(2.0f, 3.0f);
+        Mat2x2 A0 = transpose(Q0) * diag(d0) * Q0;
+        Vec2 v0;
+        //float eig;
+        //volatile int itn = eigenmax(A0, v0, eig);
+        //TEST(approx(abs(dot(v0, Vec2(Q0(1,0), Q0(1,1)))), 1.0f) && approx(eig, 3.0f), "Maximum eigenvalue or eigenvector for 2x2 matrix wrong!");
+
+        Mat3x3 Q1(1.0f, 2.0f, 3.0f, 2.0f, 1.0f, 0.5f, 0.0f, -1.0f, 1.0f);
+        orthonormalize(Q1);
+        Vec3 d1(0.7f, 1.0f, 1.1f);
+        Mat3x3 A1 = transpose(Q1) * diag(d1) * Q1;
+        Vec3 vtmp; Mat3x3 Qtmp;
+        //itn = eigenmax(A1, v1, eig);
+        //TEST(approx(abs(dot(v1, Vec3(Q1(2,0), Q1(2,1), Q1(2,2)))), 1.0f) && approx(eig, 1.1f), "Maximum eigenvalue or eigenvector for 3x3 matrix wrong!");
+        int itn = decomposeQl(A1, Qtmp, vtmp, true);
+        TEST(approx(vtmp.x, 1.1f), "Eigenvalue 0 of A1 is wrong!");
+        TEST(approx(vtmp.y, 1.0f), "Eigenvalue 1 of A1 is wrong!");
+        TEST(approx(vtmp.z, 0.7f), "Eigenvalue 2 of A1 is wrong!");
+        TEST(approx(A1, transpose(Qtmp) * diag(vtmp) * Qtmp), "Spectral decomposition of A1 failed!");
+
+        // More difficult case for power iteraltion
+        Vec3 d2(1.0f, -1.001f, 1.0001f);
+        Mat3x3 A2 = transpose(Q1) * diag(d2) * Q1;
+        itn = decomposeQl(A2, Qtmp, vtmp, true);
+        TEST(approx(vtmp.x, 1.0001f), "Eigenvalue 0 of A2 is wrong!");
+        TEST(approx(vtmp.y, 1.0f), "Eigenvalue 1 of A2 is wrong!");
+        TEST(approx(vtmp.z, -1.001f), "Eigenvalue 2 of A2 is wrong!");
+        TEST(approx(A2, transpose(Qtmp) * diag(vtmp) * Qtmp, 2e-5f), "Spectral decomposition of A2 failed!");
+        itn = 0;
     }
 
     return result;

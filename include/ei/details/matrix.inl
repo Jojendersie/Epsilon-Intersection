@@ -708,7 +708,9 @@ inline bool approx(const Matrix<T,M,N>& _mat0,
                    T _epsilon)
 {
     for(uint i = 0; i < N * M; ++i)
-        if(!(abs(_mat1[i] - _mat0[i]) <= _epsilon)) return false;
+        //if(!(abs(_mat1[i] - _mat0[i]) <= _epsilon)) return false;
+        if(!approx(_mat1[i], _mat0[i], _epsilon))
+            return false;
     return true;
 }
 
@@ -1135,7 +1137,7 @@ bool decomposeLUp(const Matrix<T,N,N>& _A, Matrix<T,N,N>& _LU, Vec<uint,N>& _p)
     return _LU(N-1,N-1) != 0.0f;
 }
 
-// ********************************************************************* //
+// ************************************************************************* //
 template<typename T, unsigned M, unsigned N>
 Matrix<T,M,N> solveLUp(const Matrix<T,M,M>& _LU, const Matrix<uint,M,1>& _p, const Matrix<T,M,N>& _B)
 {
@@ -1161,6 +1163,118 @@ Matrix<T,M,N> solveLUp(const Matrix<T,M,M>& _LU, const Matrix<uint,M,1>& _p, con
     }
     return X;
 }
+
+
+// ************************************************************************* //
+// Implementation from http://www.melax.com/diag.html
+template<typename T>
+int decomposeQl(const Matrix<T,3,3>& _A, Matrix<T,3,3>& _Q, Vec<T,3>& _lambda, bool _sort)
+{
+    int i = 0;
+    Quaternion q = qidentity();// TODO type T
+    while(i < 50)
+    {
+        ++i;
+        _Q = rotation(q);
+        Vec<T,3> offdiag; // elements (1,2), (0,2) and (0,1) of the diagonal matrix D = Q * A * Q^T
+        Matrix<T,3,3> D = _Q * _A * transpose(_Q);
+        _lambda.x = D(0,0); _lambda.y = D(1,1); _lambda.z = D(2,2);
+        offdiag.x = D(1,2); offdiag.y = D(0,2); offdiag.z = D(0,1);
+        // Find index of largest element of offdiag
+        Vec<T,3> absod = abs(offdiag);
+        int k0 = (absod.x > absod.y && absod.x > absod.z) ? 0 : (absod.y > absod.z) ? 1 : 2;
+        int k1 = (k0+1)%3;
+        int k2 = (k0+2)%3;
+        if(offdiag[k0] == static_cast<T>(0)) break;  // Diagonal matrix converged
+        float t = (_lambda[k2] - _lambda[k1]) / (static_cast<T>(2) * offdiag[k0]);
+        float sgnt = (t > static_cast<T>(0)) ? static_cast<T>(1) : static_cast<T>(-1);
+        t = sgnt / (t*sgnt + sqrt(t*t + static_cast<T>(1)));
+        float c = sqrt(t*t + static_cast<T>(1));
+        if(c == static_cast<T>(1)) break;           // reached numeric limit
+        c = static_cast<T>(1) / c;
+        // Create a jacobi rotation for this iteration
+        Quaternion jr;
+        jr.z[k0] = sgnt * sqrt((1.0f - c) / 2.0f);
+        jr.z[k1] = jr.z[k2] = 0.0f;
+        jr.r = sqrt((1.0f - jr.z[k0]) * (1.0f + jr.z[k0]));
+        if(jr.r == 1.0f) break;                     // another numeric limit
+        q = normalize(q * jr);
+    }
+    _Q = rotation(q);
+    _lambda.x = _Q(0,0)*dot(_A(0), _Q(0)) + _Q(0,1)*dot(_A(1), _Q(0)) + _Q(0,2)*dot(_A(2), _Q(0));
+    _lambda.y = _Q(1,0)*dot(_A(0), _Q(1)) + _Q(1,1)*dot(_A(1), _Q(1)) + _Q(1,2)*dot(_A(2), _Q(1));
+    _lambda.z = _Q(2,0)*dot(_A(0), _Q(2)) + _Q(2,1)*dot(_A(1), _Q(2)) + _Q(2,2)*dot(_A(2), _Q(2));
+
+    // Sort (Network 0,2 0,1 1,2)
+    if(_sort)
+    {
+        if(_lambda.x < _lambda.z)
+        {
+            swap(_lambda.x, _lambda.z);
+            swap(_Q(0), _Q(2));
+        }
+        if(_lambda.x < _lambda.y)
+        {
+            swap(_lambda.x, _lambda.y);
+            swap(_Q(0), _Q(1));
+        }
+        if(_lambda.y < _lambda.z)
+        {
+            swap(_lambda.y, _lambda.z);
+            swap(_Q(1), _Q(2));
+        }
+    }
+
+    return i;
+}
+
+// ************************************************************************* //
+/*template<typename T, unsigned N>
+int eigenmax(const Matrix<T,N,N>& _A, Vec<T,N>& _eigenvec, T& _eigenval)
+{
+    // "Random" initialization
+    for(int i = 0; i < N; ++i)
+        _eigenvec[i] = 1.0f / (i+1);
+
+    // Rayleigh quotient iteration
+    // Problem: does not guarantee to converge to the largest eigenvalue
+    /*_eigenvec = normalize(_eigenvec);
+    _eigenval = dot(_eigenvec, _A * _eigenvec);
+    int i = 0;
+    for(; i < 30; ++i)     // 30 is the maximum iteration number
+    {
+        Matrix<T,N,N> AshiftLU;
+        Vec<uint,N> Ashiftp;
+        if(!decomposeLUp(_A - diag(Vec<T,N>(_eigenval)), AshiftLU, Ashiftp))
+            break;
+        Vec<T, N> b1 = solveLUp(AshiftLU, Ashiftp, _eigenvec);
+        b1 = normalize(b1);
+        _eigenval = dot(_eigenvec, _A * _eigenvec);
+        bool converged = approx(b1, _eigenvec);
+        _eigenvec = b1;
+        if(converged) break;
+    }
+    _eigenval = dot(_eigenvec, _A * _eigenvec);
+    return i+1;//* /
+
+    // Power iteration
+    int i;
+    for(i = 0; i < 300; ++i)     // 300 is the maximum iteration number
+    {
+        Vec<T,N> b1 = normalize(_A * _eigenvec);
+        // Custom modification: 1.5x the step-width made into the correct
+        // direction.
+        //b1 = normalize(b1 - reflect(_eigenvec, b1));
+        //b1 = -reflect(_eigenvec, b1);
+        bool converged = approx(b1, _eigenvec);
+        _eigenvec = b1;
+        if(converged) break;
+    }
+    // Compute the eigenvalue with the Rayleigh quotient (x^T A x) / (x^T x).
+    // Since the vector is normalized the denominator is not required.
+    _eigenval = dot(_eigenvec, _A * _eigenvec);//* /
+    return i;
+}*/
 
 
 // ************************************************************************* //
