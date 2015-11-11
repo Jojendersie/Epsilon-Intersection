@@ -1166,7 +1166,41 @@ Matrix<T,M,N> solveLUp(const Matrix<T,M,M>& _LU, const Matrix<uint,M,1>& _p, con
 
 
 // ************************************************************************* //
+// Analytic solution for 2x2 matrix decomposition
+template<typename T>
+int decomposeQl(const Matrix<T,2,2>& _A, Matrix<T,2,2>& _Q, Vec<T,2>& _lambda)
+{
+    T p = -_A[0] - _A[3];
+    T q = _A[0] * _A[3] - _A[1] * _A[2];
+    T discriminant = p*p - static_cast<T>(4)*q;
+    if(discriminant < static_cast<T>(0)) return -1;
+    T dsqrt = sqrt(discriminant);
+    // Numerically stable solution for both roots
+    // The roots are guaranteed to be sorted descending
+    if(p > 0) {
+        _lambda.x = -static_cast<T>(2)*q/(p + dsqrt);
+        _lambda.y = (-p - dsqrt)/static_cast<T>(2);
+    } else {
+        _lambda.x = (-p + dsqrt)/static_cast<T>(2);
+        _lambda.y = -static_cast<T>(2)*q/(p - dsqrt);
+    }
+    // Compute normalized eigenvectors
+    if(_A[1] != static_cast<T>(0)) {
+        _Q(0) = normalize(RVec<T,2>(static_cast<T>(1), (_lambda.x - _A[0]) / _A[1]));
+        _Q(1) = normalize(RVec<T,2>(static_cast<T>(1), (_lambda.y - _A[0]) / _A[1]));
+    } else if(_A[2] != static_cast<T>(0)) {
+        _Q(0) = normalize(RVec<T,2>(static_cast<T>(1), (_lambda.x - _A[3]) / _A[2]));
+        _Q(1) = normalize(RVec<T,2>(static_cast<T>(1), (_lambda.y - _A[3]) / _A[2]));
+    } else {
+        // Fallback identity if input was a diagonal matrix
+        _Q[0] = static_cast<T>(1); _Q[1] = static_cast<T>(0);
+        _Q[2] = static_cast<T>(0); _Q[3] = static_cast<T>(1);
+    }
+    return 1;
+}
+
 // Implementation from http://www.melax.com/diag.html
+// Other can be found on http://stackoverflow.com/questions/4372224/fast-method-for-computing-3x3-symmetric-matrix-spectral-decomposition
 template<typename T>
 int decomposeQl(const Matrix<T,3,3>& _A, Matrix<T,3,3>& _Q, Vec<T,3>& _lambda, bool _sort)
 {

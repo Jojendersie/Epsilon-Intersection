@@ -694,21 +694,28 @@ bool test_matrix()
     // Test eigen vector/value decompositions
     {
         Mat2x2 Q0(0.0f, 1.0f, -1.0f, 0.0f);
+        Mat2x2 Q1(1.0f, 1.0f, -1.0f, 2.0f);
+        orthonormalize(Q1);
         Vec2 d0(2.0f, 3.0f);
+        Vec2 d1(-1.0f, 0.0f);
         Mat2x2 A0 = transpose(Q0) * diag(d0) * Q0;
-        Vec2 v0;
-        //float eig;
-        //volatile int itn = eigenmax(A0, v0, eig);
-        //TEST(approx(abs(dot(v0, Vec2(Q0(1,0), Q0(1,1)))), 1.0f) && approx(eig, 3.0f), "Maximum eigenvalue or eigenvector for 2x2 matrix wrong!");
-
+        Mat2x2 A1 = transpose(Q1) * diag(d1) * Q1;
+        Vec2 vtmp; Mat2x2 Qtmp;
+        int itn = decomposeQl(A0, Qtmp, vtmp);
+        TEST(approx(vtmp.x, 3.0f), "Eigenvalue 0 of A0 is wrong!");
+        TEST(approx(vtmp.y, 2.0f), "Eigenvalue 1 of A0 is wrong!");
+        TEST(approx(A0, transpose(Qtmp) * diag(vtmp) * Qtmp), "Spectral decomposition of 2x2 A0 failed!");
+        itn = decomposeQl(A1, Qtmp, vtmp);
+        TEST(approx(vtmp.x, 0.0f), "Eigenvalue 0 of A0 is wrong!");
+        TEST(approx(vtmp.y, -1.0f), "Eigenvalue 1 of A0 is wrong!");
+        TEST(approx(A1, transpose(Qtmp) * diag(vtmp) * Qtmp), "Spectral decomposition of 2x2 A1 failed!");
+    }{
         Mat3x3 Q1(1.0f, 2.0f, 3.0f, 2.0f, 1.0f, 0.5f, 0.0f, -1.0f, 1.0f);
         orthonormalize(Q1);
         Vec3 d1(0.7f, 1.0f, 1.1f);
         Mat3x3 A1 = transpose(Q1) * diag(d1) * Q1;
         Vec3 vtmp; Mat3x3 Qtmp;
-        //itn = eigenmax(A1, v1, eig);
-        //TEST(approx(abs(dot(v1, Vec3(Q1(2,0), Q1(2,1), Q1(2,2)))), 1.0f) && approx(eig, 1.1f), "Maximum eigenvalue or eigenvector for 3x3 matrix wrong!");
-        int itn = decomposeQl(A1, Qtmp, vtmp, true);
+        int itn = decomposeQl(A1, Qtmp, vtmp);
         TEST(approx(vtmp.x, 1.1f), "Eigenvalue 0 of A1 is wrong!");
         TEST(approx(vtmp.y, 1.0f), "Eigenvalue 1 of A1 is wrong!");
         TEST(approx(vtmp.z, 0.7f), "Eigenvalue 2 of A1 is wrong!");
@@ -717,7 +724,7 @@ bool test_matrix()
         // More difficult case for power iteraltion
         Vec3 d2(1.0f, -1.001f, 1.0001f);
         Mat3x3 A2 = transpose(Q1) * diag(d2) * Q1;
-        itn = decomposeQl(A2, Qtmp, vtmp, true);
+        itn = decomposeQl(A2, Qtmp, vtmp);
         TEST(approx(vtmp.x, 1.0001f), "Eigenvalue 0 of A2 is wrong!");
         TEST(approx(vtmp.y, 1.0f), "Eigenvalue 1 of A2 is wrong!");
         TEST(approx(vtmp.z, -1.001f), "Eigenvalue 2 of A2 is wrong!");

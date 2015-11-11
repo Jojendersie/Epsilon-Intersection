@@ -906,15 +906,21 @@ namespace ei {
     Matrix<T,M,N> solveLUp(const Matrix<T,M,M>& _LU, const Matrix<uint,M,1>& _p, const Matrix<T,M,N>& _B);  // TESTED
 
     // ********************************************************************* //
-    /// \brief Compute a spectral decomposition Q^T * diag(d) * Q of a 3x3
-    ///     symmetric matrix A.
+    /// \brief Compute a spectral decomposition Q^T * diag(d) * Q of 2x2 and 3x3
+    ///     symmetric matrices A.
     /// \param [in] _sort Sort eigenvalues and vectors descending.
+    ///
+    ///     The results for 2x2 matrices are always sorted. For 3x3 matices
+    ///     sorting takes extra time and can be disabled if not needed.
     /// \param [out] _Q The orthonormal basis where rows are the eigenvectors
     ///     corresponding to the eigenvalues _lambda of A.
     /// \param [out] _lambda Eigenvalues of A.
-    /// \return Number of iterations (50 is the maximum used internally)
+    /// \return Number of iterations (50 is the maximum used internally) or -1
+    ///     if no solution can be found (complex eigenvalues).
     template<typename T>
-    int decomposeQl(const Matrix<T,3,3>& _A, Matrix<T,3,3>& _Q, Vec<T,3>& _lambda, bool _sort = false);     // TESTED
+    int decomposeQl(const Matrix<T,2,2>& _A, Matrix<T,2,2>& _Q, Vec<T,2>& _lambda);
+    template<typename T>
+    int decomposeQl(const Matrix<T,3,3>& _A, Matrix<T,3,3>& _Q, Vec<T,3>& _lambda, bool _sort = true);     // TESTED
 
     // ********************************************************************* //
     // EXPERIMENT:
