@@ -75,6 +75,15 @@ template<> inline void random<ei::Capsule>(ei::Capsule& _out)
     _out.radius = ei::sq(rnd()) * 0.5f;
 }
 
+template<> inline void random<ei::Plane>(ei::Plane& _out)
+{
+    float cosTheta = rnd() * 2.0f - 1.0f;
+    float phi = rnd() * 2.0f * ei::PI;
+    float sinTheta = sqrt(1 - cosTheta*cosTheta);
+    _out.n = ei::Vec3(sinTheta * cos(phi), cosTheta, sinTheta * sin(phi));
+    _out.d = rnd() - 0.5f;
+}
+
 template<> inline void random<ei::DOP>(ei::DOP& _out)
 {
     float cosTheta = rnd() * 2.0f - 1.0f;
@@ -95,6 +104,7 @@ template<> inline const char* name<ei::Box>() { return "Box"; }
 template<> inline const char* name<ei::OBox>() { return "Oriented Box"; }
 template<> inline const char* name<ei::Triangle>() { return "Triangle"; }
 template<> inline const char* name<ei::Capsule>() { return "Capsule"; }
+template<> inline const char* name<ei::Plane>() { return "Plane"; }
 template<> inline const char* name<ei::DOP>() { return "DOP"; }
 
 // ************************************************************************* //

@@ -9,8 +9,9 @@ using namespace std;
 bool test_3dintersections()
 {
     bool result = true;
+    performance<Sphere, Plane>(intersects, "intersects");
 
-    // Test sphere <-> sphere intersection
+    // Test box <-> box intersection
     {
         Box box0( Vec3(0.0f), Vec3(1.0f) );
         Box box1( Vec3(0.25f), Vec3(0.5f) );
@@ -105,6 +106,20 @@ bool test_3dintersections()
     }
 
     // Test sphere <-> box intersection
+    {
+        Sphere sph0( Vec3(-6.0f, -4.0f, 100.0f), 3.0f ); // intersects pla1
+        Sphere sph1( Vec3(1.0f, 0.0f, 0.0f), 1.1f );     // intersects pla0
+        Plane pla0( normalize(Vec3(1.0f, 0.5f, -0.25f)), 0.0f );
+        Plane pla1( normalize(Vec3(1.0f, 1.0f, 0.0f)), 5.0f );
+        TEST( !intersects( sph0, pla0 ), "sph0 and pl0 do not intersect!" );
+        TEST( intersects( sph0, pla1 ), "sph0 and pla1 intersect!" );
+        TEST( intersects( sph1, pla0 ), "sph1 and pl0 intersect!" );
+        TEST( !intersects( sph1, pla1 ), "sph1 and pla1 do not intersect!" );
+
+        performance<Sphere, Plane>(intersects, "intersects");
+    }
+
+    // Test sphere <-> plane intersection
     {
         Sphere sph0( Vec3(0.0f, 1.0f, 0.0f), 1.0f );
         Sphere sph1( Vec3(2.0f, 2.0f, 2.0f), 0.99f );

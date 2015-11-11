@@ -393,6 +393,12 @@ namespace ei {
     }
 
     // ********************************************************************* //
+    bool intersects( const Sphere& _sphere, const Plane& _plane )
+    {
+        return abs(dot(_plane.n, _sphere.center) + _plane.d) <= _sphere.radius;
+    }
+
+    // ********************************************************************* //
     bool intersects( const Sphere& _sphere, const Triangle& _triangle )
     {
         Vec3 a = _triangle.v1-_triangle.v0;

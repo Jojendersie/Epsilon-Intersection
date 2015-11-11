@@ -151,8 +151,13 @@ namespace ei {
     inline bool intersects( const Triangle& _triangle, const Ray& _ray, float& _distance )  { return intersects( _ray, _triangle, _distance ); }
     inline bool intersects( const Triangle& _triangle, const Ray& _ray, float& _distance, Vec3& _barycentric )  { return intersects( _ray, _triangle, _distance, _barycentric ); }
 
+    /// \brief Do a sphere and a plane intersect or touch?
+    /// \return true if there is at least one point in common.
+    bool intersects( const Sphere& _sphere, const Plane& _plane );
+    inline bool intersects( const Plane& _plane, const Sphere& _sphere ) { return intersects(_sphere, _plane); }
+
     /// \brief Does the sphere touches the triangle?
-    /// \return true if the sphere and the triangle have at least on point in common.
+    /// \return true if the sphere and the triangle have at least one point in common.
     bool intersects( const Sphere& _sphere, const Triangle& _triangle );       // TESTED
     inline bool intersects( const Triangle& _triangle, const Sphere& _sphere )          { return intersects(_sphere, _triangle); }
 
