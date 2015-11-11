@@ -168,10 +168,11 @@ bool test_3dintersections()
 
     // Test sphere <-> ray intersection
     {
-        Ray ray0( Vec3(0.0f, 1.0f, 2.0f), normalize(Vec3(0.2f, -0.9f, 0.0f)) ); /// Starts inside sph1 and misses sph0
+        Ray ray0( Vec3(0.0f, 1.0f, 2.0f), normalize(Vec3(0.2f, -0.9f, 0.0f)) ); // Starts inside sph1 and misses sph0
         Ray ray1( Vec3(100000.0f, 50.0f, -256.f), normalize(Vec3(-100000.0f, -50.0f, 256.0f)) ); /// Starting far away and intersecting with the origin, misses sph1
-        Ray ray2( Vec3(-5.0f, 10.0f, 23.f), normalize(Vec3(5.0f, -9.0f, -22.0f)) ); /// Targets center of sph1
-        Ray ray3( Vec3(25.0f, -40.0f, 30.f), normalize(Vec3(5.0f, 1.0f, -2.0f)) );  /// Should not hit
+        Ray ray2( Vec3(-5.0f, 10.0f, 23.f), normalize(Vec3(5.0f, -9.0f, -22.0f)) ); // Targets center of sph1
+        Ray ray3( Vec3(25.0f, -40.0f, 30.f), normalize(Vec3(5.0f, 1.0f, -2.0f)) );  // Should not hit
+        Ray ray4( Vec3(0.0f, 2.0f, 0.0f), Vec3(0.0f, 1.0f, 0.0f) );     // sph0 and sph1 are behind the ray
         Sphere sph0( Vec3(0.0f, 0.0f, 0.0f), 1.0f );
         Sphere sph1( Vec3(0.0f, 1.0f, 1.0f), 1.1f );
         TEST( !intersects( ray0, sph0 ), "ray0 should miss sph0!" );
@@ -182,6 +183,8 @@ bool test_3dintersections()
         TEST( intersects( ray2, sph1 ), "ray2 should hit sph1!" );
         TEST( !intersects( ray3, sph0 ), "ray3 should miss sph0!" );
         TEST( !intersects( ray3, sph1 ), "ray3 should miss sph1!" );
+        TEST( !intersects( ray4, sph0 ), "ray4 should miss sph0!" );
+        TEST( !intersects( ray4, sph1 ), "ray4 should miss sph1!" );
 
         float d;
         TEST( !intersects( ray0, sph0, d ), "2: ray0 should miss sph0!" );
@@ -192,6 +195,7 @@ bool test_3dintersections()
         TEST( intersects( ray2, sph1, d ) && d==23.1899151f, "ray2 should hit sph1 in a distance of 23.1899151!" );
         TEST( !intersects( ray3, sph0, d ), "2: ray3 should miss sph0!" );
         TEST( !intersects( ray3, sph1, d ), "2: ray3 should miss sph1!" );
+        TEST( !intersects( ray4, sph0, d ), "2: ray4 should miss sph0!" );
 
         performance<Ray, Sphere, bool>(intersects, "intersects");
     }

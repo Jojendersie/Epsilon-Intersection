@@ -29,6 +29,7 @@ namespace ei {
     float distance(const Vec3& _point, const Triangle& _triangle);             // TESTED
     float distance(const Vec3& _point, const Sphere& _sphere);                 // TESTED
     float distance(const Vec3& _point, const Capsule& _capsule);               // TESTED
+    float distance(const Vec3& _point, const Ray& _ray);                       
     float distance(const Vec3& _point, const Box& _box);                       // TESTED
     float distance(const Vec3& _point, const Plane& _plane);                   // TESTED
     /// \returns -x if dot(n,_point) larger then both, x if smaller and 0 if it
@@ -50,6 +51,7 @@ namespace ei {
     inline float distance(const Plane& _plane, const Vec3& _point)             { return distance(_point, _plane); }
     inline float distance(const Plane& _plane, const Sphere& _sphere)          { return distance(_sphere, _plane); }
     inline float distance(const DOP& _dop, const Vec3& _point)                 { return distance(_point, _dop); }
+    inline float distance(const Ray& _ray, const Vec3& _point)                 { return distance(_point, _ray); }
 
     /// \brief Do two spheres intersect, touch or is one inside the other?
     /// \return true if both spheres have at least one point in common.

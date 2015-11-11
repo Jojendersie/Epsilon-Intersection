@@ -3,7 +3,7 @@
 namespace ei {
 
     // ************************************************************************* //
-    // DISTANCE METHOD
+    // DISTANCE METHODS
     // ************************************************************************* //
     float distance(const Vec3& _point0, const Vec3& _point1)
     {
@@ -20,6 +20,17 @@ namespace ei {
     float distance(const Vec3& _point, const Capsule& _capsule)
     {
         return distance(_point, _capsule.seg) - _capsule.radius;
+    }
+
+    // ************************************************************************* //
+    float distance(const Vec3& _point, const Ray& _ray)
+    {
+        // Project point to the ray
+        Vec3 o = _point - _ray.origin;
+        float odotd = max(0.0f, dot(o, _ray.direction));
+        // Compute difference between projection and original
+        o -= _ray.direction * odotd;
+        return len(o);
     }
 
     // ************************************************************************* //
@@ -490,19 +501,19 @@ namespace ei {
     bool intersects( const Ray& _ray, const Sphere& _sphere )
     {
         // Go towards closest point and compare its distance to the radius
-        Vec3 o = _ray.origin - _sphere.center;
-        float odotd = dot(o, _ray.direction);
-        o += _ray.direction * -odotd;
+        Vec3 o = _sphere.center - _ray.origin;
+        float odotd = max(0.0f, dot(o, _ray.direction));
+        o -= _ray.direction * odotd;
         return lensq(o) <= _sphere.radius * _sphere.radius;
     }
 
     bool intersects( const Ray& _ray, const Sphere& _sphere, float& _distance )
     {
         // Go towards closest point and compare its distance to the radius
-        Vec3 o = _ray.origin - _sphere.center;
+        Vec3 o = _sphere.center - _ray.origin;
         float le = len(o) - 1.0f;
-        float odotd = -dot(o, _ray.direction);
-        o += _ray.direction * odotd;
+        float odotd = max(0.0f, dot(o, _ray.direction));
+        o -= _ray.direction * odotd;
         float distSq = lensq(o);
         float rSq = _sphere.radius * _sphere.radius;
         if(distSq > rSq) return false;

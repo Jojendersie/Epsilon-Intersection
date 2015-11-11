@@ -206,6 +206,7 @@ bool test_3dtypes()
         DOP dop0( Vec3(0.0f, 1.0f, 0.0f), Vec3(0.0f, 2.0f, 0.0f), Vec3(0.0f, 4.0f, 0.0f) );
         DOP dop1( Vec3(0.0f, 1.0f, 0.0f), Vec3(0.0f, 4.0f, 0.0f), Vec3(0.0f, 2.0f, 0.0f) );
         DOP dop2( Vec3(0.0f, 1.0f, 0.0f), Vec3(0.0f, -2.0f, 0.0f), Vec3(0.0f, 2.0f, 0.0f) );
+        Ray ray0(poi1, Vec3(0.0f, 0.707106769f, 0.707106769f));
         TEST( distance(poi0, poi0) == 0.0f, "Distance between two equal points is 0!" );
         TEST( distance(poi0, poi1) == 1.0f, "Distance between poi0 and poi1 is 1!" );
         TEST( distance(poi0, seg0) == 0.0f, "Distance between poi0 and seg0 is 0!" );
@@ -246,6 +247,10 @@ bool test_3dtypes()
         TEST( distance(poi4, dop2) == 0.0f, "Distance between poi4 and dop2 is 0.0!");
         TEST( distance(poi0, dop2) == 0.0f, "Distance between poi0 and dop2 is -1.0!");
         TEST( distance(poi2, dop2) == 1.0f, "Distance between poi2 and dop2 is 1.0!");
+        TEST( distance(poi0, ray0) == 1.0f, "Distance between poi0 and ray0 is 1.0!");
+        TEST( distance(poi1, ray0) == 0.0f, "Distance between poi1 and ray0 is 0.0!");
+        TEST( approx(distance(poi2, ray0), 0.0f), "Distance between poi2 and ray0 is 0.0!");
+        TEST( distance(poi4, ray0) == 1.791647287f, "Distance between poi4 and ray0 is 1.791647287f!");
 
         performance<Vec3,Triangle,float>(distance, "distance");
     }
