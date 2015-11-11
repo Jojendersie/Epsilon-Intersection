@@ -97,11 +97,26 @@ bool test_3dintersections()
         Vec3 poi0( 0.0f, 1.2f, 0.0f );
         Vec3 poi1( 1.0f, 0.0f, 0.0f );
         Vec3 poi2( 1.35f, 0.0f, 0.0f );
-        TEST( !intersects( poi0, dop0 ), "poi0 outside box0!" );
-        TEST( intersects( poi1, dop0 ), "poi1 touches box0!" );
-        TEST( intersects( poi2, dop0 ), "poi2 inside box0!" );
+        TEST( !intersects( poi0, dop0 ), "poi0 outside dop0!" );
+        TEST( intersects( poi1, dop0 ), "poi1 touches dop0!" );
+        TEST( intersects( poi2, dop0 ), "poi2 inside dop0!" );
 
         performance<Vec3,DOP>(intersects, "intersects");
+    }
+
+    // Test point <-> tetrahedron intersection
+    {
+        Tetrahedron tet0( Vec3(1.0f, 1.0f, 1.0f), Vec3(2.0f, 1.0f, 1.0f), Vec3(1.0f, 2.0f, 1.0f), Vec3(1.0f, 1.0f, 2.0f) );
+        Vec3 poi0( 0.0f, 0.0f, 0.0f );
+        Vec3 poi1( 1.5f, 1.0f, 1.0f );
+        Vec3 poi2( 1.1f, 1.2f, 1.3f );
+        Vec3 poi3( 1.34f, 1.34f, 1.34f );
+        TEST( !intersects( poi0, tet0 ), "poi0 must be outside tet0!" );
+        TEST( intersects( poi1, tet0 ), "poi1 must touche tet0!" );
+        TEST( intersects( poi2, tet0 ), "poi2 must be inside tet0!" );
+        TEST( !intersects( poi3, tet0 ), "poi3 must be outside tet0!" );
+
+        performance<Vec3,Tetrahedron>(intersects, "intersects");
     }
 
     // Test sphere <-> box intersection

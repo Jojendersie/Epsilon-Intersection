@@ -85,7 +85,7 @@ namespace ei {
 
     /// \brief Does a point lie inside an oriented ellipsoid/on the boundary?
     /// \return true if the point is inside or on the boundary.
-    bool intersects( const Vec3& _point, const OEllipsoid& _oellipsoid );        // TESTED
+    bool intersects( const Vec3& _point, const OEllipsoid& _oellipsoid );      // TESTED
     inline bool intersects( const OEllipsoid& _oellipsoid, const Vec3& _point )  { return intersects( _point, _oellipsoid ); }
 
     /// \brief Does a point lie inside a DOP or on the boundary?
@@ -159,35 +159,41 @@ namespace ei {
     /// \brief Do a sphere and a plane intersect or touch?
     /// \return true if there is at least one point in common.
     bool intersects( const Sphere& _sphere, const Plane& _plane );             // TESTED
-    inline bool intersects( const Plane& _plane, const Sphere& _sphere ) { return intersects(_sphere, _plane); }
+    inline bool intersects( const Plane& _plane, const Sphere& _sphere )       { return intersects(_sphere, _plane); }
 
     /// \brief Does the sphere touches the triangle?
     /// \return true if the sphere and the triangle have at least one point in common.
     bool intersects( const Sphere& _sphere, const Triangle& _triangle );       // TESTED
-    inline bool intersects( const Triangle& _triangle, const Sphere& _sphere )          { return intersects(_sphere, _triangle); }
+    inline bool intersects( const Triangle& _triangle, const Sphere& _sphere ) { return intersects(_sphere, _triangle); }
 
     /// \brief Intersection test between sphere and capsule.
-    /// \return true if the sphere and the capsule have at least on point in common.
+    /// \return true if the sphere and the capsule have at least one point in common.
     bool intersects( const Sphere& _sphere, const Capsule& _capsule );         // TESTED
-    inline bool intersects( const Capsule& _capsule, const Sphere& _sphere )          { return intersects(_sphere, _capsule); }
+    inline bool intersects( const Capsule& _capsule, const Sphere& _sphere )   { return intersects(_sphere, _capsule); }
 
     /// \brief Intersection test between point and capsule.
-    /// \return true if the point and the capsule have at least on point in common.
+    /// \return true if the point and the capsule have at least one point in common.
     bool intersects( const Vec3& _point, const Capsule& _capsule );            // TESTED
-    inline bool intersects( const Capsule& _capsule, const Vec3& _point )          { return intersects(_point, _capsule); }
+    inline bool intersects( const Capsule& _capsule, const Vec3& _point )      { return intersects(_point, _capsule); }
 
     /// \brief Intersection test between point and frustum.
-    /// \return true if the point and the frustum have at least on point in common.
+    /// \return true if the point and the frustum have at least one point in common.
     bool intersects( const Vec3& _point, const FastFrustum& _frustum );        // TESTED
-    inline bool intersects( const FastFrustum& _frustum, const Vec3& _point )          { return intersects(_point, _frustum); }
+    inline bool intersects( const FastFrustum& _frustum, const Vec3& _point )  { return intersects(_point, _frustum); }
 
     /// \brief Intersection test between sphere and frustum.
-    /// \return true if the sphere and the frustum have at least on point in common.
+    /// \return true if the sphere and the frustum have at least one point in common.
     bool intersects( const Sphere& _sphere, const FastFrustum& _frustum );     // TESTED
-    inline bool intersects( const FastFrustum& _frustum, const Sphere& _sphere )          { return intersects(_sphere, _frustum); }
+    inline bool intersects( const FastFrustum& _frustum, const Sphere& _sphere ) { return intersects(_sphere, _frustum); }
 
     /// \brief Intersection test between box and frustum.
-    /// \return true if the box and the frustum have at least on point in common.
+    /// \return true if the box and the frustum have at least one point in common.
     bool intersects( const Box& _box, const FastFrustum& _frustum );           // TESTED
-    inline bool intersects( const FastFrustum& _frustum, const Box& _box )          { return intersects(_box, _frustum); }
+    inline bool intersects( const FastFrustum& _frustum, const Box& _box )     { return intersects(_box, _frustum); }
+
+    /// \brief Intersection test between point and tetrahedron.
+    /// \return true if the point and the tetrahedron have at least one point in common.
+    bool intersects( const Vec3& _point, const Tetrahedron& _tetrahedron );    // TESTED
+    inline bool intersects( const Tetrahedron& _tetrahedron, const Vec3& _point ) { return intersects(_point, _tetrahedron); }
+
 }

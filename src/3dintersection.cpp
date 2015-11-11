@@ -643,7 +643,7 @@ namespace ei {
     }
 
     // ********************************************************************* //
-    inline bool separates( const Vec3& _dir, const Vec3* _box, const Vec3* _fru )
+    static bool separates( const Vec3& _dir, const Vec3* _box, const Vec3* _fru )
     {
         // Min and max values for the projected vertices of box and frustum
         float bmin = dot(_dir, _box[0]), fmin = dot(_dir, _fru[0]);
@@ -754,5 +754,48 @@ namespace ei {
         if(separates(n, boxv, _frustum.vertices)) return false;
 
         return true;
+    }
+
+    // ********************************************************************* //
+    bool intersects( const Vec3& _point, const Tetrahedron& _tetrahedron )
+    {
+        // Check if the point is on the inner side of each plane.
+        // First determine edges for the cross products to find normals
+        Vec3 e01 = _tetrahedron.v1 - _tetrahedron.v0;
+        Vec3 e02 = _tetrahedron.v2 - _tetrahedron.v0;
+        Vec3 e03 = _tetrahedron.v3 - _tetrahedron.v0;
+        Vec3 n = cross(e01, e02);
+        // Check if the fourth point of the tetrahedron and _point are on the same side.
+        // Reuse as much as possible operations.
+        Vec3 p = _point - _tetrahedron.v0;
+        float dp = dot(n, p);
+        float dt = dot(n, e03);
+        if(dp * dt < 0.0f) return false;
+        Vec3 e13 = _tetrahedron.v3 - _tetrahedron.v1;
+        n = cross(e13, e01);
+        dp = dot(n, p);
+        dt = dot(n, e02);
+        if(dp * dt < 0.0f) return false;
+        Vec3 e23 = _tetrahedron.v3 - _tetrahedron.v2;
+        n = cross(e23, e02);
+        dp = dot(n, p);
+        dt = dot(n, e01);
+        if(dp * dt < 0.0f) return false;
+        n = cross(e23, e13);
+        dp = dot(n, _tetrahedron.v3 - _point);
+        dt = dot(n, e03);
+        return dp * dt >= 0.0f;
+
+        // Much slower alternative (could be faster for batch operations when
+        // J^-1 or JLUp is provided):
+        // Find a transformation matrix that projects the tetrahedron into a
+        // normalized one: http://www.iue.tuwien.ac.at/phd/hollauer/node29.html
+        /*Mat3x3 J = axis(_tetrahedron.v1 - _tetrahedron.v0, _tetrahedron.v2 - _tetrahedron.v1, _tetrahedron.v3 - _tetrahedron.v1);
+        // Now p - v0 = J * x where x is p in normalized coordinates
+        Mat3x3 JLU; Vec<uint, 3> permutation;
+        decomposeLUp(J, JLU, permutation);
+        Vec3 normp = solveLUp(JLU, permutation, _point - _tetrahedron.v0);
+        if(any(normp < 0.0f)) return false;
+        return dot(normp, Vec3(1.0f)) <= 0.577350269f;*/
     }
 }

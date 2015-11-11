@@ -75,6 +75,16 @@ template<> inline void random<ei::Triangle>(ei::Triangle& _out)
     _out.v2 = pos + ei::Vec3(rnd() * 0.5f - 0.25f, rnd() * 0.5f - 0.25f, rnd() * 0.5f - 0.25f);
 }
 
+template<> inline void random<ei::Tetrahedron>(ei::Tetrahedron& _out)
+{
+    ei::Vec3 pos(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f);
+    _out.v0 = pos + ei::Vec3(rnd() * 0.5f - 0.25f, rnd() * 0.5f - 0.25f, rnd() * 0.5f - 0.25f);
+    _out.v1 = pos + ei::Vec3(rnd() * 0.5f - 0.25f, rnd() * 0.5f - 0.25f, rnd() * 0.5f - 0.25f);
+    _out.v2 = pos + ei::Vec3(rnd() * 0.5f - 0.25f, rnd() * 0.5f - 0.25f, rnd() * 0.5f - 0.25f);
+    _out.v3 = pos + ei::Vec3(rnd() * 0.5f - 0.25f, rnd() * 0.5f - 0.25f, rnd() * 0.5f - 0.25f);
+}
+
+
 template<> inline void random<ei::Capsule>(ei::Capsule& _out)
 {
     _out.seg.a = ei::Vec3(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f);
@@ -111,6 +121,7 @@ template<> inline const char* name<ei::OEllipsoid>() { return "OEllipsoid"; }
 template<> inline const char* name<ei::Box>() { return "Box"; }
 template<> inline const char* name<ei::OBox>() { return "Oriented Box"; }
 template<> inline const char* name<ei::Triangle>() { return "Triangle"; }
+template<> inline const char* name<ei::Tetrahedron>() { return "Tetrahedron"; }
 template<> inline const char* name<ei::Capsule>() { return "Capsule"; }
 template<> inline const char* name<ei::Plane>() { return "Plane"; }
 template<> inline const char* name<ei::DOP>() { return "DOP"; }
