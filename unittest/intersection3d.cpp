@@ -9,7 +9,6 @@ using namespace std;
 bool test_3dintersections()
 {
     bool result = true;
-    performance<Sphere, Plane>(intersects, "intersects");
 
     // Test box <-> box intersection
     {
@@ -139,6 +138,17 @@ bool test_3dintersections()
         TEST( !intersects( v1, ell0 ), "Point outside degenerated ellipsoid failed!" );
 
         performance<Vec3,Ellipsoid>(intersects, "intersects");
+    }
+
+    // Test oellipsoid <-> point intersection
+    {
+        Vec3 v0( 0.0f, 2.0f, 1.0f );
+        Vec3 v1( 0.0f, 1.0f, 0.5f );
+        OEllipsoid oel0( Vec3(0.0f, 1.0f, 0.0f), Vec3(0.1f, 0.1f, 2.5f), Quaternion(PI/4.0f, 0.0f, 0.0f) );
+        TEST( intersects( v0, oel0 ), "Point in oriented ellipsoid failed!" );
+        TEST( !intersects( v1, oel0 ), "Point outside oriented ellipsoid failed!" );
+
+        performance<Vec3,OEllipsoid>(intersects, "intersects");
     }
 
     // Test sphere <-> ray intersection

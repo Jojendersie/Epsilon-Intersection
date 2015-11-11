@@ -36,6 +36,13 @@ template<> inline void random<ei::Ellipsoid>(ei::Ellipsoid& _out)
     _out.radii = ei::Vec3(rnd() * 0.2f + 0.05f, rnd() * 0.2f + 0.05f, rnd() * 0.2f + 0.05f);
 }
 
+template<> inline void random<ei::OEllipsoid>(ei::OEllipsoid& _out)
+{
+    _out.center = ei::Vec3(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f);
+    _out.radii = ei::Vec3(rnd() * 0.2f + 0.05f, rnd() * 0.2f + 0.05f, rnd() * 0.2f + 0.05f);
+    random(_out.orientation);
+}
+
 template<> inline void random<ei::Ray>(ei::Ray& _out)
 {
     _out.origin = ei::Vec3(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f);
@@ -100,6 +107,7 @@ template<> inline const char* name<ei::Vec3>() { return "Point"; }
 template<> inline const char* name<ei::Ray>() { return "Ray"; }
 template<> inline const char* name<ei::Sphere>() { return "Sphere"; }
 template<> inline const char* name<ei::Ellipsoid>() { return "Ellipsoid"; }
+template<> inline const char* name<ei::OEllipsoid>() { return "OEllipsoid"; }
 template<> inline const char* name<ei::Box>() { return "Box"; }
 template<> inline const char* name<ei::OBox>() { return "Oriented Box"; }
 template<> inline const char* name<ei::Triangle>() { return "Triangle"; }

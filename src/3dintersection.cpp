@@ -137,10 +137,21 @@ namespace ei {
         if( _ellipsoid.radii.y != 0.0f ) o.y /= _ellipsoid.radii.y; else o.y *= 3.402823466e+38f;
         if( _ellipsoid.radii.z != 0.0f ) o.z /= _ellipsoid.radii.z; else o.z *= 3.402823466e+38f;
         return double(o.x*o.x) + double(o.y*o.y) + double(o.z*o.z) <= 1.0;
-        // The following is a try to get a more staple solution without
+        // The following is a try to get a more stable solution without
         // addition, but it is less stable in the end.
         //Vec3 t = (_point - _ellipsoid.center) / _ellipsoid.radii;
         //return exp(t.x*t.x)*exp(t.y*t.y)*exp(t.z*t.z) <= 2.718281828f;
+    }
+
+    // ********************************************************************* //
+    bool intersects( const Vec3& _point, const OEllipsoid& _oellipsoid )
+    {
+        Vec3 o = transform(_point - _oellipsoid.center, _oellipsoid.orientation);
+        // Use ellipsoid equation.
+        if( _oellipsoid.radii.x != 0.0f ) o.x /= _oellipsoid.radii.x; else o.x *= 3.402823466e+38f;
+        if( _oellipsoid.radii.y != 0.0f ) o.y /= _oellipsoid.radii.y; else o.y *= 3.402823466e+38f;
+        if( _oellipsoid.radii.z != 0.0f ) o.z /= _oellipsoid.radii.z; else o.z *= 3.402823466e+38f;
+        return double(o.x*o.x) + double(o.y*o.y) + double(o.z*o.z) <= 1.0;
     }
 
     // ********************************************************************* //

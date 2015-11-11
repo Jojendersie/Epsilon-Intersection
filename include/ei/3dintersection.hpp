@@ -83,6 +83,11 @@ namespace ei {
     bool intersects( const Vec3& _point, const Ellipsoid& _ellipsoid );        // TESTED
     inline bool intersects( const Ellipsoid& _ellipsoid, const Vec3& _point )  { return intersects( _point, _ellipsoid ); }
 
+    /// \brief Does a point lie inside an oriented ellipsoid/on the boundary?
+    /// \return true if the point is inside or on the boundary.
+    bool intersects( const Vec3& _point, const OEllipsoid& _oellipsoid );        // TESTED
+    inline bool intersects( const OEllipsoid& _oellipsoid, const Vec3& _point )  { return intersects( _point, _oellipsoid ); }
+
     /// \brief Does a point lie inside a DOP or on the boundary?
     /// \return true if the point is inside or on the boundary.
     bool intersects( const Vec3& _point, const DOP& _dop );                    // TESTED
@@ -153,7 +158,7 @@ namespace ei {
 
     /// \brief Do a sphere and a plane intersect or touch?
     /// \return true if there is at least one point in common.
-    bool intersects( const Sphere& _sphere, const Plane& _plane );
+    bool intersects( const Sphere& _sphere, const Plane& _plane );             // TESTED
     inline bool intersects( const Plane& _plane, const Sphere& _sphere ) { return intersects(_sphere, _plane); }
 
     /// \brief Does the sphere touches the triangle?
