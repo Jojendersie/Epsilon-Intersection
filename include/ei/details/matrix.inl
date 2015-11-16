@@ -1244,18 +1244,18 @@ int decomposeQl(const Matrix<T,3,3>& _A, Matrix<T,3,3>& _Q, Vec<T,3>& _lambda, b
     {
         if(_lambda.x < _lambda.z)
         {
-            swap(_lambda.x, _lambda.z);
-            swap(_Q(0), _Q(2));
+            float ts = _lambda.x; _lambda.x = _lambda.z; _lambda.z = ts;
+            Matrix<T,1,3> tv = _Q(0); _Q(0) = _Q(2); _Q(2) = tv;
         }
         if(_lambda.x < _lambda.y)
         {
-            swap(_lambda.x, _lambda.y);
-            swap(_Q(0), _Q(1));
+            float ts = _lambda.x; _lambda.x = _lambda.y; _lambda.y = ts;
+            Matrix<T,1,3> tv = _Q(0); _Q(0) = _Q(1); _Q(1) = tv;
         }
         if(_lambda.y < _lambda.z)
         {
-            swap(_lambda.y, _lambda.z);
-            swap(_Q(1), _Q(2));
+            float ts = _lambda.y; _lambda.y = _lambda.z; _lambda.z = ts;
+            Matrix<T,1,3> tv = _Q(1); _Q(1) = _Q(2); _Q(2) = tv;
         }
     }
 
