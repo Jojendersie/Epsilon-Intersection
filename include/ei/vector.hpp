@@ -541,7 +541,7 @@ namespace ei {
         /// \brief Vector like subtraction
         TQuaternion& operator-= (const TQuaternion& _q1);
 
-        TQuaternion operator* (TQuaternion _q1) const { return _q1 *= *this; }
+        TQuaternion operator* (const TQuaternion& _q1) const { TQuaternion q0 = *this; return q0 *= _q1; }
         TQuaternion operator* (T _s) const            { return TQuaternion(*this) *= _s; }
         TQuaternion operator/ (TQuaternion _q1) const { return _q1 /= *this; }
         TQuaternion operator/ (T _s) const            { return TQuaternion(*this) /= _s; }

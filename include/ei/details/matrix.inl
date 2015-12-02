@@ -1232,7 +1232,7 @@ int decomposeQl(const Matrix<T,3,3>& _A, Matrix<T,3,3>& _Q, Vec<T,3>& _lambda, b
         jr.z[k1] = jr.z[k2] = 0.0f;
         jr.r = sqrt((1.0f - jr.z[k0]) * (1.0f + jr.z[k0]));
         if(jr.r == 1.0f) break;                     // another numeric limit
-        q = normalize(q * jr);
+        q = normalize(jr * q);
     }
     _Q = rotation(q);
     _lambda.x = _Q(0,0)*dot(_A(0), _Q(0)) + _Q(0,1)*dot(_A(1), _Q(0)) + _Q(0,2)*dot(_A(2), _Q(0));
