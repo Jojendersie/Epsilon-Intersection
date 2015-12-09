@@ -291,11 +291,11 @@ namespace ei {
         if( _ray.direction.y >= 0 ) {
             tmin = (_box.min.y - _ray.origin.y) / _ray.direction.y;
             tmax = (_box.max.y - _ray.origin.y) / _ray.direction.y;
-            tside = min0 < 0.0f ? HitSide::Y_POS : HitSide::Y_NEG;
+            tside = tmin < 0.0f ? HitSide::Y_POS : HitSide::Y_NEG;
         } else {
             tmax = (_box.min.y - _ray.origin.y) / _ray.direction.y;
             tmin = (_box.max.y - _ray.origin.y) / _ray.direction.y;
-            tside = min0 < 0.0f ? HitSide::Y_NEG : HitSide::Y_POS;
+            tside = tmin < 0.0f ? HitSide::Y_NEG : HitSide::Y_POS;
         }
 
         if( (min0 > tmax) || (tmin > max0) )
@@ -306,11 +306,11 @@ namespace ei {
         if( _ray.direction.z >= 0 ) {
             tmin = (_box.min.z - _ray.origin.z) / _ray.direction.z;
             tmax = (_box.max.z - _ray.origin.z) / _ray.direction.z;
-            tside = min0 < 0.0f ? HitSide::Z_POS : HitSide::Z_NEG;
+            tside = tmin < 0.0f ? HitSide::Z_POS : HitSide::Z_NEG;
         } else {
             tmax = (_box.min.z - _ray.origin.z) / _ray.direction.z;
             tmin = (_box.max.z - _ray.origin.z) / _ray.direction.z;
-            tside = min0 < 0.0f ? HitSide::Z_NEG : HitSide::Z_POS;
+            tside = tmin < 0.0f ? HitSide::Z_NEG : HitSide::Z_POS;
         }
 
         if( (min0 > tmax) || (tmin > max0) )
