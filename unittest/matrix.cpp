@@ -421,7 +421,7 @@ bool test_matrix()
     }
 
     // ********************************************************************* //
-    // Test round, ceil, floor, sqrt, pow, log, log2
+    // Test round, ceil, floor, mod, sqrt, pow, log, log2
     {
         Vec4 v0(1.5f, 2.0f, -0.5f, 1.414f);
         IVec4 v1(2, 2, 0, 1);    // round(v0)
@@ -429,10 +429,12 @@ bool test_matrix()
         IVec4 v3(1, 2, -1, 1);   // floor(v0)
         Vec4 v6(5.5f, -1.5f, -0.5f, 2.5f);
         IVec4 v7(6, -2, 0, 2);   // round(v6)
+        Vec4 v8(0.5f, 0.0f, 0.5f, 0.414f); // mod(v0, 1.0f)
         TEST( all(round(v0) == v1), "Rounding v0 is wrong!" );
         TEST( all(ceil(v0) == v2), "Rounding v0 up is wrong!" );
         TEST( all(floor(v0) == v3), "Rounding v0 down is wrong!" );
-        TEST( all(round(v6) == v7), "Rounding v0 is wrong!" );
+        TEST( all(round(v6) == v7), "Rounding v6 is wrong!" );
+        TEST( approx(mod(v0, 1.0f), v8), "mod(v0,1) is wrong!" );
 
         Vec3 v4(1.0f, 4.0f, 2.0f);
         Vec3 v5(1.0f, 2.0f, PHYTAGORAS);

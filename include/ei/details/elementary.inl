@@ -137,7 +137,7 @@ T floorfrac(T _x, typename details::Int<sizeof(T)>::stype& _int)
 template<typename T>
 T mod(T _x, T _y)
 {
-    eiAssert(_y != 0.0f, "Modulu 0 is not defined!");
+    eiAssert(_y != 0.0f, "Modulo 0 is not defined!");
     T m = fmod(_x, _y);
     return m < 0 ? m+abs(_y) : m;
 }
@@ -146,7 +146,7 @@ T mod(T _x, T _y)
 template<>
 inline int8 mod<int8>(int8 _x, int8 _y)
 {
-    eiAssert(_y != 0, "Modulu 0 is not defined!");
+    eiAssert(_y != 0, "Modulo 0 is not defined!");
     int8 m = _x % _y;
     return m < 0 ? m+abs(_y) : m;
 }

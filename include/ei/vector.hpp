@@ -749,6 +749,12 @@ namespace ei {
     Matrix<typename details::Int<sizeof(T)>::stype,M,N> round(const Matrix<T,M,N>& _mat);   // TESTED
 
     // ********************************************************************* //
+    /// \brief Get the smallest positive number m, such that x=y*c+m with c
+    ///     in Z, for each component.
+    template<typename T, unsigned M, unsigned N>
+    Matrix<T,M,N> mod(const Matrix<T,M,N>& _x, T _y);                          // TESTED
+
+    // ********************************************************************* //
     /// \brief Compute the square root for each component
     template<typename T, unsigned N>
     Matrix<T,1,N> sqrt(const Matrix<T,1,N>& _v0);                              // TESTED
