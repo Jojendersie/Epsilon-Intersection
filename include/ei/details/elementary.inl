@@ -153,21 +153,21 @@ inline int8 mod<int8>(int8 _x, int8 _y)
 template<>
 inline int16 mod<int16>(int16 _x, int16 _y)
 {
-    eiAssert(_y != 0, "Modulu 0 is not defined!");
+    eiAssert(_y != 0, "Modulo 0 is not defined!");
     int16 m = _x % _y;
     return m < 0 ? m+abs(_y) : m;
 }
 template<>
 inline int32 mod<int32>(int32 _x, int32 _y)
 {
-    eiAssert(_y != 0, "Modulu 0 is not defined!");
+    eiAssert(_y != 0, "Modulo 0 is not defined!");
     int32 m = _x % _y;
     return m < 0 ? m+abs(_y) : m;
 }
 template<>
 inline int64 mod<int64>(int64 _x, int64 _y)
 {
-    eiAssert(_y != 0, "Modulu 0 is not defined!");
+    eiAssert(_y != 0, "Modulo 0 is not defined!");
     int64 m = _x % _y;
     return m < 0 ? m+abs(_y) : m;
 }

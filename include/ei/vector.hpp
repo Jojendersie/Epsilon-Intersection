@@ -759,6 +759,8 @@ namespace ei {
     ///     in Z, for each component.
     template<typename T, unsigned M, unsigned N>
     Matrix<T,M,N> mod(const Matrix<T,M,N>& _x, T _y);                          // TESTED
+    template<typename T, unsigned M, unsigned N>
+    Matrix<T,M,N> mod(const Matrix<T,M,N>& _x, const Matrix<T,M,N>& _y);
 
     // ********************************************************************* //
     /// \brief Compute the square root for each component

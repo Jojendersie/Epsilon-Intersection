@@ -898,6 +898,15 @@ inline Matrix<T,M,N> mod(const Matrix<T,M,N>& _x, T _y)
     return result;
 }
 
+template<typename T, unsigned M, unsigned N>
+inline Matrix<T,M,N> mod(const Matrix<T,M,N>& _x, const Matrix<T,M,N>& _y)
+{
+    Matrix<T,M,N> result;
+    for(uint i = 0; i < N * M; ++i)
+        result[i] = mod(_x[i], _y[i]);
+    return result;
+}
+
 // ************************************************************************* //
 template<typename T, unsigned N>
 Matrix<T,1,N> sqrt(const Matrix<T,1,N>& _v0)
