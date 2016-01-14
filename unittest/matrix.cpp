@@ -72,6 +72,9 @@ bool test_matrix()
         TEST( all(m1 == Mat2x2(0, 1, 3, 4)), "Truncation in both dimensions failed!" );
         TEST( all(v7 == Vec3(0, 3, 6)), "Truncation to vector failed!" );
         TEST( all(v8 == Vec3(1, 4, 7)), "Truncation to vector failed!" );
+
+        Vec<float, 0> v9;
+        Vec<float, 1> v10;
     }
 
     // ********************************************************************* //
@@ -310,14 +313,14 @@ bool test_matrix()
         Matrix<int, 2, 2> m0(1, 2, 3, 4);
         Matrix<int, 2, 2> m1(3, 4, 5, 6);
         Matrix<int, 2, 2> m2(4, 6, 8, 10);
-        Matrix<float, 2, 2> m3(2.0f, 2.0f, 4.0f, 4.0f);
-        Matrix<float, 2, 2> m4(5.0f, 6.0f, 9.0f, 10.0f);
+        Mat2x2 m3(2.0f, 2.0f, 4.0f, 4.0f);
+        Mat2x2 m4(5.0f, 6.0f, 9.0f, 10.0f);
         Vec2 v0(1.0f, 1.0f);
         Vec2 v1(0.0f, 1.0f);
         Vec2 v2(0.0f, 1.0f);
-        Matrix<float, 1, 2> vr0(1.0f, 1.0f);
-        Matrix<float, 1, 2> vr1(0.0f, 1.0f);
-        Matrix<float, 1, 2> vr2(0.0f, 1.0f);
+        RVec2 vr0(1.0f, 1.0f);
+        RVec2 vr1(0.0f, 1.0f);
+        RVec2 vr2(0.0f, 1.0f);
         TEST( all((m0 += m1) == m2), "Component wise += failed!" );
         m2 -= m0;
         TEST( all(m2 == Matrix<int,2,2>(0)), "Component wise -= failed!" );
@@ -336,6 +339,10 @@ bool test_matrix()
         TEST( all((m3 -= 0.5f) == m4 - 0.5f), "Matrix-Scalar -= failed!");
         TEST( all((v1 *= 2.0f) == v2 / 0.5f), "Matrix-Scalar *= failed!");
         TEST( all((v1 /= 2.0f) == v2), "Matrix-Scalar /= failed!");
+
+        Mat2x2 m5(72.0f, 82.0f, 128.0f, 146.0f);
+        m3 *= m4;
+        TEST( all(m3 == m5), "Matrix *= Matrix failed!");
     }
 
     // ********************************************************************* //

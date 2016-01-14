@@ -28,7 +28,7 @@ namespace ei {
     class Matrix: public details::Components<T, M, N>
     {
     public:
-        static_assert(M * N > 1, "A matrix must have at least 1x2 or 2x1 components.");
+//        static_assert(M * N > 1, "A matrix must have at least 1x2 or 2x1 components.");
 
         // There are two types of methods:
         // matrix <-> matrix: template<N0,M0,T0,N1,M1,T1> and
@@ -203,18 +203,12 @@ namespace ei {
         Matrix<T, M, N>& operator-= (const Matrix<T1,M,N>& _mat1);             // TESTED
         /// \brief Self assigning component wise multiplication for vectors
         ///    of the same size and squared matrices.
-        template<typename T1, ENABLE_IF(N == 1)>
-        Matrix<T, M, 1>& operator*= (const Matrix<T1,M,1>& _mat1);             // TESTED
-        template<typename T1, ENABLE_IF(M == 1)>
-        Matrix<T, 1, N>& operator*= (const Matrix<T1,1,N>& _mat1);             // TESTED
-        template<typename T1, ENABLE_IF(M == N)>
-        Matrix<T, M, N>& operator*= (const Matrix<T1,N,M>& _mat1);
+        template<typename T1, ENABLE_IF(M == N || M == 1 || N == 1)>
+        Matrix<T, M, N>& operator*= (const Matrix<T1,M,N>& _mat1);             // TESTED
         /// \brief Self assigning component wise division for vectors
         ///    of the same size.
-        template<typename T1, ENABLE_IF(N == 1)>
-        Matrix<T, M, 1>& operator/= (const Matrix<T1,M,1>& _mat1);             // TESTED
-        template<typename T1, ENABLE_IF(M == 1)>
-        Matrix<T, 1, N>& operator/= (const Matrix<T1,1,N>& _mat1);             // TESTED
+        template<typename T1, ENABLE_IF(N == 1 || M == 1)>
+        Matrix<T, M, N>& operator/= (const Matrix<T1,M,N>& _mat1);             // TESTED
         /// \brief Self assigning component wise binary or.
         template<typename T1>
         Matrix<T, M, N>& operator|= (const Matrix<T1,M,N>& _mat1);             // TESTED

@@ -6,7 +6,19 @@ namespace details {
     template<typename T, unsigned M, unsigned N> struct Components: public NonScalarType
     {
     protected:
-        T m_data[M * N];
+        // For vectors with M==0 or N==0 take one dummy element
+        T m_data[M * N < 1 ? 1 : N * M];
+    };
+
+
+    /// \brief Specialized version for 1 component row or column vector.
+    template<typename T> struct Components<T, 1, 1>: public NonScalarType
+    {
+        union {
+            T x;
+            T r;
+            T m_data[1];
+        };
     };
 
     /// \brief Specialized version for 2 component row and column vectors.
