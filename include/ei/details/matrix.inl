@@ -375,26 +375,26 @@ T Matrix<T, M, N>::operator[] (uint _index) const
 // ************************************************************************* //
 template<typename T, uint M, uint N>
 template<uint FROM, uint TO, class>
-Matrix<T, TO - FROM, 1>& Matrix<T, M, N>::range()
+Matrix<T, TO - FROM, 1>& Matrix<T, M, N>::subcol()
 {
     return *reinterpret_cast<Matrix<T, TO - FROM, 1>*>(m_data + FROM);
 }
 template<typename T, uint M, uint N>
 template<uint FROM, uint TO, class>
-const Matrix<T, TO - FROM, 1>& Matrix<T, M, N>::range() const
+const Matrix<T, TO - FROM, 1>& Matrix<T, M, N>::subcol() const
 {
     return *reinterpret_cast<const Matrix<T, TO - FROM, 1>*>(m_data + FROM);
 }
 
 template<typename T, uint M, uint N>
 template<uint FROM, uint TO, class>
-Matrix<T, 1, TO - FROM>& Matrix<T, M, N>::range()
+Matrix<T, 1, TO - FROM>& Matrix<T, M, N>::subrow()
 {
     return *reinterpret_cast<Matrix<T, 1, TO - FROM>*>(m_data + FROM);
 }
 template<typename T, uint M, uint N>
 template<uint FROM, uint TO, class>
-const Matrix<T, 1, TO - FROM>& Matrix<T, M, N>::range() const
+const Matrix<T, 1, TO - FROM>& Matrix<T, M, N>::subrow() const
 {
     return *reinterpret_cast<const Matrix<T, 1, TO - FROM>*>(m_data + FROM);
 }

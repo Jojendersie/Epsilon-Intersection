@@ -167,10 +167,10 @@ bool test_matrix()
         TEST( m2(0,1) == 2 && m2(1,0) == 5 && m2(1,1) == 4, "Operator or constructor wrong!" );
         TEST( (const_cast<const Matrix<int, 2, 2>&>(m2))[1] == 2, "Read-only operator wrong!" );
         TEST( (const_cast<const Matrix<int, 2, 2>&>(m2))(1,0) == 5, "Read-only operator wrong!" );
-        TEST( all(m3.range<1,4>() == m1), "Range access for row vectors failed!" );
-        m3.range<0,3>() = m1;
+        TEST( all(m3.subrow<1,4>() == m1), "Range access for row vectors failed!" );
+        m3.subrow<0,3>() = m1;
         TEST( all(m3 == m4), "Range access for row vectors failed!" );
-        TEST( all(m5.range<1,3>() == m0), "Range access for column vectors failed!" );
+        TEST( all(m5.subcol<1,3>() == m0), "Range access for column vectors failed!" );
     }
 
     // ********************************************************************* //
