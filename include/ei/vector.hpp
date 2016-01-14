@@ -157,6 +157,18 @@ namespace ei {
         T& operator[] (uint _index);                                           // TESTED
         T operator[] (uint _index) const;                                      // TESTED
 
+        /// \brief Get access to a subrange [FROM, TO) in the vector.
+        /// \tparam FROM First element in the output range (inclusive).
+        /// \tparam TO Exclusive right boundary.
+        template<uint FROM, uint TO, ENABLE_IF(N == 1)>
+        Matrix<T, TO - FROM, 1>& range();                                      // TESTED
+        template<uint FROM, uint TO, ENABLE_IF(N == 1)>
+        const Matrix<T, TO - FROM, 1>& range() const;
+        template<uint FROM, uint TO, ENABLE_IF(M == 1)>
+        Matrix<T, 1, TO - FROM>& range();                                      // TESTED
+        template<uint FROM, uint TO, ENABLE_IF(M == 1)>
+        const Matrix<T, 1, TO - FROM>& range() const;
+
         /// \brief Add two matrices component wise.
         /// \details Addition is commutative.
         template<typename T1>

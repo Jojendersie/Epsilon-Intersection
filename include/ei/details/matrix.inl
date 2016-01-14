@@ -373,6 +373,33 @@ T Matrix<T, M, N>::operator[] (uint _index) const
 }
 
 // ************************************************************************* //
+template<typename T, uint M, uint N>
+template<uint FROM, uint TO, class>
+Matrix<T, TO - FROM, 1>& Matrix<T, M, N>::range()
+{
+    return *reinterpret_cast<Matrix<T, TO - FROM, 1>*>(m_data + FROM);
+}
+template<typename T, uint M, uint N>
+template<uint FROM, uint TO, class>
+const Matrix<T, TO - FROM, 1>& Matrix<T, M, N>::range() const
+{
+    return *reinterpret_cast<const Matrix<T, TO - FROM, 1>*>(m_data + FROM);
+}
+
+template<typename T, uint M, uint N>
+template<uint FROM, uint TO, class>
+Matrix<T, 1, TO - FROM>& Matrix<T, M, N>::range()
+{
+    return *reinterpret_cast<Matrix<T, 1, TO - FROM>*>(m_data + FROM);
+}
+template<typename T, uint M, uint N>
+template<uint FROM, uint TO, class>
+const Matrix<T, 1, TO - FROM>& Matrix<T, M, N>::range() const
+{
+    return *reinterpret_cast<const Matrix<T, 1, TO - FROM>*>(m_data + FROM);
+}
+
+// ************************************************************************* //
 #define CODE_GEN_MAT_MAT_OP(op)                         \
 template<typename T, uint M, uint N>                    \
 template<typename T1>                                   \
@@ -490,26 +517,6 @@ CODE_GEN_MAT_MAT_SEFL_OP(+=)
 CODE_GEN_MAT_MAT_SEFL_OP(-=)
 
 // ************************************************************************* //
-/*template<typename T, uint M, uint N>
-template<typename T1, class>
-Matrix<T, M, 1>& Matrix<T, M, N>::operator*= (const Matrix<T1,M,1>& _mat1)
-{
-    for(uint i = 0; i < M; ++i)
-        (*this)[i] *= _mat1[i];
-    return *this;
-}
-
-// ************************************************************************* //
-template<typename T, uint M, uint N>
-template<typename T1, class>
-Matrix<T, 1, N>& Matrix<T, M, N>::operator*= (const Matrix<T1,1,N>& _mat1)
-{
-    for(uint i = 0; i < N; ++i)
-        (*this)[i] *= _mat1[i];
-    return *this;
-}*/
-
-// ************************************************************************* //
 template<typename T, uint M, uint N>
 template<typename T1, class>
 Matrix<T, M, N>& Matrix<T, M, N>::operator*= (const Matrix<T1,M,N>& _mat1)
@@ -531,16 +538,6 @@ Matrix<T, M, N>& Matrix<T, M, N>::operator/= (const Matrix<T1,M,N>& _mat1)
         (*this)[i] /= _mat1[i];
     return *this;
 }
-
-// ************************************************************************* //
-/*template<typename T, uint M, uint N>
-template<typename T1, class>
-Matrix<T, 1, N>& Matrix<T, M, N>::operator/= (const Matrix<T1,1,N>& _mat1)
-{
-    for(uint i = 0; i < N; ++i)
-        (*this)[i] /= _mat1[i];
-    return *this;
-}*/
 
 // ************************************************************************* //
 CODE_GEN_MAT_MAT_SEFL_OP(|=)

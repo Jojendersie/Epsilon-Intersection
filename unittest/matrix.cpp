@@ -157,6 +157,9 @@ bool test_matrix()
         Matrix<int, 2, 1> m0(1, 2);
         Matrix<int, 1, 3> m1(1, 2, 3);
         Matrix<int, 2, 2> m2(1, 2, 3, 4);
+        Matrix<int, 1, 4> m3(3, 1, 2, 5);
+        Matrix<int, 1, 4> m4(1, 2, 5, 5);
+        Matrix<int, 4, 1> m5(1, 1, 2, 2);
         m1(0,2) = 5;
         m2[2] = 5;
         TEST( m0[0] == 1 && m0[1] == 2, "Operator or constructor wrong!" );
@@ -164,6 +167,10 @@ bool test_matrix()
         TEST( m2(0,1) == 2 && m2(1,0) == 5 && m2(1,1) == 4, "Operator or constructor wrong!" );
         TEST( (const_cast<const Matrix<int, 2, 2>&>(m2))[1] == 2, "Read-only operator wrong!" );
         TEST( (const_cast<const Matrix<int, 2, 2>&>(m2))(1,0) == 5, "Read-only operator wrong!" );
+        TEST( all(m3.range<1,4>() == m1), "Range access for row vectors failed!" );
+        m3.range<0,3>() = m1;
+        TEST( all(m3 == m4), "Range access for row vectors failed!" );
+        TEST( all(m5.range<1,3>() == m0), "Range access for column vectors failed!" );
     }
 
     // ********************************************************************* //
