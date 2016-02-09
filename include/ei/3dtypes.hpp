@@ -447,6 +447,17 @@ namespace ei {
     Vec3 center(const Frustum& _frustum);                                      // TESTED
     //Vec3 center(const FastFrustum& _frustum);
 
+    /// \brief Remove all points from the array, which are not part of the
+    ///     convex hull.
+    /// \details The algorithm moves the points on the convex hull to the front
+    ///     of the _points array. The other points are overwritten.
+    /// \param [in] _threshold Discard vertices which are closer to the
+    ///     previous convex hull than this threshold. This also includes
+    ///     duplicates of vertices.
+    /// \return Number of points in the convex set (these are the first elements
+    ///     in _points after call).
+    uint32 convexSet(Vec3* _points, uint32 _numPoints, float _threshold = 0.0f);
+
     // Include inline implementations
 #   include "details/3dtypes.inl"
 }

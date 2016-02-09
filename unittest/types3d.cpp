@@ -255,5 +255,22 @@ bool test_3dtypes()
         performance<Vec3,Triangle,float>(distance, "distance");
     }
 
+    // ********************************************************************* //
+    // Test convexSet algorithm
+    {
+        Vec3 a0[1] = {Vec3(0.0f)};
+        TEST( convexSet(a0, 1) == 1, "Convex set of a0 wrong!" );
+        Vec3 a1[2] = {Vec3(0.0f), Vec3(1.0f)};
+        TEST( convexSet(a1, 2) == 2, "Convex set of a1 wrong!" );
+        Vec3 a2[2] = {Vec3(0.0f), Vec3(0.0f)};
+        TEST( convexSet(a2, 2) == 1, "Convex set of a2 wrong!" );
+        Vec3 a3[3] = {Vec3(0.0f), Vec3(1.0f), Vec3(2.0f)};
+        TEST( convexSet(a3, 3) == 2, "Convex set of a3 wrong!" );
+        TEST( all(a3[1] == Vec3(2.0f)), "Convex set of a3 wrong!" );
+        Vec3 a4[5] = {Vec3(0.0f), Vec3(1.0f), Vec3(0.0f, 1.0f, 0.0f), Vec3(0.1f, 0.6f, 0.6f), Vec3(0.0f, 0.0f, 1.0f)};
+        TEST( convexSet(a4, 5) == 4, "Convex set of a4 wrong!" );
+        TEST( all(a4[3] == Vec3(0.0f, 0.0f, 1.0f)), "Convex set of a4 wrong!" );
+    }
+
     return result;
 }

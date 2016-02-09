@@ -1,4 +1,5 @@
 #include "ei/3dtypes.hpp"
+#include "ei/3dintersection.hpp"
 
 namespace ei {
 
@@ -35,7 +36,7 @@ namespace ei {
         // Just two of them could already define a sphere enclosing all other.
         // So we need to compute any combination of possible spheres (14), but
         // luckily we know a direct solution for any combination of 3 points.
-        // The reduces the work to 4 cases: build a bounding sphere for 3 points
+        // This reduces the work to 4 cases: build a bounding sphere for 3 points
         // and have a look if the fourth point is inside.
         *this = Sphere( _p1, _p2, _p3 );
         float rsq = radius*radius;
@@ -315,4 +316,83 @@ namespace ei {
         const_cast<Plane&>(t) = Plane(normalize(cross(xAxis, v[7]-_frustum.apex)), v[7]);
     }
 
+    // ********************************************************************* //
+    uint32 convexSet(Vec3* _points, uint32 _numPoints, float _threshold)
+    {
+        float tSq = _threshold * _threshold; // Compare squared numbers
+
+        // Find duplicate points (brute force)
+        for(uint32 i = 0; i < _numPoints; ++i)
+        {
+            for(uint32 j = i+1; j < _numPoints; ++j)
+                if(lensq(_points[j] - _points[i]) <= tSq)
+                {
+                    // Whoops, j is the same as i -> remove j
+                    _points[j--] = _points[--_numPoints];
+                }
+        }
+
+        // For each point test if there is a separating plane to all other
+        // points. If not discard it.
+        for(uint32 i = 0; i < _numPoints; ++i)
+        {
+            // Up to 3 points define the plane direction
+            Vec3 extrema[3];
+            Plane p;
+            float d = 0.0f;
+            uint32 ne = 0;
+            bool maySeparate = true;
+            for(uint32 j = 0; j < _numPoints && maySeparate; ++j) if(i != j)
+            {
+                switch(ne) {
+                case 0: {
+                    extrema[ne++] = _points[j];
+                } break;
+                case 1: {
+                    // If j is the second point in the extrema array, test
+                    // for colinearity of i.
+                    extrema[ne++] = _points[j];
+                    if(distance(_points[i], Segment(extrema[0], extrema[1])) <= _threshold)
+                        maySeparate = false;
+                } break;
+                case 2: {
+                    // If j is the third test for coplanarity
+                    extrema[ne++] = _points[j];
+                    p = Plane(extrema[0], extrema[1], extrema[2]);
+                    d = dot(_points[i], p.n) + p.d;
+                    if(abs(d) <= _threshold)
+                        maySeparate = false;
+                } break;
+                default: {
+                    float dj = dot(_points[j], p.n) + p.d;
+                    if(dj * d > 0.0f) // Not separated by current plane?
+                    {
+                        // If j is between the plane and i, it must be
+                        // added to the extremal set and another point
+                        // must be removed.
+                        p = Plane(_points[j], extrema[1], extrema[2]);
+                        d = dot(_points[i], p.n) + p.d;
+                        dj = dot(extrema[0], p.n) + p.d;
+                        if(d * dj < 0.0f) { extrema[0] = _points[j]; break; }
+                        p = Plane(extrema[0], _points[j], extrema[2]);
+                        d = dot(_points[i], p.n) + p.d;
+                        dj = dot(extrema[1], p.n) + p.d;
+                        if(d * dj < 0.0f) { extrema[1] = _points[j]; break; }
+                        p = Plane(extrema[0], extrema[1], _points[j]);
+                        d = dot(_points[i], p.n) + p.d;
+                        dj = dot(extrema[2], p.n) + p.d;
+                        if(d * dj < 0.0f) { extrema[2] = _points[j]; break; }
+                        // For each side of the tetrahedron i and the 4th point
+                        // are on the same side -> no separating plane
+                        maySeparate = false;
+                    }
+                }}
+            }
+            if(!maySeparate)
+            {
+                _points[i--] = _points[--_numPoints];
+            }
+        }
+        return _numPoints;
+    }
 }
