@@ -254,7 +254,8 @@ namespace ei {
             orientation = Quaternion(connection/sides.x, Vec3(1.0f, 0.0f, 0.0f));
             center = _points[0] + 0.5f * connection;
         } else {
-            sides = Vec3(1e30f);
+            sides = Vec3(1e12f);
+            float volume = 1e36f;
             Quaternion testOrientation;
             // Try each combination of three vertices to setup an orientation
             for(uint32 i = 0; i < _numPoints-2; ++i)
@@ -271,10 +272,30 @@ namespace ei {
                             yAxis /= l;
                             testOrientation = Quaternion(xAxis, yAxis, cross(xAxis, yAxis));
                         }
-                        OBox currentFit(testOrientation, _points, _numPoints);
-                        // If the new box is better than the current copy it.
-                        if(prod(currentFit.sides) < prod(sides))
-                            *this = currentFit;
+                        // Since the rotation of all points, to refit a box with the
+                        // current rotation, is the most expensive part try to early out.
+                        Mat3x3 rotation(testOrientation);
+                        Vec3 min, max;
+                        min = max = rotation * _points[0];
+                        for(uint32 i = 1; i < _numPoints; ++i)
+                        {
+                            Vec3 p = rotation * _points[i];
+                            if(p.x < min.x) min.x = p.x;
+                            if(p.y < min.y) min.y = p.y;
+                            if(p.z < min.z) min.z = p.z;
+                            if(p.x > max.x) max.x = p.x;
+                            if(p.y > max.y) max.y = p.y;
+                            if(p.z > max.z) max.z = p.z;
+                            if(prod(max-min) >= volume) goto NextRotation;
+                        }
+                        // The new box is better than the current, otherwise
+                        // the goto would have skipped this section before.
+                        //center = transform((min + max) * 0.5f, conjugate(testOrientation));
+                        center = transpose(rotation) * ((min + max) * 0.5f);
+                        sides = max - min;
+                        orientation = testOrientation;
+                        volume = prod(sides);
+                        NextRotation:;
                     }
                 }
             }
