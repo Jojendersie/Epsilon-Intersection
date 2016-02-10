@@ -394,14 +394,17 @@ namespace ei {
                         p = Plane(_points[j], extrema[1], extrema[2]);
                         d = dot(_points[i], p.n) + p.d;
                         dj = dot(extrema[0], p.n) + p.d;
+                        if(abs(d) <= _threshold) { maySeparate = false; break; }
                         if(d * dj < 0.0f) { extrema[0] = _points[j]; break; }
                         p = Plane(extrema[0], _points[j], extrema[2]);
                         d = dot(_points[i], p.n) + p.d;
                         dj = dot(extrema[1], p.n) + p.d;
+                        if(abs(d) <= _threshold) { maySeparate = false; break; }
                         if(d * dj < 0.0f) { extrema[1] = _points[j]; break; }
                         p = Plane(extrema[0], extrema[1], _points[j]);
                         d = dot(_points[i], p.n) + p.d;
                         dj = dot(extrema[2], p.n) + p.d;
+                        if(abs(d) <= _threshold) { maySeparate = false; break; }
                         if(d * dj < 0.0f) { extrema[2] = _points[j]; break; }
                         // For each side of the tetrahedron i and the 4th point
                         // are on the same side -> no separating plane
