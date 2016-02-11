@@ -144,6 +144,12 @@ namespace ei {
     inline bool intersects( const Box& _box, const Ray& _ray, float& _distance, HitSide& _side )  { return intersects( _ray, _box, _distance, _side ); }
     inline bool intersects( const Box& _box, const Ray& _ray, float& _distance, float& _distanceExit )  { return intersects( _ray, _box, _distance, _distanceExit ); }
 
+    /// \brief Do an oriented box and a ray intersect or touch?
+    bool intersects( const Ray& _ray, const OBox& _obox );                     // TESTED
+    bool intersects( const Ray& _ray, const OBox& _obox, float& _distance );
+    inline bool intersects( const OBox& _obox, const Ray& _ray ) { return intersects( _ray, _obox ); }
+    inline bool intersects( const OBox& _obox, const Ray& _ray, float& _distance ) { return intersects( _ray, _obox, _distance ); }
+
     /// \brief Do a ray and a triangle intersect or touch?
     /// \param [out,opt] _distance The ray parameter (distance) for the first
     ///     intersection point in positive direction.

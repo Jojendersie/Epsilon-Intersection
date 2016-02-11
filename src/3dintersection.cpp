@@ -345,6 +345,25 @@ namespace ei {
     }
 
     // ********************************************************************* //
+    bool intersects( const Ray& _ray, const OBox& _obox )
+    {
+        // Transform the ray such that the box is centered at the origin
+        Ray ray;
+        ray.origin = transform( _ray.origin - _obox.center, conjugate(_obox.orientation) );
+        ray.direction = transform( _ray.direction, conjugate(_obox.orientation) );
+        return intersects( ray, Box(-0.5f*_obox.sides, 0.5f*_obox.sides) );
+    }
+
+    bool intersects( const Ray& _ray, const OBox& _obox, float& _distance )
+    {
+        // Transform the ray such that the box is centered at the origin
+        Ray ray;
+        ray.origin = transform( _ray.origin - _obox.center, conjugate(_obox.orientation) );
+        ray.direction = transform( _ray.direction, conjugate(_obox.orientation) );
+        return intersects( ray, Box(-0.5f*_obox.sides, 0.5f*_obox.sides), _distance );
+    }
+
+    // ********************************************************************* //
     bool intersects( const Ray& _ray, const Triangle& _triangle )
     {
         // Möller and Trumbore
@@ -488,7 +507,7 @@ namespace ei {
     bool intersects( const Vec3& _point, const OBox& _obox )
     {
         Vec3 alignedPoint = _point - _obox.center;
-        alignedPoint = transform( alignedPoint, _obox.orientation );
+        alignedPoint = transform( alignedPoint, conjugate(_obox.orientation) );
         if(alignedPoint.x < - _obox.sides.x / 2.0f) return false;
         if(alignedPoint.y < - _obox.sides.y / 2.0f) return false;
         if(alignedPoint.z < - _obox.sides.z / 2.0f) return false;

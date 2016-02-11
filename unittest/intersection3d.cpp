@@ -260,6 +260,19 @@ bool test_3dintersections()
         performance<Ray,Box,float,bool>(intersects, "intersects");
     }
 
+    // Test obox <-> ray intersection
+    {
+        OBox obo0( Vec3(0.5f, 1.0f, 2.0f), Vec3(1.0f, 2.0f, 3.0f), Quaternion(Vec3(0.0f, 0.0f, 1.0f), PI/4.0f) );
+        Ray ray0( Vec3(0.1f), Vec3(0.0f, 0.0f, 1.0f) );
+        Ray ray1( Vec3(0.8f, 0.1f, 0.0f), Vec3(0.0f, 0.0f, 1.0f));
+        Ray ray2( Vec3(2.5f, 0.0f, 2.0f), normalize(Vec3(-1.0f, -1.0f, 0.0f)));
+        TEST( !intersects( ray0, obo0 ), "ray0 should miss obo0!" );
+        TEST( intersects( ray1, obo0 ), "ray1 should hit obo0!" );
+        TEST( !intersects( ray2, obo0 ), "ray2 should miss obo0!" );
+
+        performance<Ray,OBox>(intersects, "intersects");
+    }
+
     // Test triangle <-> ray intersection
     {
         Ray ray0( Vec3(-1.0f, 0.0f, 0.0f), normalize(Vec3(0.5f, 0.5f, 0.0f)) );
