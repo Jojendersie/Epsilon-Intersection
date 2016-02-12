@@ -120,7 +120,7 @@ namespace ei {
     {
         Vec3 center;
         Vec3 sides;                 ///< Side lengths of the box
-        Quaternion orientation;     ///< Orientation of the box
+        Quaternion orientation;     ///< Orientation of the box. This gives the rotation from an AABox to the rotated box.
 
         /// \brief Create uninitialized box.
         OBox() {}

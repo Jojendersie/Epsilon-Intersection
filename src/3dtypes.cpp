@@ -225,7 +225,7 @@ namespace ei {
 
         // Project all points to the cube sides by transforming them into local
         // space, such that the box is axis aligned again.
-        Mat3x3 rotation(_orientation);
+        Mat3x3 rotation(conjugate(_orientation));
         Vec3 min, max;
         min = max = rotation * _points[0];
         for(uint32 i = 1; i < _numPoints; ++i)
@@ -272,8 +272,8 @@ namespace ei {
                             yAxis /= l;
                             testOrientation = Quaternion(xAxis, yAxis, cross(xAxis, yAxis));
                         }
-                        // Since the rotation of all points, to refit a box with the
-                        // current rotation, is the most expensive part try to early out.
+                        // Refit a box with the current rotation. Since the rotation of
+                        // all points is the most expensive part try to early out.
                         Mat3x3 rotation(testOrientation);
                         Vec3 min, max;
                         min = max = rotation * _points[0];
@@ -293,7 +293,7 @@ namespace ei {
                         //center = transform((min + max) * 0.5f, conjugate(testOrientation));
                         center = transpose(rotation) * ((min + max) * 0.5f);
                         sides = max - min;
-                        orientation = testOrientation;
+                        orientation = conjugate(testOrientation);
                         volume = prod(sides);
                         NextRotation:;
                     }
