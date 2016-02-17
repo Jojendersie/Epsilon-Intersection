@@ -56,6 +56,106 @@ namespace ei {
     }
 
     // ************************************************************************* //
+    float distance(const Vec3& _point, const Segment& _line)
+    {
+        Vec3 u = _line.b - _line.a;
+        Vec3 w = _point - _line.a;
+
+        float s = saturate(dot(u, w) / dot(u, u));
+        // _line.a + u * s - _point
+        return len(u * s - w);
+    }
+
+    // ************************************************************************* //
+    float distance(const Vec3& _point, const Triangle& _triangle)
+    {
+        Vec3 a = _triangle.v1-_triangle.v0;
+        Vec3 b = _triangle.v2-_triangle.v1;
+        Vec3 c = _triangle.v2-_triangle.v0;
+        Vec3 n = cross(c, a);
+
+        // The point is inside if it is not on the right hand of any edge
+        Vec3 p_v0 = _point - _triangle.v0;
+        Vec3 p_v1 = _point - _triangle.v1;
+        bool outSideA = dot(cross(p_v0, a), n) < 0.0f;
+        bool outSideB = dot(cross(p_v1, b), n) < 0.0f;
+        bool outSideC = dot(cross(c, p_v0), n) < 0.0f;   // Inverse sign because of use from p-v0
+
+        if(!(outSideA || outSideB || outSideC))
+            // Distance to the plane
+            return dot(normalize(n), _point-_triangle.v0);
+
+        // Minimum is somewhere on the three edges.
+        float dist;
+        dist =           lensq(p_v0) - sq(dot(p_v0, a)) / lensq(a);
+        dist = min(dist, lensq(p_v1) - sq(dot(p_v1, b)) / lensq(b));
+        dist = min(dist, lensq(p_v0) - sq(dot(p_v0, c)) / lensq(c));
+        return sqrt(dist);
+    }
+
+    // ************************************************************************* //
+    float distance(const Segment& _line0, const Segment& _line1)
+    {
+        // http://geomalgorithms.com/a07-_distance.html
+        Vec3 u = _line0.b - _line0.a;
+        Vec3 v = _line1.b - _line1.a;
+        Vec3 w = _line1.a - _line0.a;
+        float a = dot(u, u);
+        float b = dot(u, v);
+        float c = dot(v, v);
+        float p = dot(u, w);
+        float q = dot(v, w);
+        float n = a * c - b * b;
+        if(n == 0.0f)
+        {
+            // Parallel lines
+            // If the two lines "overlap" the distance is equal over the whole
+            // range. Otherwise 2 of the endpoints are closest. So in any case the
+            // distance of one of the end points to the other lines must be the
+            // minimum distance.
+            float s0 = saturate(p / a);
+            float d = len(s0 * u - w);
+            Vec3 x = _line1.b - _line0.a;
+            float s1 = saturate(dot(u, x) / a);
+            d = min(d, len(s1 * u - x));
+            float t0 = saturate(-q / c);
+            d = min(d, len(t0 * v + w));
+            Vec3 y = _line0.b - _line1.a;
+            float t1 = saturate(dot(u, y) / c);
+            d = min(d, len(t1 * v - y));
+            return d;
+        }
+        float s = (b * q - c * p) / -n;
+        float t = (a * q - b * p) / -n;
+        // len(_line0.a + saturate(s) * u - (_line1.a + saturate(t) * v))
+        return len(saturate(s) * u - w - saturate(t) * v);
+    }
+
+    // ************************************************************************* //
+    float distance(const Vec3& _point, const Box& _box)
+    {
+        eiAssert(all(_box.min <= _box.max), "Invalid box!");
+        // Connection vector to box corner
+        Vec3 d = _box.min - _point;
+        if(d.x < 0.0f) d.x = _point.x - _box.max.x;
+        if(d.y < 0.0f) d.y = _point.y - _box.max.y;
+        if(d.z < 0.0f) d.z = _point.z - _box.max.z;
+        // Inner distance if all single distances are negative
+        float innerDist = min(0.0f, max(d.x, max(d.y, d.z)));
+        // Point is outside if len is greater than 0
+        return len(max(d,Vec3(0.0f))) + innerDist;
+    }
+
+    // ************************************************************************* //
+    float distance(const Sphere& _sphere, const Box& _box)
+    {
+        eiAssert(all(_box.min <= _box.max), "Invalid box!");
+        eiAssert(_sphere.radius >= 0.0f, "Invalid sphere!");
+        Vec3 d = max(_box.min - _sphere.center, _sphere.center - _box.max);
+        return max(len(max(d, Vec3(0.0f))) - _sphere.radius, 0.0f);
+    }
+
+    // ************************************************************************* //
     float distance(const Sphere& _sphere, const Plane& _plane)
     {
         eiAssert(approx(1.0f, len(_plane.n)), "The plane is not normalized!");
@@ -401,7 +501,7 @@ namespace ei {
         float barycentricCoord2 = dot( d, e0 ) / dist2A;
         if(barycentricCoord2 < -EPSILON || barycentricCoord2 != barycentricCoord2) return false;
         if(barycentricCoord1 + barycentricCoord2 > 1.0f) return false;
-        
+
         // Projection to plane. The 2A from normal is canceled out
         _distance = dot( normal, o ) / dist2A;
         return _distance >= 0.0f;
@@ -427,7 +527,7 @@ namespace ei {
         _barycentric.x = 1.0f - (_barycentric.y + _barycentric.z);
         // Do one check on NaN - if any other coordinate is NaN x will be NaN too
         if(_barycentric.x < -EPSILON || _barycentric.x != _barycentric.x) return false;
-        
+
         // Projection to plane. The 2A from normal is canceled out
         _distance = dot( normal, o ) / dist2A;
         return _distance >= 0.0f;
