@@ -270,6 +270,10 @@ bool test_3dtypes()
         Vec3 a4[5] = {Vec3(0.0f), Vec3(1.0f), Vec3(0.0f, 1.0f, 0.0f), Vec3(0.1f, 0.5f, 0.6f), Vec3(0.0f, 0.0f, 1.0f)};
         TEST( convexSet(a4, 5) == 4, "Convex set of a4 wrong!" );
         TEST( all(a4[3] == Vec3(0.0f, 0.0f, 1.0f)), "Convex set of a4 wrong!" );
+        Vec3 a5[5] = {Vec3(1.0f), Vec3(0.0f), Vec3(2.0f), Vec3(-1.0f), Vec3(1.5f)};
+        TEST( convexSet(a5, 5) == 2, "Convex set of a5 wrong!" );
+        Vec3 a6[5] = {Vec3(1.0f, 1.0f, 0.0f), Vec3(0.0f), Vec3(0.5f, 0.75f, 0.0f), Vec3(0.5f, 0.25f, 0.0f), Vec3(0.5f, 0.9f, 0.0f)};
+        TEST( convexSet(a6, 5) == 4, "Convex set of a6 wrong!" );
     }
 
     return result;
