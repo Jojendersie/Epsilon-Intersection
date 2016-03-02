@@ -270,7 +270,7 @@ bool test_3dintersections()
         TEST( intersects( ray1, obo0 ), "ray1 should hit obo0!" );
         TEST( !intersects( ray2, obo0 ), "ray2 should miss obo0!" );
 
-        performance<Ray,OBox>(intersects, "intersects");
+        performance<OBox,Ray,bool>(intersects, "intersects");
     }
 
     // Test triangle <-> ray intersection
