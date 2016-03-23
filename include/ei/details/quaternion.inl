@@ -132,6 +132,13 @@ TQuaternion<T>::TQuaternion( const Vec<T,3>& _from, const Vec<T,3>& _to )
     Vec<T,3> to = normalize(_to);
     // half angle trick from http://physicsforgames.blogspot.de/2010/03/quaternion-tricks.html
     Vec<T,3> half = normalize(from + to);
+    // Opposite vectors or one vector 0.0 -> 180° rotation
+    if(half.x != half.x)
+    {
+        if(approx(abs(from.y), 1.0f))
+            half = Vec3(0.0f, 0.0f, 1.0f);
+        else half = normalize(cross(from, Vec3(0.0f, 1.0f, 0.0f)));
+    }
 
     // cos(theta) = dot product since both vectors are normalized
     r = dot(from, half);
