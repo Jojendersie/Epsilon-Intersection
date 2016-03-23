@@ -83,6 +83,13 @@ inline OBox::OBox( const Box& _box ) :
 {
 }
 
+inline OBox::OBox( const Disc& _disc ) :
+	center(_disc.center),
+	sides(_disc.radius * 2.0f, _disc.radius * 2.0f, 0.0f),
+	orientation( Vec3(0.0f, 0.0f, 1.0f), _disc.normal)
+{
+}
+
 
 // ************************************************************************* //
 inline Tetrahedron::Tetrahedron( const Vec3& _v0, const Vec3& _v1, const Vec3& _v2, const Vec3& _v3 ) :

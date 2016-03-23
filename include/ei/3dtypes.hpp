@@ -131,6 +131,12 @@ namespace ei {
         /// \brief Create an oriented box from a simple box
         explicit OBox( const Box& _box );
 
+        /// \brief Create an oriented box from a disc.
+        /// \details Since the disc is isotropic there is one degree of freedom.
+        ///     This ambiguity is solved by using the smallest rotation of the
+        ///     z-axis towards the disc normal.
+        explicit OBox( const Disc& _disc );
+
         /// \brief Create an oriented box which contains an aabox
         OBox( const Quaternion& _orientation, const Box& _box );
         OBox( const Mat3x3& _orientation, const Box& _box );
