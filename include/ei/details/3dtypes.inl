@@ -20,12 +20,18 @@ inline Sphere::Sphere( const Vec3& _p0, const Vec3& _p1 ) :
 
 
 // ************************************************************************* //
-inline Box::Box( const Vec3& _min, const Vec3& _max ) :
-    min(_min),
-    max(_max)
+inline Box::Box( const Vec3& _point ) :
+    min(_point),
+    max(_point)
 {
-    eiAssert( all(_max >= _min),
-        "Minimum coordinates must be smaller or equal the maximum." );
+}
+
+template<typename... Args>
+inline Box::Box( const Vec3& _point, Args... _morePoints ) :
+    Box(_morePoints...)
+{
+    min = ei::min(min, _point);
+    max = ei::max(max, _point);
 }
 
 inline Box::Box( const Box& _box0, const Box& _box1 ) :

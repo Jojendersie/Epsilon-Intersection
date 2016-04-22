@@ -88,7 +88,14 @@ namespace ei {
         Box() {}
 
         /// \brief Create from minimal and maximal coordinates
-        Box( const Vec3& _min, const Vec3& _max );                             // TESTED
+        //Box( const Vec3& _min, const Vec3& _max );                             // TESTED
+
+        /// \brief Create a box for a single point.
+        /// \details This is also the recursion and for the point list constructor.
+        explicit Box( const Vec3& _point );
+
+        template<typename... Args>
+        Box( const Vec3& _point, Args... _morePoints );
 
         /// \brief Get the smallest box containing two boxes.
         Box( const Box& _box0, const Box& _box1 );                             // TESTED
