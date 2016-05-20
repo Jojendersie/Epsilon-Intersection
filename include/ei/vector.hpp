@@ -53,14 +53,11 @@ namespace ei {
         // parameters and return value.
         // Therefore if must be inserted in the template list and `class` at
         // the same position in the implementation.
-#       define ENABLE_IF(condition) typename Dummy = int, typename = typename std::enable_if< (condition) && sizeof(Dummy) >::type
+//#       define ENABLE_IF(condition) typename Dummy = int, typename = typename std::enable_if< (condition) && sizeof(Dummy) >::type
+#       define ENABLE_IF(condition) typename = typename std::enable_if< (condition) >::type
 
         /// \brief Construction without initialization. The values are undefined!
         Matrix();
-
-        /// \brief Set all values to the same constant value.
-        template<typename T1>
-        explicit Matrix(T1 _s);                                                 // TESTED
 
         /// \brief Convert a matrix/vector with a different elementary type.
         template<typename T1>
@@ -68,12 +65,8 @@ namespace ei {
 
         // Forward to base constructors
         //template<typename... Args>
-        template<typename... Args, typename = typename std::enable_if<(sizeof...(Args) > 1)>::type>
+        template<typename... Args>//, typename = typename std::enable_if<(sizeof...(Args) > 1)>::type>
         Matrix(Args... _args) :
-        //Matrix(typename std::enable_if<(sizeof...(Args) > 1), Args...>::type _args) :
-        //Matrix(typename std::enable_if<(sizeof...(Args) > 1), Args>::type... _args) :
-        //Matrix(typename... std::enable_if<(sizeof...(Args) > 1), Args...>::type _args) :
-        //Matrix(typename... std::enable_if<(sizeof...(Args) > 1), Args>::type _args) :
             details::Components<T,M,N>(std::forward<Args>(_args)...)
         {
         }
@@ -81,9 +74,6 @@ namespace ei {
         /// \brief Allow explicit truncation of the dimension sizes.
         template<typename T1, uint M1, uint N1, ENABLE_IF((M < M1 && N <= N1) || (M <= M1 && N < N1))>
         explicit Matrix(const Matrix<T1,M1,N1>& _mat1, uint _rowOff = 0, uint _colOff = 0);
-
-        template<ENABLE_IF(M == 3 && N == 3)>
-        explicit Matrix(const TQuaternion<T>& _quaternion);
 
         /// \brief Access a single element with two indices.
         /// \details Computes the data index _row * N + _col. Therefore

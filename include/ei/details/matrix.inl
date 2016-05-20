@@ -9,13 +9,13 @@ Matrix<T, M, N>::Matrix()
 }
 
 // ************************************************************************* //
-template<typename T, uint M, uint N>
+/*template<typename T, uint M, uint N>
 template<typename T1>
 Matrix<T, M, N>::Matrix(T1 _s)
 {
     for(uint i = 0; i < N * M; ++i)
         this->m_data[i] = static_cast<T>(_s);
-}
+}*/
 
 // ************************************************************************* //
 template<typename T, uint M, uint N>
@@ -28,7 +28,7 @@ Matrix<T, M, N>::Matrix(const Matrix<T1,M,N>& _mat1)
 
 // ************************************************************************* //
 template<typename T, uint M, uint N>
-template<typename T1, uint M1, uint N1, class, class>
+template<typename T1, uint M1, uint N1, class>
 Matrix<T, M, N>::Matrix(const Matrix<T1,M1,N1>& _mat1, uint _rowOff, uint _colOff)
 {
     eiAssert( _rowOff + M <= M1, "Out of boundaries: matrix subsection wrong!" );
@@ -41,9 +41,9 @@ Matrix<T, M, N>::Matrix(const Matrix<T1,M1,N1>& _mat1, uint _rowOff, uint _colOf
 }
 
 // ************************************************************************* //
-template<typename T, uint M, uint N>
-template<class, class>
-Matrix<T, M, N>::Matrix(const TQuaternion<T>& _quaternion)
+}
+template<typename T>
+details::Components<T, 3, 3>::Components(const ei::TQuaternion<T>& _quaternion)
 {
     // Rotation composition from quaternion (remaining rest direct in matrix)
     // See http://de.wikipedia.org/wiki/Quaternion#Bezug_zu_orthogonalen_Matrizen for
@@ -65,6 +65,7 @@ Matrix<T, M, N>::Matrix(const TQuaternion<T>& _quaternion)
     this->m10 = f2ij + f2rk;            this->m11 = 1.0f - ( f2ii + f2kk ); this->m12 = f2jk - f2ri;
     this->m20 = f2ik - f2rj;            this->m21 = f2jk + f2ri;            this->m22 = 1.0f - ( f2ii + f2jj );
 }
+namespace ei {
 
 // ************************************************************************* //
 //                               OPERATORS                                   //
@@ -117,26 +118,26 @@ T Matrix<T, M, N>::operator[] (uint _index) const
 
 // ************************************************************************* //
 template<typename T, uint M, uint N>
-template<uint FROM, uint TO, class, class>
+template<uint FROM, uint TO, class>
 Matrix<T, TO - FROM, 1>& Matrix<T, M, N>::subcol()
 {
     return *reinterpret_cast<Matrix<T, TO - FROM, 1>*>(this->m_data + FROM);
 }
 template<typename T, uint M, uint N>
-template<uint FROM, uint TO, class, class>
+template<uint FROM, uint TO, class>
 const Matrix<T, TO - FROM, 1>& Matrix<T, M, N>::subcol() const
 {
     return *reinterpret_cast<const Matrix<T, TO - FROM, 1>*>(this->m_data + FROM);
 }
 
 template<typename T, uint M, uint N>
-template<uint FROM, uint TO, class, class>
+template<uint FROM, uint TO, class>
 Matrix<T, 1, TO - FROM>& Matrix<T, M, N>::subrow()
 {
     return *reinterpret_cast<Matrix<T, 1, TO - FROM>*>(this->m_data + FROM);
 }
 template<typename T, uint M, uint N>
-template<uint FROM, uint TO, class, class>
+template<uint FROM, uint TO, class>
 const Matrix<T, 1, TO - FROM>& Matrix<T, M, N>::subrow() const
 {
     return *reinterpret_cast<const Matrix<T, 1, TO - FROM>*>(this->m_data + FROM);
@@ -261,7 +262,7 @@ CODE_GEN_MAT_MAT_SEFL_OP(-=)
 
 // ************************************************************************* //
 template<typename T, uint M, uint N>
-template<typename T1, class, class>
+template<typename T1, class>
 Matrix<T, M, N>& Matrix<T, M, N>::operator*= (const Matrix<T1,M,N>& _mat1)
 {
     if(M == 1 || N == 1)
@@ -274,7 +275,7 @@ Matrix<T, M, N>& Matrix<T, M, N>::operator*= (const Matrix<T1,M,N>& _mat1)
 
 // ************************************************************************* //
 template<typename T, uint M, uint N>
-template<typename T1, class, class>
+template<typename T1, class>
 Matrix<T, M, N>& Matrix<T, M, N>::operator/= (const Matrix<T1,M,N>& _mat1)
 {
     for(uint i = 0; i < M*N; ++i)
