@@ -29,8 +29,6 @@ namespace ei {
     class Matrix: public details::Components<T, M, N>
     {
     public:
-//        static_assert(M * N > 1, "A matrix must have at least 1x2 or 2x1 components.");
-
         // There are two types of methods:
         // matrix <-> matrix: template<N0,M0,T0,N1,M1,T1> and
         // matrix <-> scalar: template<N0,M0,T0,T1>
@@ -53,7 +51,6 @@ namespace ei {
         // parameters and return value.
         // Therefore if must be inserted in the template list and `class` at
         // the same position in the implementation.
-//#       define ENABLE_IF(condition) typename Dummy = int, typename = typename std::enable_if< (condition) && sizeof(Dummy) >::type
 #       define ENABLE_IF(condition) typename = typename std::enable_if< (condition) >::type
 
         /// \brief Construction without initialization. The values are undefined!
@@ -64,8 +61,7 @@ namespace ei {
         explicit Matrix(const Matrix<T1,M,N>& _mat1);                          // TESTED
 
         // Forward to base constructors
-        //template<typename... Args>
-        template<typename... Args>//, typename = typename std::enable_if<(sizeof...(Args) > 1)>::type>
+        template<typename... Args>
         Matrix(Args... _args) :
             details::Components<T,M,N>(std::forward<Args>(_args)...)
         {
@@ -102,13 +98,13 @@ namespace ei {
         /// \brief Get access to a subrange [FROM, TO) in the vector.
         /// \tparam FROM First element in the output range (inclusive).
         /// \tparam TO Exclusive right boundary.
-        template<uint FROM, uint TO, ENABLE_IF(N == 1)>
+        template<uint FROM, uint TO, ENABLE_IF((N == 1) && sizeof(FROM))>
         Matrix<T, TO - FROM, 1>& subcol();                                     // TESTED
-        template<uint FROM, uint TO, ENABLE_IF(N == 1)>
+        template<uint FROM, uint TO, ENABLE_IF((N == 1) && sizeof(FROM))>
         const Matrix<T, TO - FROM, 1>& subcol() const;
-        template<uint FROM, uint TO, ENABLE_IF(M == 1)>
+        template<uint FROM, uint TO, ENABLE_IF((M == 1) && sizeof(FROM))>
         Matrix<T, 1, TO - FROM>& subrow();                                     // TESTED
-        template<uint FROM, uint TO, ENABLE_IF(M == 1)>
+        template<uint FROM, uint TO, ENABLE_IF((M == 1) && sizeof(FROM))>
         const Matrix<T, 1, TO - FROM>& subrow() const;
 
         /// \brief Add two matrices component wise.
@@ -157,11 +153,11 @@ namespace ei {
         Matrix<T, M, N>& operator-= (const Matrix<T1,M,N>& _mat1);             // TESTED
         /// \brief Self assigning component wise multiplication for vectors
         ///    of the same size and squared matrices.
-        template<typename T1, ENABLE_IF(M == N || M == 1 || N == 1)>
+        template<typename T1, ENABLE_IF(M == N || M == 1 || N == 1 && sizeof(T1))>
         Matrix<T, M, N>& operator*= (const Matrix<T1,M,N>& _mat1);             // TESTED
         /// \brief Self assigning component wise division for vectors
         ///    of the same size.
-        template<typename T1, ENABLE_IF(N == 1 || M == 1)>
+        template<typename T1, ENABLE_IF(N == 1 || M == 1 && sizeof(T1))>
         Matrix<T, M, N>& operator/= (const Matrix<T1,M,N>& _mat1);             // TESTED
         /// \brief Self assigning component wise binary or.
         template<typename T1>
