@@ -2,6 +2,7 @@
 #include "unittest.hpp"
 
 #include <iostream>
+#include <functional>
 
 using namespace ei;
 using namespace std;
@@ -21,6 +22,7 @@ bool test_stdextensions()
         cout << "Hash of Vec3(..." << ") is " << hv3(v1) << '\n';
         hash<Vec4> hv4;
         cout << "Hash of Vec4(..." << ") is " << hv4(v2) << '\n';
+        //hash<Matrix<int,1,10>> hv11;
         hash<Mat3x3> hv33;
         cout << "Hash of Mat3x3(..." << ") is " << hv33(m0) << '\n';
     }

@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <typeinfo>
 
 
 // ************************************************************************* //
@@ -160,8 +161,8 @@ template<class P0, class P1, class R> void performance(R (*_func)(const P0&, con
             res = _func(geo0[i], geo1[i]);
         uint64 b = ticks();
         // Measure dot products to compare
-        Vec3* source0 = reinterpret_cast<Vec3*>(geo0.data());
-        Vec3* source1 = reinterpret_cast<Vec3*>(geo1.data());
+        ei::Vec3* source0 = reinterpret_cast<ei::Vec3*>(geo0.data());
+        ei::Vec3* source1 = reinterpret_cast<ei::Vec3*>(geo1.data());
         volatile float xres;
         for(int j = 0; j < 8; ++j)
             for(int i = 0; i < TEST_PER_ITERATION; ++i)
@@ -202,8 +203,8 @@ template<class P0, class P1, class P2, class R> void performance(R (*_func)(cons
         }
         uint64 b = ticks();
         // Measure dot products to compare
-        Vec3* source0 = reinterpret_cast<Vec3*>(geo0.data());
-        Vec3* source1 = reinterpret_cast<Vec3*>(geo1.data());
+        ei::Vec3* source0 = reinterpret_cast<ei::Vec3*>(geo0.data());
+        ei::Vec3* source1 = reinterpret_cast<ei::Vec3*>(geo1.data());
         volatile float xres;
         for(int j = 0; j < 8; ++j)
             for(int i = 0; i < TEST_PER_ITERATION; ++i)

@@ -3,6 +3,7 @@
 #include "performance3d.hpp"
 
 #include <iostream>
+#include <limits>
 
 using namespace ei;
 
@@ -117,12 +118,12 @@ bool test_3dtypes()
         Box box0( Vec3(-2.0f, -1.0f, -1.0f), Vec3(0.0f, 0.0f, 0.0f) );
         Box box1( Vec3(3.0f), Vec3(7.0f) );
         Ellipsoid ell( Vec3(-1.0f, -0.5f, -0.5f), Vec3(1.0f, 0.5f, 0.5f) );
-        Triangle tri( Vec3(-2.0f, -0.5f, -0.5f), Vec3(0.0, -1.0f, 0.0f), Vec3(0.0f, 0.0f, -1.0f) );
+        Triangle tri( Vec3(-2.0f, -0.5f, -0.5f), Vec3(0.0f, -1.0f, 0.0f), Vec3(0.0f, 0.0f, -1.0f) );
         Sphere sph( Vec3(5.0f), 2.0f );
         OBox obo0( Vec3(0.0f), Vec3(1.0f, 2.0f, 3.0f), Quaternion(Vec3(0.0f, 0.0f, 1.0f), PI/2) );
         OBox obo1( Vec3(1.0f), Vec3(1.0f, 1.0f, 1.0f), Quaternion(Vec3(0.0f, 0.0f, 1.0f), PI/4) );
         Vec3 points[] = {Vec3(0.0f), Vec3(1.0f), Vec3(0.1f, 0.4f, 0.3f), Vec3(-0.3f, 0.7f, 1.4f)};
-        Tetrahedron tet( Vec3(-2.1f, -0.6f, -0.5f), Vec3(0.0, -1.0f, 0.0f), Vec3(0.0f, -0.1f, -1.0f), Vec3(-0.5f, -1.1f, 0.2f) );
+        Tetrahedron tet( Vec3(-2.1f, -0.6f, -0.5f), Vec3(0.0f, -1.0f, 0.0f), Vec3(0.0f, -0.1f, -1.0f), Vec3(-0.5f, -1.1f, 0.2f) );
         Box box2( ell );
         Box box3( tri );
         Box box4( sph );
@@ -131,7 +132,7 @@ bool test_3dtypes()
         Box box7( obo1 );
         // Box box8( OBox(box4) ); // <- This is a function? VC12 bug or standard?
         Box box8 = Box(OBox(box4));
-        Box box9( points, 4 );
+        Box box9( points, 4u );
         Box box10( tet );
         TEST( all(box0.min == box2.min), "Ellipsoid bounding min is wrong!" );
         TEST( all(box0.max == box2.max), "Ellipsoid bounding min is wrong!" );

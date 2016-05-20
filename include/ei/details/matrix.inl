@@ -10,10 +10,11 @@ Matrix<T, M, N>::Matrix()
 
 // ************************************************************************* //
 template<typename T, uint M, uint N>
-Matrix<T, M, N>::Matrix(T _s)
+template<typename T1>
+Matrix<T, M, N>::Matrix(T1 _s)
 {
     for(uint i = 0; i < N * M; ++i)
-        m_data[i] = _s;
+        this->m_data[i] = static_cast<T>(_s);
 }
 
 // ************************************************************************* //
@@ -22,13 +23,13 @@ template<typename T1>
 Matrix<T, M, N>::Matrix(const Matrix<T1,M,N>& _mat1)
 {
     for(uint i = 0; i < N * M; ++i)
-        m_data[i] = static_cast<T>(_mat1[i]);
+        this->m_data[i] = static_cast<T>(_mat1[i]);
 }
 
 // ************************************************************************* //
 template<typename T, uint M, uint N>
-template<typename T1, uint M1, uint N1, class>
-Matrix<T, M, N>::Matrix(const Matrix<T1,M1,N1>& _mat1, uint _rowOff = 0, uint _colOff = 0)
+template<typename T1, uint M1, uint N1, class, class>
+Matrix<T, M, N>::Matrix(const Matrix<T1,M1,N1>& _mat1, uint _rowOff, uint _colOff)
 {
     eiAssert( _rowOff + M <= M1, "Out of boundaries: matrix subsection wrong!" );
     eiAssert( _colOff + N <= N1, "Out of boundaries: matrix subsection wrong!" );
@@ -36,270 +37,12 @@ Matrix<T, M, N>::Matrix(const Matrix<T1,M1,N1>& _mat1, uint _rowOff = 0, uint _c
     uint i = 0;
     for(uint y = _rowOff; y < M+_rowOff; ++y)
         for(uint x = _colOff; x < N+_colOff; ++x)
-            m_data[i++] = static_cast<T>(_mat1(y, x));
+            this->m_data[i++] = static_cast<T>(_mat1(y, x));
 }
 
 // ************************************************************************* //
 template<typename T, uint M, uint N>
-template<class>
-Matrix<T, M, N>::Matrix(T _s0, T _s1)
-{
-    static_assert(M * N == 2, "Constructor should not exist!");
-    m_data[0] = _s0;
-    m_data[1] = _s1;
-}
-
-// ************************************************************************* //
-template<typename T, uint M, uint N>
-template<class>
-Matrix<T, M, N>::Matrix(T _s0, T _s1, T _s2)
-{
-    static_assert(M * N == 3, "Constructor should not exist!");
-    m_data[0] = _s0;
-    m_data[1] = _s1;
-    m_data[2] = _s2;
-}
-
-// ************************************************************************* //
-template<typename T, uint M, uint N>
-template<class>
-Matrix<T, M, N>::Matrix(T _s0, T _s1, T _s2, T _s3)
-{
-    static_assert(M * N == 4, "Constructor should not exist!");
-    m_data[0] = _s0;  m_data[1] = _s1;
-    m_data[2] = _s2;  m_data[3] = _s3;
-}
-
-// ************************************************************************* //
-template<typename T, uint M, uint N>
-template<class>
-Matrix<T, M, N>::Matrix(T _s0, T _s1, T _s2, T _s3, T _s4)
-{
-    static_assert(M * N == 5, "Constructor should not exist!");
-    m_data[0] = _s0;  m_data[1] = _s1;
-    m_data[2] = _s2;  m_data[3] = _s3;
-    m_data[4] = _s4;
-}
-
-// ************************************************************************* //
-template<typename T, uint M, uint N>
-template<class>
-Matrix<T, M, N>::Matrix(T _s0, T _s1, T _s2, T _s3, T _s4, T _s5)
-{
-    static_assert(M * N == 6, "Constructor should not exist!");
-    m_data[0] = _s0;  m_data[1] = _s1;
-    m_data[2] = _s2;  m_data[3] = _s3;
-    m_data[4] = _s4;  m_data[5] = _s5;
-}
-
-// ************************************************************************* //
-template<typename T, uint M, uint N>
-template<class>
-Matrix<T, M, N>::Matrix(T _s0, T _s1, T _s2, T _s3, T _s4, T _s5, T _s6, T _s7)
-{
-    static_assert(M * N == 8, "Constructor should not exist!");
-    m_data[0] = _s0;  m_data[1] = _s1;
-    m_data[2] = _s2;  m_data[3] = _s3;
-    m_data[4] = _s4;  m_data[5] = _s5;
-    m_data[6] = _s6;  m_data[7] = _s7;
-}
-
-// ************************************************************************* //
-template<typename T, uint M, uint N>
-template<class>
-Matrix<T, M, N>::Matrix(T _s0, T _s1, T _s2, T _s3, T _s4, T _s5, T _s6, T _s7, T _s8)
-{
-    static_assert(M * N == 9, "Constructor should not exist!");
-    m_data[0] = _s0;  m_data[1] = _s1;  m_data[2] = _s2;
-    m_data[3] = _s3;  m_data[4] = _s4;  m_data[5] = _s5;
-    m_data[6] = _s6;  m_data[7] = _s7;  m_data[8] = _s8;
-}
-
-// ************************************************************************* //
-template<typename T, uint M, uint N>
-template<class>
-Matrix<T, M, N>::Matrix(T _s0, T _s1, T _s2, T _s3, T _s4, T _s5, T _s6, T _s7, T _s8, T _s9, T _s10, T _s11)
-{
-    static_assert(M * N == 12, "Constructor should not exist!");
-    m_data[0] = _s0;  m_data[1] = _s1;    m_data[2] = _s2;
-    m_data[3] = _s3;  m_data[4] = _s4;    m_data[5] = _s5;
-    m_data[6] = _s6;  m_data[7] = _s7;    m_data[8] = _s8;
-    m_data[9] = _s9;  m_data[10] = _s10;  m_data[11] = _s11;
-}
-
-// ************************************************************************* //
-template<typename T, uint M, uint N>
-template<class>
-Matrix<T, M, N>::Matrix(T _s0, T _s1, T _s2, T _s3, T _s4, T _s5, T _s6, T _s7, T _s8, T _s9, T _s10, T _s11, T _s12, T _s13, T _s14, T _s15)
-{
-    static_assert(M * N == 16, "Constructor should not exist!");
-    m_data[0] = _s0;    m_data[1] = _s1;    m_data[2] = _s2;    m_data[3] = _s3;
-    m_data[4] = _s4;    m_data[5] = _s5;    m_data[6] = _s6;    m_data[7] = _s7;
-    m_data[8] = _s8;    m_data[9] = _s9;    m_data[10] = _s10;  m_data[11] = _s11;
-    m_data[12] = _s12; 	m_data[13] = _s13;  m_data[14] = _s14;  m_data[15] = _s15;
-}
-
-// ************************************************************************* //
-template<typename T, uint M, uint N>
-template<typename T1, typename T2, class>
-Matrix<T, M, N>::Matrix(T1 _s0, Matrix<T2,2,1> _v12)
-{
-    m_data[0] = static_cast<T>(_s0);
-    m_data[1] = static_cast<T>(_v12.x);
-    m_data[2] = static_cast<T>(_v12.y);
-}
-
-template<typename T, uint M, uint N>
-template<typename T1, typename T2, class>
-Matrix<T, M, N>::Matrix(Matrix<T1,2,1> _v01, T2 _s2)
-{
-    m_data[0] = static_cast<T>(_v01.x);
-    m_data[1] = static_cast<T>(_v01.y);
-    m_data[2] = static_cast<T>(_s2);
-}
-
-template<typename T, uint M, uint N>
-template<typename T1, typename T2, class>
-Matrix<T, M, N>::Matrix(Matrix<T1,2,1> _v01, Matrix<T2,2,1> _v23)
-{
-    m_data[0] = static_cast<T>(_v01.x);
-    m_data[1] = static_cast<T>(_v01.y);
-    m_data[2] = static_cast<T>(_v23.x);
-    m_data[3] = static_cast<T>(_v23.y);
-}
-
-template<typename T, uint M, uint N>
-template<typename T1, typename T2, typename T3, class>
-Matrix<T, M, N>::Matrix(T1 _s0, T2 _s1, Matrix<T3,2,1> _v23)
-{
-    m_data[0] = static_cast<T>(_s0);
-    m_data[1] = static_cast<T>(_s1);
-    m_data[2] = static_cast<T>(_v23.x);
-    m_data[3] = static_cast<T>(_v23.y);
-}
-
-template<typename T, uint M, uint N>
-template<typename T1, typename T2, typename T3, class>
-Matrix<T, M, N>::Matrix(T1 _s0, Matrix<T2,2,1> _v12, T3 _s3)
-{
-    m_data[0] = static_cast<T>(_s0);
-    m_data[1] = static_cast<T>(_v12.x);
-    m_data[2] = static_cast<T>(_v12.y);
-    m_data[3] = static_cast<T>(_s3);
-}
-
-template<typename T, uint M, uint N>
-template<typename T1, typename T2, typename T3, class>
-Matrix<T, M, N>::Matrix(Matrix<T1,2,1> _v01, T2 _s2, T3 _s3)
-{
-    m_data[0] = static_cast<T>(_v01.x);
-    m_data[1] = static_cast<T>(_v01.y);
-    m_data[2] = static_cast<T>(_s2);
-    m_data[3] = static_cast<T>(_s3);
-}
-
-template<typename T, uint M, uint N>
-template<typename T1, typename T2, class>
-Matrix<T, M, N>::Matrix(T1 _s0, Matrix<T2,3,1> _v123)
-{
-    m_data[0] = static_cast<T>(_s0);
-    m_data[1] = static_cast<T>(_v123.x);
-    m_data[2] = static_cast<T>(_v123.y);
-    m_data[3] = static_cast<T>(_v123.z);
-}
-
-template<typename T, uint M, uint N>
-template<typename T1, typename T2, class>
-Matrix<T, M, N>::Matrix(Matrix<T1,3,1> _v012, T2 _s3)
-{
-    m_data[0] = static_cast<T>(_v012.x);
-    m_data[1] = static_cast<T>(_v012.y);
-    m_data[2] = static_cast<T>(_v012.z);
-    m_data[3] = static_cast<T>(_s3);
-}
-
-
-template<typename T, uint M, uint N>
-template<typename T1, typename T2, class>
-Matrix<T, M, N>::Matrix(T1 _s0, Matrix<T2,1,2> _v12)
-{
-    m_data[0] = static_cast<T>(_s0);
-    m_data[1] = static_cast<T>(_v12.x);
-    m_data[2] = static_cast<T>(_v12.y);
-}
-
-template<typename T, uint M, uint N>
-template<typename T1, typename T2, class>
-Matrix<T, M, N>::Matrix(Matrix<T1,1,2> _v01, T2 _s2)
-{
-    m_data[0] = static_cast<T>(_v01.x);
-    m_data[1] = static_cast<T>(_v01.y);
-    m_data[2] = static_cast<T>(_s2);
-}
-
-template<typename T, uint M, uint N>
-template<typename T1, typename T2, class>
-Matrix<T, M, N>::Matrix(Matrix<T1,1,2> _v01, Matrix<T2,1,2> _v23)
-{
-    m_data[0] = static_cast<T>(_v01.x);
-    m_data[1] = static_cast<T>(_v01.y);
-    m_data[2] = static_cast<T>(_v23.x);
-    m_data[3] = static_cast<T>(_v23.y);
-}
-
-template<typename T, uint M, uint N>
-template<typename T1, typename T2, typename T3, class>
-Matrix<T, M, N>::Matrix(T1 _s0, T2 _s1, Matrix<T3,1,2> _v23)
-{
-    m_data[0] = static_cast<T>(_s0);
-    m_data[1] = static_cast<T>(_s1);
-    m_data[2] = static_cast<T>(_v23.x);
-    m_data[3] = static_cast<T>(_v23.y);
-}
-
-template<typename T, uint M, uint N>
-template<typename T1, typename T2, typename T3, class>
-Matrix<T, M, N>::Matrix(T1 _s0, Matrix<T2,1,2> _v12, T3 _s3)
-{
-    m_data[0] = static_cast<T>(_s0);
-    m_data[1] = static_cast<T>(_v12.x);
-    m_data[2] = static_cast<T>(_v12.y);
-    m_data[3] = static_cast<T>(_s3);
-}
-
-template<typename T, uint M, uint N>
-template<typename T1, typename T2, typename T3, class>
-Matrix<T, M, N>::Matrix(Matrix<T1,1,2> _v01, T2 _s2, T3 _s3)
-{
-    m_data[0] = static_cast<T>(_v01.x);
-    m_data[1] = static_cast<T>(_v01.y);
-    m_data[2] = static_cast<T>(_s2);
-    m_data[3] = static_cast<T>(_s3);
-}
-
-template<typename T, uint M, uint N>
-template<typename T1, typename T2, class>
-Matrix<T, M, N>::Matrix(T1 _s0, Matrix<T2,1,3> _v123)
-{
-    m_data[0] = static_cast<T>(_s0);
-    m_data[1] = static_cast<T>(_v123.x);
-    m_data[2] = static_cast<T>(_v123.y);
-    m_data[3] = static_cast<T>(_v123.z);
-}
-
-template<typename T, uint M, uint N>
-template<typename T1, typename T2, class>
-Matrix<T, M, N>::Matrix(Matrix<T1,1,3> _v012, T2 _s3)
-{
-    m_data[0] = static_cast<T>(_v012.x);
-    m_data[1] = static_cast<T>(_v012.y);
-    m_data[2] = static_cast<T>(_v012.z);
-    m_data[3] = static_cast<T>(_s3);
-}
-
-// ************************************************************************* //
-template<typename T, uint M, uint N>
-template<class>
+template<class, class>
 Matrix<T, M, N>::Matrix(const TQuaternion<T>& _quaternion)
 {
     // Rotation composition from quaternion (remaining rest direct in matrix)
@@ -318,9 +61,9 @@ Matrix<T, M, N>::Matrix(const TQuaternion<T>& _quaternion)
     T f2jk = f2k  * _quaternion.j;
     T f2kk = f2k  * _quaternion.k;
 
-    m00 = 1.0f - ( f2jj + f2kk ); m01 = f2ij - f2rk;            m02 = f2ik + f2rj;
-    m10 = f2ij + f2rk;            m11 = 1.0f - ( f2ii + f2kk ); m12 = f2jk - f2ri;
-    m20 = f2ik - f2rj;            m21 = f2jk + f2ri;            m22 = 1.0f - ( f2ii + f2jj );
+    this->m00 = 1.0f - ( f2jj + f2kk ); this->m01 = f2ij - f2rk;            this->m02 = f2ik + f2rj;
+    this->m10 = f2ij + f2rk;            this->m11 = 1.0f - ( f2ii + f2kk ); this->m12 = f2jk - f2ri;
+    this->m20 = f2ik - f2rj;            this->m21 = f2jk + f2ri;            this->m22 = 1.0f - ( f2ii + f2jj );
 }
 
 // ************************************************************************* //
@@ -332,28 +75,28 @@ template<typename T, uint M, uint N>
 T& Matrix<T, M, N>::operator() (uint _row, uint _col)
 {
     eiAssertWeak(_row < M && _col < N, "Index out of bounds!");
-    return m_data[_row * N + _col];
+    return this->m_data[_row * N + _col];
 }
 
 template<typename T, uint M, uint N>
 T Matrix<T, M, N>::operator() (uint _row, uint _col) const
 {
     eiAssertWeak(_row < M && _col < N, "Index out of bounds!");
-    return m_data[_row * N + _col];
+    return this->m_data[_row * N + _col];
 }
 
 template<typename T, uint M, uint N>
 Matrix<T,1,N>& Matrix<T, M, N>::operator() (uint _row)
 {
     eiAssertWeak(_row < M, "Index out of bounds!");
-    return reinterpret_cast<Matrix<T,1,N>&>(m_data[_row * N]);
+    return reinterpret_cast<Matrix<T,1,N>&>(this->m_data[_row * N]);
 }
 
 template<typename T, uint M, uint N>
 const Matrix<T,1,N>& Matrix<T, M, N>::operator() (uint _row) const
 {
     eiAssertWeak(_row < M, "Index out of bounds!");
-    return reinterpret_cast<const Matrix<T,1,N>&>(m_data[_row * N]);
+    return reinterpret_cast<const Matrix<T,1,N>&>(this->m_data[_row * N]);
 }
 
 
@@ -362,41 +105,41 @@ template<typename T, uint M, uint N>
 T& Matrix<T, M, N>::operator[] (uint _index)
 {
     eiAssertWeak(_index < N * M, "Index out of bounds!");
-    return m_data[_index];
+    return this->m_data[_index];
 }
 
 template<typename T, uint M, uint N>
 T Matrix<T, M, N>::operator[] (uint _index) const
 {
     eiAssertWeak(_index < N * M, "Index out of bounds!");
-    return m_data[_index];
+    return this->m_data[_index];
 }
 
 // ************************************************************************* //
 template<typename T, uint M, uint N>
-template<uint FROM, uint TO, class>
+template<uint FROM, uint TO, class, class>
 Matrix<T, TO - FROM, 1>& Matrix<T, M, N>::subcol()
 {
-    return *reinterpret_cast<Matrix<T, TO - FROM, 1>*>(m_data + FROM);
+    return *reinterpret_cast<Matrix<T, TO - FROM, 1>*>(this->m_data + FROM);
 }
 template<typename T, uint M, uint N>
-template<uint FROM, uint TO, class>
+template<uint FROM, uint TO, class, class>
 const Matrix<T, TO - FROM, 1>& Matrix<T, M, N>::subcol() const
 {
-    return *reinterpret_cast<const Matrix<T, TO - FROM, 1>*>(m_data + FROM);
+    return *reinterpret_cast<const Matrix<T, TO - FROM, 1>*>(this->m_data + FROM);
 }
 
 template<typename T, uint M, uint N>
-template<uint FROM, uint TO, class>
+template<uint FROM, uint TO, class, class>
 Matrix<T, 1, TO - FROM>& Matrix<T, M, N>::subrow()
 {
-    return *reinterpret_cast<Matrix<T, 1, TO - FROM>*>(m_data + FROM);
+    return *reinterpret_cast<Matrix<T, 1, TO - FROM>*>(this->m_data + FROM);
 }
 template<typename T, uint M, uint N>
-template<uint FROM, uint TO, class>
+template<uint FROM, uint TO, class, class>
 const Matrix<T, 1, TO - FROM>& Matrix<T, M, N>::subrow() const
 {
-    return *reinterpret_cast<const Matrix<T, 1, TO - FROM>*>(m_data + FROM);
+    return *reinterpret_cast<const Matrix<T, 1, TO - FROM>*>(this->m_data + FROM);
 }
 
 // ************************************************************************* //
@@ -518,7 +261,7 @@ CODE_GEN_MAT_MAT_SEFL_OP(-=)
 
 // ************************************************************************* //
 template<typename T, uint M, uint N>
-template<typename T1, class>
+template<typename T1, class, class>
 Matrix<T, M, N>& Matrix<T, M, N>::operator*= (const Matrix<T1,M,N>& _mat1)
 {
     if(M == 1 || N == 1)
@@ -531,7 +274,7 @@ Matrix<T, M, N>& Matrix<T, M, N>::operator*= (const Matrix<T1,M,N>& _mat1)
 
 // ************************************************************************* //
 template<typename T, uint M, uint N>
-template<typename T1, class>
+template<typename T1, class, class>
 Matrix<T, M, N>& Matrix<T, M, N>::operator/= (const Matrix<T1,M,N>& _mat1)
 {
     for(uint i = 0; i < M*N; ++i)
@@ -1510,7 +1253,7 @@ Vec<T,N> sphericalCoords( const Vec<T,N>& _v0 )
 template<typename T, unsigned N>
 RVec<T,N> sphericalCoords( const RVec<T,N>& _v0 )
 {
-    return *reinterpret_cast<RVec<T,N>(&sphericalCoords(*reinterpret_cast<Vec<T,N>(&_v0)));
+    return *reinterpret_cast<RVec<T,N>>(&sphericalCoords(*reinterpret_cast<Vec<T,N>>(&_v0)));
 }
 
 // ********************************************************************* //
@@ -1532,7 +1275,7 @@ Vec<T,N> cartesianCoords( const Vec<T,N>& _v0 )
 template<typename T, unsigned N>
 RVec<T,N> cartesianCoords( const RVec<T,N>& _v0 )
 {
-    return *reinterpret_cast<RVec<T,N>(&cartesianCoords(*reinterpret_cast<Vec<T,N>(&_v0)));
+    return *reinterpret_cast<RVec<T,N>>(&cartesianCoords(*reinterpret_cast<Vec<T,N>>(&_v0)));
 }
 
 // ************************************************************************* //
@@ -1585,10 +1328,10 @@ Matrix<T,N,1> transformDir( const Matrix<T,N,1>& _what, const Matrix<T,N+1,N+1>&
     for(uint y = 0; y < N; ++y)
     {
         // Initialize with the first component
-        t[y] = _space(y,0) * _what[0];
+        result[y] = _space(y,0) * _what[0];
         // Add the other N-1 factors
         for(uint x = 1; x < N; ++x)
-            t[y] += _space(y,x) * _what[x];
+            result[y] += _space(y,x) * _what[x];
     }
     return result;
 }
@@ -1601,10 +1344,10 @@ Matrix<T,1,N> transformDir( const Matrix<T,1,N>& _what, const Matrix<T,N+1,N+1>&
     for(uint x = 0; x < N; ++x)
     {
         // Initialize with the first component
-        t[x] = _what[0] * _space(0,x);
+        result[x] = _what[0] * _space(0,x);
         // Add the other N-1 factors
         for(uint y = 1; y < N; ++y)
-            t[x] += _what[y] * _space(y,x);
+            result[x] += _what[y] * _space(y,x);
     }
     return result;
 }

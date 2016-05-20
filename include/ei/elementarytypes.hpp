@@ -3,6 +3,7 @@
 #include "configure.hpp"
 #include "details/inttemplate.hpp"
 
+#include <type_traits>
 // Ugly to include this here but you will miss sqrt,sin,... otherwise
 #include <cmath>
 

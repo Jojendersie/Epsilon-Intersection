@@ -109,7 +109,7 @@ bool test_elementaries()
             TEST( p > x, "successor(" << x << ") < " << p << "!" );
             x = p;
         }
-#endif UNIT_TEST_SUCCESSOR
+#endif // UNIT_TEST_SUCCESSOR
 //        TEST( successor(0.0f) == successor(-0.0f), "successor of 0 or -0 wrong!" );
 
 #ifdef UNIT_TEST_PREDECESSOR
@@ -120,7 +120,7 @@ bool test_elementaries()
             TEST( p < y, "predecessor(" << y << ") > " << p << "!" );
             y = p;
         }
-#endif UNIT_TEST_PREDECESSOR
+#endif // UNIT_TEST_PREDECESSOR
 
         TEST( successor(0.0) == successor(-0.0), "successor (double) of 0 or -0 wrong!" );
         TEST( successor(1.0f) > 1, "successor (double) of 1 wrong!" );

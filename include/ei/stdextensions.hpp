@@ -5,12 +5,16 @@
 
 namespace std {
 
-    template <class _Kty> struct hash;
+    template <class T> struct hash;
+    template <class T> struct equal_to;
 
     /// \brief Custom hash function for vectors.
-    template <typename T, int M, int N>
+    template <typename T, uint M, uint N>
     struct hash<ei::Matrix<T, M, N>>
     {
+        using argument_type = ei::Matrix<T, M, N>;
+        using result_type = std::size_t;
+
         std::size_t operator()(const ei::Matrix<T, M, N>& _key) const
         {
             hash<T> hashfunc;
@@ -30,6 +34,9 @@ namespace std {
     template <typename T>
     struct hash<ei::Vec<T, 2>>
     {
+        using argument_type = ei::Vec<T, 2>;
+        using result_type = std::size_t;
+
         std::size_t operator()(const ei::Vec<T, 2>& _key) const
         {
             hash<T> hashfunc;
@@ -45,6 +52,9 @@ namespace std {
     template <typename T>
     struct hash<ei::Vec<T, 3>>
     {
+        using argument_type = ei::Vec<T, 3>;
+        using result_type = std::size_t;
+
         std::size_t operator()(const ei::Vec<T, 3>& _key) const
         {
             hash<T> hashfunc;
@@ -61,6 +71,9 @@ namespace std {
     template <typename T>
     struct hash<ei::Vec<T, 4>>
     {
+        using argument_type = ei::Vec<T, 4>;
+        using result_type = std::size_t;
+
         std::size_t operator()(const ei::Vec<T, 4>& _key) const
         {
             hash<T> hashfunc;
@@ -75,10 +88,10 @@ namespace std {
 
 
     /// \brief Container need to compare items for equality too
-    template <typename T, int M, int N>
+    template <typename T, uint M, uint N>
     struct equal_to<ei::Matrix<T, M, N>>
     {
-        std::size_t operator()(const ei::Matrix<T, M, N>& _lhs, const ei::Matrix<T, M, N>& _rhs) const
+        bool operator()(const ei::Matrix<T, M, N>& _lhs, const ei::Matrix<T, M, N>& _rhs) const
         {
             return all(_lhs == _rhs);
         }

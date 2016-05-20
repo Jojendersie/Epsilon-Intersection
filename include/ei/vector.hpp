@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include <type_traits>
+#include <utility>
 
 #include "elementarytypes.hpp"
 #include "details/matrixcomponents.hpp"
@@ -52,83 +53,34 @@ namespace ei {
         // parameters and return value.
         // Therefore if must be inserted in the template list and `class` at
         // the same position in the implementation.
-#       define ENABLE_IF(condition) class = typename std::enable_if<(condition), class Dummy>::type
-
-        // The new variadic templates allow a more generic definition of all
-        // those constructors but compiler support is lagging.
+#       define ENABLE_IF(condition) typename Dummy = int, typename = typename std::enable_if< (condition) && sizeof(Dummy) >::type
 
         /// \brief Construction without initialization. The values are undefined!
         Matrix();
 
         /// \brief Set all values to the same constant value.
-        explicit Matrix(T _s);                                                 // TESTED
+        template<typename T1>
+        explicit Matrix(T1 _s);                                                 // TESTED
 
         /// \brief Convert a matrix/vector with a different elementary type.
         template<typename T1>
         explicit Matrix(const Matrix<T1,M,N>& _mat1);                          // TESTED
 
+        // Forward to base constructors
+        //template<typename... Args>
+        template<typename... Args, typename = typename std::enable_if<(sizeof...(Args) > 1)>::type>
+        Matrix(Args... _args) :
+        //Matrix(typename std::enable_if<(sizeof...(Args) > 1), Args...>::type _args) :
+        //Matrix(typename std::enable_if<(sizeof...(Args) > 1), Args>::type... _args) :
+        //Matrix(typename... std::enable_if<(sizeof...(Args) > 1), Args...>::type _args) :
+        //Matrix(typename... std::enable_if<(sizeof...(Args) > 1), Args>::type _args) :
+            details::Components<T,M,N>(std::forward<Args>(_args)...)
+        {
+        }
+
         /// \brief Allow explicit truncation of the dimension sizes.
         template<typename T1, uint M1, uint N1, ENABLE_IF((M < M1 && N <= N1) || (M <= M1 && N < N1))>
         explicit Matrix(const Matrix<T1,M1,N1>& _mat1, uint _rowOff = 0, uint _colOff = 0);
-
-        /// \brief Construction from N * M scalar values (up to 16 elements).
-        /// \details The template meta programming trick allows only the
-        ///    compilation of the matching constructor.
-        template<ENABLE_IF(N * M == 2)>
-        Matrix(T _s0, T _s1);                                                  // TESTED
-        template<ENABLE_IF(N * M == 3)>
-        Matrix(T _s0, T _s1, T _s2);                                           // TESTED
-        template<ENABLE_IF(N * M == 4)>
-        Matrix(T _s0, T _s1, T _s2, T _s3);                                    // TESTED
-        template<ENABLE_IF(N * M == 5)>
-        Matrix(T _s0, T _s1, T _s2, T _s3, T _s4);                             // TESTED
-        template<ENABLE_IF(N * M == 6)>
-        Matrix(T _s0, T _s1, T _s2, T _s3, T _s4, T _s5);                      // TESTED
-        template<ENABLE_IF(N * M == 8)>
-        Matrix(T _s0, T _s1, T _s2, T _s3, T _s4, T _s5, T _s6, T _s7);        // TESTED
-        template<ENABLE_IF(N * M == 9)>
-        Matrix(T _s0, T _s1, T _s2, T _s3, T _s4, T _s5, T _s6, T _s7, T _s8); // TESTED
-        template<ENABLE_IF(N * M == 12)>
-        Matrix(T _s0, T _s1, T _s2, T _s3, T _s4, T _s5, T _s6, T _s7, T _s8, T _s9, T _s10, T _s11); // TESTED
-        template<ENABLE_IF(N * M == 16)>
-        Matrix(T _s0, T _s1, T _s2, T _s3, T _s4, T _s5, T _s6, T _s7, T _s8, T _s9, T _s10, T _s11, T _s12, T _s13, T _s14, T _s15); // TESTED
-
-        /// \brief Construction from mixed vectors and scalars for larger
-        ///		vectors (column vectors)
-        template<typename T1, typename T2, ENABLE_IF(M == 3 && N == 1)>
-        Matrix(T1 _s0, Matrix<T2,2,1> _v12);                                   // TESTED
-        template<typename T1, typename T2, ENABLE_IF(M == 3 && N == 1)>
-        Matrix(Matrix<T1,2,1> _v01, T2 _s2);                                   // TESTED
-        template<typename T1, typename T2, ENABLE_IF(M == 4 && N == 1)>
-        Matrix(Matrix<T1,2,1> _v01, Matrix<T2,2,1> _v23);                      // TESTED
-        template<typename T1, typename T2, typename T3, ENABLE_IF(M == 4 && N == 1)>
-        Matrix(T1 _s0, T2 _s1, Matrix<T3,2,1> _v23);                           // TESTED
-        template<typename T1, typename T2, typename T3, ENABLE_IF(M == 4 && N == 1)>
-        Matrix(T1 _s0, Matrix<T2,2,1> _v12, T3 _s3);                           // TESTED
-        template<typename T1, typename T2, typename T3, ENABLE_IF(M == 4 && N == 1)>
-        Matrix(Matrix<T1,2,1> _v01, T2 _s2, T3 _s3);                           // TESTED
-        template<typename T1, typename T2, ENABLE_IF(M == 4 && N == 1)>
-        Matrix(T1 _s0, Matrix<T2,3,1> _v123);                                  // TESTED
-        template<typename T1, typename T2, ENABLE_IF(M == 4 && N == 1)>
-        Matrix(Matrix<T1,3,1> _v012, T2 _s3);                                  // TESTED
-        /// \brief Construction from mixed vectors and scalars for larger
-        ///		vectors (row vectors)
-        template<typename T1, typename T2, ENABLE_IF(M == 1 && N == 3)>
-        Matrix(T1 _s0, Matrix<T2,1,2> _v12);                                   // TESTED
-        template<typename T1, typename T2, ENABLE_IF(M == 1 && N == 3)>
-        Matrix(Matrix<T1,1,2> _v01, T2 _s2);                                   // TESTED
-        template<typename T1, typename T2, ENABLE_IF(M == 1 && N == 4)>
-        Matrix(Matrix<T1,1,2> _v01, Matrix<T2,1,2> _v23);                      // TESTED
-        template<typename T1, typename T2, typename T3, ENABLE_IF(M == 1 && N == 4)>
-        Matrix(T1 _s0, T2 _s1, Matrix<T3,1,2> _v23);                           // TESTED
-        template<typename T1, typename T2, typename T3, ENABLE_IF(M == 1 && N == 4)>
-        Matrix(T1 _s0, Matrix<T2,1,2> _v12, T3 _s3);                           // TESTED
-        template<typename T1, typename T2, typename T3, ENABLE_IF(M == 1 && N == 4)>
-        Matrix(Matrix<T1,1,2> _v01, T2 _s2, T3 _s3);                           // TESTED
-        template<typename T1, typename T2, ENABLE_IF(M == 1 && N == 4)>
-        Matrix(T1 _s0, Matrix<T2,1,3> _v123);                                  // TESTED
-        template<typename T1, typename T2, ENABLE_IF(M == 1 && N == 4)>
-        Matrix(Matrix<T1,1,3> _v012, T2 _s3);                                  // TESTED
 
         template<ENABLE_IF(M == 3 && N == 3)>
         explicit Matrix(const TQuaternion<T>& _quaternion);
