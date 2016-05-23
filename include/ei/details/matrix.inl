@@ -9,15 +9,6 @@ Matrix<T, M, N>::Matrix()
 }
 
 // ************************************************************************* //
-/*template<typename T, uint M, uint N>
-template<typename T1>
-Matrix<T, M, N>::Matrix(T1 _s)
-{
-    for(uint i = 0; i < N * M; ++i)
-        this->m_data[i] = static_cast<T>(_s);
-}*/
-
-// ************************************************************************* //
 template<typename T, uint M, uint N>
 template<typename T1>
 Matrix<T, M, N>::Matrix(const Matrix<T1,M,N>& _mat1)

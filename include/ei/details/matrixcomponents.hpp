@@ -17,10 +17,13 @@ namespace details {
     public:
         Components() {}
         /// \brief Construct from exactly N*M arguments.
-        template<typename... Args>
-        Components(Args... _args) : m_data{ T(_args)... }
+        /// \details The int argument is a dummy to prevent some compilers (vc120) from generating
+        ///     two constructors with 0 arguments.
+        template<typename T1, typename... Args>
+        Components(T1 _a0, Args... _args)// : m_data{ _a0, T(_args)... }
         {
-            static_assert(sizeof...(Args) == M*N, "Wrong number of arguments!");
+            static_assert(sizeof...(Args)+1 == M*N, "Wrong number of arguments!");
+            init<0>(_a0, _args...);
         }
         /// \brief Initialize all members from single scalar
         template<typename T1>
@@ -29,6 +32,14 @@ namespace details {
             for(uint i = 0; i < N * M; ++i)
                 this->m_data[i] = static_cast<T>(_s);
         }
+
+    private:
+        // Helper to unroll the M*N argument construction. The Syntax with
+        // : m_data{ _a0, T(_args)... } is much prettier, but does not work in vc120.
+        template<int Index>
+        void init() {}
+        template<int Index, typename T1, typename... Args>
+        void init(T1 _a0, Args... _args) { m_data[Index] = _a0; init<Index+1>(_args...); }
     };
 
 

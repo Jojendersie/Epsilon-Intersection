@@ -60,10 +60,10 @@ namespace ei {
         template<typename T1>
         explicit Matrix(const Matrix<T1,M,N>& _mat1);                          // TESTED
 
-        // Forward to base constructors
-        template<typename... Args>
-        Matrix(Args... _args) :
-            details::Components<T,M,N>(std::forward<Args>(_args)...)
+        /// \brief Forward to base constructors
+        template<typename T1, typename... Args>
+        Matrix(T1 _a0, Args... _args) :
+            details::Components<T,M,N>(_a0, std::forward<Args>(_args)...)
         {
         }
 
