@@ -1065,6 +1065,68 @@ int eigenmax(const Matrix<T,N,N>& _A, Vec<T,N>& _eigenvec, T& _eigenval)
     return i;
 }*/
 
+// ************************************************************************* //
+// Some toy specializations: It is unsure if the compiler may reach the same
+// code with the loop implementation only. Surly, the specializations are faster
+// in debug mode.
+template<typename T>
+bool decomposeCholesky(const Matrix<T,2,2>& _A, Matrix<T,2,2>& _L)
+{
+    if(_A[0] <= 0.0f) return false;
+    _L[0] = sqrt(_A[0]);
+    _L[1] = 0.0f;
+    _L[2] = _A[1] / _L[0];
+    float l10sq = _A[3] - _L[2] * _L[2];
+    _L[3] = sqrt(l10sq);
+    return l10sq > 0.0f;
+}
+
+template<typename T>
+bool decomposeCholesky(const Matrix<T,3,3>& _A, Matrix<T,3,3>& _L)
+{
+    if(_A[0] <= 0.0f) return false;
+    _L[0] = sqrt(_A[0]);
+    _L[1] = 0.0f;
+    _L[2] = 0.0f;
+    _L[3] = _A[3] / _L[0];
+    float tmp = _A[4] - _L[3] * _L[3];
+    if(tmp <= 0.0f) return false;
+    _L[4] = sqrt(tmp);
+    _L[5] = 0.0f;
+    _L[6] = _A[6] / _L[0];
+    _L[7] = (_A[7] - _L[6] * _L[3]) / _L[4];
+    tmp = _A[8] - _L[6] * _L[6] - _L[7] * _L[7];
+    if(tmp <= 0.0f) return false;
+    _L[8] = sqrt(tmp);
+    return true;
+}
+
+template<typename T, unsigned N>
+bool decomposeCholesky(const Matrix<T,N,N>& _A, Matrix<T,N,N>& _L)
+{
+    for(uint y = 0; y < N; ++y)
+    {
+        for(uint x = 0; x <= y; ++x)
+        {
+            float sum = _A(y,x);
+            for(uint i = 0; i < x; ++i)
+                sum -= _L(y,i) * _L(x,i);
+            // Handle diagonal elements else than the lower ones
+            if(y > x)
+                _L(y,x) = sum / _L(x,x);
+            else if(sum > 0.0f)
+                _L(x,x) = sqrt(sum);
+            // Not positive definite!
+            else return false;
+        }
+        // Zero out the remaining elements
+        for(uint x = y + 1; x < N; ++x)
+            _L(y,x) = static_cast<T>(0);
+    }
+    // Fill the upper triangular matrix with 0
+    return true;
+}
+
 
 // ************************************************************************* //
 template<typename T, unsigned N>

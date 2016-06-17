@@ -748,5 +748,55 @@ bool test_matrix()
         itn = 0;
     }
 
+    // ********************************************************************* //
+    // Test Cholesky decompositions
+    {
+        Mat2x2 L0(1.0f, 0.0f, 2.0f, 3.0f);
+        Mat2x2 L1(1.0f, 0.0f, 1.0f, 500.0f);
+        Mat2x2 A0 = L0 * transpose(L0);
+        Mat2x2 A1 = L1 * transpose(L1);
+        Mat2x2 A2(1.0f, 1.0f, 1.0f, -1.0f);
+        Mat2x2 t;
+        decomposeCholesky(A0, t);
+        TEST(approx(t, L0), "Cholesky decomposition of A0 failed!");
+        decomposeCholesky(A1, t);
+        TEST(approx(t, L1), "Cholesky decomposition of A1 failed!");
+        TEST(!decomposeCholesky(A2, t), "Cholesky decomposition of A2 should return false (A2 is not positive definite)!");
+
+        Mat3x3 L3(2.0f, 0.0f, 0.0f,
+                  1.0f, 0.5f, 0.0f,
+                  4.0f, 8.0f, 1.0f);
+        Mat3x3 L4(16.0f, 0.0f, 0.0f,
+                  -1.0f, 0.125f, 0.0f,
+                  400.0f, 0.0f, 1.0f);
+        Mat3x3 A3 = L3 * transpose(L3);
+        Mat3x3 A4 = L4 * transpose(L4);
+        Mat3x3 A5(1.0f, 1.0f, 1.0f, -1.0f, -1.0f, -1.0f, 2.0f, 2.0f, 2.0f);
+        Mat3x3 t2;
+        decomposeCholesky(A3, t2);
+        TEST(approx(t2, L3), "Cholesky decomposition of A3 failed!");
+        decomposeCholesky(A4, t2);
+        TEST(approx(t2, L4), "Cholesky decomposition of A4 failed!");
+        TEST(!decomposeCholesky(A5, t2), "Cholesky decomposition of A5 should return false (A5 is not positive definite)!");
+
+        Mat4x4 L6(2.0f, 0.0f, 0.0f, 0.0f,
+                  1.0f, 0.5f, 0.0f, 0.0f,
+                  4.0f, 8.0f, 1.0f, 0.0f,
+                  2.0f, 1.0f, 8.0f, 0.25f);
+        Mat4x4 L7(16.0f, 0.0f, 0.0f, 0.0f,
+                  -1.0f, 0.125f, 0.0f, 0.0f,
+                  400.0f, 0.0f, 1.0f, 0.0f,
+                  0.0f, -128.0f, 2.0f, 1024.0f);
+        Mat4x4 A6 = L6 * transpose(L6);
+        Mat4x4 A7 = L7 * transpose(L7);
+        Mat4x4 A8(1.0f, 1.0f, 1.0f, 1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 2.0f, 2.0f, 2.0f, 2.0f, 8.0f, -8.0f, 8.0f, -8.0f);
+        Mat4x4 t3;
+        decomposeCholesky(A6, t3);
+        TEST(approx(t3, L6), "Cholesky decomposition of A6 failed!");
+        decomposeCholesky(A7, t3);
+        TEST(approx(t3, L7), "Cholesky decomposition of A7 failed!");
+        TEST(!decomposeCholesky(A8, t3), "Cholesky decomposition of A8 should return false (A8 is not positive definite)!");
+    }
+
     return result;
 }

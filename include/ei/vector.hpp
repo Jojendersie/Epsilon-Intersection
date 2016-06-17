@@ -887,6 +887,19 @@ namespace ei {
     //int eigenmax(const Matrix<T,N,N>& _A, Vec<T,N>& _eigenvec, T& _eigenval);
 
     // ********************************************************************* //
+    /// \brief Compute the Cholesky decomposition L*L^T of symmetric positive
+    ///     definite matrices A.
+    /// \param [out] _L A lower triangular matrix such that L*L^T = A.
+    /// \return true if the decomposition was possible (A is symmetric positive
+    ///     definite).
+    ///
+    ///     The code will not explicitly test if the matrix is symmetric. It
+    ///     simply assumes it. I.e. you might get a return value of true
+    ///     even for non symmetric matrices.
+    template<typename T, unsigned N>
+    bool decomposeCholesky(const Matrix<T,N,N>& _A, Matrix<T,N,N>& _L);        // TESTED
+
+    // ********************************************************************* //
     /// \brief Invert a quadratic matrix.
     /// \details If the matrix has no inverse the identity is returned.
     /// \return Inverse matrix or identity.
