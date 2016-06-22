@@ -4,6 +4,17 @@
 
 namespace ei {
 
+    /// \brief Get the euclidean distance between two objects.
+    /// \details The distance for point-solid queries can be negative. All
+    ///     other geometries return 0 if they intersect.
+    float distanceSq(const Vec2& _point, const Segment2D& _line);               // TESTED
+    inline float distance(const Vec2& _point, const Segment2D& _line)           { return sqrt(distanceSq(_point, _line)); }
+    inline float distanceSq(const Segment2D& _line, const Vec2& _point)         { return distanceSq(_point, _line); }
+    inline float distance(const Segment2D& _line, const Vec2& _point)           { return sqrt(distanceSq(_point, _line)); }
+
+    bool intersects( const Vec2& _point, const Capsule2D& _capsule );           // TESTED
+    inline bool intersects( const Capsule2D& _capsule, const Vec2& _point )     { return intersects(_point, _capsule); }
+
     /// \brief Does a point lie inside a circle/on the boundary?
     /// \details Performance index: TODO
     /// \return true if the point is inside or on the boundary.

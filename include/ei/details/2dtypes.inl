@@ -61,15 +61,15 @@ inline Disc2D::Disc2D( const OEllipse2D& _ellipse )
 // ************************************************************************* //
 inline Disc2D::Disc2D( const Capsule2D& _capsule )
 {
-    center = (_capsule.p0 + _capsule.p1) * 0.5f;
-    radius = len(_capsule.p0 - _capsule.p1) * 0.5f + _capsule.radius;
+    center = (_capsule.seg.a + _capsule.seg.b) * 0.5f;
+    radius = len(_capsule.seg.a - _capsule.seg.b) * 0.5f + _capsule.radius;
 }
 
 // ************************************************************************* //
 inline Disc2D::Disc2D( const Segment2D& _line )
 {
-    center = (_line.p0 + _line.p1) * 0.5f;
-    radius = len(_line.p0 - _line.p1) * 0.5f;
+    center = (_line.a + _line.b) * 0.5f;
+    radius = len(_line.a - _line.b) * 0.5f;
 }
 
 // ************************************************************************* //
@@ -124,9 +124,9 @@ inline OEllipse2D::OEllipse2D( const Vec2& _center, const Vec2& _radii, float _a
 }
 
 // ************************************************************************* //
-inline Segment2D::Segment2D( const Vec2& _p0, const Vec2& _p1 ) :
-    p0(_p0),
-    p1(_p1)
+inline Segment2D::Segment2D( const Vec2& _a, const Vec2& _b ) :
+    a(_a),
+    b(_b)
 {
 }
 
@@ -140,9 +140,8 @@ inline Ray2D::Ray2D( const Vec2& _origin, const Vec2& _direction ) :
 }
 
 // ************************************************************************* //
-inline Capsule2D::Capsule2D( const Vec2& _p0, const Vec2& _p1, float _radius ) :
-    p0(_p0),
-    p1(_p1),
+inline Capsule2D::Capsule2D( const Vec2& _a, const Vec2& _b, float _radius ) :
+    seg(_a, _b),
     radius(_radius)
 {
 }
@@ -196,7 +195,7 @@ inline float area(const Ray2D& _ray)
 
 inline float area(const Capsule2D& _capsule)
 {
-    return PI * _capsule.radius * _capsule.radius + 2.0f * _capsule.radius * len(_capsule.p1-_capsule.p0);
+    return PI * _capsule.radius * _capsule.radius + 2.0f * _capsule.radius * len(_capsule.seg.b-_capsule.seg.a);
 }
 
 // ************************************************************************* //
@@ -234,10 +233,10 @@ inline Vec2 center(const OEllipse2D& _oellipse)
 
 inline Vec2 center(const Segment2D& _segment)
 {
-    return (_segment.p0 + _segment.p1) * 0.5f;
+    return (_segment.a + _segment.b) * 0.5f;
 }
 
 inline Vec2 center(const Capsule2D& _capsule)
 {
-    return (_capsule.p0 + _capsule.p1) * 0.5f;
+    return (_capsule.seg.a + _capsule.seg.b) * 0.5f;
 }

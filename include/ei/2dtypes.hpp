@@ -145,14 +145,14 @@ namespace ei {
     /// \brief A line segment is the finite connection between two points
     struct Segment2D
     {
-        Vec2 p0;
-        Vec2 p1;
+        Vec2 a;
+        Vec2 b;
 
         /// \brief Create uninitialized line.
         Segment2D() {}
 
         /// \brief Create from two points (start and end).
-        Segment2D( const Vec2& _p0, const Vec2& _p1 );                         // TESTED
+        Segment2D( const Vec2& _a, const Vec2& _b );                           // TESTED
     };
 
     struct Ray2D
@@ -171,8 +171,7 @@ namespace ei {
     /// \brief A capsule is a region around a line.
     struct Capsule2D
     {
-        Vec2 p0;
-        Vec2 p1;
+        Segment2D seg;
         float radius;           ///< Defines the region around the line.
 
         /// \brief Create uninitialized capsule.
@@ -180,7 +179,7 @@ namespace ei {
 
         /// \brief Create from two points and a radius for the surrounding
         ///    region.
-        Capsule2D( const Vec2& _p0, const Vec2& _p1, float _radius );          // TESTED
+        Capsule2D( const Vec2& _a, const Vec2& _b, float _radius );            // TESTED
     };
 
     // TODO: approx, area, center

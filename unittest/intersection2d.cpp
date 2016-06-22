@@ -20,6 +20,19 @@ bool test_2dintersections()
     }
 
     // ********************************************************************* //
+    // Test point <-> capsule
+    {
+        Capsule2D cap( Vec2(1.0f, 0.0f), Vec2(2.0f, 1.0f), 0.5f );
+
+        TEST( intersects(cap, Vec2(0.5f, 0.0f)), "Capsule-point 0 intersection not detected." );
+        TEST( intersects(cap, Vec2(1.5f, 0.5f)), "Capsule-point 1 intersection not detected." );
+        TEST( intersects(cap, Vec2(1.2f, -0.2f)), "Capsule-point 2 intersection not detected." );
+        TEST( !intersects(cap, Vec2(0.0f, 0.25f)), "Wrong capsule-point 3 intersection not detected." );
+        TEST( !intersects(cap, Vec2(3.0f, 2.0f)), "Wrong capsule-point 4 intersection not detected." );
+        TEST( !intersects(cap, Vec2(1.5f, 1.25f)), "Wrong capsule-point 5 intersection not detected." );
+    }
+
+    // ********************************************************************* //
     // Test disc <-> disc
     {
         Disc2D dis0( Vec2(0.0f, 0.0f), 1.0f );
