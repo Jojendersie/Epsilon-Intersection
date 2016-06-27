@@ -35,5 +35,16 @@ bool test_stdextensions()
         cout << "equal_to of Mat3x3(..." << ") is " << ev33(m0, m0) << '\n';
     }
 
+    // Pretty printers
+    {
+        IMat2x2 m1(1, 210, 7626, 73);
+        cout << "showing pretty printers\n";
+        cout << v0 << '\n';
+        cout << v1 << '\n';
+        cout << v2 << "\n\n";
+        cout << m0 << "\n\n";
+        cout << m1 << "\n\n";
+    }
+
     return true;
 }

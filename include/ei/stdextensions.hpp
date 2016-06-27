@@ -2,6 +2,8 @@
 #pragma once
 
 #include "vector.hpp"
+#include <ostream>
+#include <iomanip>
 
 namespace std {
 
@@ -96,4 +98,50 @@ namespace std {
             return all(_lhs == _rhs);
         }
     };
+
+
+
+    /// \brief Pretty printer for vectors and matrices.
+    /// \details The output syntax differs for matrices and vectors by using different
+    ///     brackets.
+    ///     Column vector: (X, Y, Z) or row vector: (X, Y, Z)'
+    ///
+    ///     |m00 m01|
+    ///     |m10 m11|
+    ///     The printer does not add line breaks at the end. Only the matrix version
+    ///     adds line breaks between rows.
+    template <typename T, uint M, uint N>
+    std::ostream& operator << (std::ostream& _os, const ei::Matrix<T, M, N>& _mat)  // TESTED
+    {
+        if(N == 1)          // Column vector
+        {
+            _os << '(';
+            for(uint i = 0; i < M-1; ++i)
+                _os << _mat[i] << ", ";
+            _os << _mat[M-1] << ")";
+        } else if(M == 1)   // Row vector
+        {
+            _os << '(';
+            for(uint i = 0; i < N-1; ++i)
+                _os << _mat[i] << ", ";
+            _os << _mat[N-1] << ")'";
+        } else {            // Matrix
+            // Set to scientific to align columns
+            //auto flags = _os.flags();
+          //  _os << std::scientific;
+            for(uint j = 0; j < M; ++j)
+            {
+                _os << '|';
+                for(uint i = 0; i < N-1; ++i)
+                    _os << std::setw(11) << _mat[i + N * j] << ' ';
+                _os << std::setw(11) << _mat[N-1 + N * j] << '|';
+                if(j < M-1)
+                    _os << '\n';
+            }
+            // Revert stream format
+            //_os.setf(flags);
+        }
+
+        return _os;
+    }
 } // namespace std
