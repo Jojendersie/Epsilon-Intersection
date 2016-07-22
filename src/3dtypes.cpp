@@ -256,7 +256,7 @@ namespace ei {
         } else {
             sides = Vec3(1e12f);
             float volume = 1e36f;
-            Quaternion testOrientation;
+            Mat3x3 finalRotation;
             // Try each combination of three vertices to setup an orientation
             for(uint32 i = 0; i < _numPoints-2; ++i)
             {
@@ -265,16 +265,17 @@ namespace ei {
                     Vec3 xAxis = normalize(_points[i] - _points[j]);
                     for(uint32 k = j+1; k < _numPoints; ++k)
                     {
+                        Mat3x3 rotation;
                         Vec3 yAxis = cross(xAxis, _points[i] - _points[k]);
                         float l = len(yAxis);
-                        if( l < 1e-6f ) testOrientation = Quaternion(xAxis, Vec3(1.0f, 0.0f, 0.0f)); // Colinear points
+                        if( l < 1e-6f ) // Colinear points
+                            rotation = Mat3x3(Quaternion(xAxis, Vec3(1.0f, 0.0f, 0.0f)));
                         else {
                             yAxis /= l;
-                            testOrientation = Quaternion(xAxis, yAxis, cross(xAxis, yAxis));
+                            rotation = Mat3x3(xAxis, yAxis, cross(xAxis, yAxis));
                         }
                         // Refit a box with the current rotation. Since the rotation of
                         // all points is the most expensive part try to early out.
-                        Mat3x3 rotation(testOrientation);
                         Vec3 min, max;
                         min = max = rotation * _points[0];
                         for(uint32 i = 1; i < _numPoints; ++i)
@@ -293,12 +294,14 @@ namespace ei {
                         //center = transform((min + max) * 0.5f, conjugate(testOrientation));
                         center = transpose(rotation) * ((min + max) * 0.5f);
                         sides = max - min;
-                        orientation = conjugate(testOrientation);
+                        finalRotation = rotation;
+                        //orientation = conjugate(Quaternion(rotation));
                         volume = prod(sides);
                         NextRotation:;
                     }
                 }
             }
+            orientation = conjugate(Quaternion(finalRotation));
         }
     }
 
