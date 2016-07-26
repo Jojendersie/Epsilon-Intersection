@@ -40,10 +40,10 @@ namespace ei {
         // operation without the need of a constructor. This type deduction
         // construct inherits rules as [int + float -> float] from the
         // elementary types.
-#       define RESULT_TYPE(op) typename std::enable_if<                 \
+#       define RESULT_TYPE typename std::enable_if<                     \
             !std::is_base_of<details::NonScalarType, T1>::value &&      \
             !std::is_base_of<details::NonScalarType, T>::value,         \
-            decltype(std::declval<T>() op std::declval<T1>())           \
+            decltype(std::declval<T>() + std::declval<T1>())            \
         >::type
 
         // Enable a function on a condition via template list.
@@ -110,11 +110,11 @@ namespace ei {
         /// \brief Add two matrices component wise.
         /// \details Addition is commutative.
         template<typename T1>
-        Matrix<RESULT_TYPE(+), M, N> operator+ (const Matrix<T1,M,N>& _mat1) const;  // TESTED
+        Matrix<RESULT_TYPE, M, N> operator+ (const Matrix<T1,M,N>& _mat1) const;  // TESTED
         /// \brief Subtract two matrices component wise.
         /// \details Subtraction is not commutative.
         template<typename T1>
-        Matrix<RESULT_TYPE(-), M, N> operator- (const Matrix<T1,M,N>& _mat1) const;  // TESTED
+        Matrix<RESULT_TYPE, M, N> operator- (const Matrix<T1,M,N>& _mat1) const;  // TESTED
 
         /// \brief Unary minus on all components.
         Matrix<T, M, N> operator- () const;                                    // TESTED
@@ -124,26 +124,26 @@ namespace ei {
         /// \returns Matrix product with dimensions MxO = MxN * NxO. The result
         ///    is a scalar if M = N = 1.
         template<typename T1, uint O>
-        typename std::conditional<M * O == 1, RESULT_TYPE(*), Matrix<RESULT_TYPE(*), M, O>>::type
+        typename std::conditional<M * O == 1, RESULT_TYPE, Matrix<RESULT_TYPE, M, O>>::type
         operator* (const Matrix<T1,N,O>& _mat1) const;                               // TESTED
 
         /// \brief Component wise binary or.
         /// \details Or is commutative.
         template<typename T1>
-        Matrix<RESULT_TYPE(|), M, N> operator| (const Matrix<T1,M,N>& _mat1) const; // TESTED
+        Matrix<RESULT_TYPE, M, N> operator| (const Matrix<T1,M,N>& _mat1) const; // TESTED
         /// \brief Component wise binary and.
         /// \details And is commutative.
         template<typename T1>
-        Matrix<RESULT_TYPE(&), M, N> operator& (const Matrix<T1,M,N>& _mat1) const; // TESTED
+        Matrix<RESULT_TYPE, M, N> operator& (const Matrix<T1,M,N>& _mat1) const; // TESTED
         /// \brief Component wise binary xor.
         /// \details Xor is commutative.
         template<typename T1>
-        Matrix<RESULT_TYPE(^), M, N> operator^ (const Matrix<T1,M,N>& _mat1) const; // TESTED
+        Matrix<RESULT_TYPE, M, N> operator^ (const Matrix<T1,M,N>& _mat1) const; // TESTED
         /// \brief Component wise binary not.
         Matrix<T, M, N> operator~ () const;                                         // TESTED
         /// \brief Component wise modulo (rest of integer division).
         template<typename T1>
-        Matrix<RESULT_TYPE(%), M, N> operator% (const Matrix<T1,M,N>& _mat1) const; // TESTED
+        Matrix<RESULT_TYPE, M, N> operator% (const Matrix<T1,M,N>& _mat1) const; // TESTED
 
         /// \brief Self assigning component wise addition.
         template<typename T1>
@@ -223,70 +223,70 @@ namespace ei {
 
     /// \brief Component wise multiplication for vectors of the same size.
     template<typename T, typename T1, uint M>
-    Matrix<RESULT_TYPE(*), M, 1> operator* (const Matrix<T,M,1>& _mat0, const Matrix<T1,M,1>& _mat1);  // TESTED
+    Matrix<RESULT_TYPE, M, 1> operator* (const Matrix<T,M,1>& _mat0, const Matrix<T1,M,1>& _mat1);  // TESTED
     template<typename T, typename T1, uint N>
-    Matrix<RESULT_TYPE(*), 1, N> operator* (const Matrix<T,1,N>& _mat0, const Matrix<T1,1,N>& _mat1);  // TESTED
+    Matrix<RESULT_TYPE, 1, N> operator* (const Matrix<T,1,N>& _mat0, const Matrix<T1,1,N>& _mat1);  // TESTED
     /// \brief Component wise division for vectors of the same size.
     template<typename T, typename T1, uint M>
-    Matrix<RESULT_TYPE(/), M, 1> operator/ (const Matrix<T,M,1>& _mat0, const Matrix<T1,M,1>& _mat1);  // TESTED
+    Matrix<RESULT_TYPE, M, 1> operator/ (const Matrix<T,M,1>& _mat0, const Matrix<T1,M,1>& _mat1);  // TESTED
     template<typename T, typename T1, uint N>
-    Matrix<RESULT_TYPE(/), 1, N> operator/ (const Matrix<T,1,N>& _mat0, const Matrix<T1,1,N>& _mat1);  // TESTED
+    Matrix<RESULT_TYPE, 1, N> operator/ (const Matrix<T,1,N>& _mat0, const Matrix<T1,1,N>& _mat1);  // TESTED
 
     // ********************************************************************* //
     // Scalar operators
 
     /// \brief Add a scalar to all components.
     template<typename T, uint M, uint N, typename T1>
-    Matrix<RESULT_TYPE(+), M, N> operator+ (const Matrix<T,M,N>& _mat, T1 _s); // TESTED
+    Matrix<RESULT_TYPE, M, N> operator+ (const Matrix<T,M,N>& _mat, T1 _s); // TESTED
     template<typename T1, typename T, uint M, uint N>
-    Matrix<RESULT_TYPE(+), M, N> operator+ (T1 _s, const Matrix<T,M,N>& _mat); // TESTED
+    Matrix<RESULT_TYPE, M, N> operator+ (T1 _s, const Matrix<T,M,N>& _mat); // TESTED
     /// \brief Subtract a scalar from all components.
     template<typename T, uint M, uint N, typename T1>
-    Matrix<RESULT_TYPE(-), M, N> operator- (const Matrix<T,M,N>& _mat, T1 _s); // TESTED
+    Matrix<RESULT_TYPE, M, N> operator- (const Matrix<T,M,N>& _mat, T1 _s); // TESTED
     /// \brief Subtract all components from a scalar.
     template<typename T1, typename T, uint M, uint N>
-    Matrix<RESULT_TYPE(-), M, N> operator- (T1 _s, const Matrix<T,M,N>& _mat); // TESTED
+    Matrix<RESULT_TYPE, M, N> operator- (T1 _s, const Matrix<T,M,N>& _mat); // TESTED
     /// \brief Multiply a scalar to all components.
     template<typename T, uint M, uint N, typename T1>
-    Matrix<RESULT_TYPE(*), M, N> operator* (const Matrix<T,M,N>& _mat, T1 _s); // TESTED
+    Matrix<RESULT_TYPE, M, N> operator* (const Matrix<T,M,N>& _mat, T1 _s); // TESTED
     template<typename T1, typename T, uint M, uint N>
-    Matrix<RESULT_TYPE(*), M, N> operator* (T1 _s, const Matrix<T,M,N>& _mat); // TESTED
+    Matrix<RESULT_TYPE, M, N> operator* (T1 _s, const Matrix<T,M,N>& _mat); // TESTED
     /// \brief Divide all components by a scalar.
     template<typename T, uint M, uint N, typename T1>
-    Matrix<RESULT_TYPE(/), M, N> operator/ (const Matrix<T,M,N>& _mat, T1 _s); // TESTED
+    Matrix<RESULT_TYPE, M, N> operator/ (const Matrix<T,M,N>& _mat, T1 _s); // TESTED
     /// \brief Divide a scalar by each component.
     template<typename T1, typename T, uint M, uint N>
-    Matrix<RESULT_TYPE(/), M, N> operator/ (T1 _s, const Matrix<T,M,N>& _mat); // TESTED
+    Matrix<RESULT_TYPE, M, N> operator/ (T1 _s, const Matrix<T,M,N>& _mat); // TESTED
 
     /// \brief Binary or of all components and a scalar.
     template<typename T, uint M, uint N, typename T1>
-    Matrix<RESULT_TYPE(|), M, N> operator| (const Matrix<T,M,N>& _mat, T1 _s); // TESTED
+    Matrix<RESULT_TYPE, M, N> operator| (const Matrix<T,M,N>& _mat, T1 _s); // TESTED
     /// \brief Binary or of a scalar and all components.
     template<typename T1, typename T, uint M, uint N>
-    Matrix<RESULT_TYPE(|), M, N> operator| (T1 _s, const Matrix<T,M,N>& _mat); // TESTED
+    Matrix<RESULT_TYPE, M, N> operator| (T1 _s, const Matrix<T,M,N>& _mat); // TESTED
     /// \brief Binary and of all components and a scalar.
     template<typename T, uint M, uint N, typename T1>
-    Matrix<RESULT_TYPE(&), M, N> operator& (const Matrix<T,M,N>& _mat, T1 _s); // TESTED
+    Matrix<RESULT_TYPE, M, N> operator& (const Matrix<T,M,N>& _mat, T1 _s); // TESTED
     /// \brief Binary and of a scalar and all components.
     template<typename T1, typename T, uint M, uint N>
-    Matrix<RESULT_TYPE(&), M, N> operator& (T1 _s, const Matrix<T,M,N>& _mat); // TESTED
+    Matrix<RESULT_TYPE, M, N> operator& (T1 _s, const Matrix<T,M,N>& _mat); // TESTED
     /// \brief Binary xor of all components and a scalar.
     template<typename T, uint M, uint N, typename T1>
-    Matrix<RESULT_TYPE(^), M, N> operator^ (const Matrix<T,M,N>& _mat, T1 _s); // TESTED
+    Matrix<RESULT_TYPE, M, N> operator^ (const Matrix<T,M,N>& _mat, T1 _s); // TESTED
     /// \brief Binary xor of a scalar and all components.
     template<typename T1, typename T, uint M, uint N>
-    Matrix<RESULT_TYPE(^), M, N> operator^ (T1 _s, const Matrix<T,M,N>& _mat); // TESTED
+    Matrix<RESULT_TYPE, M, N> operator^ (T1 _s, const Matrix<T,M,N>& _mat); // TESTED
     /// \brief Modulo of all components and a scalar.
     template<typename T, uint M, uint N, typename T1>
-    Matrix<RESULT_TYPE(%), M, N> operator% (const Matrix<T,M,N>& _mat, T1 _s); // TESTED
+    Matrix<RESULT_TYPE, M, N> operator% (const Matrix<T,M,N>& _mat, T1 _s); // TESTED
     /// \brief Modulo of a scalar and all components.
     template<typename T1, typename T, uint M, uint N>
-    Matrix<RESULT_TYPE(%), M, N> operator% (T1 _s, const Matrix<T,M,N>& _mat); // TESTED
+    Matrix<RESULT_TYPE, M, N> operator% (T1 _s, const Matrix<T,M,N>& _mat); // TESTED
     /// \brief Component wise shift.
     template<typename T, uint M, uint N, typename T1>
-    Matrix<RESULT_TYPE(>>), M, N> operator>> (const Matrix<T,M,N>& _mat, T1 _s); // TESTED
+    Matrix<RESULT_TYPE, M, N> operator>> (const Matrix<T,M,N>& _mat, T1 _s); // TESTED
     template<typename T, uint M, uint N, typename T1>
-    Matrix<RESULT_TYPE(<<), M, N> operator<< (const Matrix<T,M,N>& _mat, T1 _s); // TESTED
+    Matrix<RESULT_TYPE, M, N> operator<< (const Matrix<T,M,N>& _mat, T1 _s); // TESTED
 
     /// \brief Test all components with respect to a scalar.
     template<typename T, uint M, uint N, typename T1>
@@ -580,8 +580,8 @@ namespace ei {
     /// \brief Computes the sum of component wise products.
     /// \returns Scalar value of the sum of component products.
     template<typename T, unsigned M, unsigned N, typename T1>
-    RESULT_TYPE(*) dot(const Matrix<T,M,N>& _mat0,
-                       const Matrix<T1,M,N>& _mat1);                           // TESTED
+    RESULT_TYPE dot(const Matrix<T,M,N>& _mat0,
+                    const Matrix<T1,M,N>& _mat1);                              // TESTED
 
     // ********************************************************************* //
     /// \brief Computes the sum of component wise products.
@@ -593,21 +593,21 @@ namespace ei {
     /// \brief Computes the cross product of two 3d vectors (RHS).
     /// \returns Perpendicular vector with length |v0|·|v1|·sin(∡(v0,v1)).
     template<typename T, typename T1>
-    Matrix<RESULT_TYPE(*),1,3> cross(const Matrix<T,1,3>& _v0,
-                                     const Matrix<T1,1,3>& _v1);
+    Matrix<RESULT_TYPE,1,3> cross(const Matrix<T,1,3>& _v0,
+                                  const Matrix<T1,1,3>& _v1);
     template<typename T, typename T1>
-    Matrix<RESULT_TYPE(*),3,1> cross(const Matrix<T,3,1>& _v0,
-                                     const Matrix<T1,3,1>& _v1);
+    Matrix<RESULT_TYPE,3,1> cross(const Matrix<T,3,1>& _v0,
+                                  const Matrix<T1,3,1>& _v1);
 
     // ********************************************************************* //
     /// \brief Computes the cross product of two 2d vectors.
     /// \returns The determinant of the 2x2 matrix: v0.x·v1.y - v0.y·v1.x.
     template<typename T, typename T1>
-    RESULT_TYPE(*) cross(const Matrix<T,1,2>& _v0,
-                         const Matrix<T1,1,2>& _v1);
+    RESULT_TYPE cross(const Matrix<T,1,2>& _v0,
+                      const Matrix<T1,1,2>& _v1);
     template<typename T, typename T1>
-    RESULT_TYPE(*) cross(const Matrix<T,2,1>& _v0,
-                         const Matrix<T1,2,1>& _v1);
+    RESULT_TYPE cross(const Matrix<T,2,1>& _v0,
+                      const Matrix<T1,2,1>& _v1);
 
     // ********************************************************************* //
     /// \brief Computes the sum of squared components.
