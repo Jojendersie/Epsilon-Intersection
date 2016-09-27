@@ -1307,7 +1307,7 @@ Vec<T,N> sphericalCoords( const Vec<T,N>& _v0 )
 template<typename T, unsigned N>
 RVec<T,N> sphericalCoords( const RVec<T,N>& _v0 )
 {
-    return *reinterpret_cast<RVec<T,N>>(&sphericalCoords(*reinterpret_cast<Vec<T,N>>(&_v0)));
+    return *reinterpret_cast<RVec<T,N>*>(&sphericalCoords(*reinterpret_cast<Vec<T,N>*>(&_v0)));
 }
 
 // ********************************************************************* //
@@ -1329,7 +1329,7 @@ Vec<T,N> cartesianCoords( const Vec<T,N>& _v0 )
 template<typename T, unsigned N>
 RVec<T,N> cartesianCoords( const RVec<T,N>& _v0 )
 {
-    return *reinterpret_cast<RVec<T,N>>(&cartesianCoords(*reinterpret_cast<Vec<T,N>>(&_v0)));
+    return *reinterpret_cast<RVec<T,N>*>(&cartesianCoords(*reinterpret_cast<Vec<T,N>*>(&_v0)));
 }
 
 // ************************************************************************* //
