@@ -1574,7 +1574,7 @@ namespace ei {
     inline Matrix<T,M,N> transform( const Matrix<T, M, N>& _what,
                                     const Matrix<T, M*N+1, M*N+1>& _space )
     {
-        Matrix<T,M,N> t;
+        T t[M*N+1];
         // Multiply Matrix * Vector(_what,1)
         for(uint y = 0; y <= M * N; ++y)
         {
