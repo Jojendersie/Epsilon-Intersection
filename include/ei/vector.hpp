@@ -1423,7 +1423,7 @@ namespace ei {
             float norm = sq(_mat0(0,x));
             for(uint y = 1; y < M; ++y)
                 norm += sq(_mat0(y,x));
-            if(norm <= 1e-6f) return false;
+            if(norm <= 1e-30f) return false;
             norm = sqrt(norm);
             for(uint y = 0; y < M; ++y)
                 _mat0(y,x) /= norm;
@@ -1449,7 +1449,7 @@ namespace ei {
     inline bool orthonormalize(TVec0& _vec0, TVecs&... _vecs) // TESTED
     {
         float norm = len(_vec0);
-        if(norm <= 1e-6f) return false;
+        if(norm <= 1e-30f) return false;
         _vec0 /= norm;
 
         // Remove current vector from all following
