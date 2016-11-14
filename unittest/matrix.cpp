@@ -599,6 +599,26 @@ bool test_matrix()
     }
 
     // ********************************************************************* //
+    // Test camera transformations
+    {
+        Mat4x4 m0 = Mat4x4(lookAt(Vec3(1.0f, 0.0f, 0.0f)));
+        Mat4x4 m1 = camera(Vec3(1.0f, 1.0f, 1.0f), Vec3(0.0f));
+        Mat4x4 m2 = invert(m1);
+        Vec3 v0(0.0f);
+        Vec3 v1(0.0f, 0.0f, 1.0f);
+
+        TEST( approx(transform(v0, m0), v0), "lookAt() should not contain any translation!" );
+        TEST( approx(transform(v1, m0), Vec3(-1.0f, 0.0f, 0.0f)), "lookAt() rotates wrongly!" );
+
+        TEST( approx(transform(v0, m1), Vec3(0.0f, 0.0f, sqrt(3.0f))), "camera() transformation not as expected!" );
+        TEST( approx(transform(v0, m2), Vec3(1.0f, 1.0f, 1.0f)), "camera() inverse transformation not as expected!" );
+        TEST( approx(transform(v1 * sqrt(3.0f), m2), v0), "camera() inverse transformation not as expected!" );
+
+        TEST( approx(transformDir(v0, m1), v0), "transformDir() should not change the length!" );
+        TEST( approx(transformDir(transformDir(v1, m1), m2), v1), "transformDir() should not change the length!" );
+    }
+
+    // ********************************************************************* //
     // Test spherical coordinates
     {
         Vec2 v0(1.0f, 0.0f);        Vec2 s0(1.0f, 0.0f);

@@ -89,7 +89,7 @@ namespace ei {
         ///
         ///   Appends 1 to vectors: v    =>   (v 1)
         template<typename T1, uint M1, uint N1, ENABLE_IF((M > M1 && N >= N1) || (M >= M1 && N > N1))>
-        explicit Matrix(const Matrix<T1,M1,N1>& _mat1)
+        explicit Matrix(const Matrix<T1,M1,N1>& _mat1) // TESTED
         {
             if(N == 1 || M == 1)
             {
@@ -1570,24 +1570,79 @@ namespace ei {
     // ********************************************************************* //
     /// \brief Apply transformations in homogeneous space. This includes a
     ///     division by w after the transformation
-    template<typename T, unsigned M, unsigned N, ENABLE_IF((M==1) || (N==1))>
-    inline Matrix<T,M,N> transform( const Matrix<T, M, N>& _what,
-                                    const Matrix<T, M*N+1, M*N+1>& _space )
+    template<typename T, unsigned N>
+    inline Matrix<T,N,1> transformDiv( const Matrix<T, N, 1>& _what,
+                                       const Matrix<T, N+1, N+1>& _space )
     {
-        T t[M*N+1];
+        T t[N+1];
         // Multiply Matrix * Vector(_what,1)
-        for(uint y = 0; y <= M * N; ++y)
+        for(uint y = 0; y <= N; ++y)
         {
             // Initialize with the last component * 1
-            t[y] = _space(y, M * N);
+            t[y] = _space(y, N);
             // Add the other N factors
-            for(uint x = 0; x < M * N; ++x)
+            for(uint x = 0; x < N; ++x)
                 t[y] += _space(y,x) * _what[x];
         }
         // Create a reduced vector with divided components
-        Matrix<T,M,N> result;
-        for(uint i = 0; i < M * N; ++i)
-            result[i] = t[i] / t[M * N];
+        Matrix<T,N,1> result;
+        for(uint i = 0; i < N; ++i)
+            result[i] = t[i] / t[N];
+        return result;
+    }
+    template<typename T, unsigned N>
+    inline Matrix<T,1,N> transformDiv( const Matrix<T, 1, N>& _what,
+                                       const Matrix<T, N+1, N+1>& _space )
+    {
+        T t[N+1];
+        // Multiply Vector(_what,1) * Matrix
+        for(uint x = 0; x <= N; ++x)
+        {
+            // Initialize with the last component * 1
+            t[x] = _space(N, x);
+            // Add the other N factors
+            for(uint y = 0; y < N; ++y)
+                t[x] += _what[y] * _space(y,x);
+        }
+        // Create a reduced vector with divided components
+        Matrix<T,1,N> result;
+        for(uint i = 0; i < N; ++i)
+            result[i] = t[i] / t[N];
+        return result;
+    }
+
+    /// \brief Apply transformations in 3x4/4x3 space (rotation + translation).
+    ///     This does NOT include a division by w.
+    template<typename T, unsigned N>
+    inline Matrix<T,N,1> transform( const Matrix<T, N, 1>& _what,
+                                    const Matrix<T, N+1, N+1>& _space ) // TESTED
+    {
+        Matrix<T,N,1> result;
+        // Multiply Matrix * Vector(_what,1)
+        for(uint y = 0; y < N; ++y)
+        {
+            // Initialize with the last component * 1
+            result[y] = _space(y, N);
+            // Add the other N factors
+            for(uint x = 0; x < N; ++x)
+                result[y] += _space(y,x) * _what[x];
+        }
+        return result;
+    }
+    template<typename T, unsigned N>
+    inline Matrix<T,1,N> transform( const Matrix<T, 1, N>& _what,
+                                    const Matrix<T, N+1, N+1>& _space )
+    {
+        Matrix<T,1,N> result;
+        // Multiply Vector(_what,1) * Matrix
+        for(uint x = 0; x < N; ++x)
+        {
+            // Initialize with the last component * 1
+            result[x] = _space(N, x);
+            // Add the other N factors
+            for(uint y = 0; y < N; ++y)
+                result[x] += _what[y] * _space(y,x);
+        }
         return result;
     }
 
@@ -1596,19 +1651,35 @@ namespace ei {
     /// \details Use this function to transform direction vectors. Still, there
     ///     is no normalization involved and the direction might be scaled by
     ///     the matrix.
-    template<typename T, unsigned M, unsigned N, ENABLE_IF((M==1) || (N==1))>
-    inline Matrix<T,M,N> transformDir( const Matrix<T, M, N>& _what,
-                                       const Matrix<T, M*N+1, M*N+1>& _space )
+    template<typename T, unsigned N>
+    inline Matrix<T,N,1> transformDir( const Matrix<T, N, 1>& _what,
+                                       const Matrix<T, N+1, N+1>& _space ) // TESTED
     {
-        Matrix<T,M,N> result;
+        Matrix<T,N,1> result;
         // Multiply Matrix * Vector(_what,0)
-        for(uint y = 0; y < M * N; ++y)
+        for(uint y = 0; y < N; ++y)
         {
             // Initialize with the first component
             result[y] = _space(y,0) * _what[0];
             // Add the other N-1 factors
-            for(uint x = 1; x < M * N; ++x)
+            for(uint x = 1; x < N; ++x)
                 result[y] += _space(y,x) * _what[x];
+        }
+        return result;
+    }
+    template<typename T, unsigned N>
+    inline Matrix<T,1,N> transformDir( const Matrix<T, 1, N>& _what,
+                                       const Matrix<T, N+1, N+1>& _space )
+    {
+        Matrix<T,1,N> result;
+        // Multiply Vector(_what,0) * Matrix
+        for(uint x = 0; x < N; ++x)
+        {
+            // Initialize with the first component
+            result[x] = _space(y,0) * _what[0];
+            // Add the other N-1 factors
+            for(uint y = 1; y < N; ++y)
+                result[x] += _what[y] * _space(y,x);
         }
         return result;
     }
@@ -1867,7 +1938,7 @@ namespace ei {
     }
 
     // ********************************************************************* //
-    /// \brief Create a matrix in 3D/homogeneous space where the target is on
+    /// \brief Create a matrix in 3D space where the target is on
     ///     the positive z-axis.
     /// \details This method creates an left-hand system (LHS) with positive
     ///     z-axis.
@@ -1880,8 +1951,8 @@ namespace ei {
     inline Mat3x3 lookAt( const Vec3& _target, const Vec3& _up = Vec3(0.0f, 1.0f, 0.0f))
     {
         Vec3 zAxis = normalize(_target);
-        Vec3 xAxis = normalize(cross(zAxis, _up));
-        Vec3 yAxis = cross(xAxis, zAxis);
+        Vec3 xAxis = normalize(cross(_up, zAxis));
+        Vec3 yAxis = cross(zAxis, xAxis);
         return axis( xAxis, yAxis, zAxis );
     }
 
