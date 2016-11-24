@@ -1738,7 +1738,7 @@ namespace ei {
     {
         Matrix<T,N,N> result(T(0));
         for(uint n = 0; n < N; ++n)
-            result[n*n] = _scale[n];
+            result[n * N + n] = _scale[n];
         return result;
     }
 
@@ -1749,7 +1749,7 @@ namespace ei {
     {
         Matrix<T,N,N> result(T(0));
         for(uint n = 0; n < N; ++n)
-            result[n*n] = _scale;
+            result[n * N + n] = _scale;
         return result;
     }
 
