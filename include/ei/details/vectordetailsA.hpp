@@ -346,8 +346,15 @@ namespace details {
 { \
     Matrix<bool, M, N> result; \
     for(uint i = 0; i < N * M; ++i) \
-        result[i] = (*this)[i] op _mat1[i]; \
+        result[i] = _mat0[i] op _mat1[i]; \
     return result; \
+}
+
+#define EI_CODE_GEN_MAT_MAT_BOOL_ALL_OP(op) \
+{ \
+    for(uint i = 0; i < N * M; ++i) \
+        if(!((*this)[i] op _mat1[i])) return false; \
+    return true; \
 }
 
 // ************************************************************************** //
@@ -382,4 +389,18 @@ namespace details {
     for(uint i = 0; i < N * M; ++i) \
         result[i] = _s op _mat[i]; \
     return result; \
+}
+
+#define EI_CODE_GEN_MAT_SCALAR_BOOL_ALL_OP(op) \
+{ \
+    for(uint i = 0; i < N * M; ++i) \
+        if(!(_mat[i] op _s)) return false; \
+    return true; \
+}
+
+#define EI_CODE_GEN_SCALAR_MAT_BOOL_ALL_OP(op) \
+{ \
+    for(uint i = 0; i < N * M; ++i) \
+        if(!(_s op _mat[i])) return false; \
+    return true; \
 }

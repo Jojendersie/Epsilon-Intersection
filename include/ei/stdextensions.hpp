@@ -89,16 +89,6 @@ namespace std {
     };
 
 
-    /// \brief Container need to compare items for equality too
-    template <typename T, uint M, uint N>
-    struct equal_to<ei::Matrix<T, M, N>>
-    {
-        bool operator()(const ei::Matrix<T, M, N>& _lhs, const ei::Matrix<T, M, N>& _rhs) const
-        {
-            return all(_lhs == _rhs);
-        }
-    };
-
 
 
     /// \brief Pretty printer for vectors and matrices.

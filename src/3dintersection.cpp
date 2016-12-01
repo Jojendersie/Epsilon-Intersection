@@ -134,7 +134,7 @@ namespace ei {
     // ************************************************************************* //
     float distance(const Vec3& _point, const Box& _box)
     {
-        eiAssert(all(_box.min <= _box.max), "Invalid box!");
+        eiAssert(_box.min <= _box.max, "Invalid box!");
         // Connection vector to box corner
         Vec3 d = _box.min - _point;
         if(d.x < 0.0f) d.x = _point.x - _box.max.x;
@@ -149,7 +149,7 @@ namespace ei {
     // ************************************************************************* //
     float distance(const Sphere& _sphere, const Box& _box)
     {
-        eiAssert(all(_box.min <= _box.max), "Invalid box!");
+        eiAssert(_box.min <= _box.max, "Invalid box!");
         eiAssert(_sphere.radius >= 0.0f, "Invalid sphere!");
         Vec3 d = max(_box.min - _sphere.center, _sphere.center - _box.max);
         return max(len(max(d, Vec3(0.0f))) - _sphere.radius, 0.0f);
@@ -219,8 +219,8 @@ namespace ei {
     // ********************************************************************* //
     bool intersects( const Box& _box0, const Box& _box1 )
     {
-        eiAssert(all(_box0.min <= _box0.max), "Box0 is invalid.");
-        eiAssert(all(_box1.min <= _box1.max), "Box1 is invalid.");
+        eiAssert(_box0.min <= _box0.max, "Box0 is invalid.");
+        eiAssert(_box1.min <= _box1.max, "Box1 is invalid.");
         // There must be an intersection if the sum of side length is larger
         // than that of the bounding box.
 //        return all((max(_box0.max, _box1.max) - min(_box0.min, _box1.min))

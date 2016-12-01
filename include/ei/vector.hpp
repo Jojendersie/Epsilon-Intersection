@@ -64,7 +64,7 @@ namespace ei {
 
         /// \brief Forward to base constructors
         template<typename T1, typename... Args>
-        Matrix(T1 _a0, Args... _args) :
+        explicit Matrix(T1 _a0, Args... _args) :
             details::Components<T,M,N>(_a0, std::forward<Args>(_args)...)
         {}
 
@@ -343,23 +343,27 @@ namespace ei {
             EI_CODE_GEN_MAT_SCALAR_SEFL_OP(<<=)
 
         /// \brief Compare component wise, if two matrices are identical.
-        Matrix<bool,M,N> operator == (const Matrix<T,M,N>& _mat1) const // TESTED
-            EI_CODE_GEN_MAT_MAT_BOOL_OP(==)
+        bool operator == (const Matrix<T,M,N>& _mat1) const // TESTED
+            EI_CODE_GEN_MAT_MAT_BOOL_ALL_OP(==)
         /// \brief Compare component wise, if two matrices are distinct.
-        Matrix<bool,M,N> operator != (const Matrix<T,M,N>& _mat1) const // TESTED
-            EI_CODE_GEN_MAT_MAT_BOOL_OP(!=)
+        bool operator != (const Matrix<T,M,N>& _mat1) const // TESTED
+        {
+            for(uint i = 0; i < N * M; ++i)
+                if((*this)[i] != _mat1[i]) return true;
+                    return false;
+        }
         /// \brief Compare component wise, if elements are smaller or equal.
-        Matrix<bool,M,N> operator <= (const Matrix<T,M,N>& _mat1) const // TESTED
-            EI_CODE_GEN_MAT_MAT_BOOL_OP(<=)
+        bool operator <= (const Matrix<T,M,N>& _mat1) const // TESTED
+            EI_CODE_GEN_MAT_MAT_BOOL_ALL_OP(<=)
         /// \brief Compare component wise, if elements are smaller.
-        Matrix<bool,M,N> operator < (const Matrix<T,M,N>& _mat1) const // TESTED
-            EI_CODE_GEN_MAT_MAT_BOOL_OP(<)
+        bool operator < (const Matrix<T,M,N>& _mat1) const // TESTED
+            EI_CODE_GEN_MAT_MAT_BOOL_ALL_OP(<)
         /// \brief Compare component wise, if elements are greater.
-        Matrix<bool,M,N> operator > (const Matrix<T,M,N>& _mat1) const // TESTED
-            EI_CODE_GEN_MAT_MAT_BOOL_OP(>)
+        bool operator > (const Matrix<T,M,N>& _mat1) const // TESTED
+            EI_CODE_GEN_MAT_MAT_BOOL_ALL_OP(>)
         /// \brief Compare component wise, if elements are greater or equal.
-        Matrix<bool,M,N> operator >= (const Matrix<T,M,N>& _mat1) const // TESTED
-            EI_CODE_GEN_MAT_MAT_BOOL_OP(>=)
+        bool operator >= (const Matrix<T,M,N>& _mat1) const // TESTED
+            EI_CODE_GEN_MAT_MAT_BOOL_ALL_OP(>=)
     };
 
 
@@ -445,43 +449,115 @@ namespace ei {
 
     /// \brief Test all components with respect to a scalar.
     template<typename T, uint M, uint N, typename T1>
-    Matrix<bool, M, N> operator == (const Matrix<T,M,N>& _mat, T1 _s) // TESTED
+    bool operator == (const Matrix<T,M,N>& _mat, T1 _s) // TESTED
+        EI_CODE_GEN_MAT_SCALAR_BOOL_ALL_OP(==)
+    template<typename T1, typename T, uint M, uint N>
+    bool operator == (T1 _s, const Matrix<T,M,N>& _mat) // TESTED
+        EI_CODE_GEN_SCALAR_MAT_BOOL_ALL_OP(==)
+    template<typename T, uint M, uint N, typename T1>
+    bool operator != (const Matrix<T,M,N>& _mat, T1 _s) // TESTED
+    {
+        for(uint i = 0; i < N * M; ++i)
+            if(_mat[i] != _s) return true;
+        return false;
+    }
+    template<typename T1, typename T, uint M, uint N>
+    bool operator != (T1 _s, const Matrix<T,M,N>& _mat) // TESTED
+    {
+        for(uint i = 0; i < N * M; ++i)
+            if(_s != _mat[i]) return true;
+        return false;
+    }
+    template<typename T, uint M, uint N, typename T1>
+    bool operator < (const Matrix<T,M,N>& _mat, T1 _s) // TESTED
+        EI_CODE_GEN_MAT_SCALAR_BOOL_ALL_OP(<)
+    template<typename T1, typename T, uint M, uint N>
+    bool operator < (T1 _s, const Matrix<T,M,N>& _mat) // TESTED
+        EI_CODE_GEN_SCALAR_MAT_BOOL_ALL_OP(<)
+    template<typename T, uint M, uint N, typename T1>
+    bool operator <= (const Matrix<T,M,N>& _mat, T1 _s) // TESTED
+        EI_CODE_GEN_MAT_SCALAR_BOOL_ALL_OP(<=)
+    template<typename T1, typename T, uint M, uint N>
+    bool operator <= (T1 _s, const Matrix<T,M,N>& _mat) // TESTED
+        EI_CODE_GEN_SCALAR_MAT_BOOL_ALL_OP(<=)
+    template<typename T, uint M, uint N, typename T1>
+    bool operator >= (const Matrix<T,M,N>& _mat, T1 _s) // TESTED
+        EI_CODE_GEN_MAT_SCALAR_BOOL_ALL_OP(>=)
+    template<typename T1, typename T, uint M, uint N>
+    bool operator >= (T1 _s, const Matrix<T,M,N>& _mat) // TESTED
+        EI_CODE_GEN_SCALAR_MAT_BOOL_ALL_OP(>=)
+    template<typename T, uint M, uint N, typename T1>
+    bool operator > (const Matrix<T,M,N>& _mat, T1 _s) // TESTED
+        EI_CODE_GEN_MAT_SCALAR_BOOL_ALL_OP(>)
+    template<typename T1, typename T, uint M, uint N>
+    bool operator > (T1 _s, const Matrix<T,M,N>& _mat) // TESTED
+        EI_CODE_GEN_SCALAR_MAT_BOOL_ALL_OP(>)
+
+
+    /// \brief Compare component wise, if two matrices are identical.
+    template<typename T, uint M, uint N>
+    Matrix<bool,M,N> equal (const Matrix<T,M,N>& _mat0, const Matrix<T,M,N>& _mat1) // TESTED
+        EI_CODE_GEN_MAT_MAT_BOOL_OP(==)
+    /// \brief Compare component wise, if two matrices are distinct.
+    template<typename T, uint M, uint N>
+    Matrix<bool,M,N> neq (const Matrix<T,M,N>& _mat0, const Matrix<T,M,N>& _mat1) // TESTED
+        EI_CODE_GEN_MAT_MAT_BOOL_OP(!=)
+    /// \brief Compare component wise, if elements are smaller or equal.
+    template<typename T, uint M, uint N>
+    Matrix<bool,M,N> lesseq (const Matrix<T,M,N>& _mat0, const Matrix<T,M,N>& _mat1) // TESTED
+        EI_CODE_GEN_MAT_MAT_BOOL_OP(<=)
+    /// \brief Compare component wise, if elements are smaller.
+    template<typename T, uint M, uint N>
+    Matrix<bool,M,N> less (const Matrix<T,M,N>& _mat0, const Matrix<T,M,N>& _mat1) // TESTED
+        EI_CODE_GEN_MAT_MAT_BOOL_OP(<)
+    /// \brief Compare component wise, if elements are greater.
+    template<typename T, uint M, uint N>
+    Matrix<bool,M,N> greater (const Matrix<T,M,N>& _mat0, const Matrix<T,M,N>& _mat1) // TESTED
+        EI_CODE_GEN_MAT_MAT_BOOL_OP(>)
+    /// \brief Compare component wise, if elements are greater or equal.
+    template<typename T, uint M, uint N>
+    Matrix<bool,M,N> greatereq (const Matrix<T,M,N>& _mat0, const Matrix<T,M,N>& _mat1) // TESTED
+        EI_CODE_GEN_MAT_MAT_BOOL_OP(>=)
+
+    /// \brief Test if all components compare equal to a scalar.
+    template<typename T, uint M, uint N, typename T1>
+    Matrix<bool, M, N> equal (const Matrix<T,M,N>& _mat, T1 _s) // TESTED
         EI_CODE_GEN_MAT_SCALAR_BOOL_OP(==)
     template<typename T1, typename T, uint M, uint N>
-    Matrix<bool, M, N> operator == (T1 _s, const Matrix<T,M,N>& _mat) // TESTED
+    Matrix<bool, M, N> equal (T1 _s, const Matrix<T,M,N>& _mat) // TESTED
         EI_CODE_GEN_SCALAR_MAT_BOOL_OP(==)
     template<typename T, uint M, uint N, typename T1>
-    Matrix<bool, M, N> operator != (const Matrix<T,M,N>& _mat, T1 _s) // TESTED
+    /// \brief Test if any component is non equal to a scalar.
+    Matrix<bool, M, N> neq (const Matrix<T,M,N>& _mat, T1 _s) // TESTED
         EI_CODE_GEN_MAT_SCALAR_BOOL_OP(!=)
     template<typename T1, typename T, uint M, uint N>
-    Matrix<bool, M, N> operator != (T1 _s, const Matrix<T,M,N>& _mat) // TESTED
+    Matrix<bool, M, N> neq (T1 _s, const Matrix<T,M,N>& _mat) // TESTED
         EI_CODE_GEN_SCALAR_MAT_BOOL_OP(!=)
     template<typename T, uint M, uint N, typename T1>
-    Matrix<bool, M, N> operator < (const Matrix<T,M,N>& _mat, T1 _s) // TESTED
+    /// \brief Test if all components compare to a scalar.
+    Matrix<bool, M, N> less (const Matrix<T,M,N>& _mat, T1 _s) // TESTED
         EI_CODE_GEN_MAT_SCALAR_BOOL_OP(<)
     template<typename T1, typename T, uint M, uint N>
-    Matrix<bool, M, N> operator < (T1 _s, const Matrix<T,M,N>& _mat) // TESTED
+    Matrix<bool, M, N> less (T1 _s, const Matrix<T,M,N>& _mat) // TESTED
         EI_CODE_GEN_SCALAR_MAT_BOOL_OP(<)
     template<typename T, uint M, uint N, typename T1>
-    Matrix<bool, M, N> operator <= (const Matrix<T,M,N>& _mat, T1 _s) // TESTED
+    Matrix<bool, M, N> lesseq (const Matrix<T,M,N>& _mat, T1 _s) // TESTED
         EI_CODE_GEN_MAT_SCALAR_BOOL_OP(<=)
     template<typename T1, typename T, uint M, uint N>
-    Matrix<bool, M, N> operator <= (T1 _s, const Matrix<T,M,N>& _mat) // TESTED
+    Matrix<bool, M, N> lesseq (T1 _s, const Matrix<T,M,N>& _mat) // TESTED
         EI_CODE_GEN_SCALAR_MAT_BOOL_OP(<=)
     template<typename T, uint M, uint N, typename T1>
-    Matrix<bool, M, N> operator >= (const Matrix<T,M,N>& _mat, T1 _s) // TESTED
+    Matrix<bool, M, N> greatereq (const Matrix<T,M,N>& _mat, T1 _s) // TESTED
         EI_CODE_GEN_MAT_SCALAR_BOOL_OP(>=)
     template<typename T1, typename T, uint M, uint N>
-    Matrix<bool, M, N> operator >= (T1 _s, const Matrix<T,M,N>& _mat) // TESTED
+    Matrix<bool, M, N> greatereq (T1 _s, const Matrix<T,M,N>& _mat) // TESTED
         EI_CODE_GEN_SCALAR_MAT_BOOL_OP(>=)
     template<typename T, uint M, uint N, typename T1>
-    Matrix<bool, M, N> operator > (const Matrix<T,M,N>& _mat, T1 _s) // TESTED
+    Matrix<bool, M, N> greater (const Matrix<T,M,N>& _mat, T1 _s) // TESTED
         EI_CODE_GEN_MAT_SCALAR_BOOL_OP(>)
     template<typename T1, typename T, uint M, uint N>
-    Matrix<bool, M, N> operator > (T1 _s, const Matrix<T,M,N>& _mat) // TESTED
+    Matrix<bool, M, N> greater (T1 _s, const Matrix<T,M,N>& _mat) // TESTED
         EI_CODE_GEN_SCALAR_MAT_BOOL_OP(>)
-
-
 
 
 

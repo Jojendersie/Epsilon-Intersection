@@ -64,12 +64,12 @@ bool test_matrix()
 //      v4 = v0;        // This line should not compile (no accidentally conversion)
         IVec3 v5(-1);   // Used for the truncation tests
         Vec2 v6(v5);    // Truncate and type convert
-        TEST( all(v6 == v2) , "Truncation operator wrong!" );
+        TEST( v6 == v2 , "Truncation operator wrong!" );
         Mat3x3 m0(0, 1, 2, 3, 4, 5, 6, 7, 8); // Used for more truncation tests
         Mat2x2 m1(m0);  // Truncate in both dimensions
         //Vec3 v7(m0);    // Get first column TODO: reanable this
         //Vec3 v8(m0, 0, 1);// Get second column
-        TEST( all(m1 == Mat2x2(0, 1, 3, 4)), "Truncation in both dimensions failed!" );
+        TEST( m1 == Mat2x2(0, 1, 3, 4), "Truncation in both dimensions failed!" );
 //        TEST( all(v7 == Vec3(0, 3, 6)), "Truncation to vector failed!" );
  //       TEST( all(v8 == Vec3(1, 4, 7)), "Truncation to vector failed!" );
 
@@ -89,14 +89,14 @@ bool test_matrix()
         Vec4 v6(1.0f, 0.0f, 0.5f, 2.0f);
         Vec4 v7(1.0f, 2.0f, 0.0f, 0.5f);
         Vec4 v8(0.5f, 1.0f, 2.0f, 7.5f);
-        TEST( all(Vec3(v0, 2.0) == v2), "vec2+scalar to vec3 failed!" );
-        TEST( all(Vec3(0.5f, v1) == v3), "scalar+vec2 to vec3 failed!" );
-        TEST( all(IVec4(v1, v0) == v4), "vec2+vec2 to vec4 failed!" );
-        TEST( all(Vec4(v0, 1.0f, 2.0f) == v5), "vec2+2*scalar to vec4 failed!" );
-        TEST( all(Vec4(1.0f, v0, 2.0f) == v6), "scalar+vec2+scalar to vec4 failed!" );
-        TEST( all(Vec4(1.0f, 2.0f, v0) == v7), "2*scalar+vec2 to vec4 failed!" );
-        TEST( all(Vec4(1.0f, v2) == v6), "scalar+vec3 to vec4 failed!" );
-        TEST( all(Vec4(v3, 7.5f) == v8), "vec2+scalar to vec4 failed!" );
+        TEST( Vec3(v0, 2.0) == v2, "vec2+scalar to vec3 failed!" );
+        TEST( Vec3(0.5f, v1) == v3, "scalar+vec2 to vec3 failed!" );
+        TEST( IVec4(v1, v0) == v4, "vec2+vec2 to vec4 failed!" );
+        TEST( Vec4(v0, 1.0f, 2.0f) == v5, "vec2+2*scalar to vec4 failed!" );
+        TEST( Vec4(1.0f, v0, 2.0f) == v6, "scalar+vec2+scalar to vec4 failed!" );
+        TEST( Vec4(1.0f, 2.0f, v0) == v7, "2*scalar+vec2 to vec4 failed!" );
+        TEST( Vec4(1.0f, v2) == v6, "scalar+vec3 to vec4 failed!" );
+        TEST( Vec4(v3, 7.5f) == v8, "vec2+scalar to vec4 failed!" );
     }
 
     // Test vector composition constructors for row vectors
@@ -110,44 +110,44 @@ bool test_matrix()
         RVec4 v6(1.0f, 0.0f, 0.5f, 2.0f);
         RVec4 v7(1.0f, 2.0f, 0.0f, 0.5f);
         RVec4 v8(0.5f, 1.0f, 2.0f, 7.5f);
-        TEST( all(RVec3(v0, 2.0) == v2), "rvec2+scalar to rvec3 failed!" );
-        TEST( all(RVec3(0.5f, v1) == v3), "scalar+rvec2 to rvec3 failed!" );
-        TEST( all(IRVec4(v1, v0) == v4), "rvec2+rvec2 to rvec4 failed!" );
-        TEST( all(RVec4(v0, 1.0f, 2.0f) == v5), "rvec2+2*scalar to rvec4 failed!" );
-        TEST( all(RVec4(1.0f, v0, 2.0f) == v6), "scalar+rvec2+scalar to rvec4 failed!" );
-        TEST( all(RVec4(1.0f, 2.0f, v0) == v7), "2*scalar+rvec2 to rvec4 failed!" );
-        TEST( all(RVec4(1.0f, v2) == v6), "scalar+rvec3 to rvec4 failed!" );
-        TEST( all(RVec4(v3, 7.5f) == v8), "rvec2+scalar to rvec4 failed!" );
+        TEST( RVec3(v0, 2.0) == v2, "rvec2+scalar to rvec3 failed!" );
+        TEST( RVec3(0.5f, v1) == v3, "scalar+rvec2 to rvec3 failed!" );
+        TEST( IRVec4(v1, v0) == v4, "rvec2+rvec2 to rvec4 failed!" );
+        TEST( RVec4(v0, 1.0f, 2.0f) == v5, "rvec2+2*scalar to rvec4 failed!" );
+        TEST( RVec4(1.0f, v0, 2.0f) == v6, "scalar+rvec2+scalar to rvec4 failed!" );
+        TEST( RVec4(1.0f, 2.0f, v0) == v7, "2*scalar+rvec2 to rvec4 failed!" );
+        TEST( RVec4(1.0f, v2) == v6, "scalar+rvec3 to rvec4 failed!" );
+        TEST( RVec4(v3, 7.5f) == v8, "rvec2+scalar to rvec4 failed!" );
     }
 
     // ********************************************************************* //
-    // Test of boolean operators
+    // Test of boolean function
     {
         Matrix<int, 2, 2> m0(1, 2, 3, 4);
         Matrix<int, 2, 2> m1(2, 2, 0, 4);
         Matrix<int, 2, 2> m2(2, 1, 0, 4);
-        TEST( sum(2 == m2) == 1 , "Scalar operator == or sum() wrong!" );
-        TEST( sum(m2 == 3) == 0 , "Scalar operator == or sum() wrong!" );
-        TEST( sum(2 != m2) == 3 , "Scalar operator != or sum() wrong!" );
-        TEST( sum(m2 != 3) == 4 , "Scalar operator != or sum() wrong!" );
-        TEST( any(m0 < 2) , "Scalar operator < or any() wrong!" );
-        TEST( !any(m0 < 0) , "Scalar operator < or any() wrong!" );
-        TEST( sum(2 < m1) == 1 , "Scalar operator < or sum() wrong!" );
-        TEST( !none(m0 <= 2) , "Scalar operator <= or none() wrong!" );
-        TEST( none(m0 <= 0) , "Scalar operator <= or none() wrong!" );
-        TEST( sum(2 <= m1) == 3 , "Scalar operator <= or sum() wrong!" );
-        TEST( all(m0 >= 1) , "Scalar operator >= or all() wrong!" );
-        TEST( !all(m1 >= 2) , "Scalar operator >= or all() wrong!" );
-        TEST( sum(4 >= m1) == 4 , "Scalar operator >= or sum() wrong!" );
-        TEST( any(m0 > 2) , "Scalar operator > or all() wrong!" );
-        TEST( none(m0 > 4) , "Scalar operator > or all() wrong!" );
-        TEST( sum(4 > m1) == 3 , "Scalar operator > or sum() wrong!" );
-        TEST( sum(m0 < m1) == 1 , "Matrix operator < or sum() wrong!" );
-        TEST( sum(m0 <= m1) == 3 , "Matrix operator <= or sum() wrong!" );
-        TEST( sum(m0 >= m1) == 3 , "Matrix operator >= or sum() wrong!" );
-        TEST( sum(m0 > m1) == 1 , "Matrix operator > or sum() wrong!" );
-        TEST( sum(m0 == m1) == 2 , "Matrix operator == or sum() wrong!" );
-        TEST( sum(m0 != m2) == 3 , "Matrix operator != or sum() wrong!" );
+        TEST( sum(equal(2, m2)) == 1 , "Scalar operator == or sum() wrong!" );
+        TEST( sum(equal(m2, 3)) == 0 , "Scalar operator == or sum() wrong!" );
+        TEST( sum(neq(2, m2)) == 3 , "Scalar operator != or sum() wrong!" );
+        TEST( sum(neq(m2, 3)) == 4 , "Scalar operator != or sum() wrong!" );
+        TEST( any(ei::less(m0, 2)) , "Scalar operator < or any() wrong!" );
+        TEST( !any(ei::less(m0, 0)) , "Scalar operator < or any() wrong!" );
+        TEST( sum(ei::less(2, m1)) == 1 , "Scalar operator < or sum() wrong!" );
+        TEST( !none(lesseq(m0, 2)) , "Scalar operator <= or none() wrong!" );
+        TEST( none(lesseq(m0, 0)) , "Scalar operator <= or none() wrong!" );
+        TEST( sum(lesseq(2, m1)) == 3 , "Scalar operator <= or sum() wrong!" );
+        TEST( all(greatereq(m0, 1)) , "Scalar operator >= or all() wrong!" );
+        TEST( !all(greatereq(m1, 2)) , "Scalar operator >= or all() wrong!" );
+        TEST( sum(greatereq(4, m1)) == 4 , "Scalar operator >= or sum() wrong!" );
+        TEST( any(greater(m0, 2)) , "Scalar operator > or all() wrong!" );
+        TEST( none(greater(m0, 4)) , "Scalar operator > or all() wrong!" );
+        TEST( sum(greater(4, m1)) == 3 , "Scalar operator > or sum() wrong!" );
+        TEST( sum(ei::less(m0, m1)) == 1 , "Matrix operator < or sum() wrong!" );
+        TEST( sum(lesseq(m0, m1)) == 3 , "Matrix operator <= or sum() wrong!" );
+        TEST( sum(greatereq(m0, m1)) == 3 , "Matrix operator >= or sum() wrong!" );
+        TEST( sum(greater(m0, m1)) == 1 , "Matrix operator > or sum() wrong!" );
+        TEST( sum(equal(m0, m1)) == 2 , "Matrix operator == or sum() wrong!" );
+        TEST( sum(neq(m0, m2)) == 3 , "Matrix operator != or sum() wrong!" );
     }
 
 
@@ -167,10 +167,10 @@ bool test_matrix()
         TEST( m2(0,1) == 2 && m2(1,0) == 5 && m2(1,1) == 4, "Operator or constructor wrong!" );
         TEST( (const_cast<const Matrix<int, 2, 2>&>(m2))[1] == 2, "Read-only operator wrong!" );
         TEST( (const_cast<const Matrix<int, 2, 2>&>(m2))(1,0) == 5, "Read-only operator wrong!" );
-        TEST( all(m3.subrow<1,4>() == m1), "Range access for row vectors failed!" );
+        TEST( (m3.subrow<1,4>() == m1), "Range access for row vectors failed!" );
         m3.subrow<0,3>() = m1;
-        TEST( all(m3 == m4), "Range access for row vectors failed!" );
-        TEST( all(m5.subcol<1,3>() == m0), "Range access for column vectors failed!" );
+        TEST( m3 == m4, "Range access for row vectors failed!" );
+        TEST( (m5.subcol<1,3>() == m0), "Range access for column vectors failed!" );
     }
 
     // ********************************************************************* //
@@ -181,10 +181,10 @@ bool test_matrix()
         Matrix<int, 2, 2> m2(6, 8, 10, 12);
         Matrix<float, 2, 2> m3(3.0f, 1.0f, 4.0f, 1.0f);
         Matrix<float, 2, 2> m4(4.0f, 3.0f, 7.0f, 5.0f);
-        TEST( all(m0 + m1 == m2), "Component wise addition failed!" );
-        TEST( all(m0 + m3 == m4), "Component wise addition failed!" );
-        TEST( all(m2 - m1 == m0), "Component wise subtraction failed!" );
-        TEST( all(m0 - m4 == -m3), "Component wise subtraction or unary minus failed!" );
+        TEST( m0 + m1 == m2, "Component wise addition failed!" );
+        TEST( m0 + m3 == m4, "Component wise addition failed!" );
+        TEST( m2 - m1 == m0, "Component wise subtraction failed!" );
+        TEST( m0 - m4 == -m3, "Component wise subtraction or unary minus failed!" );
     }
 
     // ********************************************************************* //
@@ -199,17 +199,17 @@ bool test_matrix()
         Matrix<int, 2, 2> m6(1, 2, 3, 8);
         Matrix<int, 2, 2> m7(4, 8, 12, 16);
         Matrix<int, 2, 2> m8(2, 3, 3, 4);
-        TEST( all((m0 | m1) == m2), "Component wise | failed!" );
-        TEST( all((m0 & m1) == m3), "Component wise & failed!" );
-        TEST( all((m0 ^ m1) == m4), "Component wise ^ failed!" );
-        TEST( all((m1 % m4) == m6), "Component wise % failed!" );
-        TEST( all((~m0) == m5), "Component wise ~ failed!" );
-        TEST( all(m0 << 2 == m7), "Component wise << failed!" );
-        TEST( all(m1 >> 1 == m8), "Component wise >> failed!" );
+        TEST( (m0 | m1) == m2, "Component wise | failed!" );
+        TEST( (m0 & m1) == m3, "Component wise & failed!" );
+        TEST( (m0 ^ m1) == m4, "Component wise ^ failed!" );
+        TEST( (m1 % m4) == m6, "Component wise % failed!" );
+        TEST( (~m0) == m5, "Component wise ~ failed!" );
+        TEST( m0 << 2 == m7, "Component wise << failed!" );
+        TEST( m1 >> 1 == m8, "Component wise >> failed!" );
         Matrix<int, 2, 2> t = m0; t <<= 2;
-        TEST( all(t == m7), "Component wise << failed!" );
+        TEST( t == m7, "Component wise << failed!" );
         t = m1; t >>= 1;
-        TEST( all(t == m8), "Component wise >> failed!" );
+        TEST( t == m8, "Component wise >> failed!" );
         // Generates an error message (expected)
         //Matrix<float, 2, 2> mf0(3.0f, 1.0f, 4.0f, 1.0f);
         //Matrix<float, 2, 2> mf1(4.0f, 3.0f, 7.0f, 5.0f);
@@ -230,14 +230,14 @@ bool test_matrix()
         Matrix<float, 3, 3> m0(1.0f, 0.0f, -1.0f, 2.0f, 0.0f, -2.0f, 3.0f, 0.0f, -3.0f);
         Matrix<float, 3, 3> m1(1.0f, 4.0f, 0.0f, 0.5f, 2.0f, 0.0f, 2.0f, 8.0f, 0.0f);
         Matrix<float, 3, 3> m2(-1.0f, -4.0f, 0.0f, -2.0f, -8.0f, 0.0f, -3.0f, -12.0f, 0.0f);
-        TEST( all(v1 * v2 == v3), "Component wise multiplication failed!" );
-        TEST( all(v0 * v4 == v5), "Component wise multiplication failed!" );
-        TEST( all(v1 / v6 == v7), "Component wise division failed!" );
-        TEST( all(v0 == v5 / v4), "Component wise division failed!" );
+        TEST( v1 * v2 == v3, "Component wise multiplication failed!" );
+        TEST( v0 * v4 == v5, "Component wise multiplication failed!" );
+        TEST( v1 / v6 == v7, "Component wise division failed!" );
+        TEST( v0 == v5 / v4, "Component wise division failed!" );
         TEST( v1 * v0 == -2.0f, "Row times column vector should be a scalar!" );
-        TEST( all(v0 * v1 == m0), "Column times row vector should be a matrix!" );
-        TEST( all(v4 * v2 == m1), "Column times row vector should be a matrix!" );
-        TEST( all(m0 * m1 == m2), "Matrix multiplication wrong!" );
+        TEST( v0 * v1 == m0, "Column times row vector should be a matrix!" );
+        TEST( v4 * v2 == m1, "Column times row vector should be a matrix!" );
+        TEST( m0 * m1 == m2, "Matrix multiplication wrong!" );
     }
 
     // ********************************************************************* //
@@ -251,7 +251,7 @@ bool test_matrix()
         Matrix<int, 3, 3> m2(5, 8, 11,
                              8, 13, 18,
                              11, 18, 25);
-        TEST( all(m1 * m0 == m2), "Constructor or matrix multiplication wrong!" );
+        TEST( m1 * m0 == m2, "Constructor or matrix multiplication wrong!" );
         Matrix<int, 2, 4> m3(1, 2, 3, 4,
                              2, 3, 4, 5);
         Matrix<int, 4, 2> m4(1, 2,
@@ -262,7 +262,7 @@ bool test_matrix()
                              8, 13, 18, 23,
                              11, 18, 25, 32,
                              14, 23, 32, 41);
-        TEST( all(m4 * m3 == m5), "Constructor or matrix multiplication wrong!" );
+        TEST( m4 * m3 == m5, "Constructor or matrix multiplication wrong!" );
         Matrix<int, 3, 4> m6(1, 2, 3, 4,
                              2, 3, 4, 5,
                              0, 0, 0, 0);
@@ -270,7 +270,7 @@ bool test_matrix()
                              2, 3, 4,
                              3, 4, 5,
                              4, 5, 6);
-        TEST( all(m7 * m6 == m5), "Constructor or matrix multiplication wrong!" );
+        TEST( m7 * m6 == m5, "Constructor or matrix multiplication wrong!" );
     }
 
     // ********************************************************************* //
@@ -281,15 +281,15 @@ bool test_matrix()
         Matrix<float, 1, 2> v0(1.0f, 1.0f);
         Matrix<float, 2, 1> v1(0.0f, 1.0f);
         Matrix<float, 2, 2> m2(2.0f, 2.0f, 4.0f, 4.0f);
-        TEST( all(m0 + 2 == m1), "Adding a scalar failed!" );
-        TEST( all(2 + m0 * 1 == m1), "Multiplying or adding a scalar failed!" );
+        TEST( m0 + 2 == m1, "Adding a scalar failed!" );
+        TEST( 2 + m0 * 1 == m1, "Multiplying or adding a scalar failed!" );
         TEST( 2.0f * v0 * 2.0f * v1 + 0.5f == 4.5f, "Multiplying a scalar failed!" );
-        TEST( all((v1 + 1.0f) * 2.0f * v0 == m2), "Mixed scalar vector operation failed!" );
-        TEST( all(m0 == m1 - 2), "Scalar subtraction failed!" );
-        TEST( all(2 + m0 / 1 == m1), "Scalar addition or division failed!" );
+        TEST( (v1 + 1.0f) * 2.0f * v0 == m2, "Mixed scalar vector operation failed!" );
+        TEST( m0 == m1 - 2, "Scalar subtraction failed!" );
+        TEST( 2 + m0 / 1 == m1, "Scalar addition or division failed!" );
         TEST( (2.0f / v0 / 2.0f) * v1 - 0.5f == 0.5f, "Mixed scalar vector operation (/,*,-) failed!" );
-        TEST( all((v1 - 0.5f) * 2.0f * v0 + 3 == m2), "Mixed scalar vector operation (-, *) failed!" );
-        TEST( all((4.0f - m2) / 2.0f == (1.0f - v1) * v0), "Mixed scalar vector operation (/,*,-) failed!" );
+        TEST( (v1 - 0.5f) * 2.0f * v0 + 3 == m2, "Mixed scalar vector operation (-, *) failed!" );
+        TEST( (4.0f - m2) / 2.0f == (1.0f - v1) * v0, "Mixed scalar vector operation (/,*,-) failed!" );
     }
 
     // ********************************************************************* //
@@ -301,14 +301,14 @@ bool test_matrix()
         Matrix<int, 2, 2> m3(5, 6, 7, 0);
         Matrix<int, 2, 2> m4(1, 2, 0, 1);
         Matrix<int, 2, 2> m5(0, 1, 0, 3);
-        TEST( all((m0 | 4) == m1), "Component wise | failed!" );
-        TEST( all((4 | m0) == m1), "Component wise | failed!" );
-        TEST( all((m0 & 4) == m2), "Component wise & failed!" );
-        TEST( all((4 & m0) == m2), "Component wise & failed!" );
-        TEST( all((m0 ^ 4) == m3), "Component wise ^ failed!" );
-        TEST( all((4 ^ m0) == m3), "Component wise ^ failed!" );
-        TEST( all((m0 % 3) == m4), "Component wise % failed!" );
-        TEST( all((3 % m0) == m5), "Component wise % failed!" );
+        TEST( (m0 | 4) == m1, "Component wise | failed!" );
+        TEST( (4 | m0) == m1, "Component wise | failed!" );
+        TEST( (m0 & 4) == m2, "Component wise & failed!" );
+        TEST( (4 & m0) == m2, "Component wise & failed!" );
+        TEST( (m0 ^ 4) == m3, "Component wise ^ failed!" );
+        TEST( (4 ^ m0) == m3, "Component wise ^ failed!" );
+        TEST( (m0 % 3) == m4, "Component wise % failed!" );
+        TEST( (3 % m0) == m5, "Component wise % failed!" );
         // Generates an error message (expected)
         //Matrix<float, 2, 2> m4(3.0f, 1.0f, 4.0f, 1.0f);
         //Matrix<float, 2, 2> m = m4 | 4.0f;
@@ -328,28 +328,28 @@ bool test_matrix()
         RVec2 vr0(1.0f, 1.0f);
         RVec2 vr1(0.0f, 1.0f);
         RVec2 vr2(0.0f, 1.0f);
-        TEST( all((m0 += m1) == m2), "Component wise += failed!" );
+        TEST( (m0 += m1) == m2, "Component wise += failed!" );
         m2 -= m0;
-        TEST( all(m2 == Matrix<int,2,2>(0)), "Component wise -= failed!" );
+        TEST( (m2 == Matrix<int,2,2>(0)), "Component wise -= failed!" );
         m3 += m1;
-        TEST( all(m3 == m4), "Component wise += with different types failed!" );
+        TEST( m3 == m4, "Component wise += with different types failed!" );
         v0 *= v1;
-        TEST( all(v0 == v1), "Component wise *= for vectors failed!" );
+        TEST( v0 == v1, "Component wise *= for vectors failed!" );
         (v1 += v0) /= v0 + 1.0f;
-        TEST( all(v1 == v2), "Component wise /= for vectors failed!" );
+        TEST( v1 == v2, "Component wise /= for vectors failed!" );
         vr0 *= vr1;
-        TEST( all(vr0 == vr1), "Component wise *= for row vectors failed!" );
+        TEST( vr0 == vr1, "Component wise *= for row vectors failed!" );
         (vr1 += vr0) /= vr0 + 1.0f;
-        TEST( all(vr1 == vr2), "Component wise /= for row vectors failed!" );
+        TEST( vr1 == vr2, "Component wise /= for row vectors failed!" );
 
-        TEST( all((vr1 += 1.0f) == vr2 + 1), "Matrix-Scalar += failed!");
-        TEST( all((m3 -= 0.5f) == m4 - 0.5f), "Matrix-Scalar -= failed!");
-        TEST( all((v1 *= 2.0f) == v2 / 0.5f), "Matrix-Scalar *= failed!");
-        TEST( all((v1 /= 2.0f) == v2), "Matrix-Scalar /= failed!");
+        TEST( (vr1 += 1.0f) == vr2 + 1, "Matrix-Scalar += failed!");
+        TEST( (m3 -= 0.5f) == m4 - 0.5f, "Matrix-Scalar -= failed!");
+        TEST( (v1 *= 2.0f) == v2 / 0.5f, "Matrix-Scalar *= failed!");
+        TEST( (v1 /= 2.0f) == v2, "Matrix-Scalar /= failed!");
 
         Mat2x2 m5(72.0f, 82.0f, 128.0f, 146.0f);
         m3 *= m4;
-        TEST( all(m3 == m5), "Matrix *= Matrix failed!");
+        TEST( m3 == m5, "Matrix *= Matrix failed!");
     }
 
     // ********************************************************************* //
@@ -367,14 +367,14 @@ bool test_matrix()
         Matrix<int, 2, 2> m7(1, 0, 1, 0);
         Matrix<int, 2, 2> m8(12, 12, 12, 4);
         Matrix<int, 2, 2> m9(1, 2, 0, 2);
-        TEST( all((m00 |= m1) == m2), "Matrix self assigning |= failed!" );
-        TEST( all((m01 &= m1) == m3), "Matrix self assigning &= failed!" );
-        TEST( all((m02 ^= m1) == m4), "Matrix self assigning ^= failed!" );
-        TEST( all((m1 %= m4) == m5), "Matrix self assigning %= failed!" );
-        TEST( all((m2 |= 1) == m6), "Matrix-scalar self assigning |= failed!" );
-        TEST( all((m3 &= 1) == m7), "Matrix-scalar self assigning &= failed!" );
-        TEST( all((m4 ^= 8) == m8), "Matrix-scalar self assigning ^= failed!" );
-        TEST( all((m5 %= 3) == m9), "Matrix-scalar self assigning %= failed!" );
+        TEST( (m00 |= m1) == m2, "Matrix self assigning |= failed!" );
+        TEST( (m01 &= m1) == m3, "Matrix self assigning &= failed!" );
+        TEST( (m02 ^= m1) == m4, "Matrix self assigning ^= failed!" );
+        TEST( (m1 %= m4) == m5, "Matrix self assigning %= failed!" );
+        TEST( (m2 |= 1) == m6, "Matrix-scalar self assigning |= failed!" );
+        TEST( (m3 &= 1) == m7, "Matrix-scalar self assigning &= failed!" );
+        TEST( (m4 ^= 8) == m8, "Matrix-scalar self assigning ^= failed!" );
+        TEST( (m5 %= 3) == m9, "Matrix-scalar self assigning %= failed!" );
     }
 
     // ********************************************************************* //
@@ -417,21 +417,21 @@ bool test_matrix()
         Vec4 v5(-1.0f, -0.5f, 0.25f, 0.0f);
         Vec4 v6(0.0f, 0.0f, 0.25f, 0.5f);
         Vec4 v7(0.0f, 0.0f, 1.0f, 1.0f);
-        TEST( all(min(v0, v1) == v2), "Component wise minimum wrong!" );
-        TEST( all(max(v0, v1) == v3), "Component wise maximum wrong!" );
+        TEST( min(v0, v1) == v2, "Component wise minimum wrong!" );
+        TEST( max(v0, v1) == v3, "Component wise maximum wrong!" );
         TEST( min(v0) == -1.0f, "Minimum of a vector wrong!" );
         TEST( min(v1) == 0.0f, "Minimum of a vector wrong!" );
         TEST( max(v2) == 0.25f, "Maximum of a vector wrong!" );
         TEST( max(v3) == 2.5f, "Maximum of a vector wrong!" );
-        TEST( all(clamp(v0, v2, v1) == v5), "Clamp of a vector in box boundaries wrong!" );
-        TEST( all(clamp(v0, 0.0f, 3.0f) == v6), "Clamp of a vector in interval wrong!" );
-        TEST( all(saturate(v0 * 4.0f) == v7), "Saturate of a vector wrong!" );
+        TEST( clamp(v0, v2, v1) == v5, "Clamp of a vector in box boundaries wrong!" );
+        TEST( clamp(v0, 0.0f, 3.0f) == v6, "Clamp of a vector in interval wrong!" );
+        TEST( saturate(v0 * 4.0f) == v7, "Saturate of a vector wrong!" );
         TEST( sum(v1) == 4.0f, "Sum of a vector wrong!" );
         TEST( prod(v0) == 0.0625f, "Product of a vector wrong!" );
         TEST( avg(v3) == 1.125f, "Average of a vector wrong!" );
-        TEST( all(abs(v0) == v4), "Absolute value of a vector wrong!" );
-        TEST( all(sign(v1) == Vec4(1.0f, 1.0f, 1.0f, 0.0f)), "Sign values of a vector wrong!" );
-        TEST( all(sgn(v2) == Vec4(-1.0f, -1.0f, 1.0f, 1.0f)), "Sgn values of a vector wrong!" );
+        TEST( abs(v0) == v4, "Absolute value of a vector wrong!" );
+        TEST( sign(v1) == Vec4(1.0f, 1.0f, 1.0f, 0.0f), "Sign values of a vector wrong!" );
+        TEST( sgn(v2) == Vec4(-1.0f, -1.0f, 1.0f, 1.0f), "Sgn values of a vector wrong!" );
     }
 
     // ********************************************************************* //
@@ -444,18 +444,18 @@ bool test_matrix()
         Vec4 v6(5.5f, -1.5f, -0.5f, 2.5f);
         IVec4 v7(6, -2, 0, 2);   // round(v6)
         Vec4 v8(0.5f, 0.0f, 0.5f, 0.414f); // mod(v0, 1.0f)
-        TEST( all(round(v0) == v1), "Rounding v0 is wrong!" );
-        TEST( all(ceil(v0) == v2), "Rounding v0 up is wrong!" );
-        TEST( all(floor(v0) == v3), "Rounding v0 down is wrong!" );
-        TEST( all(round(v6) == v7), "Rounding v6 is wrong!" );
+        TEST( round(v0) == v1, "Rounding v0 is wrong!" );
+        TEST( ceil(v0) == v2, "Rounding v0 up is wrong!" );
+        TEST( floor(v0) == v3, "Rounding v0 down is wrong!" );
+        TEST( round(v6) == v7, "Rounding v6 is wrong!" );
         TEST( approx(mod(v0, 1.0f), v8), "mod(v0,1) is wrong!" );
 
         Vec3 v4(1.0f, 4.0f, 2.0f);
         Vec3 v5(1.0f, 2.0f, PHYTAGORAS);
-        TEST( all(sqrt(v4) == v5), "sqrt of v4 is wrong!" );
-        TEST( all(pow(v4,0.5f) == v5), "v4 to the power of 0.5 is wrong!" );
+        TEST( sqrt(v4) == v5, "sqrt of v4 is wrong!" );
+        TEST( pow(v4,0.5f) == v5, "v4 to the power of 0.5 is wrong!" );
         TEST( approx(pow(v5,2.0f), v4), "v5 to the power of 2 is wrong!" );
-        TEST( all(log2(v4) == Vec3(0.0f, 2.0f, 1.0f)), "log2(v4) is wrong!" );
+        TEST( log2(v4) == Vec3(0.0f, 2.0f, 1.0f), "log2(v4) is wrong!" );
         TEST( approx(log(v4), Vec3(0.0f, 1.386294361f, 0.693147181f)), "log2(v4) is wrong!" );
     }
 
@@ -470,14 +470,14 @@ bool test_matrix()
         Vec3 v5(1.0f, 0.0f, 0.0f);
         Vec3 v6(0.382683432f, 0.923879533f, 0.0f);
         Vec3 v7(0.25f, 0.75f, 0.0f);
-        TEST( all(lerp(v0, v2, 0.5f) == v1), "Linear interpolation failed." );
-        TEST( all(bilerp(v0, v1, v1, v2, 0.5f, 0.5f) == v1), "Bilinear interpolation failed." );
+        TEST( lerp(v0, v2, 0.5f) == v1, "Linear interpolation failed." );
+        TEST( bilerp(v0, v1, v1, v2, 0.5f, 0.5f) == v1, "Bilinear interpolation failed." );
         TEST( lerp(1, 4, 0.5f) == 2.5f, "Linear interpolation failed." );
-        TEST( all(lerp(v4, v5, 0.25f) == v7), "Linear interpolation by 0.25 failed." );
+        TEST( lerp(v4, v5, 0.25f) == v7, "Linear interpolation by 0.25 failed." );
         TEST( bilerp(1, 3, 5, 7, 0.5f, 0.5f) == 4.0f, "Bilinear interpolation failed." );
         TEST( approx(slerp(v4, v5, 0.25f), v6), "Spherical linear interpolation failed." );
         TEST( approx(dot(slerp(v1, v3, 0.5f), v1), 0.0f), "Spherical linear interpolation for degenerated case failed." );
-        TEST( all(slerp(v1, v1, 0.125f) == v1), "Spherical linear interpolation for two equal vectors failed." );
+        TEST( slerp(v1, v1, 0.125f) == v1, "Spherical linear interpolation for two equal vectors failed." );
     }
 
     // ********************************************************************* //
@@ -489,10 +489,10 @@ bool test_matrix()
         Matrix<float,1,3> v5(1.0f, 0.0f, 0.0f);
         Matrix<float,1,3> v6(0.0f, 1.0f, 0.0f);
         Matrix<float,1,3> v7(0.0f, 0.0f, 1.0f);
-        TEST( all(cross(v0, v1) == v2), "3D crossproduct wrong." );
-        TEST( all(cross(v1, v0) == -v2), "3D crossproduct wrong." );
-        TEST( all(cross(v5, v6) == v7), "3D crossproduct wrong." );
-        TEST( all(cross(v6, v5) == -v7), "3D crossproduct wrong." );
+        TEST( cross(v0, v1) == v2, "3D crossproduct wrong." );
+        TEST( cross(v1, v0) == -v2, "3D crossproduct wrong." );
+        TEST( cross(v5, v6) == v7, "3D crossproduct wrong." );
+        TEST( cross(v6, v5) == -v7, "3D crossproduct wrong." );
         Vec2 v3(1.0f, 0.0f);
         Vec2 v4(0.0f, 1.0f);
         TEST( cross(v3, v4) == 1.0f, "2D crossproduct wrong." );
@@ -508,11 +508,11 @@ bool test_matrix()
         Matrix<float,5,5> m3(0.0f); m3[0] = 1.0f; m3[6] = 1.0f; m3[12] = 1.0f; m3[18] = 1.0f; m3[24] = 1.0f;
         Mat3x3 m4(1.0f, 0.0f, 0.0f, 0.0f, 2.0f, 0.0f, 0.0f, 0.0f, -1.0f);
         Mat3x3 m5(diag(Vec3(1.0f, 2.0f, -1.0f)));
-        TEST( all(m0 == identity2x2()), "2x2 identity matrix wrong." );
-        TEST( all(m1 == identity3x3()), "3x3 identity matrix wrong." );
-        TEST( all(m2 == identity4x4()), "4x4 identity matrix wrong." );
-        TEST( all(m3 == ei::identity<float,5>()), "5x5 identity matrix wrong." );
-        TEST( all(m4 == m5), "3x3 diagonal matrix wrong." );
+        TEST( m0 == identity2x2(), "2x2 identity matrix wrong." );
+        TEST( m1 == identity3x3(), "3x3 identity matrix wrong." );
+        TEST( m2 == identity4x4(), "4x4 identity matrix wrong." );
+        TEST( (m3 == ei::identity<float,5>()), "5x5 identity matrix wrong." );
+        TEST( m4 == m5, "3x3 diagonal matrix wrong." );
 
         /*// Test script used to optimize identity()
         Mat3x3 ret;
@@ -533,8 +533,8 @@ bool test_matrix()
         Matrix<float,1,3> v0(1.0f, 0.0f, 0.0f);
         Vec3 v1(1.0f, 0.0f, 0.0f);
 
-        TEST( all(m0 == transpose(m1)), "m1 transposed is unequal m0!" );
-        TEST( all(v0 == transpose(v1)), "v1 transposed is unequal v0!" );
+        TEST( m0 == transpose(m1), "m1 transposed is unequal m0!" );
+        TEST( v0 == transpose(v1), "v1 transposed is unequal v0!" );
     }
 
     // ********************************************************************* //
@@ -544,8 +544,8 @@ bool test_matrix()
         Vec3 v0(0.0f, 0.0f, 5.0f);
         Vec3 v1(2.0f, 0.0f, 0.0f);
         Vec3 v2(1.414213562f, -1.414213562f, 0.0f);
-        TEST( all(m0 * v0 == v0), "v0 should not be transformed by m0!" );
-        TEST( all(m0 * v1 == v2), "v1 should be transformed into v2 by m0!" );
+        TEST( m0 * v0 == v0, "v0 should not be transformed by m0!" );
+        TEST( m0 * v1 == v2, "v1 should be transformed into v2 by m0!" );
     }
 
     // ********************************************************************* //
@@ -629,14 +629,14 @@ bool test_matrix()
         Vec3 v5(0.0f, 1.0f, -1.0f); Vec3 s5(PHYTAGORAS, PI/2.0f, 5.49778748f);
         Vec<float,5> v6(0.0f, -2.0f, 2.5f, -1.0f, 0.0f);
 
-        TEST( all(sphericalCoords(v0) == s0), "Spherical coordinates of v0 wrong!" );
-        TEST( all(sphericalCoords(v1) == s1), "Spherical coordinates of v1 wrong!" );
-        TEST( all(sphericalCoords(v2) == s2), "Spherical coordinates of v2 wrong!" );
-        TEST( all(sphericalCoords(v3) == s3), "Spherical coordinates of v3 wrong!" );
-        TEST( all(sphericalCoords(v4) == s4), "Spherical coordinates of v4 wrong!" );
-        TEST( all(sphericalCoords(v5) == s5), "Spherical coordinates of v5 wrong!" );
+        TEST( sphericalCoords(v0) == s0, "Spherical coordinates of v0 wrong!" );
+        TEST( sphericalCoords(v1) == s1, "Spherical coordinates of v1 wrong!" );
+        TEST( sphericalCoords(v2) == s2, "Spherical coordinates of v2 wrong!" );
+        TEST( sphericalCoords(v3) == s3, "Spherical coordinates of v3 wrong!" );
+        TEST( sphericalCoords(v4) == s4, "Spherical coordinates of v4 wrong!" );
+        TEST( sphericalCoords(v5) == s5, "Spherical coordinates of v5 wrong!" );
 
-        TEST( all(v0 == cartesianCoords(s0)), "Cartesian coordinates of s0 wrong!" );
+        TEST( v0 == cartesianCoords(s0), "Cartesian coordinates of s0 wrong!" );
         TEST( approx(v1, cartesianCoords(s1)), "Cartesian coordinates of s1 wrong!" );
         TEST( approx(v2, cartesianCoords(s2)), "Cartesian coordinates of s2 wrong!" );
         TEST( approx(v3, cartesianCoords(s3)), "Cartesian coordinates of s3 wrong!" );
@@ -670,7 +670,7 @@ bool test_matrix()
 
         // Test inverse
         X = solveLUp(LU, p, identity3x3());
-        TEST( all(invert(A0) == X), "Manual inversion and invert function have different results!" );
+        TEST( invert(A0) == X, "Manual inversion and invert function have different results!" );
         X = X * A0;
         TEST( approx(X, identity3x3(), 4e-6f), "3x3 Matrix inverse bad!");
         TEST( approx(invert(A2) * A2, identity4x4(), 4e-5f), "4x4 Matrix inverse bad!");

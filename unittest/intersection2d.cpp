@@ -46,11 +46,11 @@ bool test_2dintersections()
 
         Vec2 location;
         TEST( intersects(dis0, dis1, location), "dis0, dis1 intersection not detected!" );
-        TEST( all(location == Vec2(0.75f, 0.0f)), "dis0, dis1 central intersection point wrong!" );
+        TEST( location == Vec2(0.75f, 0.0f), "dis0, dis1 central intersection point wrong!" );
         TEST( intersects(dis0, dis2, location), "dis0, dis2 intersection not detected!" );
-        TEST( all(location == Vec2(0.0f, 1.0f)), "dis0, dis2 central intersection point wrong!" );
+        TEST( location == Vec2(0.0f, 1.0f), "dis0, dis2 central intersection point wrong!" );
         TEST( intersects(dis0, dis3, location), "dis0, dis3 intersection not detected!" );
-        TEST( all(location == Vec2(0.0f, -0.5f)), "dis0, dis3 central intersection point wrong!" );
+        TEST( location == Vec2(0.0f, -0.5f), "dis0, dis3 central intersection point wrong!" );
         TEST( !intersects(dis1, dis2, location), "dis1, dis2 false intersection detected!" );
     }
 
@@ -130,13 +130,13 @@ bool test_2dintersections()
         TEST( !intersects(lin0, lin1, location), "lin0, lin1 false intersection w.loc. detected!" );
         TEST( !intersects(lin0, lin3, location), "lin0, lin3 false intersection w.loc. detected!" );
         TEST( intersects(lin0, lin2, location), "lin0, lin2 intersection w.loc. not detected!" );
-        TEST( all(location == Vec2(0.75f, 0.0f)), "Central point of overlap wrong!" );
+        TEST( location == Vec2(0.75f, 0.0f), "Central point of overlap wrong!" );
         TEST( intersects(lin0, lin4, location), "lin0, lin4 intersection w.loc. not detected!" );
-        TEST( all(location == Vec2(0.0f, 0.0f)), "Intersection point of lin0, lin4 wrong!" );
+        TEST( location == Vec2(0.0f, 0.0f), "Intersection point of lin0, lin4 wrong!" );
         TEST( intersects(lin0, lin5, location), "lin0, lin5 intersection w.loc. not detected!" );
-        TEST( all(location == Vec2(0.625f, 0.0f)), "Intersection point of lin0, lin5 wrong!" );
+        TEST( location == Vec2(0.625f, 0.0f), "Intersection point of lin0, lin5 wrong!" );
         TEST( intersects(lin5, lin0, location), "lin5, lin0 intersection w.loc. not detected!" );
-        TEST( all(location == Vec2(0.625f, 0.0f)), "Intersection point of lin5, lin0 wrong!" );
+        TEST( location == Vec2(0.625f, 0.0f), "Intersection point of lin5, lin0 wrong!" );
     }
 
     return result;

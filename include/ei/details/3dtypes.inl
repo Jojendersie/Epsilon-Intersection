@@ -9,7 +9,7 @@ inline Sphere::Sphere( const Box& _box ) :
     center((_box.min + _box.max) * 0.5f),
     radius(len(_box.max - _box.min) * 0.5f)
 {
-    eiAssert( all(_box.max >= _box.min), "Invalid bounding box." );
+    eiAssert( _box.max >= _box.min, "Invalid bounding box." );
 }
 
 inline Sphere::Sphere( const Vec3& _p0, const Vec3& _p1 ) :
@@ -38,7 +38,7 @@ inline Box::Box( const Box& _box0, const Box& _box1 ) :
     min(ei::min(_box0.min, _box1.min)),
     max(ei::max(_box0.max, _box1.max))
 {
-    eiAssert( all(max >= min),
+    eiAssert( max >= min,
         "Minimum coordinates must be smaller or equal the maximum." );
 }
 
@@ -46,7 +46,7 @@ inline Box::Box( const Sphere& _sphere ) :
     min(_sphere.center - _sphere.radius),
     max(_sphere.center + _sphere.radius)
 {
-    eiAssertWeak( all(max >= min),
+    eiAssertWeak( max >= min,
         "Subtraction or addition of a scalar failed or sphere had negative radius!" );
 }
 
@@ -54,7 +54,7 @@ inline Box::Box( const Triangle& _triangle ) :
     min(ei::min(_triangle.v0, _triangle.v1, _triangle.v2)),
     max(ei::max(_triangle.v0, _triangle.v1, _triangle.v2))
 {
-    eiAssertWeak( all(max >= min),
+    eiAssertWeak( max >= min,
         "min() or max() failed for a vector!" );
 }
 
@@ -62,7 +62,7 @@ inline Box::Box( const Tetrahedron& _tetrahedron ) :
     min(ei::min(_tetrahedron.v0, _tetrahedron.v1, _tetrahedron.v2, _tetrahedron.v3)),
     max(ei::max(_tetrahedron.v0, _tetrahedron.v1, _tetrahedron.v2, _tetrahedron.v3))
 {
-    eiAssertWeak( all(max >= min),
+    eiAssertWeak( max >= min,
         "min() or max() failed for a vector!" );
 }
 
@@ -70,7 +70,7 @@ inline Box::Box( const Ellipsoid& _ellipsoid ) :
     min(_ellipsoid.center - _ellipsoid.radii),
     max(_ellipsoid.center + _ellipsoid.radii)
 {
-    eiAssertWeak(all(_ellipsoid.radii >= 0.0f), "Invalid ellipsoid!");
+    eiAssertWeak(_ellipsoid.radii >= 0.0f, "Invalid ellipsoid!");
 }
 
 
@@ -196,12 +196,12 @@ inline Ellipsoid::Ellipsoid(const Vec3& _center, const Vec3& _radii) :
 
 inline Ellipsoid::Ellipsoid(const Box& _box)
 {
-    eiAssert( all(_box.max >= _box.min), "Invalid bounding box." );
+    eiAssert( _box.max >= _box.min, "Invalid bounding box." );
     center = (_box.max + _box.min) * 0.5f;
     /// sqrt(n) * side length / 2, where n is the number of dimensions with
     /// an extension (side length 0 allows to generate ellipses or rays)
     Vec3 sideLen = _box.max - _box.min;
-    radii = (sqrt((float)sum(sideLen != 0.0f)) * 0.5f) * sideLen;
+    radii = (sqrt((float)sum(neq(sideLen, 0.0f))) * 0.5f) * sideLen;
     radii = max(radii, Vec3(1e-16f));
 }
 
@@ -215,23 +215,23 @@ inline OEllipsoid::OEllipsoid(const Vec3& _center, const Vec3& _radii, const Qua
 
 inline OEllipsoid::OEllipsoid(const Box& _box)
 {
-    eiAssert( all(_box.max >= _box.min), "Invalid box." );
+    eiAssert( _box.max >= _box.min, "Invalid box." );
     center = (_box.max + _box.min) * 0.5f;
     /// sqrt(n) * side length / 2, where n is the number of dimensions with
     /// an extension (side length 0 allows to generate ellipses or rays)
     Vec3 sideLen = _box.max - _box.min;
-    radii = (sqrt((float)sum(sideLen != 0.0f)) * 0.5f) * sideLen;
+    radii = (sqrt((float)sum(neq(sideLen, 0.0f))) * 0.5f) * sideLen;
     radii = max(radii, Vec3(1e-16f));
     orientation = qidentity();
 }
 
 inline OEllipsoid::OEllipsoid(const OBox& _box)
 {
-    eiAssert( all(_box.sides >= 0.0f), "Invalid box." );
+    eiAssert( _box.sides >= 0.0f, "Invalid box." );
     center = _box.center;
     /// sqrt(n) * side length / 2, where n is the number of dimensions with
     /// an extension (side length 0 allows to generate ellipses or rays)
-    radii = (sqrt((float)sum(_box.sides != 0.0f)) * 0.5f) * _box.sides;
+    radii = (sqrt((float)sum(neq(_box.sides, 0.0f))) * 0.5f) * _box.sides;
     radii = max(radii, Vec3(1e-16f));
     orientation = _box.orientation;
 }

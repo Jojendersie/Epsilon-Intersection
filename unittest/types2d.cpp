@@ -69,13 +69,13 @@ bool test_2dtypes()
     TEST( area(ray0) == 0.0f, "Area of ray0 wrong!" );
     TEST( area(cap0) == 3.613825288f, "Area of cap0 wrong!" );
 
-    TEST( all(center(dis0) == Vec2(0.0f, 1.0f)), "Center of dis0 wrong!" );
-    TEST( all(center(rec0) == Vec2(0.0f)), "Center of rec0 wrong!" );
-    TEST( all(center(rec1) == Vec2(0.0f)), "Center of rec1 wrong!" );
-    TEST( all(center(tri0) == Vec2(2/3.0f, 1/3.0f)), "Center of tri0 wrong!" );
-    TEST( all(center(ell0) == Vec2(2.0f, 2.0f)), "Center of ell0 wrong!" );
-    TEST( all(center(ell1) == Vec2(2.0f, 2.0f)), "Center of ell1 wrong!" );
-    TEST( all(center(cap0) == Vec2(0.0f)), "Center of cap0 wrong!" );
+    TEST( center(dis0) == Vec2(0.0f, 1.0f), "Center of dis0 wrong!" );
+    TEST( center(rec0) == Vec2(0.0f), "Center of rec0 wrong!" );
+    TEST( center(rec1) == Vec2(0.0f), "Center of rec1 wrong!" );
+    TEST( center(tri0) == Vec2(2/3.0f, 1/3.0f), "Center of tri0 wrong!" );
+    TEST( center(ell0) == Vec2(2.0f, 2.0f), "Center of ell0 wrong!" );
+    TEST( center(ell1) == Vec2(2.0f, 2.0f), "Center of ell1 wrong!" );
+    TEST( center(cap0) == Vec2(0.0f), "Center of cap0 wrong!" );
 
     return result;
 }

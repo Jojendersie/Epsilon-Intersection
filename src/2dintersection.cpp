@@ -66,21 +66,21 @@ namespace ei {
     {
         // There must be an intersection if the sum of side length is larger
         // than that of the bounding rectangle.
-        return all((max(_rect0.max, _rect1.max) - min(_rect0.min, _rect1.min))
+        return ((max(_rect0.max, _rect1.max) - min(_rect0.min, _rect1.min))
             <= ((_rect0.max - _rect0.min) + (_rect1.max - _rect1.min)));
     }
 
     // ********************************************************************* //
     bool intersects( const Vec2& _point, const Rect2D& _rect )
     {
-        return all(_point >= _rect.min) && all(_point <= _rect.max);
+        return (_point >= _rect.min) && (_point <= _rect.max);
     }
 
     // ********************************************************************* //
     bool intersects( const Disc2D& _disc, const Rect2D& _rect )
     {
-        return all( _disc.center + _disc.radius >= _rect.min )
-            && all( _disc.center - _disc.radius <= _rect.max );
+        return ( _disc.center + _disc.radius >= _rect.min )
+            && ( _disc.center - _disc.radius <= _rect.max );
     }
 
     // ********************************************************************* //

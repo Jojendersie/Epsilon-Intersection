@@ -65,16 +65,16 @@ bool test_3dtypes()
         float refA4_A6 = 0.5f * (len(cross(b, c)) + len(cross(d, a)));
         TEST( surface(fru) == refA3_A5 + refA4_A6 + 1.0f, "Surface of a frustum wrong!" );
 
-        TEST( all(center(sph) == Vec3(1.0f, 2.0f, 3.14159f)), "Center of sphere wrong!" );
-        TEST( all(center(box) == Vec3(1.5f, 1.75f, 2.0f)), "Center of box wrong!" );
-        TEST( all(center(obo) == Vec3(0.5f)), "Center of oriented box wrong!" );
-        TEST( all(center(the) == Vec3(0.0f)), "Center of thetrahedron wrong!" );
-        TEST( all(center(tri) == Vec3(1.0f/3.0f)), "Center of trinagle wrong!" );
-        TEST( all(center(dis) == Vec3(1.0f)), "Center of disc wrong!" );
-        TEST( all(center(ell) == Vec3(-1.0f, -0.5f, -0.5f)), "Center of ellipsoid wrong!" );
-        TEST( all(center(seg) == Vec3(1.0f, 0.0f, 0.0f)), "Center of line segment wrong!" );
-        TEST( all(center(cap) == Vec3(0.0f, 0.5f, 0.0f)), "Center of capsule wrong!" );
-        TEST( all(center(fru) == Vec3(1.125f, 0.375f, 0.75f)), "Center of frustum wrong!" );
+        TEST( center(sph) == Vec3(1.0f, 2.0f, 3.14159f), "Center of sphere wrong!" );
+        TEST( center(box) == Vec3(1.5f, 1.75f, 2.0f), "Center of box wrong!" );
+        TEST( center(obo) == Vec3(0.5f), "Center of oriented box wrong!" );
+        TEST( center(the) == Vec3(0.0f), "Center of thetrahedron wrong!" );
+        TEST( center(tri) == Vec3(1.0f/3.0f), "Center of trinagle wrong!" );
+        TEST( center(dis) == Vec3(1.0f), "Center of disc wrong!" );
+        TEST( center(ell) == Vec3(-1.0f, -0.5f, -0.5f), "Center of ellipsoid wrong!" );
+        TEST( center(seg) == Vec3(1.0f, 0.0f, 0.0f), "Center of line segment wrong!" );
+        TEST( center(cap) == Vec3(0.0f, 0.5f, 0.0f), "Center of capsule wrong!" );
+        TEST( center(fru) == Vec3(1.125f, 0.375f, 0.75f), "Center of frustum wrong!" );
         Vec3 c0 = center(fru2), c1 = center(fru3);
         TEST( approx((c0*vol0 + c1*vol1) / (vol0 + vol1), Vec3(1.125f, 0.375f, 0.75f)), "Center of frustum wrong!" );
     }
@@ -84,8 +84,8 @@ bool test_3dtypes()
         Plane pla0( Vec3(1.0f, 0.0f, 0.0f), 0.0f );
         Plane pla1( Vec3(1.0f, 0.0f, 0.0f), Vec3(0.0f, 1.0f, 0.0f) );
         Plane pla2( Vec3(0.0f, -1.0f, 0.0f), Vec3(0.0f, 1.0f, 0.0f), Vec3(0.0f, 2.0f, 4.0f) );
-        TEST( all(pla0.n == pla1.n) && pla0.d == pla1.d, "The constructed planes (0,1) should be equal!" );
-        TEST( all(pla0.n == pla2.n) && pla0.d == pla2.d, "The constructed planes (0,2) should be equal!" );
+        TEST( (pla0.n == pla1.n) && pla0.d == pla1.d, "The constructed planes (0,1) should be equal!" );
+        TEST( (pla0.n == pla2.n) && pla0.d == pla2.d, "The constructed planes (0,2) should be equal!" );
     }
 
     // Test ellipsoid construction and intersection with a point
@@ -93,8 +93,8 @@ bool test_3dtypes()
         Box box( Vec3(-2.0f, -1.0f, -1.0f), Vec3(0.0f, 0.0f, 0.0f) );
         Ellipsoid ell0( Vec3(-1.0f, -0.5f, -0.5f), Vec3(1.732050808f, 0.866025404f, 0.866025404f) );
         Ellipsoid ell1( box );
-        TEST( all(ell0.center == ell1.center), "Center of ellipsoid wrong!" );
-        TEST( all(ell0.radii == ell1.radii), "Radii of ellipsoid wrong!" );
+        TEST( (ell0.center == ell1.center), "Center of ellipsoid wrong!" );
+        TEST( (ell0.radii == ell1.radii), "Radii of ellipsoid wrong!" );
         TEST( intersects( box.min, ell0 ), "The bounding box min must be contained in the ellipsoid!" );
         TEST( intersects( box.max, ell0 ), "The bounding box max must be contained in the ellipsoid!" );
         TEST( !intersects( box.max + 1e-6f, ell0 ), "The point must be outside the ellipsoid!" );
@@ -109,7 +109,7 @@ bool test_3dtypes()
         Sphere sph2(points, 4);
         for(int i = 0; i < 4; ++i)
             TEST(distance(sph2, points[i]) <= 1e-6f, "Bounding sphere does not enclose all points!");
-        TEST( all(sph0.center == sph1.center), "Center of sphere wrong!" );
+        TEST( (sph0.center == sph1.center), "Center of sphere wrong!" );
         TEST( sph0.radius == sph1.radius, "Radius of sphere wrong!" );
     }
 
@@ -134,24 +134,24 @@ bool test_3dtypes()
         Box box8 = Box(OBox(box4));
         Box box9( points, 4u );
         Box box10( tet );
-        TEST( all(box0.min == box2.min), "Ellipsoid bounding min is wrong!" );
-        TEST( all(box0.max == box2.max), "Ellipsoid bounding min is wrong!" );
-        TEST( all(box0.min == box3.min), "Triangle bounding min is wrong!" );
-        TEST( all(box0.max == box3.max), "Triangle bounding max is wrong!" );
-        TEST( all(box1.min == box4.min), "Sphere bounding min is wrong!" );
-        TEST( all(box1.max == box4.max), "Sphere bounding max is wrong!" );
-        TEST( all(box5.min == Vec3(-2.0f, -1.0f, -1.0f)), "Box bounding min is wrong!" );
-        TEST( all(box5.max == Vec3(7.0f)), "Box bounding max is wrong!" );
-        TEST( all(box6.min == Vec3(-1.0f, -0.5f, -1.5f)), "OBox bounding min is wrong!" );
-        TEST( all(box6.max == Vec3(1.0f, 0.5f, 1.5f)), "OBox bounding max is wrong!" );
-        TEST( all(box7.min == Vec3(0.292893219f, 0.292893219f, 0.5f)), "OBox2 bounding min is wrong!" );
-        TEST( all(box7.max == Vec3(1.707106781f, 1.707106781f, 1.5f)), "OBox2 bounding max is wrong!" );
-        TEST( all(box8.min == box4.min), "Box(OBox(box4)) introduces a bias to min!" );
-        TEST( all(box8.max == box4.max), "Box(OBox(box4)) introduces a bias to max!" );
-        TEST( all(box9.min == Vec3(-0.3f, 0.0f, 0.0f)), "Box min of point list wrong!" );
-        TEST( all(box9.max == Vec3(1.0f, 1.0f, 1.4f)), "Box max of point list wrong!" );
-        TEST( all(box10.min == Vec3(-2.1f, -1.1f, -1.0f)), "Bounding box min of tetrahedron wrong!" );
-        TEST( all(box10.max == Vec3(0.0f, -0.1f, 0.2f)), "Bounding box max of tetrahedron wrong!" );
+        TEST( box0.min == box2.min, "Ellipsoid bounding min is wrong!" );
+        TEST( box0.max == box2.max, "Ellipsoid bounding min is wrong!" );
+        TEST( box0.min == box3.min, "Triangle bounding min is wrong!" );
+        TEST( box0.max == box3.max, "Triangle bounding max is wrong!" );
+        TEST( box1.min == box4.min, "Sphere bounding min is wrong!" );
+        TEST( box1.max == box4.max, "Sphere bounding max is wrong!" );
+        TEST( box5.min == Vec3(-2.0f, -1.0f, -1.0f), "Box bounding min is wrong!" );
+        TEST( box5.max == Vec3(7.0f), "Box bounding max is wrong!" );
+        TEST( box6.min == Vec3(-1.0f, -0.5f, -1.5f), "OBox bounding min is wrong!" );
+        TEST( box6.max == Vec3(1.0f, 0.5f, 1.5f), "OBox bounding max is wrong!" );
+        TEST( box7.min == Vec3(0.292893219f, 0.292893219f, 0.5f), "OBox2 bounding min is wrong!" );
+        TEST( box7.max == Vec3(1.707106781f, 1.707106781f, 1.5f), "OBox2 bounding max is wrong!" );
+        TEST( box8.min == box4.min, "Box(OBox(box4)) introduces a bias to min!" );
+        TEST( box8.max == box4.max, "Box(OBox(box4)) introduces a bias to max!" );
+        TEST( box9.min == Vec3(-0.3f, 0.0f, 0.0f), "Box min of point list wrong!" );
+        TEST( box9.max == Vec3(1.0f, 1.0f, 1.4f), "Box max of point list wrong!" );
+        TEST( box10.min == Vec3(-2.1f, -1.1f, -1.0f), "Bounding box min of tetrahedron wrong!" );
+        TEST( box10.max == Vec3(0.0f, -0.1f, 0.2f), "Bounding box max of tetrahedron wrong!" );
     }
 
     // Test oriented bounding box
@@ -178,7 +178,7 @@ bool test_3dtypes()
         TEST( approx(volume(obo0), 0.0f), "Oriented box 0 not optimal!" );
         TEST( approx(volume(obo1), 4.0f), "Oriented box 1 not optimal!" );
         TEST( volume(obo2) <= volume(box0), "Oriented box 2 not optimal!" );
-        TEST( all(obo3.sides == Vec3(0.0f)), "Oriented box 3 not as expected!" );
+        TEST( obo3.sides == Vec3(0.0f), "Oriented box 3 not as expected!" );
         TEST( approx(obo4.sides.x, 2.0f), "Oriented box 4 not as expected!" );
         TEST( approx(sum(obo5.sides), 2.0f*sqrt(3.0f)), "Oriented box 5 not as expected!" );
 
@@ -269,10 +269,10 @@ bool test_3dtypes()
         TEST( convexSet(a2, 2) == 1, "Convex set of a2 wrong!" );
         Vec3 a3[3] = {Vec3(0.0f), Vec3(1.0f), Vec3(2.0f)};
         TEST( convexSet(a3, 3) == 2, "Convex set of a3 wrong!" );
-        TEST( all(a3[1] == Vec3(2.0f)), "Convex set of a3 wrong!" );
+        TEST( a3[1] == Vec3(2.0f), "Convex set of a3 wrong!" );
         Vec3 a4[5] = {Vec3(0.0f), Vec3(1.0f), Vec3(0.0f, 1.0f, 0.0f), Vec3(0.1f, 0.5f, 0.6f), Vec3(0.0f, 0.0f, 1.0f)};
         TEST( convexSet(a4, 5) == 4, "Convex set of a4 wrong!" );
-        TEST( all(a4[3] == Vec3(0.0f, 0.0f, 1.0f)), "Convex set of a4 wrong!" );
+        TEST( a4[3] == Vec3(0.0f, 0.0f, 1.0f), "Convex set of a4 wrong!" );
         Vec3 a5[5] = {Vec3(1.0f), Vec3(0.0f), Vec3(2.0f), Vec3(-1.0f), Vec3(1.5f)};
         TEST( convexSet(a5, 5) == 2, "Convex set of a5 wrong!" );
         Vec3 a6[5] = {Vec3(1.0f, 1.0f, 0.0f), Vec3(0.0f), Vec3(0.5f, 0.75f, 0.0f), Vec3(0.5f, 0.25f, 0.0f), Vec3(0.5f, 0.9f, 0.0f)};

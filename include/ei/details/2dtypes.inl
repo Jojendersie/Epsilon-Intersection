@@ -21,7 +21,7 @@ inline Disc2D::Disc2D( const Triangle2D& _triangle ) :
 // ************************************************************************* //
 inline Disc2D::Disc2D( const Rect2D& _rect )
 {
-    eiAssert( all(_rect.max >= _rect.min),
+    eiAssert( _rect.max >= _rect.min,
         "The input rect is degenerated! All components of max should be larger than in min." );
     // For a regular n-gone the center is simply the center of all vertices.
     // The radius is then equal to all vertices.
@@ -32,7 +32,7 @@ inline Disc2D::Disc2D( const Rect2D& _rect )
 // ************************************************************************* //
 inline Disc2D::Disc2D( const ORect2D& _rect )
 {
-    eiAssert( all(_rect.size >= 0),
+    eiAssert( _rect.size >= 0,
         "Side lengths of a rectangle should never be negative." );
     // The center is already given and the distance to all corners is equal.
     center = _rect.center;
@@ -42,7 +42,7 @@ inline Disc2D::Disc2D( const ORect2D& _rect )
 // ************************************************************************* //
 inline Disc2D::Disc2D( const Ellipse2D& _ellipse )
 {
-    eiAssert( all(_ellipse.radii >= 0),
+    eiAssert( _ellipse.radii >= 0,
         "Radii of an ellipse should never be negative." );
     center = _ellipse.center;
     radius = max( _ellipse.radii );
@@ -51,7 +51,7 @@ inline Disc2D::Disc2D( const Ellipse2D& _ellipse )
 // ************************************************************************* //
 inline Disc2D::Disc2D( const OEllipse2D& _ellipse )
 {
-    eiAssert( all(_ellipse.radii >= 0),
+    eiAssert( _ellipse.radii >= 0,
         "Radii of an ellipse should never be negative." );
     // Rotation does not change anything
     center = _ellipse.center;
@@ -75,7 +75,7 @@ inline Disc2D::Disc2D( const Segment2D& _line )
 // ************************************************************************* //
 inline bool Disc2D::operator== ( const Disc2D& _circle ) const
 {
-    return all( center == _circle.center ) && radius == _circle.radius;
+    return ( center == _circle.center ) && radius == _circle.radius;
 }
 
 // ************************************************************************* //
@@ -83,7 +83,7 @@ inline Rect2D::Rect2D( const Vec2& _min, const Vec2& _max ) :
     min(_min),
     max(_max)
 {
-    eiAssert( all(_min <= _max),
+    eiAssert( _min <= _max,
         "Minimum coordinates must be smaller or equal the maximum." );
 }
 
@@ -93,7 +93,7 @@ inline ORect2D::ORect2D( const Vec2& _center, const Vec2& _size, float _angle ) 
     size(_size),
     angle(_angle)
 {
-    eiAssert( all(_size >= 0.0f), "Side lengths must be positive." );
+    eiAssert( _size >= 0.0f, "Side lengths must be positive." );
 }
 
 // ************************************************************************* //
@@ -109,7 +109,7 @@ inline Ellipse2D::Ellipse2D( const Vec2& _center, const Vec2& _radii ) :
     center(_center),
     radii(_radii)
 {
-    eiAssert( all(_radii >= 0),
+    eiAssert( _radii >= 0,
         "Radii of an ellipse should never be negative." );
 }
 
@@ -119,7 +119,7 @@ inline OEllipse2D::OEllipse2D( const Vec2& _center, const Vec2& _radii, float _a
     radii(_radii),
     angle(_angle)
 {
-    eiAssert( all(_radii >= 0),
+    eiAssert( _radii >= 0,
         "Radii of an ellipse should never be negative." );
 }
 
@@ -156,13 +156,13 @@ inline float area(const Disc2D& _disc)
 
 inline float area(const Rect2D& _rect)
 {
-    eiAssert(all(_rect.max >= _rect.min), "Rect max-boundary must be larger than its min-boundary!");
+    eiAssert(_rect.max >= _rect.min, "Rect max-boundary must be larger than its min-boundary!");
     return (_rect.max.x - _rect.min.x) * (_rect.max.y - _rect.min.y);
 }
 
 inline float area(const ORect2D& _orect)
 {
-    eiAssert(all(_orect.size >= 0.0f), "Rect must have positive side lengths!");
+    eiAssert(_orect.size >= 0.0f, "Rect must have positive side lengths!");
     return _orect.size.x * _orect.size.y;
 }
 
