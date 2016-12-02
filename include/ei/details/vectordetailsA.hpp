@@ -15,10 +15,10 @@ namespace details {
         /// \details The int argument is a dummy to prevent some compilers (vc120) from generating
         ///     two constructors with 0 arguments.
         template<typename T1, typename... Args>
-        Components(T1 _a0, Args... _args)// : m_data{ _a0, T(_args)... }
+        Components(T1 _a0, T1 _a1, Args... _args)// : m_data{ _a0, T(_args)... }
         {
-            static_assert(sizeof...(Args)+1 == M*N, "Wrong number of arguments!");
-            init<0>(_a0, _args...);
+            static_assert(sizeof...(Args)+2 == M*N, "Wrong number of arguments!");
+            init<0>(_a0, _a1, _args...);
         }
         /// \brief Initialize all members from single scalar
         template<typename T1>

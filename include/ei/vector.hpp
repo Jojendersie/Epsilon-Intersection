@@ -63,9 +63,13 @@ namespace ei {
         }
 
         /// \brief Forward to base constructors
-        template<typename T1, typename... Args>
-        explicit Matrix(T1 _a0, Args... _args) :
-            details::Components<T,M,N>(_a0, std::forward<Args>(_args)...)
+        template<typename T1>
+        explicit Matrix(T1 _a0) :
+            details::Components<T,M,N>(_a0)
+        {}
+        template<typename T1, typename T2, typename... Args>
+        Matrix(T1 _a0, T2 _a1, Args... _args) :
+            details::Components<T,M,N>(_a0, _a1, std::forward<Args>(_args)...)
         {}
 
         /// \brief Allow explicit truncation of the dimension sizes.
