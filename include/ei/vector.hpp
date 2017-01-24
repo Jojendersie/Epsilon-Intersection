@@ -2087,6 +2087,21 @@ namespace ei {
     }
 
     // ********************************************************************* //
+    /// \brief Create inverse OpenGL perspective projection matrix from fovY and aspect ratio.
+    /// \details This is the inverse matrix of perspectiveGL computed analytical.
+    /// \param [in] _fovY Field of view in the y direction, in radians.
+    /// \param [in] _aspectRatio width/height of the frame buffer.
+    inline Mat4x4 inversePerspectiveGL( float _fovY, float _aspectRatio, float _near, float _far )
+    {
+        float h = tan(PI * 0.5f -_fovY / 2.0f);
+        float w = h / _aspectRatio;
+        return Mat4x4(1.0f / w, 0.0f, 0.0f, 0.0f,
+                      0.0f, 1.0f / h, 0.0f, 0.0f,
+                      0.0f, 0.0f, 0.0f, 1.0f,
+                      0.0f, 0.0f, (_far-_near) / (-2.0f*_near*_far), (_far+_near) / (2.0f*_near*_far) );
+    }
+
+    // ********************************************************************* //
     /// \brief Create OpenGL orthographic matrix from 6 sides.
     /// \details Assumes an LHS coordinate system.
     ///
