@@ -122,6 +122,7 @@ bool test_3dtypes()
         Sphere sph( Vec3(5.0f), 2.0f );
         OBox obo0( Vec3(0.0f), Vec3(1.0f, 2.0f, 3.0f), Quaternion(Vec3(0.0f, 0.0f, 1.0f), PI/2) );
         OBox obo1( Vec3(1.0f), Vec3(1.0f, 1.0f, 1.0f), Quaternion(Vec3(0.0f, 0.0f, 1.0f), PI/4) );
+        OBox obo2( Vec3(4.0f), Vec3(1.0f, 2.0f, 3.0f), Quaternion(normalize(Vec3(0.1f, 0.5f, 1.0f)), 1.0f) );
         Vec3 points[] = {Vec3(0.0f), Vec3(1.0f), Vec3(0.1f, 0.4f, 0.3f), Vec3(-0.3f, 0.7f, 1.4f)};
         Tetrahedron tet( Vec3(-2.1f, -0.6f, -0.5f), Vec3(0.0f, -1.0f, 0.0f), Vec3(0.0f, -0.1f, -1.0f), Vec3(-0.5f, -1.1f, 0.2f) );
         Box box2( ell );
@@ -134,6 +135,8 @@ bool test_3dtypes()
         Box box8 = Box(OBox(box4));
         Box box9( points, 4u );
         Box box10( tet );
+        Box box11( obo2 );
+
         TEST( box0.min == box2.min, "Ellipsoid bounding min is wrong!" );
         TEST( box0.max == box2.max, "Ellipsoid bounding min is wrong!" );
         TEST( box0.min == box3.min, "Triangle bounding min is wrong!" );
@@ -152,6 +155,8 @@ bool test_3dtypes()
         TEST( box9.max == Vec3(1.0f, 1.0f, 1.4f), "Box max of point list wrong!" );
         TEST( box10.min == Vec3(-2.1f, -1.1f, -1.0f), "Bounding box min of tetrahedron wrong!" );
         TEST( box10.max == Vec3(0.0f, -0.1f, 0.2f), "Bounding box max of tetrahedron wrong!" );
+        TEST( approx(box11.min, Vec3(2.37966728f, 2.82336259f, 2.21573496f)), "OBox3 bounding min is wrong!" );
+        TEST( approx(box11.max, Vec3(5.62033272f, 5.17663765f, 5.78426504f)), "OBox3 bounding max is wrong!" );
     }
 
     // Test oriented bounding box

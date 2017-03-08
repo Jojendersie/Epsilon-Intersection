@@ -151,21 +151,19 @@ namespace ei {
         // Effectively generate all 8 corners and find min/max coordinates.
         // Relative to the center two diagonal opposite corners only differ
         // in the sign (even after rotation).
-        Vec3 diag = _box.sides * 0.5f;
-        Vec3 trDiag;
+
+        RVec3 diag = transpose(_box.sides * 0.5f);
         Mat3x3 rot(_box.orientation);
-        trDiag = rot * Vec3(diag.x, diag.y, diag.z);
-        min = ei::min(trDiag, -trDiag);
-        max = ei::max(trDiag, -trDiag);
-        trDiag = rot * Vec3(diag.x, diag.y, -diag.z);
-        min = ei::min(trDiag, -trDiag, min);
-        max = ei::max(trDiag, -trDiag, max);
-        trDiag = rot * Vec3(diag.x, -diag.y, diag.z);
-        min = ei::min(trDiag, -trDiag, min);
-        max = ei::max(trDiag, -trDiag, max);
-        trDiag = rot * Vec3(diag.x, -diag.y, -diag.z);
-        min = ei::min(trDiag, -trDiag, min);
-        max = ei::max(trDiag, -trDiag, max);
+        // Rows of the matrix are the aabox face directions in obox-space.
+        // Choose diagonal entries via sign to get the largest coordinate into
+        // face direction. Then project this maxCoord onto the direction.
+        //Vec3 maxCoord = sgn(invRot(0)) * diag;
+        //max.x = dot(maxCoord, invRot(0));
+        max.x = dot(diag, abs(rot(0))); // Equivalent to the sign stuff
+        max.y = dot(diag, abs(rot(1)));
+        max.z = dot(diag, abs(rot(2)));
+        min = -max;
+
         min += _box.center;
         max += _box.center;
     }
