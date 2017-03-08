@@ -451,7 +451,7 @@ namespace ei {
         Ray ray;
         ray.origin = transform( _ray.origin - _obox.center, conjugate(_obox.orientation) );
         ray.direction = transform( _ray.direction, conjugate(_obox.orientation) );
-        return intersects( ray, Box(-0.5f*_obox.sides, 0.5f*_obox.sides) );
+        return intersects( ray, Box(-_obox.halfSides, _obox.halfSides) );
     }
 
     bool intersects( const Ray& _ray, const OBox& _obox, float& _distance )
@@ -460,7 +460,7 @@ namespace ei {
         Ray ray;
         ray.origin = transform( _ray.origin - _obox.center, conjugate(_obox.orientation) );
         ray.direction = transform( _ray.direction, conjugate(_obox.orientation) );
-        return intersects( ray, Box(-0.5f*_obox.sides, 0.5f*_obox.sides), _distance );
+        return intersects( ray, Box(-0.5f*_obox.halfSides, 0.5f*_obox.halfSides), _distance );
     }
 
     // ********************************************************************* //
@@ -608,12 +608,12 @@ namespace ei {
     {
         Vec3 alignedPoint = _point - _obox.center;
         alignedPoint = transform( alignedPoint, conjugate(_obox.orientation) );
-        if(alignedPoint.x < - _obox.sides.x / 2.0f) return false;
-        if(alignedPoint.y < - _obox.sides.y / 2.0f) return false;
-        if(alignedPoint.z < - _obox.sides.z / 2.0f) return false;
-        if(alignedPoint.x >   _obox.sides.x / 2.0f) return false;
-        if(alignedPoint.y >   _obox.sides.y / 2.0f) return false;
-        return alignedPoint.z <= _obox.sides.z / 2.0f;
+        if(alignedPoint.x < - _obox.halfSides.x) return false;
+        if(alignedPoint.y < - _obox.halfSides.y) return false;
+        if(alignedPoint.z < - _obox.halfSides.z) return false;
+        if(alignedPoint.x >   _obox.halfSides.x) return false;
+        if(alignedPoint.y >   _obox.halfSides.y) return false;
+        return alignedPoint.z <= _obox.halfSides.z;
     }
 
     // ************************************************************************* //

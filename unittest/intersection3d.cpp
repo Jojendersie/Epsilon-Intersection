@@ -78,7 +78,7 @@ bool test_3dintersections()
 
     // Test point <-> obox intersection
     {
-        OBox box0( Vec3(1.0f), Vec3(0.25f, 1.0f, 1.5f), Quaternion(Vec3(1.0f, 0.0f, 0.0f), PI/2.0f) );
+        OBox box0( Vec3(1.0f), Vec3(0.125f, 0.5f, 0.75f), Quaternion(Vec3(1.0f, 0.0f, 0.0f), PI/2.0f) );
         Vec3 poi0( Vec3(0.85f, 1.0f, 1.0f) );
         Vec3 poi1( Vec3(0.875f, 1.25f, 0.5f) );
         Vec3 poi2( Vec3(0.9f, 1.1f, 0.9f) );
@@ -262,7 +262,7 @@ bool test_3dintersections()
 
     // Test obox <-> ray intersection
     {
-        OBox obo0( Vec3(0.5f, 1.0f, 2.0f), Vec3(1.0f, 2.0f, 3.0f), Quaternion(Vec3(0.0f, 0.0f, 1.0f), PI/4.0f) );
+        OBox obo0( Vec3(0.5f, 1.0f, 2.0f), Vec3(0.5f, 1.0f, 1.5f), Quaternion(Vec3(0.0f, 0.0f, 1.0f), PI/4.0f) );
         Ray ray0( Vec3(0.1f), Vec3(0.0f, 0.0f, 1.0f) );
         Ray ray1( Vec3(0.8f, 0.1f, 0.0f), Vec3(0.0f, 0.0f, 1.0f));
         Ray ray2( Vec3(2.5f, 0.0f, 2.0f), normalize(Vec3(-1.0f, -1.0f, 0.0f)));

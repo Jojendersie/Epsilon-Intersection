@@ -152,15 +152,14 @@ namespace ei {
         // Relative to the center two diagonal opposite corners only differ
         // in the sign (even after rotation).
 
-        Vec3 diag = (_box.sides * 0.5f);
         Mat3x3 rot(_box.orientation);
         // Rows of the matrix are the aabox face directions in obox-space.
         // Choose diagonal entries via sign to get the largest coordinate into
         // face direction. Then project this maxCoord onto the direction.
-        //Vec3 maxCoord = sgn(invRot(0)) * diag;
+        //Vec3 maxCoord = sgn(invRot(0)) * _box.halfSides;
         //max.x = dot(maxCoord, invRot(0));
-        //max.x = dot(diag, abs(rot(0))); // Equivalent to the sign stuff
-        max = abs(rot) * diag;
+        //max.x = dot(_box.halfSides, abs(rot(0))); // Equivalent to the sign stuff
+        max = abs(rot) * _box.halfSides;
         min = -max;
 
         min += _box.center;
@@ -188,9 +187,7 @@ namespace ei {
         // columns instead rows.
         Mat3x3 rotation(~_orientation);
         Vec3 bmax = _box.max - center;
-        sides = abs(rotation) * bmax;
-
-        sides *= 2.0f;
+        halfSides = abs(rotation) * bmax;
     }
 
     // ********************************************************************* //
@@ -201,9 +198,7 @@ namespace ei {
         // Use the same farthest plane search like in Box(OBox), but using
         // columns instead rows.
         Vec3 bmax = _box.max - center;
-        sides = abs(transpose(_orientation)) * bmax;
-
-        sides *= 2.0f;
+        halfSides = abs(transpose(_orientation)) * bmax;
     }
 
     // ********************************************************************* //
@@ -226,7 +221,7 @@ namespace ei {
 
         // Center known with respect to local rotation, go back to world space.
         center = transform((min + max) * 0.5f, conjugate(_orientation));
-        sides = max - min;
+        halfSides = (max - min) * 0.5f;
     }
 
     // ********************************************************************* //
@@ -234,16 +229,16 @@ namespace ei {
     {
         if(_numPoints == 1)
         {
-            sides = Vec3(0.0f);
+            halfSides = Vec3(0.0f);
             center = *_points;
             orientation = qidentity();
         } else if(_numPoints == 2) {
             Vec3 connection = _points[1] - _points[0];
-            sides = Vec3(len(connection), 0.0f, 0.0f);
-            orientation = Quaternion(connection/sides.x, Vec3(1.0f, 0.0f, 0.0f));
+            halfSides = Vec3(len(connection) * 0.5f, 0.0f, 0.0f);
+            orientation = Quaternion(connection/halfSides.x, Vec3(1.0f, 0.0f, 0.0f));
             center = _points[0] + 0.5f * connection;
         } else {
-            sides = Vec3(1e12f);
+            halfSides = Vec3(1e12f);
             float volume = 1e36f;
             Mat3x3 finalRotation;
             // Try each combination of three vertices to setup an orientation
@@ -282,15 +277,16 @@ namespace ei {
                         // the goto would have skipped this section before.
                         //center = transform((min + max) * 0.5f, conjugate(testOrientation));
                         center = transpose(rotation) * ((min + max) * 0.5f);
-                        sides = max - min;
+                        halfSides = max - min;
                         finalRotation = rotation;
                         //orientation = conjugate(Quaternion(rotation));
-                        volume = prod(sides);
+                        volume = prod(halfSides);
                         NextRotation:;
                     }
                 }
             }
             orientation = conjugate(Quaternion(finalRotation));
+            halfSides *= 0.5f;
         }
     }
 

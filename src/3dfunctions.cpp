@@ -73,7 +73,7 @@ OBox transform(const Box& _box, const Quaternion& _rotation)
 
 OBox transform(const OBox& _box, const Quaternion& _rotation)
 {
-    return OBox(transform(_box.center, _rotation), _box.sides, _box.orientation * _rotation);
+    return OBox(transform(_box.center, _rotation), _box.halfSides, _box.orientation * _rotation);
 }
 
 Box transform(const Box& _box, const Vec3& _translation)
@@ -83,7 +83,7 @@ Box transform(const Box& _box, const Vec3& _translation)
 
 OBox transform(const OBox& _box, const Vec3& _translation)
 {
-    return OBox(_box.center + _translation, _box.sides, _box.orientation);
+    return OBox(_box.center + _translation, _box.halfSides, _box.orientation);
 }
 
 OBox transform(const Box& _box, const Quaternion& _rotation, const Vec3& _translation)
@@ -97,7 +97,7 @@ OBox transform(const Box& _box, const Quaternion& _rotation, const Vec3& _transl
 OBox transform(const OBox& _box, const Quaternion& _rotation, const Vec3& _translation)
 {
     return OBox(transform(_box.center, _rotation) + _translation,
-        _box.sides, _box.orientation * _rotation);
+        _box.halfSides, _box.orientation * _rotation);
 }
 
 }

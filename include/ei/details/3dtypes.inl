@@ -75,24 +75,24 @@ inline Box::Box( const Ellipsoid& _ellipsoid ) :
 
 
 // ************************************************************************* //
-inline OBox::OBox( const Vec3& _center, const Vec3& _sides, const Quaternion& _orientation ) :
+inline OBox::OBox( const Vec3& _center, const Vec3& _halfSides, const Quaternion& _orientation ) :
     center(_center),
-    sides(_sides),
+    halfSides(_halfSides),
     orientation(_orientation)
 {
 }
 
 inline OBox::OBox( const Box& _box ) :
     center((_box.max + _box.min) * 0.5f),
-    sides(_box.max - _box.min),
+    halfSides((_box.max - _box.min) * 0.5f),
     orientation(qidentity())
 {
 }
 
 inline OBox::OBox( const Disc& _disc ) :
-	center(_disc.center),
-	sides(_disc.radius * 2.0f, _disc.radius * 2.0f, 0.0f),
-	orientation( Vec3(0.0f, 0.0f, 1.0f), _disc.normal)
+    center(_disc.center),
+    halfSides(_disc.radius, _disc.radius, 0.0f),
+    orientation( Vec3(0.0f, 0.0f, 1.0f), _disc.normal)
 {
 }
 
@@ -227,11 +227,11 @@ inline OEllipsoid::OEllipsoid(const Box& _box)
 
 inline OEllipsoid::OEllipsoid(const OBox& _box)
 {
-    eiAssert( _box.sides >= 0.0f, "Invalid box." );
+    eiAssert( _box.halfSides >= 0.0f, "Invalid box." );
     center = _box.center;
     /// sqrt(n) * side length / 2, where n is the number of dimensions with
     /// an extension (side length 0 allows to generate ellipses or rays)
-    radii = (sqrt((float)sum(neq(_box.sides, 0.0f))) * 0.5f) * _box.sides;
+    radii = sqrt((float)sum(neq(_box.halfSides, 0.0f))) * _box.halfSides;
     radii = max(radii, Vec3(1e-16f));
     orientation = _box.orientation;
 }
@@ -325,7 +325,7 @@ inline float volume(const Box& _box)
 
 inline float volume(const OBox& _obox)
 {
-    return _obox.sides.x * _obox.sides.y * _obox.sides.z;
+    return 8.0f * _obox.halfSides.x * _obox.halfSides.y * _obox.halfSides.z;
 }
 
 inline float volume(const Tetrahedron& _thetrahedron)
@@ -392,7 +392,7 @@ inline float surface(const Box& _box)
 
 inline float surface(const OBox& _obox)
 {
-    return 2.0f * (_obox.sides.x * _obox.sides.y + _obox.sides.x * _obox.sides.z + _obox.sides.y * _obox.sides.z);
+    return 8.0f * (_obox.halfSides.x * _obox.halfSides.y + _obox.halfSides.x * _obox.halfSides.z + _obox.halfSides.y * _obox.halfSides.z);
 }
 
 inline float surface(const Tetrahedron& _thetra)

@@ -16,7 +16,7 @@ bool test_3dtypes()
     {
         Sphere sph( Vec3(1.0f, 2.0f, 3.14159f), 0.75f );
         Box box( Vec3(1.0f, 1.0f, 1.0f), Vec3(2.0f, 2.5f, 3.0f) );
-        OBox obo( Vec3(0.5f), Vec3(1.0f), Quaternion(PI, PI/2, PI/2) );
+        OBox obo( Vec3(0.5f), Vec3(0.5f), Quaternion(PI, PI/2, PI/2) );
         Tetrahedron the( Vec3(1.0f, 0.0f, -1.0f/PHYTAGORAS), Vec3(-1.0f, 0.0f, -1.0f/PHYTAGORAS), Vec3(0.0f, 1.0f, 1.0f/PHYTAGORAS), Vec3(0.0f, -1.0f, 1.0f/PHYTAGORAS));
         Triangle tri( Vec3(0.0f), Vec3(1.0f, 1.0f, 0.0f), Vec3(0.0f, 0.0f, 1.0f) );
         Disc dis( Vec3(1.0f), normalize(Vec3(-1.0f)), 1.0f );
@@ -120,9 +120,9 @@ bool test_3dtypes()
         Ellipsoid ell( Vec3(-1.0f, -0.5f, -0.5f), Vec3(1.0f, 0.5f, 0.5f) );
         Triangle tri( Vec3(-2.0f, -0.5f, -0.5f), Vec3(0.0f, -1.0f, 0.0f), Vec3(0.0f, 0.0f, -1.0f) );
         Sphere sph( Vec3(5.0f), 2.0f );
-        OBox obo0( Vec3(0.0f), Vec3(1.0f, 2.0f, 3.0f), Quaternion(Vec3(0.0f, 0.0f, 1.0f), PI/2) );
-        OBox obo1( Vec3(1.0f), Vec3(1.0f, 1.0f, 1.0f), Quaternion(Vec3(0.0f, 0.0f, 1.0f), PI/4) );
-        OBox obo2( Vec3(4.0f), Vec3(1.0f, 2.0f, 3.0f), Quaternion(normalize(Vec3(0.1f, 0.5f, 1.0f)), 1.0f) );
+        OBox obo0( Vec3(0.0f), Vec3(0.5f, 1.0f, 1.5f), Quaternion(Vec3(0.0f, 0.0f, 1.0f), PI/2) );
+        OBox obo1( Vec3(1.0f), Vec3(0.5f, 0.5f, 0.5f), Quaternion(Vec3(0.0f, 0.0f, 1.0f), PI/4) );
+        OBox obo2( Vec3(4.0f), Vec3(0.5f, 1.0f, 1.5f), Quaternion(normalize(Vec3(0.1f, 0.5f, 1.0f)), 1.0f) );
         Vec3 points[] = {Vec3(0.0f), Vec3(1.0f), Vec3(0.1f, 0.4f, 0.3f), Vec3(-0.3f, 0.7f, 1.4f)};
         Tetrahedron tet( Vec3(-2.1f, -0.6f, -0.5f), Vec3(0.0f, -1.0f, 0.0f), Vec3(0.0f, -0.1f, -1.0f), Vec3(-0.5f, -1.1f, 0.2f) );
         Box box2( ell );
@@ -183,9 +183,9 @@ bool test_3dtypes()
         TEST( approx(volume(obo0), 0.0f), "Oriented box 0 not optimal!" );
         TEST( approx(volume(obo1), 4.0f), "Oriented box 1 not optimal!" );
         TEST( volume(obo2) <= volume(box0), "Oriented box 2 not optimal!" );
-        TEST( obo3.sides == Vec3(0.0f), "Oriented box 3 not as expected!" );
-        TEST( approx(obo4.sides.x, 2.0f), "Oriented box 4 not as expected!" );
-        TEST( approx(sum(obo5.sides), 2.0f*sqrt(3.0f)), "Oriented box 5 not as expected!" );
+        TEST( obo3.halfSides == Vec3(0.0f), "Oriented box 3 not as expected!" );
+        TEST( approx(obo4.halfSides.x, 1.0f), "Oriented box 4 not as expected!" );
+        TEST( approx(sum(obo5.halfSides), sqrt(3.0f)), "Oriented box 5 not as expected!" );
 
         OBox obo6(Disc(Vec3(2.0f), Vec3(1.0f, 0.0f, 0.0f), 0.5f));
         TEST( approx(obo6.orientation, Quaternion(Vec3(0.0f, 1.0f, 0.0f), PI/2.0f)), "Oriented box 6 has a wrong orientation!" );
@@ -194,9 +194,9 @@ bool test_3dtypes()
         OBox obo7( Quaternion(normalize(Vec3(0.1f, 0.5f, 1.0f)), 1.0f), box1 );
         OBox obo8( rotation(normalize(Vec3(0.1f, 0.5f, 1.0f)), 1.0f), box1 );
         TEST( obo7.center == Vec3(1.5f, 3.0f, 4.5f), "Oriented box 7 from box1 wrong center!" );
-        TEST( obo7.sides == Vec3(3.09472966f, 2.76657629f, 3.34164095f), "Oriented box 7 from box1 wrong side length!" );
+        TEST( obo7.halfSides == Vec3(1.54736483f, 1.383288145f, 1.670820475f), "Oriented box 7 from box1 wrong side length!" );
         TEST( obo8.center == Vec3(1.5f, 3.0f, 4.5f), "Oriented box 8 from box1 wrong center!" );
-        TEST( approx(obo8.sides, Vec3(3.09472966f, 2.76657629f, 3.34164095f)), "Oriented box 8 from box1 wrong side length!" );
+        TEST( approx(obo8.halfSides, Vec3(1.54736483f, 1.383288145f, 1.670820475f)), "Oriented box 8 from box1 wrong side length!" );
     }
 
     // ********************************************************************* //

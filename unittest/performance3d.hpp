@@ -63,7 +63,7 @@ template<> inline void random<ei::Box>(ei::Box& _out)
 
 template<> inline void random<ei::OBox>(ei::OBox& _out)
 {
-    _out.sides = ei::Vec3(rnd() * 0.3f + 0.05f, rnd() * 0.3f + 0.05f, rnd() * 0.3f + 0.05f);
+    _out.halfSides = ei::Vec3(rnd() * 0.3f + 0.05f, rnd() * 0.3f + 0.05f, rnd() * 0.3f + 0.05f) * 0.5f;
     _out.center = ei::Vec3(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f);
     random(_out.orientation);
 }

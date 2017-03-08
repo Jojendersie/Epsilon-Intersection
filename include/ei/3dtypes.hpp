@@ -126,14 +126,14 @@ namespace ei {
     struct OBox
     {
         Vec3 center;
-        Vec3 sides;                 ///< Side lengths of the box
+        Vec3 halfSides;             ///< Half side lengths of the box.
         Quaternion orientation;     ///< Orientation of the box. This gives the rotation from an AABox to the rotated box.
 
         /// \brief Create uninitialized box.
         OBox() {}
 
         /// \brief Create from parametrization
-        OBox( const Vec3& _center, const Vec3& _sides, const Quaternion& _orientation );
+        OBox( const Vec3& _center, const Vec3& _halfSides, const Quaternion& _orientation );
 
         /// \brief Create an oriented box from a simple box
         explicit OBox( const Box& _box );
