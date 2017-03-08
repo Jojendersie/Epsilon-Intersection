@@ -189,6 +189,14 @@ bool test_3dtypes()
 
         OBox obo6(Disc(Vec3(2.0f), Vec3(1.0f, 0.0f, 0.0f), 0.5f));
         TEST( approx(obo6.orientation, Quaternion(Vec3(0.0f, 1.0f, 0.0f), PI/2.0f)), "Oriented box 6 has a wrong orientation!" );
+
+        Box box1(Vec3(1.0f, 2.0f, 3.0f), Vec3(2.0f, 4.0f, 6.0f));
+        OBox obo7( Quaternion(normalize(Vec3(0.1f, 0.5f, 1.0f)), 1.0f), box1 );
+        OBox obo8( rotation(normalize(Vec3(0.1f, 0.5f, 1.0f)), 1.0f), box1 );
+        TEST( obo7.center == Vec3(1.5f, 3.0f, 4.5f), "Oriented box 7 from box1 wrong center!" );
+        TEST( obo7.sides == Vec3(3.09472966f, 2.76657629f, 3.34164095f), "Oriented box 7 from box1 wrong side length!" );
+        TEST( obo8.center == Vec3(1.5f, 3.0f, 4.5f), "Oriented box 8 from box1 wrong center!" );
+        TEST( approx(obo8.sides, Vec3(3.09472966f, 2.76657629f, 3.34164095f)), "Oriented box 8 from box1 wrong side length!" );
     }
 
     // ********************************************************************* //

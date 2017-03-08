@@ -152,16 +152,15 @@ namespace ei {
         // Relative to the center two diagonal opposite corners only differ
         // in the sign (even after rotation).
 
-        RVec3 diag = transpose(_box.sides * 0.5f);
+        Vec3 diag = (_box.sides * 0.5f);
         Mat3x3 rot(_box.orientation);
         // Rows of the matrix are the aabox face directions in obox-space.
         // Choose diagonal entries via sign to get the largest coordinate into
         // face direction. Then project this maxCoord onto the direction.
         //Vec3 maxCoord = sgn(invRot(0)) * diag;
         //max.x = dot(maxCoord, invRot(0));
-        max.x = dot(diag, abs(rot(0))); // Equivalent to the sign stuff
-        max.y = dot(diag, abs(rot(1)));
-        max.z = dot(diag, abs(rot(2)));
+        //max.x = dot(diag, abs(rot(0))); // Equivalent to the sign stuff
+        max = abs(rot) * diag;
         min = -max;
 
         min += _box.center;
@@ -185,16 +184,12 @@ namespace ei {
         center((_box.min + _box.max) * 0.5f),
         orientation(_orientation)
     {
-        // Project corner points to the cube sides by transforming them into
-        // local space, such that the box is axis aligned again.
-        Mat3x3 rotation(_orientation);
-        // Since we already know the center we only need to track one extremal
-        // point to find the side length.
-        Vec3 bmin = _box.min - center;
-        sides = abs(rotation * bmin);
-        sides = max(sides, abs(rotation * Vec3(bmin.x,  bmin.y, -bmin.z)));
-        sides = max(sides, abs(rotation * Vec3(bmin.x, -bmin.y,  bmin.z)));
-        sides = max(sides, abs(rotation * Vec3(bmin.x, -bmin.y, -bmin.z)));
+        // Use the same farthest plane search like in Box(OBox), but using
+        // columns instead rows.
+        Mat3x3 rotation(~_orientation);
+        Vec3 bmax = _box.max - center;
+        sides = abs(rotation) * bmax;
+
         sides *= 2.0f;
     }
 
@@ -203,15 +198,11 @@ namespace ei {
         center((_box.min + _box.max) * 0.5f),
         orientation(_orientation)
     {
-        // Project corner points to the cube sides by transforming them into
-        // local space, such that the box is axis aligned again.
-        // Since we already know the center we only need to track one extremal
-        // point to find the side length.
-        Vec3 bmin = _box.min - center;
-        sides = abs(_orientation * bmin);
-        sides = max(sides, abs(_orientation * Vec3(bmin.x,  bmin.y, -bmin.z)));
-        sides = max(sides, abs(_orientation * Vec3(bmin.x, -bmin.y,  bmin.z)));
-        sides = max(sides, abs(_orientation * Vec3(bmin.x, -bmin.y, -bmin.z)));
+        // Use the same farthest plane search like in Box(OBox), but using
+        // columns instead rows.
+        Vec3 bmax = _box.max - center;
+        sides = abs(transpose(_orientation)) * bmax;
+
         sides *= 2.0f;
     }
 
