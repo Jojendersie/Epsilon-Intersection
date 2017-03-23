@@ -100,37 +100,45 @@ namespace std {
     ///     |m10 m11|
     ///     The printer does not add line breaks at the end. Only the matrix version
     ///     adds line breaks between rows.
-    template <typename T, uint M, uint N>
+    template <typename T, uint N> // Row vector
+    std::ostream& operator << (std::ostream& _os, const ei::Matrix<T, 1, N>& _mat)  // TESTED
+    {
+        _os << '(';
+        for(uint i = 0; i < N-1; ++i)
+            _os << _mat[i] << ", ";
+        _os << _mat[N-1] << ")'";
+
+        return _os;
+    }
+
+    template <typename T, uint M> // Column vector
+    std::ostream& operator << (std::ostream& _os, const ei::Matrix<T, M, 1>& _mat)  // TESTED
+    {
+        _os << '(';
+        for(uint i = 0; i < M-1; ++i)
+            _os << _mat[i] << ", ";
+        _os << _mat[M-1] << ")";
+
+        return _os;
+    }
+
+    template <typename T, uint M, uint N> // Matrix
     std::ostream& operator << (std::ostream& _os, const ei::Matrix<T, M, N>& _mat)  // TESTED
     {
-        if(N == 1)          // Column vector
+        // Set to scientific to align columns
+        //auto flags = _os.flags();
+        //  _os << std::scientific;
+        for(uint j = 0; j < M; ++j)
         {
-            _os << '(';
-            for(uint i = 0; i < M-1; ++i)
-                _os << _mat[i] << ", ";
-            _os << _mat[M-1] << ")";
-        } else if(M == 1)   // Row vector
-        {
-            _os << '(';
+            _os << '|';
             for(uint i = 0; i < N-1; ++i)
-                _os << _mat[i] << ", ";
-            _os << _mat[N-1] << ")'";
-        } else {            // Matrix
-            // Set to scientific to align columns
-            //auto flags = _os.flags();
-          //  _os << std::scientific;
-            for(uint j = 0; j < M; ++j)
-            {
-                _os << '|';
-                for(uint i = 0; i < N-1; ++i)
-                    _os << std::setw(11) << _mat[i + N * j] << ' ';
-                _os << std::setw(11) << _mat[N-1 + N * j] << '|';
-                if(j < M-1)
-                    _os << '\n';
-            }
-            // Revert stream format
-            //_os.setf(flags);
+                _os << std::setw(11) << _mat[i + N * j] << ' ';
+            _os << std::setw(11) << _mat[N-1 + N * j] << '|';
+            if(j < M-1)
+                _os << '\n';
         }
+        // Revert stream format
+        //_os.setf(flags);
 
         return _os;
     }

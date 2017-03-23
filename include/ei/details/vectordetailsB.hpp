@@ -25,7 +25,7 @@ namespace details {
     // Recursive helper for orthonormalization
     // Recursion end
     template<typename TVec0>
-    inline void removeProjectedPart(const TVec0& _vec0)
+    inline void removeProjectedPart(const TVec0&)
     {
     }
     template<typename TVec0, typename TVec1, typename... TVecs>

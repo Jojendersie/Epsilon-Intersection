@@ -183,12 +183,12 @@ inline float area(const OEllipse2D& _oellipse)
     return PI * _oellipse.radii.x * _oellipse.radii.y;
 }
 
-inline float area(const Segment2D& _segment)
+inline float area(const Segment2D&)
 {
     return 0.0f;
 }
 
-inline float area(const Ray2D& _ray)
+inline float area(const Ray2D&)
 {
     return 0.0f;
 }

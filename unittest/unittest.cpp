@@ -14,7 +14,10 @@ ei::uint64 ticks()
     return tickCount;
 }
 
+#pragma warning(push)
+#pragma warning(disable:4189)
 void eatMyDummy(float _dummy)
 {
     volatile float devour = _dummy;
 }
+#pragma warning(pop)

@@ -92,16 +92,25 @@ namespace ei {
         ///                0 1
         ///
         ///   Appends 1 to vectors: v    =>   (v 1)
-        template<typename T1, uint M1, uint N1, ENABLE_IF((M > M1 && N >= N1) || (M >= M1 && N > N1))>
+        template<typename T1, uint N1, ENABLE_IF((M == 1 && N > N1))>
+        explicit Matrix(const Matrix<T1,1,N1>& _mat1) // TESTED
+        {
+            for(unsigned i = 0; i < N1; ++i)
+                this->m_data[i] = _mat1[i];
+            for(unsigned i = N1; i < N; ++i)
+                this->m_data[i] = static_cast<T>(1);
+        }
+        template<typename T1, uint M1, ENABLE_IF((N == 1 && M > M1))>
+        explicit Matrix(const Matrix<T1,M1,1>& _mat1) // TESTED
+        {
+            for(unsigned i = 0; i < M1; ++i)
+                this->m_data[i] = _mat1[i];
+            for(unsigned i = M1; i < M; ++i)
+                this->m_data[i] = static_cast<T>(1);
+        }
+        template<typename T1, uint M1, uint N1, ENABLE_IF((M > M1 && N >= N1 && N > 1) || (M >= M1 && N > N1 && M > 1))>
         explicit Matrix(const Matrix<T1,M1,N1>& _mat1) // TESTED
         {
-            if(N == 1 || M == 1)
-            {
-                for(unsigned i = 0; i < N1 * M1; ++i)
-                    this->m_data[i] = _mat1[i];
-                for(unsigned i = N1 * M1; i < N * M; ++i)
-                    this->m_data[i] = static_cast<T>(1);
-            } else {
                 // Indices for _mat1 and result
                 unsigned i = 0, j = 0;
                 for(unsigned y = 0; y < M1; ++y)
@@ -117,7 +126,6 @@ namespace ei {
                 for(unsigned y = M1; y < M; ++y)
                     for(unsigned x = 0; x < N; ++x)
                         this->m_data[j++] = x == y ? static_cast<T>(1) : static_cast<T>(0);
-            }
         }
 
         /// \brief Access a single element with two indices.
@@ -273,14 +281,14 @@ namespace ei {
             EI_CODE_GEN_MAT_MAT_SEFL_OP(-=)
         /// \brief Self assigning component wise multiplication for vectors
         ///    of the same size. Matrix multiplication in case of squared matrices!
-        template<typename T1>
+        template<typename T1, ENABLE_IF((M != N) && sizeof(T1))>
         Matrix<T, M, N>& operator *= (const Matrix<T1,M,N>& _mat1) // TESTED
+            EI_CODE_GEN_MAT_MAT_SEFL_OP(*=)
+        template<typename T1>
+        Matrix<T, N, N>& operator *= (const Matrix<T1,M,M>& _mat1) // TESTED
         {
-            if(M == N)
-                *this = (*this) * _mat1;
-            else
-                for(uint i = 0; i < M*N; ++i)
-                    (*this)[i] *= _mat1[i];
+            // Use matrix multiplication
+            *this = (*this) * _mat1;
             return *this;
         }
         /// \brief Self assigning component wise division for vectors
@@ -2549,7 +2557,7 @@ namespace ei {
             T det = -LU[0];
             // The number of permutations the sign (#p even -> positive)
             if( p[0] != 0 ) det = -det;
-            for(int i = 1; i < N; ++i) {
+            for(uint i = 1; i < N; ++i) {
                 det *= LU[i + N * i];
                 if( p[i] != i ) det = -det;
             }

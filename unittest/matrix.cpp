@@ -18,36 +18,16 @@ bool test_matrix()
 
     // ********************************************************************* //
     // Test type size
-    TEST( sizeof(Matrix<byte, 1, 2>) == 2,
-        "sizeof(Matrix<byte, 1, 2>) is " << sizeof(Matrix<byte, 1, 2>) << " instead of 2."
-    );
-    TEST( sizeof(Matrix<double, 2, 1>) == 16,
-        "sizeof(Matrix<double, 2, 1>) is " << sizeof(Matrix<double, 2, 1>) << " instead of 16."
-    );
-    TEST( sizeof(Matrix<float, 1, 3>) == 12,
-        "sizeof(Matrix<float, 1, 3>) is " << sizeof(Matrix<float, 1, 3>) << " instead of 12."
-    );
-    TEST( sizeof(Matrix<byte, 3, 1>) == 3,
-        "sizeof(Matrix<byte, 3, 1>) is " << sizeof(Matrix<byte, 3, 1>) << " instead of 3."
-    );
-    TEST( sizeof(Matrix<float, 4, 1>) == 16,
-        "sizeof(Matrix<float, 4, 1>) is " << sizeof(Matrix<float, 4, 1>) << " instead of 16."
-    );
-    TEST( sizeof(Matrix<int16, 1, 4>) == 8,
-        "sizeof(Matrix<int16, 1, 4>) is " << sizeof(Matrix<int16, 1, 4>) << " instead of 8."
-    );
-    TEST( sizeof(Matrix<uint16, 2, 2>) == 8,
-        "sizeof(Matrix<uint16, 2, 2>) is " << sizeof(Matrix<uint16, 2, 2>) << " instead of 8."
-    );
-    TEST( sizeof(Matrix<byte, 3, 3>) == 9,
-        "sizeof(Matrix<byte, 3, 3>) is " << sizeof(Matrix<byte, 3, 3>) << " instead of 9."
-    );
-    TEST( sizeof(Matrix<float, 4, 4>) == 64,
-        "sizeof(Matrix<float, 4, 4>) is " << sizeof(Matrix<float, 4, 4>) << " instead of 64."
-    );
-    TEST( sizeof(Matrix<float, 10, 10>) == 400,
-        "sizeof(Matrix<float, 10, 10>) is " << sizeof(Matrix<float, 10, 10>) << " instead of 400."
-    );
+    static_assert( sizeof(Matrix<byte, 1, 2>) == 2, "sizeof(Matrix<byte, 1, 2>) is invalid." );
+    static_assert( sizeof(Matrix<double, 2, 1>) == 16, "sizeof(Matrix<double, 2, 1>) is invalid." );
+    static_assert( sizeof(Matrix<float, 1, 3>) == 12, "sizeof(Matrix<float, 1, 3>) is invalid." );
+    static_assert( sizeof(Matrix<byte, 3, 1>) == 3, "sizeof(Matrix<byte, 3, 1>) is invalid." );
+    static_assert( sizeof(Matrix<float, 4, 1>) == 16, "sizeof(Matrix<float, 4, 1>) is invalid." );
+    static_assert( sizeof(Matrix<int16, 1, 4>) == 8, "sizeof(Matrix<int16, 1, 4>) is invalid." );
+    static_assert( sizeof(Matrix<uint16, 2, 2>) == 8, "sizeof(Matrix<uint16, 2, 2>) is invalid." );
+    static_assert( sizeof(Matrix<byte, 3, 3>) == 9, "sizeof(Matrix<byte, 3, 3>) is invalid." );
+    static_assert( sizeof(Matrix<float, 4, 4>) == 64, "sizeof(Matrix<float, 4, 4>) is invalid." );
+    static_assert( sizeof(Matrix<float, 10, 10>) == 400, "sizeof(Matrix<float, 10, 10>) is invalid." );
 
     // ********************************************************************* //
     // When included the following line must cause a static assertion.
@@ -64,12 +44,19 @@ bool test_matrix()
 //      v4 = v0;        // This line should not compile (no accidentally conversion)
         IVec3 v5(-1);   // Used for the truncation tests
         Vec2 v6(v5);    // Truncate and type convert
+        Vec3 v7(v2);
+        RVec3 v8(RVec2(1.0f, 0.5f));
         TEST( v6 == v2 , "Truncation operator wrong!" );
+        TEST( v7 == Vec3(-1.0f, -1.0f, 1.0f), "Column vector extension failed!" );
+        TEST( v8 == RVec3(1.0f, 0.5f, 1.0f), "Row vector extension failed!" );
+
         Mat3x3 m0(0, 1, 2, 3, 4, 5, 6, 7, 8); // Used for more truncation tests
         Mat2x2 m1(m0);  // Truncate in both dimensions
+        Mat4x4 m2(m0);  // Extend in both directions
         //Vec3 v7(m0);    // Get first column TODO: reanable this
         //Vec3 v8(m0, 0, 1);// Get second column
         TEST( m1 == Mat2x2(0, 1, 3, 4), "Truncation in both dimensions failed!" );
+        TEST( m2 == Mat4x4(0, 1, 2, 0, 3, 4, 5, 0, 6, 7, 8, 0, 0, 0, 0, 1), "Extension in both dimensions failed!" );
 //        TEST( all(v7 == Vec3(0, 3, 6)), "Truncation to vector failed!" );
  //       TEST( all(v8 == Vec3(1, 4, 7)), "Truncation to vector failed!" );
 
