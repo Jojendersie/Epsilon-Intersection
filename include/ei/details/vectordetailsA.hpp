@@ -284,7 +284,8 @@ namespace details {
             m20(static_cast<T>(_s)), m21(static_cast<T>(_s)), m22(static_cast<T>(_s)), m23(static_cast<T>(_s)),
             m30(static_cast<T>(_s)), m31(static_cast<T>(_s)), m32(static_cast<T>(_s)), m33(static_cast<T>(_s))
         {}
-        Components(T _s0, T _s1, T _s2, T _s3, T _s4, T _s5, T _s6, T _s7, T _s8, T _s9, T _s10, T _s11, T _s12, T _s13, T _s14, T _s15) :
+        template<typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7, typename T8, typename T9, typename T10, typename T11, typename T12, typename T13, typename T14, typename T15, typename T16>
+        Components(T1 _s0, T2 _s1, T3 _s2, T4 _s3, T5 _s4, T6 _s5, T7 _s6, T8 _s7, T9 _s8, T10 _s9, T11 _s10, T12 _s11, T13 _s12, T14 _s13, T15 _s14, T16 _s15) :
             m00(static_cast<T>(_s0)), m01(static_cast<T>(_s1)), m02(static_cast<T>(_s2)), m03(static_cast<T>(_s3)),
             m10(static_cast<T>(_s4)), m11(static_cast<T>(_s5)), m12(static_cast<T>(_s6)), m13(static_cast<T>(_s7)),
             m20(static_cast<T>(_s8)), m21(static_cast<T>(_s9)), m22(static_cast<T>(_s10)), m23(static_cast<T>(_s11)),
