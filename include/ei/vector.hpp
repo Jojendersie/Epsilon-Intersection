@@ -2296,10 +2296,8 @@ namespace ei {
     // ********************************************************************* //
     /// \brief Compute a spectral decomposition Q^T * diag(d) * Q of 2x2 and 3x3
     ///     symmetric matrices A.
-    /// \param [in] _sort Sort eigenvalues and vectors descending.
     ///
-    ///     The results for 2x2 matrices are always sorted. For 3x3 matices
-    ///     sorting takes extra time and can be disabled if not needed.
+    ///     The results are always sorted descending for the eigen values.
     /// \param [out] _Q The orthonormal basis where rows are the eigenvectors
     ///     corresponding to the eigenvalues _lambda of A.
     /// \param [out] _lambda Eigenvalues of A.
@@ -2337,11 +2335,69 @@ namespace ei {
         return 1;
     }
 
+    template<typename T>
+    inline int decomposeQl(const Matrix<T,3,3>& _A, Matrix<T,3,3>& _Q, Vec<T,3>& _lambda) // TESTED
+    {
+        // It follows some substitution magic from https://en.wikipedia.org/wiki/Eigenvalue_algorithm#3.C3.973_matrices.
+        // Another useful source is the paper Efficient numerical diagonalization of hermitian 3x3 matrices
+        // (see https://www.mpi-hd.mpg.de/personalhomes/globes/3x3/ and https://arxiv.org/pdf/physics/0610206.pdf)
+        /*float q = (_A(0,0) + _A(1,1) + _A(2,2)) / 3.0f;
+        float p1 = sq(_A(0,1)) + sq(_A(0,2)) + sq(_A(1,2));
+        float p2 = sq(_A(0,0) - q) + sq(_A(1,1) - q) + sq(_A(2,2) - q) + 2.0f * p1;
+        float p = sqrt(p2 / 6.0f);
+        Mat3x3 B = (_A - q * identity3x3()) / p;
+        float det = determinant(B) / 2.0f;
+        float phi = acos(clamp(det, -1.0f, 1.0f)) / 3.0f;
+        // Eigen values satisfy _lambda.x >= _lambda.y >= _lambda.z
+        _lambda.x = q + 2 * p * cos(phi);
+        _lambda.z = q + 2 * p * cos(phi + 2*PI/3.0f);
+        _lambda.y = 3 * q - _lambda.x - _lambda.z;*/
+        // The above code suffers from numerical issues. Using doubles helps a bit:
+        double q = (double(_A[0]) + double(_A[4]) + double(_A[8])) / 3.0;
+        double p1 = sq(double(_A[1])) + sq(double(_A[2])) + sq(double(_A[5]));
+        double p2 = sq(_A[0] - q) + sq(_A[4] - q) + sq(_A[8] - q) + 2.0 * p1;
+        double p = sqrt(p2 / 6.0);
+        DMat3x3 Bd = (_A - q * identity3x3()) / p;
+        //double det = determinant(Bd) / 2.0;
+        double det2 = (Bd[4]*(Bd[0]*Bd[8] - Bd[2]*Bd[2]) + Bd[1]*Bd[5]*Bd[2] * 2.0
+                     - Bd[1]*Bd[1]*Bd[8] - Bd[0]*Bd[5]*Bd[5]) / 2.0;
+        double phi = acos(clamp(det2, -1.0, 1.0)) / 3.0;
+        // Eigen values satisfy _lambda.x >= _lambda.y >= _lambda.z
+        _lambda.x = float(q + p * 2.0 * cos(phi));
+        _lambda.z = float(q + p * 2.0 * cos(phi + 2*3.14159265358979323846/3.0));
+        _lambda.y = float(3 * q - _lambda.x - _lambda.z);
+
+        // Compute eigenvectors for the eigenvalues.
+        // The two idependent columns of A-lambda*I are perpendicular to the eigenvector.
+        // Since we do not know which of the columns are independent we compute 2 cross
+        // products and use the one with the better condition.
+        Mat3x3 B = _A - _lambda.x * identity3x3();
+        RVec3 canditate1 = cross(B(0), B(1));
+        RVec3 canditate2 = cross(B(0), B(2));
+        float l1 = lensq(canditate1);
+        float l2 = lensq(canditate2);
+        if(l1 > l2) _Q(0) = canditate1 / sqrt(l1);
+        else _Q(0) = canditate2 / sqrt(l2);
+        // Repeat for the most different eigenvector (much more stable and can handle
+        // two identically eigenvalues)
+        B = _A - _lambda.z * identity3x3();
+        canditate1 = cross(B(1), B(0));
+        canditate2 = cross(B(2), B(0));
+        l1 = lensq(canditate1);
+        l2 = lensq(canditate2);
+        if(l1 > l2) _Q(2) = canditate1 / sqrt(l1);
+        else _Q(2) = canditate2 / sqrt(l2);
+        // The third eigenvector is simply the cross product of the other two.
+        _Q(1) = cross(_Q(0), _Q(2));
+
+        return 1;
+    }
+
     /// \brief Iterative spectral decomposition for 3x3 matrices.
     // Implementation from http://www.melax.com/diag.html
     // Other can be found on http://stackoverflow.com/questions/4372224/fast-method-for-computing-3x3-symmetric-matrix-spectral-decomposition
     template<typename T>
-    int decomposeQl(const Matrix<T,3,3>& _A, Matrix<T,3,3>& _Q, Vec<T,3>& _lambda, bool _sort = true) // TESTED
+    inline int decomposeQlIter(const Matrix<T,3,3>& _A, Matrix<T,3,3>& _Q, Vec<T,3>& _lambda, bool _sort = true) // TESTED
     {
         int i = 0;
         Quaternion q = qidentity();// TODO type T

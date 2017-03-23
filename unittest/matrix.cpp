@@ -751,7 +751,7 @@ bool test_matrix()
         TEST(approx(vtmp.x, 1.0001f), "Eigenvalue 0 of A2 is wrong!");
         TEST(approx(vtmp.y, 1.0f), "Eigenvalue 1 of A2 is wrong!");
         TEST(approx(vtmp.z, -1.001f), "Eigenvalue 2 of A2 is wrong!");
-        TEST(approx(A2, transpose(Qtmp) * diag(vtmp) * Qtmp, 2e-5f), "Spectral decomposition of A2 failed!");
+        TEST(approx(A2, transpose(Qtmp) * diag(vtmp) * Qtmp, 5e-6f), "Spectral decomposition of A2 failed!");
         itn = 0;
     }
 
