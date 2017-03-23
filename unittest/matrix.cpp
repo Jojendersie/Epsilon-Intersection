@@ -139,13 +139,13 @@ bool test_matrix()
         TEST( all(greatereq(m0, 1)) , "Scalar operator >= or all() wrong!" );
         TEST( !all(greatereq(m1, 2)) , "Scalar operator >= or all() wrong!" );
         TEST( sum(greatereq(4, m1)) == 4 , "Scalar operator >= or sum() wrong!" );
-        TEST( any(greater(m0, 2)) , "Scalar operator > or all() wrong!" );
-        TEST( none(greater(m0, 4)) , "Scalar operator > or all() wrong!" );
-        TEST( sum(greater(4, m1)) == 3 , "Scalar operator > or sum() wrong!" );
+        TEST( any(ei::greater(m0, 2)) , "Scalar operator > or all() wrong!" );
+        TEST( none(ei::greater(m0, 4)) , "Scalar operator > or all() wrong!" );
+        TEST( sum(ei::greater(4, m1)) == 3 , "Scalar operator > or sum() wrong!" );
         TEST( sum(ei::less(m0, m1)) == 1 , "Matrix operator < or sum() wrong!" );
         TEST( sum(lesseq(m0, m1)) == 3 , "Matrix operator <= or sum() wrong!" );
         TEST( sum(greatereq(m0, m1)) == 3 , "Matrix operator >= or sum() wrong!" );
-        TEST( sum(greater(m0, m1)) == 1 , "Matrix operator > or sum() wrong!" );
+        TEST( sum(ei::greater(m0, m1)) == 1 , "Matrix operator > or sum() wrong!" );
         TEST( sum(equal(m0, m1)) == 2 , "Matrix operator == or sum() wrong!" );
         TEST( sum(neq(m0, m2)) == 3 , "Matrix operator != or sum() wrong!" );
     }

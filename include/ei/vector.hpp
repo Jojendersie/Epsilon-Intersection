@@ -1756,7 +1756,7 @@ namespace ei {
         for(uint x = 0; x < N; ++x)
         {
             // Initialize with the first component
-            result[x] = _space(y,0) * _what[0];
+            result[x] = _space(0,x) * _what[0];
             // Add the other N-1 factors
             for(uint y = 1; y < N; ++y)
                 result[x] += _what[y] * _space(y,x);
