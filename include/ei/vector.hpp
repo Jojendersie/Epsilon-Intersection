@@ -52,7 +52,7 @@ namespace ei {
 #       define ENABLE_IF(condition) typename = typename std::enable_if< (condition) >::type
 
         /// \brief Construction without initialization. The values are undefined!
-        Matrix() {}
+        Matrix() = default;
 
         /// \brief Convert a matrix/vector with a different elementary type.
         template<typename T1>
