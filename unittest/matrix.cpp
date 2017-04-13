@@ -723,6 +723,7 @@ bool test_matrix()
         Vec2 d1(-1.0f, 0.0f);
         Mat2x2 A0 = transpose(Q0) * diag(d0) * Q0;
         Mat2x2 A1 = transpose(Q1) * diag(d1) * Q1;
+        Mat2x2 A2(0.5f, 0.0f, 0.0f, 1.0f); // diagonal matrix
         Vec2 vtmp; Mat2x2 Qtmp;
         int itn = decomposeQl(A0, Qtmp, vtmp);
         TEST(approx(vtmp.x, 3.0f), "Eigenvalue 0 of A0 is wrong!");
@@ -732,19 +733,29 @@ bool test_matrix()
         TEST(approx(vtmp.x, 0.0f), "Eigenvalue 0 of A0 is wrong!");
         TEST(approx(vtmp.y, -1.0f), "Eigenvalue 1 of A0 is wrong!");
         TEST(approx(A1, transpose(Qtmp) * diag(vtmp) * Qtmp), "Spectral decomposition of 2x2 A1 failed!");
+        decomposeQl(A2, Qtmp, vtmp);
+        TEST(vtmp == Vec2(1.0f, 0.5f), "Eigenvalues of A2 are wrong!");
+        TEST(Qtmp == Mat2x2(0.0f, 1.0f, 1.0f, 0.0f), "Eigenvectors of A2 are wrong!");
+        decomposeQl(identity2x2(), Qtmp, vtmp);
+        TEST(vtmp == Vec2(1.0f, 1.0f), "Eigenvalues of identity2x2 are wrong!");
+        TEST(Qtmp == Mat2x2(1.0f, 0.0f, 0.0f, 1.0f), "Eigenvectors of identity2x2 are wrong!");
     }{
         Mat3x3 Q1(1.0f, 2.0f, 3.0f, 2.0f, 1.0f, 0.5f, 0.0f, -1.0f, 1.0f);
         orthonormalize(Q1);
         Vec3 d1(0.7f, 1.0f, 1.1f);
-        Mat3x3 A1 = transpose(Q1) * diag(d1) * Q1;
+        Mat3x3 A1 = transpose(Q1) * diag(d1) * Q1;	// Arbitrary symmetric matrix
+        Mat3x3 A0(1.0f, 0.0f, 0.0f, 0.0f, 2.0f, 0.0f, 0.0f, 0.0f, 0.5f);	// diagonal matrix
         Vec3 vtmp; Mat3x3 Qtmp;
         int itn = decomposeQl(A1, Qtmp, vtmp);
         TEST(approx(vtmp.x, 1.1f), "Eigenvalue 0 of A1 is wrong!");
         TEST(approx(vtmp.y, 1.0f), "Eigenvalue 1 of A1 is wrong!");
         TEST(approx(vtmp.z, 0.7f), "Eigenvalue 2 of A1 is wrong!");
         TEST(approx(A1, transpose(Qtmp) * diag(vtmp) * Qtmp), "Spectral decomposition of A1 failed!");
+        decomposeQl(A0, Qtmp, vtmp);
+        TEST(vtmp == Vec3(2.0f, 1.0f, 0.5f), "Eigenvalues of A0 are wrong!");
+        TEST(approx(A0, transpose(Qtmp) * diag(vtmp) * Qtmp), "Spectral decomposition of A0 failed!");
 
-        // More difficult case for power iteraltion
+        // More difficult case for power iteration
         Vec3 d2(1.0f, -1.001f, 1.0001f);
         Mat3x3 A2 = transpose(Q1) * diag(d2) * Q1;
         itn = decomposeQl(A2, Qtmp, vtmp);
@@ -753,6 +764,15 @@ bool test_matrix()
         TEST(approx(vtmp.z, -1.001f), "Eigenvalue 2 of A2 is wrong!");
         TEST(approx(A2, transpose(Qtmp) * diag(vtmp) * Qtmp, 5e-6f), "Spectral decomposition of A2 failed!");
         itn = 0;
+
+        // Degenerated cases
+        Mat3x3 A3(1.0f, 0.0f, 0.0f, 0.0f, 2.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+        decomposeQl(A3, Qtmp, vtmp);
+        TEST(vtmp == Vec3(2.0f, 1.0f, 1.0f), "Eigenvalues of A3 are wrong!");
+        TEST(approx(A3, transpose(Qtmp) * diag(vtmp) * Qtmp), "Spectral decomposition of A3 failed!");
+        decomposeQl(identity3x3(), Qtmp, vtmp);
+        TEST(vtmp == Vec3(1.0f, 1.0f, 1.0f), "Eigenvalues of identity3x3 are wrong!");
+        TEST(Qtmp == Mat3x3(1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f), "Eigenvectors of identity3x3 are wrong!");
     }
 
     // ********************************************************************* //

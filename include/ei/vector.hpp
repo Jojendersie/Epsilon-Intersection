@@ -2329,8 +2329,16 @@ namespace ei {
             _Q(1) = normalize(RVec<T,2>(static_cast<T>(1), (_lambda.y - _A[3]) / _A[2]));
         } else {
             // Fallback identity if input was a diagonal matrix
-            _Q[0] = static_cast<T>(1); _Q[1] = static_cast<T>(0);
-            _Q[2] = static_cast<T>(0); _Q[3] = static_cast<T>(1);
+            // Rows might be swapped if eigen values are sorted inversely.
+            if(_A[0] >= _A[3])
+            {
+                _Q[0] = static_cast<T>(1); _Q[1] = static_cast<T>(0);
+                _Q[2] = static_cast<T>(0); _Q[3] = static_cast<T>(1);
+            } else
+            {
+                _Q[0] = static_cast<T>(0); _Q[1] = static_cast<T>(1);
+                _Q[2] = static_cast<T>(1); _Q[3] = static_cast<T>(0);
+            }
         }
         return 1;
     }
@@ -2355,6 +2363,23 @@ namespace ei {
         // The above code suffers from numerical issues. Using doubles helps a bit:
         double q = (double(_A[0]) + double(_A[4]) + double(_A[8])) / 3.0;
         double p1 = sq(double(_A[1])) + sq(double(_A[2])) + sq(double(_A[5]));
+        // Check for diagonal matrix
+        if(p1 < q * 1.0e-015) // Something between 4 and 5 ULP error threshold
+        {
+            // Find the order of the eigenvalues to set lambda and Q in sorted order.
+            // Sort (Network 0,2 0,1 1,2)
+            int i0 = 0, i1 = 1, i2 = 2;
+            if(_A[0] < _A[8]) {i0 = 2; i2 = 0;}
+            if(_A[i0*4] < _A[4]) {i1 = i0; i0 = 1;}
+            if(_A[i1*4] < _A[i2*4]) {int i = i2; i2 = i1; i1 = i;}
+            _lambda[i0] = _A[0];
+            _lambda[i1] = _A[4];
+            _lambda[i2] = _A[8];
+            _Q(i0) = RVec<T,3>(1.0, 0.0, 0.0);
+            _Q(i1) = RVec<T,3>(0.0, 1.0, 0.0);
+            _Q(i2) = RVec<T,3>(0.0, 0.0, 1.0);
+            return 1;
+        }
         double p2 = sq(_A[0] - q) + sq(_A[4] - q) + sq(_A[8] - q) + 2.0 * p1;
         double p = sqrt(p2 / 6.0);
         DMat3x3 Bd = (_A - q * identity3x3()) / p;
