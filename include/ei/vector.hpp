@@ -1865,6 +1865,30 @@ namespace ei {
     }
 
     // ********************************************************************* //
+    /// \brief Create a vector which is perpendicular to the input one
+    inline Vec2 perpendicular( const Vec2& _vector )
+    {
+        return Vec2(-_vector.y, _vector.x);
+    }
+    inline RVec2 perpendicular( const RVec2& _vector )
+    {
+        return RVec2(-_vector.y, _vector.x);
+    }
+
+    inline Vec3 perpendicular( const Vec3& _vector )
+    {
+        return abs(_vector.z) < abs(_vector.x) ?
+            Vec3(-_vector.y, _vector.x, 0.0f) :
+            Vec3(0.0f, -_vector.z, _vector.y);
+    }
+    inline RVec3 perpendicular( const RVec3& _vector )
+    {
+        return abs(_vector.z) < abs(_vector.x) ?
+            RVec3(-_vector.y, _vector.x, 0.0f) :
+            RVec3(0.0f, -_vector.z, _vector.y);
+    }
+
+    // ********************************************************************* //
     /// \brief Create an orthonormal basis for a single direction vector
     inline Mat2x2 basis( const Vec2& _vector ) // TESTED
     {
@@ -2393,15 +2417,21 @@ namespace ei {
         _lambda.y = float(3 * q - _lambda.x - _lambda.z);
 
         // Compute eigenvectors for the eigenvalues.
-        // The two idependent columns of A-lambda*I are perpendicular to the eigenvector.
+        // The two independent columns of A-lambda*I are perpendicular to the eigenvector.
         // Since we do not know which of the columns are independent we compute 2 cross
         // products and use the one with the better condition.
+        // There is one problem: if two eigenvalues are equal the vectors are not defined
+        // uniquely. This may happen for the first xor the second block below. If it
+        // happens for the first we don't now the plane in which to find the vector,
+        // which is then defined by the second block -> defer to later.
+        bool deferQ0 = false;
         Mat3x3 B = _A - _lambda.x * identity3x3();
         RVec3 canditate1 = cross(B(0), B(1));
         RVec3 canditate2 = cross(B(0), B(2));
         float l1 = lensq(canditate1);
         float l2 = lensq(canditate2);
-        if(l1 > l2) _Q(0) = canditate1 / sqrt(l1);
+        if(l1 + l2 == 0.0f) deferQ0 = true;
+        else if(l1 > l2) _Q(0) = canditate1 / sqrt(l1);
         else _Q(0) = canditate2 / sqrt(l2);
         // Repeat for the most different eigenvector (much more stable and can handle
         // two identically eigenvalues)
@@ -2410,8 +2440,13 @@ namespace ei {
         canditate2 = cross(B(2), B(0));
         l1 = lensq(canditate1);
         l2 = lensq(canditate2);
-        if(l1 > l2) _Q(2) = canditate1 / sqrt(l1);
+        if(l1 + l2 == 0.0f) {
+            eiAssert(!deferQ0, "Cannot stably compute eigenvectors.");
+            _Q(2) = normalize(perpendicular(_Q(0)));
+        }
+        else if(l1 > l2) _Q(2) = canditate1 / sqrt(l1);
         else _Q(2) = canditate2 / sqrt(l2);
+        if(deferQ0) _Q(0) = normalize(perpendicular(_Q(2)));
         // The third eigenvector is simply the cross product of the other two.
         _Q(1) = cross(_Q(0), _Q(2));
 
