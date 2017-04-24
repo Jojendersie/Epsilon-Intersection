@@ -999,5 +999,57 @@ namespace ei {
         return true;
     }
 
+    bool intersects( const Triangle& _triangle, const OBox& _obox )
+    {
+        // Transform triangle into local box space
+        Triangle alignedTriangle;
+        Mat3x3 rotation(conjugate(_obox.orientation));
+        alignedTriangle.v0 = rotation * (_triangle.v0 - _obox.center);
+        alignedTriangle.v1 = rotation * (_triangle.v1 - _obox.center);
+        alignedTriangle.v2 = rotation * (_triangle.v2 - _obox.center);
+       // return intersects(alignedTriangle, Box(-_obox.halfSides, _obox.halfSides));
+
+        // For details see Triangle <-> Box intersection. The following is
+        // copied and simplified with _obox.min = -_obox.max = -_obox.halfSides.
+        if(any(less(max(alignedTriangle.v0, alignedTriangle.v1, alignedTriangle.v2), -_obox.halfSides)))
+            return false;
+        if(any(greater(min(alignedTriangle.v0, alignedTriangle.v1, alignedTriangle.v2), _obox.halfSides)))
+            return false;
+
+        Vec3 e0 = alignedTriangle.v1 - alignedTriangle.v0;
+        Vec3 e1 = alignedTriangle.v2 - alignedTriangle.v0;
+        Vec3 triNormal = cross(e0, e1); // No need for normalization!
+        float triPlaneOffset = dot(triNormal, alignedTriangle.v0);
+
+        float projMax = dot(abs(triNormal), _obox.halfSides);
+        if(abs(triPlaneOffset) > projMax) // Triangle plane is farther away then the maximum possible box coordinate -> separates
+            return false;
+
+        Vec3 e2 = alignedTriangle.v2 - alignedTriangle.v1;
+        const Vec3 planeDirs[9] = {
+            Vec3(0.0f, e0.z, -e0.y),
+            Vec3(0.0f, e1.z, -e1.y),
+            Vec3(0.0f, e2.z, -e2.y),
+            Vec3(-e0.z, 0.0f, e0.x),
+            Vec3(-e1.z, 0.0f, e1.x),
+            Vec3(-e2.z, 0.0f, e2.x),
+            Vec3(e0.y, -e0.x, 0.0f),
+            Vec3(e1.y, -e1.x, 0.0f),
+            Vec3(e2.y, -e2.x, 0.0f)
+        };
+        for(int i = 0; i < 9; ++i)
+        {
+            projMax = dot(abs(planeDirs[i]), _obox.halfSides);
+            float projTri0 = dot(planeDirs[i], alignedTriangle.v0);
+            float projTri1 = dot(planeDirs[i], alignedTriangle.v1);
+            float projTri2 = dot(planeDirs[i], alignedTriangle.v2);
+            if(min(projTri0, projTri1, projTri2) > projMax || max(projTri0, projTri1, projTri2) < -projMax)
+                return false;
+        }
+
+        // No separating axis found
+        return true;
+    }
+
     ///// TODO: Box <-> Plane intersection. See Case triangle plane to box above.
 }

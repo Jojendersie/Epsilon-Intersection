@@ -204,6 +204,13 @@ namespace ei {
     bool intersects( const Vec3& _point, const Tetrahedron& _tetrahedron );    // TESTED
     inline bool intersects( const Tetrahedron& _tetrahedron, const Vec3& _point ) { return intersects(_point, _tetrahedron); }
 
-    bool intersects( const Triangle& _triangle, const Box& _box );
+    /// \brief Intersection test between triangle and box (based on SAT).
+    /// \return true if the triangle and the box have at least one point in common.
+    bool intersects( const Triangle& _triangle, const Box& _box );             // TESTED
     inline bool intersects( const Box& _box, const Triangle& _triangle ) { return intersects(_triangle, _box); }
+
+    /// \brief Intersection test between triangle and oriented box (based on SAT).
+    /// \return true if the triangle and the box have at least one point in common.
+    bool intersects( const Triangle& _triangle, const OBox& _obox );           // TESTED
+    inline bool intersects( const OBox& _obox, const Triangle& _triangle ) { return intersects(_triangle, _obox); }
 }

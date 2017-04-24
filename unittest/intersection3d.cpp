@@ -427,6 +427,13 @@ bool test_3dintersections()
         TEST( !intersects(box1, tri2), "tri2 outside box1!" );
         TEST( intersects(box1, tri3), "tri3 intersects box1!" );
         performance<Triangle,Box>(intersects, "intersects");
+
+        OBox obo0(Vec3(0.0f, 0.5f, 0.0f), Vec3(0.5f), rotationZ(0.1f));
+        Triangle tri4(Vec3(0.1f, 0.0f, -0.3f), Vec3(0.1f, 0.0f, 0.3f), Vec3(2.0f, 0.0f, 0.0f));
+        Triangle tri5(Vec3(0.1f, 0.0f, -0.3f), Vec3(0.1f, 0.0f, 0.3f), Vec3(-2.0f, 0.0f, 0.0f));
+        TEST( !intersects(obo0, tri4), "tri4 outside obo0!" );
+        TEST( intersects(obo0, tri5), "tri5 intersects obo0!" );
+        performance<Triangle,OBox>(intersects, "intersects");
     }
 
     return result;
