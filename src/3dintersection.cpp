@@ -928,4 +928,76 @@ namespace ei {
         if(any(normp < 0.0f)) return false;
         return dot(normp, Vec3(1.0f)) <= 0.577350269f;*/
     }
+
+    bool intersects( const Triangle& _triangle, const Box& _box )
+    {
+        // Implementation based on SAT.
+        // Like "Fast 3D Triangle-Box Overlap Testing" from Tomas Akenine-Möller.
+
+        // *** Case: A box face separates the triangle. Since the box is axis
+        // aligned, a projection is simply selecting one of the coordinates.
+        if(any(less(max(_triangle.v0, _triangle.v1, _triangle.v2), _box.min)))
+            return false;
+        if(any(greater(min(_triangle.v0, _triangle.v1, _triangle.v2), _box.max)))
+            return false;
+
+        // Some precomputations for upcomming cases.
+        Vec3 e0 = _triangle.v1 - _triangle.v0;
+        Vec3 e1 = _triangle.v2 - _triangle.v0;
+        Vec3 triNormal = cross(e0, e1); // No need for normalization!
+        float triPlaneOffset = -dot(triNormal, _triangle.v0);
+
+        // *** Case: The triangle plane separates the box.
+        // Instead looping over all eight corners we only compute the minimum and
+        // the maximum projected coordinate. If they have different signs the triangle
+        // plane (not the triangle) intersects the box.
+        // The minimum and maximum depend on the plane normal direction.
+        // The combination which maximizes the dot product is the larger coord (max)
+        // if the coord in the normal is positive and the smaller one if it is negative.
+        // The same goes for minimizing.
+        float projMin = dot(triNormal, Vec3(triNormal.x > 0 ? _box.min.x : _box.max.x,
+            triNormal.y > 0 ? _box.min.y : _box.max.y,
+            triNormal.z > 0 ? _box.min.z : _box.max.z)) + triPlaneOffset;
+        float projMax = dot(triNormal, Vec3(triNormal.x < 0 ? _box.min.x : _box.max.x,
+            triNormal.y < 0 ? _box.min.y : _box.max.y,
+            triNormal.z < 0 ? _box.min.z : _box.max.z)) + triPlaneOffset;
+        if(projMin * projMax > 0.0f) // Same sign -> separates
+            return false;
+
+        // *** Case: Separating plane is maybe defined by one of the 9
+        // box<->triangle edge combinations.
+        // We can do some optimizations because of axis alignment (cross products with
+        // unit axis vectors).
+        Vec3 e2 = _triangle.v2 - _triangle.v1;
+        const Vec3 planeDirs[9] = {
+            Vec3(0.0f, e0.z, -e0.y),
+            Vec3(0.0f, e1.z, -e1.y),
+            Vec3(0.0f, e2.z, -e2.y),
+            Vec3(-e0.z, 0.0f, e0.x),
+            Vec3(-e1.z, 0.0f, e1.x),
+            Vec3(-e2.z, 0.0f, e2.x),
+            Vec3(e0.y, -e0.x, 0.0f),
+            Vec3(e1.y, -e1.x, 0.0f),
+            Vec3(e2.y, -e2.x, 0.0f)
+        };
+        for(int i = 0; i < 9; ++i)
+        {
+            projMin = dot(planeDirs[i], Vec3(planeDirs[i].x > 0 ? _box.min.x : _box.max.x,
+                planeDirs[i].y > 0 ? _box.min.y : _box.max.y,
+                planeDirs[i].z > 0 ? _box.min.z : _box.max.z));
+            projMax = dot(planeDirs[i], Vec3(planeDirs[i].x < 0 ? _box.min.x : _box.max.x,
+                planeDirs[i].y < 0 ? _box.min.y : _box.max.y,
+                planeDirs[i].z < 0 ? _box.min.z : _box.max.z));
+            float projTri0 = dot(planeDirs[i], _triangle.v0);
+            float projTri1 = dot(planeDirs[i], _triangle.v1);
+            float projTri2 = dot(planeDirs[i], _triangle.v2);
+            if(min(projTri0, projTri1, projTri2) > projMax || max(projTri0, projTri1, projTri2) < projMin)
+                return false;
+        }
+
+        // No separating axis found
+        return true;
+    }
+
+    ///// TODO: Box <-> Plane intersection. See Case triangle plane to box above.
 }

@@ -2388,7 +2388,7 @@ namespace ei {
         double q = (double(_A[0]) + double(_A[4]) + double(_A[8])) / 3.0;
         double p1 = sq(double(_A[1])) + sq(double(_A[2])) + sq(double(_A[5]));
         // Check for diagonal matrix
-        if(p1 < q * 1.0e-015) // Something between 4 and 5 ULP error threshold
+        if(p1 <= q * 1.0e-015) // Something between 4 and 5 ULP error threshold
         {
             // Find the order of the eigenvalues to set lambda and Q in sorted order.
             // Sort (Network 0,2 0,1 1,2)

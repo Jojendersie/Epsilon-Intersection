@@ -141,7 +141,7 @@ template<> inline const char* name<ei::DOP>() { return "DOP"; }
 /// \brief Generic performance testing method for 2 parameters
 template<class P0, class P1, class R> void performance(R (*_func)(const P0&, const P1&), const char* _funcName)
 {
-    float perfIndex = 0.0f;
+    double perfIndex = 0.0f;
     uint64 totalTicks = 0;
     for(int t = 0; t < PERF_ITERATIONS; ++t)
     {
@@ -160,26 +160,25 @@ template<class P0, class P1, class R> void performance(R (*_func)(const P0&, con
         for(int i = 0; i < TEST_PER_ITERATION; ++i)
             res = _func(geo0[i], geo1[i]);
         uint64 b = ticks();
-        // Measure dot products to compare
+        // Measure cross products to compare
         ei::Vec3* source0 = reinterpret_cast<ei::Vec3*>(geo0.data());
         ei::Vec3* source1 = reinterpret_cast<ei::Vec3*>(geo1.data());
         volatile float xres;
-        for(int j = 0; j < 8; ++j)
-            for(int i = 0; i < TEST_PER_ITERATION; ++i)
-                 xres = sum(cross(source0[i], source1[i]));
+        for(int i = 0; i < TEST_PER_ITERATION; ++i)
+            xres = lensq(cross(source0[i], source1[i]));
         uint64 c = ticks();
-        perfIndex += (b-a) * 8.0f / (c-b);
+        perfIndex += (b-a) / double(c-b);
         totalTicks += b-a;
     }
     std::cerr << "Performance " << _funcName << '(' << name<P0>() << ", " << name<P1>() << "): "
-        << perfIndex/PERF_ITERATIONS << " absolute ticks: " << totalTicks / float(PERF_ITERATIONS * TEST_PER_ITERATION) << std::endl;
+        << float(perfIndex/PERF_ITERATIONS) << " absolute ticks: " << totalTicks / float(PERF_ITERATIONS * TEST_PER_ITERATION) << std::endl;
 }
 
 // ************************************************************************* //
 /// \brief Generic performance testing method for 3 parameters
 template<class P0, class P1, class P2, class R> void performance(R (*_func)(const P0&, const P1&, P2&), const char* _funcName)
 {
-    float perfIndex = 0.0f;
+    double perfIndex = 0.0f;
     uint64 totalTicks = 0;
     for(int t = 0; t < PERF_ITERATIONS; ++t)
     {
@@ -202,18 +201,17 @@ template<class P0, class P1, class P2, class R> void performance(R (*_func)(cons
             eat = rt;
         }
         uint64 b = ticks();
-        // Measure dot products to compare
+        // Measure cross products to compare
         ei::Vec3* source0 = reinterpret_cast<ei::Vec3*>(geo0.data());
         ei::Vec3* source1 = reinterpret_cast<ei::Vec3*>(geo1.data());
         volatile float xres;
-        for(int j = 0; j < 8; ++j)
-            for(int i = 0; i < TEST_PER_ITERATION; ++i)
-                 xres = sum(cross(source0[i], source1[i]));
+        for(int i = 0; i < TEST_PER_ITERATION; ++i)
+             xres = lensq(cross(source0[i], source1[i]));
         uint64 c = ticks();
-        perfIndex += (b-a) * 8.0f / (c-b);
+        perfIndex += (b-a) / double(c-b);
         totalTicks += b-a;
     }
     std::cerr << "Performance " << _funcName << '(' << name<P0>() << ", " << name<P1>() << ", " << name<P2>() << "): "
-        << perfIndex/PERF_ITERATIONS << " absolute ticks: " << totalTicks / float(PERF_ITERATIONS * TEST_PER_ITERATION) << std::endl;
+        << float(perfIndex/PERF_ITERATIONS) << " absolute ticks: " << totalTicks / float(PERF_ITERATIONS * TEST_PER_ITERATION) << std::endl;
 }
 

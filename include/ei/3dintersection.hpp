@@ -204,4 +204,6 @@ namespace ei {
     bool intersects( const Vec3& _point, const Tetrahedron& _tetrahedron );    // TESTED
     inline bool intersects( const Tetrahedron& _tetrahedron, const Vec3& _point ) { return intersects(_point, _tetrahedron); }
 
+    bool intersects( const Triangle& _triangle, const Box& _box );
+    inline bool intersects( const Box& _box, const Triangle& _triangle ) { return intersects(_triangle, _box); }
 }

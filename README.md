@@ -36,6 +36,7 @@ Each header includes all its depenencies. So, dependent on what functionality yo
 The configuration system of epsilon works as follows:
 
 All files expect to include the config.hpp (or depend on it). The repository only contains a defaultconfig.hpp. This should be copied and renamed accordingly. Thus, you can use epsilon as submodule in other repositories. Since the new (renamed) config file is not part of this repository you can change it as you want.
+You only need to make sure the file is found from your compiler if parsing the epsilon files.
 
 
 Range of Functions
@@ -46,7 +47,7 @@ Range of Functions
   * Matrices
 	  * transformations: rotation, translation, projection
 	  * determinant and other matrix utilities
-	  * LU decomposition
+	  * LU decomposition, 2D/3D spectral decomposition
   * Lots of 2D and 3D shapes
 	  * area(), volume(), surface() and center()
 	  * conversion/construction of bounding shapes for other shapes
@@ -59,16 +60,16 @@ Available Intersection Methods
 -------------------------------------------------------------------------------
 
 The following table gives an overview over the implemented intersection methods.
-The numbers are performance indices (relative numbers) and can be used to
-compare a method's realtive execution speed.
+The numbers are performance indices (numbers relative to lensq(cross(a,b)) timing).
+They can be used to compare a method's relative execution speed.
 Cells with a * are implemented but not measured.
 
-Benchmarkconfigs: i7-4510U, VS2013, /O2, Win32 and the same with an i7-4950S
+Benchmarkconfigs: VS2015, /O2, Win32 on an i7-4950S
 
 |                 | Box  | Cap. | Disc | DOP  | Ell. | Fru. | Line | OBox | OEl. | Pla. | Poi. | Ray  | Sph. | The. | Tri. |
 |-----------------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|
-|**Box**          | 8.11 | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
-|**Capsule**      |      | 17.1 | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
+|**Box**          | 3.77 | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
+|**Capsule**      |      | 13.5 | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
 |**Disc**         |      |      |      | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
 |**DOP**          |      |      |      |      | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
 |**Ellipsoid**    |      |      |      |      |      | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
@@ -77,8 +78,8 @@ Benchmarkconfigs: i7-4510U, VS2013, /O2, Win32 and the same with an i7-4950S
 |**OBox**         |      |      |      |      |      |      |      |      | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
 |**OEllipsoid**   |      |      |      |      |      |      |      |      |      | ---- | ---- | ---- | ---- | ---- | ---- |
 |**Plane**        |      |      |      |      |      |      |      |      |      |      | ---- | ---- | ---- | ---- | ---- |
-|**Point**        | 5.88 | 8.09 | ---- | 3.94 | 3.40 | *    | ---- | 11.7 | 7.31 | ---- | ---- | ---- | ---- | ---- | ---- |
-|**Ray**          | 15.3 |      |      |      | 11.2 | *    | ---- | *    |      |      | ---- | ---- | ---- | ---- | ---- |
-|**Sphere**       | 6.71 | 8.23 |      |      |      |      |      |      |      | 1.71 | 1.68 | 3.40 | 1.79 | ---- | ---- |
-|**Thetrahedron** |      |      |      |      |      |      |      |      |      |      | 12.3 |      |      |      | ---- |
-|**Triangle**     |      |      |      |      |      |      |      |      |      |      | ---- | 12.2 | 22.9 |      |      |
+|**Point**        | 4.41 | 6.60 | ---- | 3.72 | 2.66 | *    | ---- | 8.42 | 5.41 | ---- | ---- | ---- | ---- | ---- | ---- |
+|**Ray**          | 8.25 |      |      |      | 8.43 | *    | ---- | 15.2 |      |      | ---- | ---- | ---- | ---- | ---- |
+|**Sphere**       | 5.04 | 6.86 |      |      |      |      |      |      |      | 1.28 | 1.32 | 2.48 | 1.42 | ---- | ---- |
+|**Thetrahedron** |      |      |      |      |      |      |      |      |      |      | 9.22 |      |      |      | ---- |
+|**Triangle**     |      |      |      |      |      |      |      |      |      |      | ---- | 9.66 | 16.9 |      |      |

@@ -410,5 +410,24 @@ bool test_3dintersections()
         TEST( intersects( box7, ffr0 ), "box7 intersects fru0!" );
     }
 
+    // Test box <-> triangle intersection
+    {
+        Box box0(Vec3(-0.5f), Vec3(0.5f));
+        Box box1(Vec3(1.0f), Vec3(2.0f, 3.0f, 4.0f));
+        Triangle tri0(Vec3(0.0f), Vec3(0.2f), Vec3(0.1f, -0.1f, 0.2f)); // Fully inside box0, outside box1
+        Triangle tri1(Vec3(0.4f), Vec3(1.5f, 10.0f, 0.4f), Vec3(1.5f, 11.0f, 2.0f)); // One vertex in box0, outside box1
+        Triangle tri2(Vec3(1.5f, 2.0f, 0.0f), Vec3(1.5f, 5.0f, 2.0f), Vec3(1.5f, 4.0f, -1.0f)); // Edge overlap outside box1
+        Triangle tri3(Vec3(1.5f, 2.0f, 0.0f), Vec3(1.5f, 3.5f, 5.0f), Vec3(1.5f, 4.0f, -1.0f)); // Edge overlap intersecting box1
+
+        TEST( intersects(box0, tri0), "tri0 inside box0!" );
+        TEST( !intersects(box1, tri0), "tri0 outside box1!" );
+        TEST( intersects(box0, tri1), "tri1 intersects box0!" );
+        TEST( !intersects(box1, tri1), "tri1 outside box1!" );
+        TEST( !intersects(box0, tri2), "tri2 outside box0!" );
+        TEST( !intersects(box1, tri2), "tri2 outside box1!" );
+        TEST( intersects(box1, tri3), "tri3 intersects box1!" );
+        performance<Triangle,Box>(intersects, "intersects");
+    }
+
     return result;
 }
