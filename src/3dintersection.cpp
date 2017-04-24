@@ -946,7 +946,9 @@ namespace ei {
         Vec3 e0 = _triangle.v1 - _triangle.v0;
         Vec3 e1 = _triangle.v2 - _triangle.v0;
         Vec3 triNormal = cross(e0, e1); // No need for normalization!
-        float triPlaneOffset = -dot(triNormal, _triangle.v0);
+        Vec3 boxCenter = center(_box);
+        Vec3 boxSideHalf = (_box.max - _box.min) * 0.5f;
+        Vec3 v0 = _triangle.v0 - boxCenter;
 
         // *** Case: The triangle plane separates the box.
         // Instead looping over all eight corners we only compute the minimum and
@@ -956,13 +958,9 @@ namespace ei {
         // The combination which maximizes the dot product is the larger coord (max)
         // if the coord in the normal is positive and the smaller one if it is negative.
         // The same goes for minimizing.
-        float projMin = dot(triNormal, Vec3(triNormal.x > 0 ? _box.min.x : _box.max.x,
-            triNormal.y > 0 ? _box.min.y : _box.max.y,
-            triNormal.z > 0 ? _box.min.z : _box.max.z)) + triPlaneOffset;
-        float projMax = dot(triNormal, Vec3(triNormal.x < 0 ? _box.min.x : _box.max.x,
-            triNormal.y < 0 ? _box.min.y : _box.max.y,
-            triNormal.z < 0 ? _box.min.z : _box.max.z)) + triPlaneOffset;
-        if(projMin * projMax > 0.0f) // Same sign -> separates
+        float triPlaneOffset = -dot(triNormal, v0);
+        float projMax = dot(abs(triNormal), boxSideHalf);
+        if(abs(triPlaneOffset) > projMax) // Triangle plane is farther away then the maximum possible box coordinate -> separates
             return false;
 
         // *** Case: Separating plane is maybe defined by one of the 9
@@ -970,6 +968,8 @@ namespace ei {
         // We can do some optimizations because of axis alignment (cross products with
         // unit axis vectors).
         Vec3 e2 = _triangle.v2 - _triangle.v1;
+        Vec3 v1 = _triangle.v1 - boxCenter;
+        Vec3 v2 = _triangle.v2 - boxCenter;
         const Vec3 planeDirs[9] = {
             Vec3(0.0f, e0.z, -e0.y),
             Vec3(0.0f, e1.z, -e1.y),
@@ -983,16 +983,11 @@ namespace ei {
         };
         for(int i = 0; i < 9; ++i)
         {
-            projMin = dot(planeDirs[i], Vec3(planeDirs[i].x > 0 ? _box.min.x : _box.max.x,
-                planeDirs[i].y > 0 ? _box.min.y : _box.max.y,
-                planeDirs[i].z > 0 ? _box.min.z : _box.max.z));
-            projMax = dot(planeDirs[i], Vec3(planeDirs[i].x < 0 ? _box.min.x : _box.max.x,
-                planeDirs[i].y < 0 ? _box.min.y : _box.max.y,
-                planeDirs[i].z < 0 ? _box.min.z : _box.max.z));
-            float projTri0 = dot(planeDirs[i], _triangle.v0);
-            float projTri1 = dot(planeDirs[i], _triangle.v1);
-            float projTri2 = dot(planeDirs[i], _triangle.v2);
-            if(min(projTri0, projTri1, projTri2) > projMax || max(projTri0, projTri1, projTri2) < projMin)
+            projMax = dot(abs(planeDirs[i]), boxSideHalf);
+            float projTri0 = dot(planeDirs[i], v0);
+            float projTri1 = dot(planeDirs[i], v1);
+            float projTri2 = dot(planeDirs[i], v2);
+            if(min(projTri0, projTri1, projTri2) > projMax || max(projTri0, projTri1, projTri2) < -projMax)
                 return false;
         }
 
