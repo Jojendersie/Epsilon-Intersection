@@ -213,4 +213,14 @@ namespace ei {
     /// \return true if the triangle and the box have at least one point in common.
     bool intersects( const Triangle& _triangle, const OBox& _obox );           // TESTED
     inline bool intersects( const OBox& _obox, const Triangle& _triangle ) { return intersects(_triangle, _obox); }
+
+    /// \brief Intersection test between plane and box.
+    /// \return true if the plane and the box have at least one point in common.
+    bool intersects( const Plane& _plane, const Box& _box );
+    inline bool intersects( const Box& _box, const Plane& _plane ) { return intersects(_plane, _box); }
+
+    /// \brief Intersection test between plane and oriented box.
+    /// \return true if the plane and the oriented box have at least one point in common.
+    bool intersects( const Plane& _plane, const OBox& _obox );
+    inline bool intersects( const OBox& _obox, const Plane& _plane ) { return intersects(_plane, _obox); }
 }

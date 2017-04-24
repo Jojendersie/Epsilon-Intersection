@@ -929,6 +929,7 @@ namespace ei {
         return dot(normp, Vec3(1.0f)) <= 0.577350269f;*/
     }
 
+    // ********************************************************************* //
     bool intersects( const Triangle& _triangle, const Box& _box )
     {
         // Implementation based on SAT.
@@ -941,7 +942,7 @@ namespace ei {
         if(any(greater(min(_triangle.v0, _triangle.v1, _triangle.v2), _box.max)))
             return false;
 
-        // Some precomputations for upcomming cases.
+        // Some precomputations for upcoming cases.
         Vec3 e0 = _triangle.v1 - _triangle.v0;
         Vec3 e1 = _triangle.v2 - _triangle.v0;
         Vec3 triNormal = cross(e0, e1); // No need for normalization!
@@ -999,6 +1000,7 @@ namespace ei {
         return true;
     }
 
+    // ********************************************************************* //
     bool intersects( const Triangle& _triangle, const OBox& _obox )
     {
         // Transform triangle into local box space
@@ -1051,5 +1053,37 @@ namespace ei {
         return true;
     }
 
-    ///// TODO: Box <-> Plane intersection. See Case triangle plane to box above.
+    // ********************************************************************* //
+    bool intersects( const Plane& _plane, const Box& _box )
+    {
+        // Instead looping over all eight corners we only compute the minimum and
+        // the maximum projected coordinate. If they have different signs the
+        // plane intersects the box.
+        // The minimum and maximum depend on the plane normal direction.
+        // The combination which maximizes the dot product is the larger coord (max)
+        // if the normal is positive and the smaller one if it is negative in
+        // the respective component.
+        // The same goes for minimizing.
+        /*float projMin = dot(_plane.n, Vec3(_plane.n.x > 0 ? _box.min.x : _box.max.x,
+            _plane.n.y > 0 ? _box.min.y : _box.max.y,
+            _plane.n.z > 0 ? _box.min.z : _box.max.z)) + _plane.d;
+        float projMax = dot(_plane.n, Vec3(_plane.n.x < 0 ? _box.min.x : _box.max.x,
+            _plane.n.y < 0 ? _box.min.y : _box.max.y,
+            _plane.n.z < 0 ? _box.min.z : _box.max.z)) + _plane.d;
+        return projMin * projMax <= 0.0f; // Same sign -> separates*/
+
+        // Weird: the following one is faster.
+        float boxLocalPlaneOffset = _plane.d + dot(_plane.n, center(_box));
+        float projMax = dot(abs(_plane.n), _box.max - _box.min) * 0.5f;
+        return abs(boxLocalPlaneOffset) <= projMax;
+    }
+
+    // ********************************************************************* //
+    bool intersects( const Plane& _plane, const OBox& _obox )
+    {
+        float boxLocalPlaneOffset = _plane.d + dot(_plane.n, _obox.center);
+        Vec3 boxLocalPlaneNormal = transform(_plane.n, conjugate(_obox.orientation));
+        float projMax = dot(abs(boxLocalPlaneNormal), _obox.halfSides);
+        return abs(boxLocalPlaneOffset) <= projMax; // Plane is farther away then the maximum possible box coordinate -> separates
+    }
 }

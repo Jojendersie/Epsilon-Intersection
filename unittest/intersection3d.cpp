@@ -410,7 +410,7 @@ bool test_3dintersections()
         TEST( intersects( box7, ffr0 ), "box7 intersects fru0!" );
     }
 
-    // Test box <-> triangle intersection
+    // Test (oriented) box <-> triangle intersection
     {
         Box box0(Vec3(-0.5f), Vec3(0.5f));
         Box box1(Vec3(1.0f), Vec3(2.0f, 3.0f, 4.0f));
@@ -434,6 +434,39 @@ bool test_3dintersections()
         TEST( !intersects(obo0, tri4), "tri4 outside obo0!" );
         TEST( intersects(obo0, tri5), "tri5 intersects obo0!" );
         performance<Triangle,OBox>(intersects, "intersects");
+    }
+
+    // Test (oriented) box <-> plane intersection
+    {
+        Box box0(Vec3(-0.5f), Vec3(0.5f));
+        Plane pla0(normalize(Vec3(1.0f, 0.0f, 0.0f)), 0.2f); // Intersects
+        Plane pla1(normalize(Vec3(1.0f, 0.0f, 0.0f)), 0.5f); // Touches
+        Plane pla2(normalize(Vec3(1.0f, 0.0f, 0.0f)), 1.0f); // No intersection
+        Plane pla3(normalize(Vec3(1.0f, 1.0f, 0.0f)), -0.2f); // Intersects
+        Plane pla4(normalize(Vec3(1.0f, 1.0f, 0.0f)), 0.72f); // No intersection
+        Plane pla5(normalize(Vec3(1.0f, 1.0f, 1.0f)), -0.6f); // Intersects
+        Plane pla6(normalize(Vec3(1.0f, 1.0f, 1.0f)), 1.5f); // No intersection
+        TEST( intersects(pla0, box0), "pla0 intersects box0!" );
+        TEST( intersects(pla1, box0), "pla1 touches box0!" );
+        TEST( !intersects(pla2, box0), "pla2 outside box0!" );
+        TEST( intersects(pla3, box0), "pla3 intersects box0!" );
+        TEST( !intersects(pla4, box0), "pla4 outside box0!" );
+        TEST( intersects(pla5, box0), "pla5 intersects box0!" );
+        TEST( !intersects(pla6, box0), "pla6 outside box0!" );
+        performance<Plane,Box>(intersects, "intersects");
+
+        OBox obo0(Vec3(1.0f, 2.0f, 1.0f), Vec3(0.5f, 0.5f, 1.0f), Quaternion(0.0f, -PI/4, 0.0f));
+        Plane pla7(normalize(Vec3(1.0f, 0.0f, 1.0f)), 0.0f);
+        Plane pla8(normalize(Vec3(1.0f, 0.0f, 1.0f)), -1.0f);
+        Plane pla9(normalize(Vec3(1.0f, 0.0f, 1.0f)), -1.95f);
+        Plane pla10(normalize(Vec3(1.0f, 0.0f, -1.0f)), 0.0f);
+        Plane pla11(normalize(Vec3(1.0f, 0.0f, -1.0f)), 1.1f);
+        TEST( !intersects(pla7, obo0), "pla7 outside obo0!" );
+        TEST( intersects(pla8, obo0), "pla8 intersects obo0!" );
+        TEST( !intersects(pla9, obo0), "pla9 outside obo0!" );
+        TEST( intersects(pla10, obo0), "pla10 intersects obo0!" );
+        TEST( !intersects(pla11, obo0), "pla11 outside obo0!" );
+        performance<Plane,OBox>(intersects, "intersects");
     }
 
     return result;

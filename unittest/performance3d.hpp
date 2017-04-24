@@ -134,8 +134,8 @@ template<> inline const char* name<ei::DOP>() { return "DOP"; }
     const int PERF_ITERATIONS = 100;
     const int TEST_PER_ITERATION = 100;
 #else
-    const int PERF_ITERATIONS = 5000;
-    const int TEST_PER_ITERATION = 1000;
+    const int PERF_ITERATIONS = 2000;
+    const int TEST_PER_ITERATION = 3000;
 #endif
 
 /// \brief Generic performance testing method for 2 parameters
