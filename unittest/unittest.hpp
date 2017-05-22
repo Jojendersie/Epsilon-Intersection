@@ -8,8 +8,12 @@
     }
 
 ei::uint64 ticks();
-/// \brief A function to avoid too havy code optimization (code cannot be deleted)
+float deltaTicksToMicroSeconds(ei::uint64 _deltaTicks);
+float deltaTicksToMilliSeconds(ei::uint64 _deltaTicks);
+float deltaTicksToSeconds(ei::uint64 _deltaTicks);
+/// \brief A function to avoid too heavy code optimization (code cannot be deleted)
 void eatMyDummy(float _dummy);
+void eatMyDummy(bool _dummy);
 
 
 /// \brief Returns a number in [0,1]

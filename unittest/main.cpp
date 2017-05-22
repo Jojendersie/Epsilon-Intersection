@@ -9,11 +9,15 @@ bool test_2dintersections();
 bool test_3dtypes();
 bool test_3dintersections();
 bool test_stdextensions();
+bool test_primes();
 
 int main()
 {
     if( test_elementaries() )
         cerr << "Successfully completed: Elementary types." << std::endl;
+
+    if( test_primes() )
+        cerr << "Successfully completed: Primes." << std::endl;
 
     if( test_stdextensions() )
         cerr << "Successfully completed: std:extensions." << std::endl;
