@@ -88,6 +88,18 @@ inline Rect2D::Rect2D( const Vec2& _min, const Vec2& _max ) :
 }
 
 // ************************************************************************* //
+inline Rect2D::Rect2D( const Vec2* _points, uint32 _numPoints )
+{
+    eiAssert( _points && _numPoints > 0, "The point list must have at least one point." );
+    min = max = *_points++;
+    for( uint32 i = 1; i < _numPoints; ++i, ++_points )
+    {
+        min = ei::min(min, *_points);
+        max = ei::max(max, *_points);
+    }
+}
+
+// ************************************************************************* //
 inline ORect2D::ORect2D( const Vec2& _center, const Vec2& _size, float _angle ) :
     center(_center),
     size(_size),

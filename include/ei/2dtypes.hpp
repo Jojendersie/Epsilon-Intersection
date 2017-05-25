@@ -88,6 +88,9 @@ namespace ei {
 
         /// \brief Construct from minimal and maximal coordinates
         Rect2D( const Vec2& _min, const Vec2& _max );                          // TESTED
+
+        /// \brief Create an optimal box for a set of points
+        Rect2D( const Vec2* _points, uint32 _numPoints );
     };
 
     struct ORect2D

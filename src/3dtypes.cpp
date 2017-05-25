@@ -169,7 +169,7 @@ namespace ei {
     // ********************************************************************* //
     Box::Box( const Vec3* _points, uint32 _numPoints )
     {
-        eiAssert( _numPoints > 0, "The point list must have at least one point." );
+        eiAssert( _points && _numPoints > 0, "The point list must have at least one point." );
         min = max = *_points++;
         for( uint32 i = 1; i < _numPoints; ++i, ++_points )
         {
