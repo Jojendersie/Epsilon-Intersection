@@ -469,5 +469,25 @@ bool test_3dintersections()
         performance<Plane,OBox>(intersects, "intersects");
     }
 
+    // // Test cone <-> point intersection
+    {
+        Cone con0(Vec3(0.0f), Vec3(1.0f, 0.0f, 0.0f), 0.5f, 1000.1f);
+        Vec3 poi0(-1.0f, 0.0f, 0.0f); // Outside
+        Vec3 poi1(0.0f); // Origin
+        Vec3 poi2(1000.0f, 0.0f, 0.0f); // Inside far away
+        Vec3 poi3(2.0f, 1.0f, 0.0f); // On boundary
+        Vec3 poi4(2000.0f, 1.0f, -1.0f); // Outside far away
+        Cone con1(Vec3(-1.0f), normalize(poi3 - Vec3(-1.0f)), 0.5f, 10.0f);
+        TEST( !intersects(con0, poi0), "poi0 should be outside con0!" );
+        TEST( intersects(con0, poi1), "poi1 should intersect con0!" );
+        TEST( intersects(con0, poi2), "poi2 should intersect con0!" );
+        TEST( intersects(con0, poi3), "poi3 should intersect con0!" );
+        TEST( !intersects(con0, poi4), "poi4 should intersect con0!" );
+        TEST( intersects(con1, poi3), "poi3 should intersect con1!" );
+        TEST( !intersects(con1, poi0), "poi0 should intersect con1!" );
+        TEST( !intersects(con1, poi2), "poi2 should intersect con1!" );
+        performance<Cone,Vec3>(intersects, "intersects");
+    }
+
     return result;
 }

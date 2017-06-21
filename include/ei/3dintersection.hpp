@@ -223,4 +223,8 @@ namespace ei {
     /// \return true if the plane and the oriented box have at least one point in common.
     bool intersects( const Plane& _plane, const OBox& _obox );
     inline bool intersects( const OBox& _obox, const Plane& _plane ) { return intersects(_plane, _obox); }
+
+    /// \brief Intersection test between cone and point.
+    bool intersects( const Vec3& _point, const Cone& _cone );
+    inline bool intersects( const Cone& _cone, const Vec3& _point ) { return intersects(_point, _cone); }
 }

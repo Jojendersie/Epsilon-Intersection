@@ -333,22 +333,25 @@ namespace ei {
         Segment(const Ray& _ray, float _distance);
     };
 
-    /// \brief A cone starts in one point and extends to infinity like a ray but
-    ///     has an increasing radius over distance.
+    /// \brief A cone starts in one point and extends to a perpendicular base, also
+    ///     it has an increasing radius over distance (base is a disc).
     struct Cone
     {
         Ray centralRay;
         float tanTheta;     ///< Tangents of the half opening angle.
+        float height;       ///< Distance from origin to the base.
 
         /// \brief Create an uninitialized Cone.
         Cone() {}
 
         /// \brief Create from intuitive parametrization.
-        /// \param [in] _halfOpeningAngle Angle from the central ray to the hull
-        ///     in radiants.
-        Cone(const Vec3& _origin, const Vec3& _direction, float _halfOpeningAngle)
+        /// \param [in] _tanHalfOpeningAngle Tangents of the angle from the
+        ///     central ray to the hull.
+        Cone(const Vec3& _origin, const Vec3& _direction, float _tanHalfOpeningAngle, float _height)
         {
-            tanTheta = tan(_halfOpeningAngle);
+            eiAssert(approx(lensq(_direction), 1.0f), "Expected a normalized direction!");
+            tanTheta = _tanHalfOpeningAngle;
+            height = _height;
             centralRay.origin = _origin;
             centralRay.direction = _direction;
         }
@@ -356,9 +359,10 @@ namespace ei {
         /// \brief Create from direct parametrization.
         /// \param [in] _tanHalfOpeningAngle Tangents of the angle from the
         ///     central ray to the hull.
-        Cone(const Ray& _ray, float _tanHalfOpeningAngle) :
+        Cone(const Ray& _ray, float _tanHalfOpeningAngle, float _height) :
             centralRay(_ray),
-            tanTheta(_tanHalfOpeningAngle)
+            tanTheta(_tanHalfOpeningAngle),
+            height(_height)
         {}
     };
 

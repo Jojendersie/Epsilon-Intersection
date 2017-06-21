@@ -1081,4 +1081,24 @@ namespace ei {
         float projMax = dot(abs(boxLocalPlaneNormal), _obox.halfSides);
         return abs(boxLocalPlaneOffset) <= projMax; // Plane is farther away then the maximum possible box coordinate -> separates
     }
+
+    // ********************************************************************* //
+    bool intersects(const Vec3 & _point, const Cone & _cone)
+    {
+        // The projection of the point to the central ray gives a distance dp.
+        // With dp the radius of the cone can be computed and compared to the
+        // distance d2 between point and projected point.
+        Vec3 oToP = _point - _cone.centralRay.origin;
+        float dp = dot(oToP, _cone.centralRay.direction);
+        if(dp < 0.0f || dp > _cone.height) return false; // Early out: behind cone origin or base
+        // Use Pythagoras to avoid computation of d2 and the projected point.
+        float dOPSq = dot(oToP, oToP);
+        float coneRadius = _cone.tanTheta * dp;
+        // Maybe use an alternative for numerical more stable forms?
+        //     dOPSq - dp * dp <= sq(_cone.tanTheta * dp)
+        // <=> dOPSq - dp * dp <= sq(_cone.tanTheta) * dp * dp
+        // <=> dOPSq / (dp * dp) - 1 <= sq(_cone.tanTheta)
+        // <=> (sqrt(dOPSq) / dp - 1) * (sqrt(dOPSq) / dp + 1) <= sq(_cone.tanTheta)
+        return dOPSq - dp * dp <= sq(_cone.tanTheta * dp);
+    }
 }

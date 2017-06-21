@@ -112,10 +112,18 @@ template<> inline void random<ei::DOP>(ei::DOP& _out)
     _out.d1 = _out.d0 + rnd() - 0.5f;
 }
 
+template<> inline void random<ei::Cone>(ei::Cone& _out)
+{
+    random<ei::Ray>(_out.centralRay);
+    _out.tanTheta = rnd();
+    _out.height = ei::sq(rnd()) * 3.0f;
+}
+
 // Functions to assign names to types
 template<class T> const char* name() { return typeid(T).name(); }
 template<> inline const char* name<ei::Vec3>() { return "Point"; }
 template<> inline const char* name<ei::Ray>() { return "Ray"; }
+template<> inline const char* name<ei::Cone>() { return "Cone"; }
 template<> inline const char* name<ei::Sphere>() { return "Sphere"; }
 template<> inline const char* name<ei::Ellipsoid>() { return "Ellipsoid"; }
 template<> inline const char* name<ei::OEllipsoid>() { return "OEllipsoid"; }
