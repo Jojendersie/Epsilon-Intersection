@@ -445,6 +445,7 @@ namespace ei {
     float volume(const OEllipsoid& _oellipsoid);                               // TESTED
     float volume(const Ray& _ray);                                             // TESTED
     float volume(const Segment& _line);                                        // TESTED
+    float volume(const Cone& _cone);                                           // TESTED
     float volume(const Capsule& _capsule);                                     // TESTED
     float volume(const Frustum& _frustum);                                     // TESTED
 
@@ -461,6 +462,7 @@ namespace ei {
     float surface(const OEllipsoid& _oellipsoid);                              // TESTED
     float surface(const Ray& _ray);                                            // TESTED
     float surface(const Segment& _line);                                       // TESTED
+    float surface(const Cone& _cone);                                          // TESTED
     float surface(const Capsule& _capsule);                                    // TESTED
     float surface(const Frustum& _frustum);                                    // TESTED
 
@@ -490,6 +492,7 @@ namespace ei {
     Vec3 center(const Disc& _disc);                                            // TESTED
     Vec3 center(const Ellipsoid& _ellipsoid);                                  // TESTED
     Vec3 center(const Segment& _line);                                         // TESTED
+    Vec3 center(const Cone& _cone);                                            // TESTED
     Vec3 center(const Capsule& _capsule);                                      // TESTED
     Vec3 center(const Frustum& _frustum);                                      // TESTED
     //Vec3 center(const FastFrustum& _frustum);

@@ -373,6 +373,12 @@ inline float volume(const Segment&)
     return 0.0f;
 }
 
+inline float volume(const Cone& _cone)
+{
+    float r = _cone.height * _cone.tanTheta;
+    return PI / 3.0f * r * r * _cone.height;
+}
+
 inline float volume(const Capsule& _capsule)
 {
     return PI * sq(_capsule.radius) * (_capsule.radius*4.0f/3.0f + len(_capsule.seg.b-_capsule.seg.a));
@@ -461,6 +467,12 @@ inline float surface(const Segment&)
     return 0.0f;
 }
 
+inline float surface(const Cone& _cone)
+{
+    float r = _cone.height * _cone.tanTheta;
+    return PI * r * (r + sqrt(r*r + _cone.height*_cone.height));
+}
+
 inline float surface(const Capsule& _capsule)
 {
     return 2 * PI * _capsule.radius * (2 * _capsule.radius + len(_capsule.seg.b-_capsule.seg.a));
@@ -508,6 +520,11 @@ inline Vec3 center(const Ellipsoid& _ellipsoid)
 inline Vec3 center(const Segment& _line)
 {
     return (_line.a + _line.b) * 0.5f;
+}
+
+inline Vec3 center(const Cone& _cone)
+{
+    return _cone.centralRay.origin + _cone.centralRay.direction * 0.75f;
 }
 
 inline Vec3 center(const Capsule& _capsule)

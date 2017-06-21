@@ -26,6 +26,7 @@ bool test_3dtypes()
         OEllipsoid oel( Vec3(-1.0f, -0.5f, -0.5f), Vec3(1.5f, 0.75f, 0.75f), Quaternion(0.235f, -2.352f, 1.43f));
         Ray ray( Vec3(0.0f), Vec3(1.0f, 0.0f, 0.0f) );
         Segment seg( Vec3(0.0f), Vec3(2.0f, 0.0f, 0.0f) );
+        Cone con( Vec3(0.0f), Vec3(1.0f, 0.0f, 0.0f), 1.0f, 1.0f );
         Capsule cap( Vec3(0.0f), Vec3(0.0f, 1.0f, 0.0f), 0.5f );
         Frustum fru( Vec3(0.0f), Vec3(0.0f, 0.0f, 1.0f), Vec3(0.0f, 1.0f, 0.0f), 1.0f, 2.0f, 0.0f, 1.0f, 0.0f, 1.0f );
         Frustum fru2( Vec3(0.0f), Vec3(0.0f, 0.0f, 1.0f), Vec3(0.0f, 1.0f, 0.0f), 1.0f, 2.0f, 0.0f, 1.0f, 0.5f, 1.0f );
@@ -42,6 +43,7 @@ bool test_3dtypes()
         TEST( volume(oel) == 3.53429174f, "Volume of ar oriented ellipsoid wrong!" );
         TEST( volume(ray) == 0.0f, "Volume of a ray wrong!" );
         TEST( volume(seg) == 0.0f, "Volume of a segment wrong!" );
+        TEST( volume(con) == 1.047197551f, "Volume of a cone wrong!" );
         TEST( volume(cap) == 1.30899704f, "Volume of a capsule wrong!" );
         TEST( volume(fru) == 0.33333333f, "Volume of a frustum wrong!" );
         float vol0 = volume(fru2), vol1 = volume(fru3);
@@ -59,6 +61,7 @@ bool test_3dtypes()
         TEST( approx(surface(oel), 12.0816f, 0.012f), "Surface approximation of an oriented ellipsoid too far away!" );
         TEST( surface(ray) == 0.0f, "Surface of a ray wrong!" );
         TEST( surface(seg) == 0.0f, "Surface of a segment wrong!" );
+        TEST( approx(surface(con), 7.584475592f), "Surface of a cone wrong!" );
         TEST( surface(cap) == 6.283185307f, "Surface of a capsule wrong!" );
         Vec3 a(1.0f, 0.0f, 1.0f), b(2.0f, 0.0f, 1.0f), c(2.0f, 1.0f, 1.0f), d(1.0f, 1.0f, 1.0f);
         float refA3_A5 = 0.5f * (len(cross(a, b)) + len(cross(c, d)));
@@ -73,6 +76,7 @@ bool test_3dtypes()
         TEST( center(dis) == Vec3(1.0f), "Center of disc wrong!" );
         TEST( center(ell) == Vec3(-1.0f, -0.5f, -0.5f), "Center of ellipsoid wrong!" );
         TEST( center(seg) == Vec3(1.0f, 0.0f, 0.0f), "Center of line segment wrong!" );
+        TEST( center(con) == Vec3(0.75f, 0.0f, 0.0f), "Center of cone wrong!" );
         TEST( center(cap) == Vec3(0.0f, 0.5f, 0.0f), "Center of capsule wrong!" );
         TEST( center(fru) == Vec3(1.125f, 0.375f, 0.75f), "Center of frustum wrong!" );
         Vec3 c0 = center(fru2), c1 = center(fru3);
