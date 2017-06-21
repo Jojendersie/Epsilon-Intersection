@@ -15,6 +15,7 @@ namespace ei {
     struct Tetrahedron;
     struct Ray;
     struct Segment;
+    struct Cone;
     struct Frustum;
     struct Ellipsoid;
     struct OEllipsoid;
@@ -330,6 +331,35 @@ namespace ei {
         /// \param [in] _distance Length of the ray to define the end point of
         ///     the line.
         Segment(const Ray& _ray, float _distance);
+    };
+
+    /// \brief A cone starts in one point and extends to infinity like a ray but
+    ///     has an increasing radius over distance.
+    struct Cone
+    {
+        Ray centralRay;
+        float tanTheta;     ///< Tangents of the half opening angle.
+
+        /// \brief Create an uninitialized Cone.
+        Cone() {}
+
+        /// \brief Create from intuitive parametrization.
+        /// \param [in] _halfOpeningAngle Angle from the central ray to the hull
+        ///     in radiants.
+        Cone(const Vec3& _origin, const Vec3& _direction, float _halfOpeningAngle)
+        {
+            tanTheta = tan(_halfOpeningAngle);
+            centralRay.origin = _origin;
+            centralRay.direction = _direction;
+        }
+
+        /// \brief Create from direct parametrization.
+        /// \param [in] _tanHalfOpeningAngle Tangents of the angle from the
+        ///     central ray to the hull.
+        Cone(const Ray& _ray, float _tanHalfOpeningAngle) :
+            centralRay(_ray),
+            tanTheta(_tanHalfOpeningAngle)
+        {}
     };
 
     /// \brief A cylinder with hemispherical ends.
