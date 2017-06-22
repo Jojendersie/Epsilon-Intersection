@@ -3,6 +3,8 @@
 #include <iostream>
 #include <vector>
 #include <typeinfo>
+#include <algorithm>
+#include <numeric>
 
 
 // ************************************************************************* //
@@ -128,37 +130,97 @@ template<> inline void random<ei::FastCone>(ei::FastCone& _out)
 
 // Functions to assign names to types
 template<class T> const char* name() { return typeid(T).name(); }
-template<> inline const char* name<ei::Vec3>() { return "Point"; }
-template<> inline const char* name<ei::Ray>() { return "Ray"; }
-template<> inline const char* name<ei::Cone>() { return "Cone"; }
-template<> inline const char* name<ei::FastCone>() { return "Fast Cone"; }
-template<> inline const char* name<ei::Sphere>() { return "Sphere"; }
-template<> inline const char* name<ei::Ellipsoid>() { return "Ellipsoid"; }
-template<> inline const char* name<ei::OEllipsoid>() { return "OEllipsoid"; }
-template<> inline const char* name<ei::Box>() { return "Box"; }
-template<> inline const char* name<ei::OBox>() { return "Oriented Box"; }
-template<> inline const char* name<ei::Triangle>() { return "Triangle"; }
-template<> inline const char* name<ei::Tetrahedron>() { return "Tetrahedron"; }
-template<> inline const char* name<ei::Capsule>() { return "Capsule"; }
-template<> inline const char* name<ei::Plane>() { return "Plane"; }
-template<> inline const char* name<ei::DOP>() { return "DOP"; }
+template<> inline const char* name<ei::Vec3>()          { return "       Point"; }
+template<> inline const char* name<ei::Ray>()           { return "         Ray"; }
+template<> inline const char* name<ei::Cone>()          { return "        Cone"; }
+template<> inline const char* name<ei::FastCone>()      { return "   Fast Cone"; }
+template<> inline const char* name<ei::Sphere>()        { return "      Sphere"; }
+template<> inline const char* name<ei::Ellipsoid>()     { return "   Ellipsoid"; }
+template<> inline const char* name<ei::OEllipsoid>()    { return "  OEllipsoid"; }
+template<> inline const char* name<ei::Box>()           { return "         Box"; }
+template<> inline const char* name<ei::OBox>()          { return "Oriented Box"; }
+template<> inline const char* name<ei::Triangle>()      { return "    Triangle"; }
+template<> inline const char* name<ei::Tetrahedron>()   { return " Tetrahedron"; }
+template<> inline const char* name<ei::Capsule>()       { return "     Capsule"; }
+template<> inline const char* name<ei::Plane>()         { return "       Plane"; }
+template<> inline const char* name<ei::DOP>()           { return "         DOP"; }
 
 // ************************************************************************* //
 //                          PERFORMANCE TESTING                              //
 // ************************************************************************* //
 #ifdef _DEBUG
     const int PERF_ITERATIONS = 100;
-    const int TEST_PER_ITERATION = 100;
+    const int TEST_PER_ITERATION = 10;
 #else
-    const int PERF_ITERATIONS = 2000;
-    const int TEST_PER_ITERATION = 3000;
+    const int PERF_ITERATIONS = 5000;
+    const int TEST_PER_ITERATION = 50;
 #endif
+
+/// \brief Preparation of performance measurements to get stable timings later.
+/// The idea is to determine relative performance (much more stable) and multiply
+/// that with the time for the reference test. This reference time is determined
+/// by the following method.
+inline float getTimePer1MElements()
+{
+    static float s_timePer1MElements;
+    if(s_timePer1MElements == 0.0f) // Not determined yet?
+    {
+        uint64 totalTicks = 0;
+        uint64 totalTicksSq = 0;
+        const int iterations = PERF_ITERATIONS * 20;
+        const int ntest = TEST_PER_ITERATION;
+        std::vector<uint64> iterationTime(iterations);
+        for(int t = 0; t < iterations; ++t)
+        {
+            std::vector<ei::Vec3> v0(ntest);
+            std::vector<ei::Vec3> v1(ntest);
+            for(int i = 0; i < ntest; ++i)
+            {
+                random(v0[i]);
+                random(v1[i]);
+            }
+            volatile float xres;
+            uint64 a = ticks();
+            for(int i = 0; i < ntest; ++i)
+                for(int j = 0; j < ntest; ++j)
+                    xres = lensq(cross(v0[i], v1[j]));
+            uint64 b = ticks();
+            totalTicks += b-a;
+            totalTicksSq += (b-a) * (b-a);
+            iterationTime[t] = b-a;
+        }
+        std::sort(iterationTime.begin(), iterationTime.end());
+        // Tons of tests to get the most stable solution
+        // PROBLEM: the current measurement has a stddev between 25% and 50%.
+        std::cerr << "Reference timing median: " << iterationTime[iterations/2] / float(ntest * ntest) << std::endl;
+        /*float ticksPerTest = totalTicks / float(iterations);
+        float tickVariance = totalTicksSq / float(iterations) - ticksPerTest * ticksPerTest;
+        ticksPerTest /= ntest * ntest;
+        float tickStddev = sqrt(tickVariance) / (ntest * ntest);
+        std::cerr << "Timing for reference test: " << ticksPerTest << " +- " << tickStddev << std::endl;
+        std::cerr << "                           " << s_timePer1MElements << " ms per 1M elements" << std::endl;
+        double mean = std::accumulate(iterationTime.begin() + iterations/4, iterationTime.begin() + iterations*3/4, 0.0);
+        mean /= iterations/2;
+        double s = 0.0;
+        for(int i = iterations/4; i < iterations*3/4; ++i)
+            s += ei::sq(iterationTime[i] - mean);
+        s /= iterations/2 - 1;
+        std::cerr << "Timing for reference test 2: " << mean / (ntest * ntest) << " +- " << sqrt(s) / (ntest * ntest) << std::endl;*/
+
+        // The winner is: the median
+        s_timePer1MElements = deltaTicksToMilliSeconds(ei::uint64(iterationTime[iterations/2] * 1000000.0 / (ntest * ntest)));
+    }
+    return s_timePer1MElements;
+}
 
 /// \brief Generic performance testing method for 2 parameters
 template<class P0, class P1, class R> void performance(R (*_func)(const P0&, const P1&), const char* _funcName)
 {
-    double perfIndex = 0.0f;
+    /*double perfIndex = 0.0f;
+    double perfIndexSq = 0.0f;
     uint64 totalTicks = 0;
+    uint64 totalTicksSq = 0;*/
+    std::vector<uint64> iterationTimes(PERF_ITERATIONS);
     for(int t = 0; t < PERF_ITERATIONS; ++t)
     {
         // Fill data set for x intersections
@@ -176,20 +238,41 @@ template<class P0, class P1, class R> void performance(R (*_func)(const P0&, con
         uint64 a = ticks();
         volatile R res;
         for(int i = 0; i < TEST_PER_ITERATION; ++i)
-            res = _func(geo0[i], geo1[i]);
+            for(int j = 0; j < TEST_PER_ITERATION; ++j)
+                res = _func(geo0[i], geo1[j]);
         uint64 b = ticks();
         // Measure cross products to compare
-        ei::Vec3* source0 = reinterpret_cast<ei::Vec3*>(geo0.data());
+        /*ei::Vec3* source0 = reinterpret_cast<ei::Vec3*>(geo0.data());
         ei::Vec3* source1 = reinterpret_cast<ei::Vec3*>(geo1.data());
         volatile float xres;
         for(int i = 0; i < TEST_PER_ITERATION; ++i)
-            xres = lensq(cross(source0[i], source1[i]));
+            for(int j = 0; j < TEST_PER_ITERATION; ++j)
+                xres = lensq(cross(source0[i], source1[j]));
         uint64 c = ticks();
         perfIndex += (b-a) / double(c-b);
+        perfIndexSq += ei::sq((b-a) / double(c-b));
         totalTicks += b-a;
+        totalTicksSq += (b-a) * (b-a);*/
+        iterationTimes[t] = b-a;
+        //std::cerr << (b-a) << std::endl;
     }
-    std::cerr << "Performance " << _funcName << '(' << name<P0>() << ", " << name<P1>() << "): "
-        << float(perfIndex/PERF_ITERATIONS) << " absolute ticks: " << totalTicks / float(PERF_ITERATIONS * TEST_PER_ITERATION) << std::endl;
+    /*float ticksPerTest = totalTicks / float(PERF_ITERATIONS);
+    float tickVariance = totalTicksSq / float(PERF_ITERATIONS) - ticksPerTest * ticksPerTest;
+    ticksPerTest /= TEST_PER_ITERATION * TEST_PER_ITERATION;
+    float tickStddev = sqrt(tickVariance) / (TEST_PER_ITERATION * TEST_PER_ITERATION);
+    float perfPerTest = float(perfIndex / PERF_ITERATIONS);
+    float perfVariance = float(perfIndexSq / PERF_ITERATIONS) - perfPerTest * perfPerTest;
+    float perfStddev = sqrt(perfVariance);// / (TEST_PER_ITERATION * TEST_PER_ITERATION);
+    std::cerr << "Performance " << _funcName << '(' << name<P0>() << ", " << name<P1>() << "):\t"
+        //<< getTimePer1MElements() * perfPerTest << " ms/M\t"
+        << deltaTicksToMilliSeconds(ei::uint64(ticksPerTest * 1000000.0))
+        << perfPerTest << " +- " << perfStddev << " absolute ticks: " << ticksPerTest
+        << " +- " << tickStddev << std::endl;*/
+
+    std::sort(iterationTimes.begin(), iterationTimes.end());
+    std::cerr << "Performance " << _funcName << '(' << name<P0>() << ", " << name<P1>() << "):\t"
+        << deltaTicksToMilliSeconds(ei::uint64(iterationTimes[PERF_ITERATIONS/2] * 1000000.0 / (TEST_PER_ITERATION * TEST_PER_ITERATION)))
+        << " ms/M\n";
 }
 
 // ************************************************************************* //
@@ -229,7 +312,8 @@ template<class P0, class P1, class P2, class R> void performance(R (*_func)(cons
         perfIndex += (b-a) / double(c-b);
         totalTicks += b-a;
     }
-    std::cerr << "Performance " << _funcName << '(' << name<P0>() << ", " << name<P1>() << ", " << name<P2>() << "): "
-        << float(perfIndex/PERF_ITERATIONS) << " absolute ticks: " << totalTicks / float(PERF_ITERATIONS * TEST_PER_ITERATION) << std::endl;
+    // TODO: apply the same changes as in the other method
+   // std::cerr << "Performance " << _funcName << '(' << name<P0>() << ", " << name<P1>() << ", " << name<P2>() << "): "
+     //   << float(perfIndex/PERF_ITERATIONS) << " absolute ticks: " << totalTicks / float(PERF_ITERATIONS * TEST_PER_ITERATION) << std::endl;
 }
 
