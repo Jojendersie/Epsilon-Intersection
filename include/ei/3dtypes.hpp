@@ -432,6 +432,23 @@ namespace ei {
         FastFrustum& operator = (const FastFrustum& _frustum);
     };
 
+    struct FastCone
+    {
+        const Ray centralRay;
+        const float cosThetaSq;
+        const float height;       ///< Distance from origin to the base.
+
+        /// \brief Construction from dynamic variant.
+        FastCone(const Cone & _cone) :
+            centralRay(_cone.centralRay),
+            cosThetaSq(1.0f / (1.0f + _cone.tanTheta * _cone.tanTheta)), // cos(atan(x))^2 == 1/(x^2+1)
+            height(_cone.height)
+        {}
+
+        /// \brief Overwrite the current data (auto generation not possible because of const members)
+        FastCone& operator = (const FastCone& _cone);
+    };
+
     /// \brief Get the volume of any object.
     float volume(const Sphere& _sphere);                                       // TESTED
     float volume(const Box& _box);                                             // TESTED

@@ -16,9 +16,6 @@ int main()
     if( test_elementaries() )
         cerr << "Successfully completed: Elementary types." << std::endl;
 
-    if( test_primes() )
-        cerr << "Successfully completed: Primes." << std::endl;
-
     if( test_stdextensions() )
         cerr << "Successfully completed: std:extensions." << std::endl;
 
@@ -39,6 +36,9 @@ int main()
 
     if( test_3dintersections() )
         cerr << "Successfully completed: 3D intersection test." << std::endl;
+
+    if( test_primes() )
+        cerr << "Successfully completed: Primes." << std::endl;
 
     return 0;
 }

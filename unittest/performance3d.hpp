@@ -119,11 +119,19 @@ template<> inline void random<ei::Cone>(ei::Cone& _out)
     _out.height = ei::sq(rnd()) * 3.0f;
 }
 
+template<> inline void random<ei::FastCone>(ei::FastCone& _out)
+{
+    ei::Cone rndCone;
+    random<ei::Cone>(rndCone);
+    _out = ei::FastCone(rndCone);
+}
+
 // Functions to assign names to types
 template<class T> const char* name() { return typeid(T).name(); }
 template<> inline const char* name<ei::Vec3>() { return "Point"; }
 template<> inline const char* name<ei::Ray>() { return "Ray"; }
 template<> inline const char* name<ei::Cone>() { return "Cone"; }
+template<> inline const char* name<ei::FastCone>() { return "Fast Cone"; }
 template<> inline const char* name<ei::Sphere>() { return "Sphere"; }
 template<> inline const char* name<ei::Ellipsoid>() { return "Ellipsoid"; }
 template<> inline const char* name<ei::OEllipsoid>() { return "OEllipsoid"; }
@@ -154,8 +162,10 @@ template<class P0, class P1, class R> void performance(R (*_func)(const P0&, con
     for(int t = 0; t < PERF_ITERATIONS; ++t)
     {
         // Fill data set for x intersections
-        std::vector<P0> geo0(TEST_PER_ITERATION);
-        std::vector<P1> geo1(TEST_PER_ITERATION);
+        // Since the Fast... types have no default ctor I use the dummyMem+cast here.
+        char dummyMem[512];
+        std::vector<P0> geo0(TEST_PER_ITERATION, *reinterpret_cast<P0*>(dummyMem));
+        std::vector<P1> geo1(TEST_PER_ITERATION, *reinterpret_cast<P1*>(dummyMem));
         for(int i = 0; i < TEST_PER_ITERATION; ++i)
         {
             random(geo0[i]);

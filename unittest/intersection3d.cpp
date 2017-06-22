@@ -487,6 +487,18 @@ bool test_3dintersections()
         TEST( !intersects(con1, poi0), "poi0 should intersect con1!" );
         TEST( !intersects(con1, poi2), "poi2 should intersect con1!" );
         performance<Cone,Vec3>(intersects, "intersects");
+
+        FastCone fco0(con0);
+        FastCone fco1(con1);
+        TEST( !intersects(fco0, poi0), "poi0 should be outside fast con0!" );
+        TEST( intersects(fco0, poi1), "poi1 should intersect fast con0!" );
+        TEST( intersects(fco0, poi2), "poi2 should intersect fast con0!" );
+        TEST( intersects(fco0, poi3), "poi3 should intersect fast con0!" );
+        TEST( !intersects(fco0, poi4), "poi4 should intersect fast con0!" );
+        TEST( intersects(fco1, poi3), "poi3 should intersect fast con1!" );
+        TEST( !intersects(fco1, poi0), "poi0 should intersect fast con1!" );
+        TEST( !intersects(fco1, poi2), "poi2 should intersect fast con1!" );
+        performance<FastCone,Vec3>(intersects, "intersects");
     }
 
     return result;

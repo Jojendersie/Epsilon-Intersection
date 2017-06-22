@@ -227,4 +227,10 @@ namespace ei {
     /// \brief Intersection test between cone and point.
     bool intersects( const Vec3& _point, const Cone& _cone );
     inline bool intersects( const Cone& _cone, const Vec3& _point ) { return intersects(_point, _cone); }
+    bool intersects( const Vec3& _point, const FastCone& _cone );
+    inline bool intersects( const FastCone& _cone, const Vec3& _point ) { return intersects(_point, _cone); }
+
+    /// \brief Intersection test between cone and triangle.
+    bool intersects( const Triangle& _triangle, const Cone& _cone );
+    inline bool intersects( const Cone& _cone, const Triangle& _triangle ) { return intersects(_triangle, _cone); }
 }

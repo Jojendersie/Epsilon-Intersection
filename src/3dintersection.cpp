@@ -1101,4 +1101,23 @@ namespace ei {
         // <=> (sqrt(dOPSq) / dp - 1) * (sqrt(dOPSq) / dp + 1) <= sq(_cone.tanTheta)
         return dOPSq - dp * dp <= sq(_cone.tanTheta * dp);
     }
+
+    bool intersects(const Vec3 & _point, const FastCone & _cone)
+    {
+        // Given the cos(theta)^2 the point can be compared more
+        // easily by computing its cosine over the dot product.
+        // This would require a square root in the length computation.
+        // Therefore it is cheaper to compute and compare cosine squares.
+        Vec3 oToP = _point - _cone.centralRay.origin;
+        float dp = dot(oToP, _cone.centralRay.direction);
+        if(dp < 0.0f || dp > _cone.height) return false; // Early out: behind cone origin or base
+        return dp * dp >= _cone.cosThetaSq * dot(oToP, oToP);
+    }
+
+    // ********************************************************************* //
+    bool intersects(const Triangle & _triangle, const Cone & _cone)
+    {
+        // Idea: first get the 
+        return false;
+    }
 }

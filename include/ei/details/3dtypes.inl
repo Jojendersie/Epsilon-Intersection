@@ -305,6 +305,16 @@ inline FastFrustum& FastFrustum::operator = (const FastFrustum& _frustum)
     const_cast<Plane&>(r) = _frustum.r;
     const_cast<Plane&>(b) = _frustum.b;
     const_cast<Plane&>(t) = _frustum.t;
+    return *this;
+}
+
+// ************************************************************************* //
+inline FastCone& FastCone::operator = (const FastCone& _cone)
+{
+    const_cast<Ray&>(centralRay) = _cone.centralRay;
+    const_cast<float&>(cosThetaSq) = _cone.cosThetaSq;
+    const_cast<float&>(height) = _cone.height;
+    return *this;
 }
 
 
