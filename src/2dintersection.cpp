@@ -13,6 +13,20 @@ namespace ei {
         return lensq(u * s - w);
     }
 
+    // ************************************************************************* //
+    float distance(const Vec2& _point, const Rect2D& _rect)
+    {
+        eiAssert(_rect.min <= _rect.max, "Invalid box!");
+        // Connection vector to rectangle corner
+        Vec2 d = _rect.min - _point;
+        if(d.x < 0.0f) d.x = max(d.x, _point.x - _rect.max.x);
+        if(d.y < 0.0f) d.y = max(d.y, _point.y - _rect.max.y);
+        // Inner distance if all single distances are negative
+        float innerDist = min(0.0f, max(d.x, d.y));
+        // Point is outside if len is greater than 0
+        return len(max(d,Vec2(0.0f))) + innerDist;
+    }
+
 
 
     // ********************************************************************* //
