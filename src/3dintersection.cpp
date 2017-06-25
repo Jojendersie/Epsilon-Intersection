@@ -154,11 +154,11 @@ namespace ei {
         eiAssert(_box.min <= _box.max, "Invalid box!");
         // Connection vector to box corner
         Vec3 d = _box.min - _point;
-        if(d.x < 0.0f) d.x = _point.x - _box.max.x;
-        if(d.y < 0.0f) d.y = _point.y - _box.max.y;
-        if(d.z < 0.0f) d.z = _point.z - _box.max.z;
+        if(d.x < 0.0f) d.x = max(d.x, _point.x - _box.max.x);
+        if(d.y < 0.0f) d.y = max(d.y, _point.y - _box.max.y);
+        if(d.z < 0.0f) d.z = max(d.z, _point.z - _box.max.z);
         // Inner distance if all single distances are negative
-        float innerDist = min(0.0f, max(d.x, max(d.y, d.z)));
+        float innerDist = min(0.0f, max(d.x, d.y, d.z));
         // Point is outside if len is greater than 0
         return len(max(d,Vec3(0.0f))) + innerDist;
     }

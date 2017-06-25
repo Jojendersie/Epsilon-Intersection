@@ -254,6 +254,7 @@ bool test_3dtypes()
         TEST( distance(poi0, box0) == 0.0f, "Distance between poi0 and box0 is 0!");
         TEST( distance(poi1, box0) == -1.0f, "Distance between poi1 and box0 is -1!");
         TEST( distance(poi2, box0) == sqrt(2.0f), "Distance between poi2 and box0 is sqrt(2)!");
+        TEST( distance(poi3, box0) == -0.25f, "Distance between poi3 and box0 is -0.25!");
         TEST( distance(sph0, box0) == 0.0f, "Distance between sph0 and box0 is 0!");
         TEST( distance(sph1, box0) == 0.914213538f, "Distance between sph1 and box0 is sqrt(2)-0.5!");
         TEST( distance(poi0, pla0) == 0.0f, "Distance between poi0 and pla0 is 0.0!");
