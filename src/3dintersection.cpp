@@ -1,6 +1,23 @@
-#include "ei/3dintersection.hpp"
+﻿#include "ei/3dintersection.hpp"
 
 namespace ei {
+
+    // Helper method to solve ax^2 + bx + c (numerically more stable than naive method).
+    // x1 is always the greater of the two results.
+    bool solveSquarePoly(float a, float b, float c, float& x1, float& x2)
+    {
+        float discriminant = b*b - 4.0f*a*c;
+        if(discriminant < 0.0f) return false;
+        float dsqrt = sqrt(discriminant);
+        if(b > 0) {
+            x1 = (-b - dsqrt)/(2.0f*a);
+            x2 = -2.0f*c/(b + dsqrt);
+        } else {
+            x1 = -2.0f*c/(b - dsqrt);
+            x2 = (-b + dsqrt)/(2.0f*a);
+        }
+        return true;
+    }
 
     // ************************************************************************* //
     // DISTANCE METHODS
@@ -466,7 +483,7 @@ namespace ei {
     // ********************************************************************* //
     bool intersects( const Ray& _ray, const Triangle& _triangle )
     {
-        // M�ller and Trumbore
+        // Möller and Trumbore
         Vec3 e0 = _triangle.v1 - _triangle.v0;
         Vec3 e1 = _triangle.v0 - _triangle.v2;
         // Normal scaled by 2A
@@ -481,12 +498,13 @@ namespace ei {
         float barycentricCoord2 = dot( d, e0 ) / dist2A;
         if(barycentricCoord2 < 0.0f) return false;
         return barycentricCoord1 + barycentricCoord2 <= 1.0f;
+        // TODO: THE BACKWARD RAY WILL ALSO HIT THIS TRIANGLE !?
     }
 
     // ********************************************************************* //
     bool intersects( const Ray& _ray, const Triangle& _triangle, float& _distance )
     {
-        // M�ller and Trumbore
+        // Möller and Trumbore
         Vec3 e0 = _triangle.v1 - _triangle.v0;
         Vec3 e1 = _triangle.v0 - _triangle.v2;
         // Normal scaled by 2A
@@ -510,7 +528,7 @@ namespace ei {
     // ********************************************************************* //
     bool intersects( const Ray& _ray, const Triangle& _triangle, float& _distance, Vec3& _barycentric )
     {
-        // M�ller and Trumbore
+        // Möller and Trumbore
         Vec3 e0 = _triangle.v1 - _triangle.v0;
         Vec3 e1 = _triangle.v0 - _triangle.v2;
         // Normal scaled by 2A
@@ -933,7 +951,7 @@ namespace ei {
     bool intersects( const Triangle& _triangle, const Box& _box )
     {
         // Implementation based on SAT.
-        // Like "Fast 3D Triangle-Box Overlap Testing" from Tomas Akenine-M�ller.
+        // Like "Fast 3D Triangle-Box Overlap Testing" from Tomas Akenine-Möller.
 
         // *** Case: A box face separates the triangle. Since the box is axis
         // aligned, a projection is simply selecting one of the coordinates.
@@ -1117,7 +1135,118 @@ namespace ei {
     // ********************************************************************* //
     bool intersects(const Triangle & _triangle, const Cone & _cone)
     {
-        // Idea: first get the 
+        // Idea: first get the three closest points between each of the edges
+        // and the cone central segment. If at least one of them is inside we
+        // can see a part of the triangle. If all are outside the central ray
+        // must hit the triangle or the triangle is fully outside.
+
+        float cosThetaSq = 1.0f / (1.0f + _cone.tanTheta * _cone.tanTheta);
+
+        /*// Segment - segment distance: http://geomalgorithms.com/a07-_distance.html
+        Vec3 e0 = _triangle.v1 - _triangle.v0;
+        Vec3 vToO = _cone.centralRay.origin - _triangle.v0;
+        float a = dot(e0, e0);
+        float b = dot(e0, _cone.centralRay.direction);
+        float p = dot(vToO, e0);
+        float q = dot(vToO, _cone.centralRay.direction);
+        float n = a - b * b;
+        if(n != 0.0f) // Ignore the parallel case - another edge should be non parallel
+        {
+            float s = (b * q -     p) / -n; // Ray parameter on edge
+            float t = (a * q - b * p) / -n; // Ray parameter on cone
+            // Clamp s, such that the point is not behind the 
+            Vec3 closestOnEdge = _triangle.v0 + saturate(s) * e0;
+            // return dOPSq - dp * dp <= sq(_cone.tanTheta * dp);
+            if(lensq(saturate(s) * e0 - vToO - clamp(t, 0.0f, _cone.height) * _cone.centralRay.direction))
+        }*/
+
+
+        // [1] https://www.geometrictools.com/Documentation/IntersectionTriangleCone.pdf
+        // First check if any of the vertices is inside. If not store on which side of
+        // the cone half space they are.
+        Vec3 p[3];
+        float dp[3];
+        float pp[3];
+        for(int i = 0; i < 3; ++i)
+        {
+            p[i] = _triangle.v(i) - _cone.centralRay.origin;
+            dp[i] = dot(p[i], _cone.centralRay.direction);
+            pp[i] = dot(p[i], p[i]);
+            if(dp[i] >= 0 && dp[i] <= _cone.height && dp[i] * dp[i] >= cosThetaSq * pp[i])
+                return true;
+        }
+
+        // If all points are on the back side, the triangle cannot be hit
+        if(dp[0] < 0 && dp[1] < 0 && dp[2] < 0) return false;
+        // If all points are farther away than the cone height, the triangle cannot be hit
+        if(dp[0] > _cone.height && dp[1] > _cone.height && dp[2] > _cone.height) return false;
+
+        // Now, test if any of the sides intersects the cone.
+        for(int i0 = 0; i0 < 3; ++i0)
+        {
+            int i1 = (i0 + 1) % 3;
+            if((dp[i0] >= 0 || dp[i1] >= 0)
+                && (dp[i0] <= _cone.height || dp[i1] <= _cone.height)) // If both vertices are on the wrong side there is no intersection.
+            {
+                // Compute the intersection of the edge with the cone.
+                // Cone relative parametric edge: Q(t) = (v0 - o) + t * (v1 - v0)
+                //                                     = p + t * e
+                // Parametric double cone: dot(d, p/|p|) = cos θ
+                // Setting p = Q(t), multiplying with |Q(t)|, squaring
+                // and putting all to the same side yields:
+                //    dot(d, Q(t))^2 - cos^2 θ * |Q(t)|^2 = 0
+                // which must be solved (c2 t^2 + 2 c1 t + c0 = 0).
+                Vec3 e = _triangle.v(i1) - _triangle.v(i0);
+                float de = dot(e, _cone.centralRay.direction);
+                float ee = dot(e, e);
+                float c2 = de * de - cosThetaSq * ee;
+                if(c2 < 0.0f) // If c2 isn't negative there cannot be an intersection (see [1]).
+                {
+                    float pe = dot(p[i0], e);
+                    float c0 = dp[i0] * dp[i0] - cosThetaSq * pp[i0];         // Regularization as in the geometrictools doc?
+                    float c1 = dp[i0] * de - cosThetaSq * pe;
+                    float t0, t1;
+                    if(!solveSquarePoly(c2, c1 * 2.0f, c0, t0, t1)
+                        || t0 < 0.0f || t1 > 1.0f) continue;
+                    eiAssert(t0 <= 1.0f || t1 >= 0.0f, "At least one solution must be in [0,1].");
+                    // The edge intersects the infinite double cone. Make sure that
+                    // one of the intersection point is really in the cone.
+                    // Since we know the point is in the cone we do not need the full test
+                    // and the projected distance comparison is sufficient.
+                    float dx = dot(p[i0] + e * saturate(t0), _cone.centralRay.direction);
+                    if(dx >= 0.0f && dx <= _cone.height) return true;
+                    dx = dot(p[i0] + e * saturate(t1), _cone.centralRay.direction);
+                    if(dx >= 0.0f && dx <= _cone.height) return true;
+                }
+                // Original conditions from [1] without explicit intersection test.
+                // Does not include the boundary conditions of our finite cone.
+                /*if(c2 < 0.0f && c1*c1 >= c0*c2)
+                {
+                    if(onConeSide[i0] && onConeSide[i1] && 0 <= c1 && c1 <= -c2) return true;
+                    bool opCon = c2 * dp[i0] <= c1 * de;
+                    if(onConeSide[i0] && opCon && 0 <= c1) return true;
+                }*/
+            }
+        }
+
+        // Test if the center ray hits the triangle after Möller and Trumbore
+        Vec3 e0 = _triangle.v1 - _triangle.v0;
+        Vec3 e1 = _triangle.v0 - _triangle.v2;
+        // Normal scaled by 2A
+        Vec3 normal = cross( e1, e0 );
+
+        float dist2A = dot( normal, _cone.centralRay.direction );
+        Vec3 d = cross( _cone.centralRay.direction, p[0] );
+
+        float barycentricCoord1 = dot( d, e1 ) / dist2A;
+        if(barycentricCoord1 < 0.0f) return false;
+        float barycentricCoord2 = dot( d, e0 ) / dist2A;
+        if(barycentricCoord2 < 0.0f) return false;
+        if(barycentricCoord1 + barycentricCoord2 > 1.0f) return false;
+
+        // Projection to plane. The 2A from normal is canceled out
+        float distance = dot( normal, p[0] ) / dist2A;
+        return distance >= 0.0f && distance <= _cone.height;
         return false;
     }
 }

@@ -333,8 +333,8 @@ namespace ei {
         Segment(const Ray& _ray, float _distance);
     };
 
-    /// \brief A cone starts in one point and extends to a perpendicular base, also
-    ///     it has an increasing radius over distance (base is a disc).
+    /// \brief A cone starts in one point and extends to a perpendicular disk as
+    ///     base. The maximum half opening must be smaller than 90°.
     struct Cone
     {
         Ray centralRay;

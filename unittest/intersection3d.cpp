@@ -469,7 +469,7 @@ bool test_3dintersections()
         performance<Plane,OBox>(intersects, "intersects");
     }
 
-    // // Test cone <-> point intersection
+    // Test Cone <-> Point intersection
     {
         Cone con0(Vec3(0.0f), Vec3(1.0f, 0.0f, 0.0f), 0.5f, 1000.1f);
         Vec3 poi0(-1.0f, 0.0f, 0.0f); // Outside
@@ -482,10 +482,10 @@ bool test_3dintersections()
         TEST( intersects(con0, poi1), "poi1 should intersect con0!" );
         TEST( intersects(con0, poi2), "poi2 should intersect con0!" );
         TEST( intersects(con0, poi3), "poi3 should intersect con0!" );
-        TEST( !intersects(con0, poi4), "poi4 should intersect con0!" );
+        TEST( !intersects(con0, poi4), "poi4 should be outside con0!" );
         TEST( intersects(con1, poi3), "poi3 should intersect con1!" );
-        TEST( !intersects(con1, poi0), "poi0 should intersect con1!" );
-        TEST( !intersects(con1, poi2), "poi2 should intersect con1!" );
+        TEST( !intersects(con1, poi0), "poi0 should be outside con1!" );
+        TEST( !intersects(con1, poi2), "poi2 should be outside con1!" );
         performance<Cone,Vec3>(intersects, "intersects");
 
         FastCone fco0(con0);
@@ -494,11 +494,32 @@ bool test_3dintersections()
         TEST( intersects(fco0, poi1), "poi1 should intersect fast con0!" );
         TEST( intersects(fco0, poi2), "poi2 should intersect fast con0!" );
         TEST( intersects(fco0, poi3), "poi3 should intersect fast con0!" );
-        TEST( !intersects(fco0, poi4), "poi4 should intersect fast con0!" );
+        TEST( !intersects(fco0, poi4), "poi4 should be outside fast con0!" );
         TEST( intersects(fco1, poi3), "poi3 should intersect fast con1!" );
-        TEST( !intersects(fco1, poi0), "poi0 should intersect fast con1!" );
-        TEST( !intersects(fco1, poi2), "poi2 should intersect fast con1!" );
+        TEST( !intersects(fco1, poi0), "poi0 should be outside fast con1!" );
+        TEST( !intersects(fco1, poi2), "poi2 should be outside fast con1!" );
         performance<FastCone,Vec3>(intersects, "intersects");
+    }
+
+    // Test Cone <-> Triangle intersection
+    {
+        Triangle tri0(Vec3(0.0f), Vec3(1.0f, 0.0f, 0.0f), Vec3(0.0f, 1.0f, 0.0f));
+        Cone con0(Vec3(0.0f, 0.0f, -1.0f), Vec3(0.0f, 0.0f, 1.0f), 0.5f, 2.0f);
+        Cone con1(Vec3(0.5f, -0.01f, -1.0f), Vec3(0.0f, 0.0f, 1.0f), 0.25f, 2.0f);
+        Cone con2(Vec3(0.25f, 0.25f, -1.0f), Vec3(0.0f, 0.0f, 1.0f), 0.1f, 2.0f);
+        Cone con3(Vec3(-0.25f, 0.25f, -1.0f), Vec3(0.0f, 0.0f, 1.0f), 0.1f, 2.0f);
+        Cone con4(Vec3(0.25f, 0.25f, -1.0f), Vec3(0.0f, 0.0f, 1.0f), 0.1f, 0.5f);
+        Cone con5(Vec3(2.0f, 0.5f, 0.0f), Vec3(-1.0f, 0.0f, 0.0f), 0.1f, 1.1f);
+        Cone con6(Vec3(2.0f, 0.5f, 0.0f), Vec3(-1.0f, 0.0f, 0.0f), 0.1f, 3.5f);
+
+        TEST( intersects(tri0, con0), "tri0 should intersect con0!" ); // Vertex inside
+        TEST( intersects(tri0, con1), "tri0 should intersect con1!" ); // Edge crosses
+        TEST( intersects(tri0, con2), "tri0 should intersect con2!" ); // Fully occluded
+        TEST( !intersects(tri0, con3), "tri0 should be outside con3!" ); // Fully outside
+        TEST( !intersects(tri0, con4), "tri0 should be outside con4!" ); // Cone to short
+        TEST( !intersects(tri0, con5), "tri0 should be outside con5!" ); // Cone to short
+        TEST( intersects(tri0, con6), "tri0 should intersect con6!" ); // Edge crosses perpendicular
+        performance<Cone, Triangle>(intersects, "intersects");
     }
 
     return result;
