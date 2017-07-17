@@ -4,7 +4,7 @@
 namespace ei {
 
     // ********************************************************************* //
-    Sphere::Sphere( const Vec3& _p0, const Vec3& _p1, const Vec3& _p2 )
+    Sphere::Sphere( const Vec3& _p0, const Vec3& _p1, const Vec3& _p2 ) noexcept
     {
         // The center of the circumscribed circle is at (barycentric coordinates)
         // v0*sin(2 alpha) + v1*sin(2 beta) + v2*sin(2 gamma) and has the radius
@@ -30,7 +30,7 @@ namespace ei {
     }
 
     // ********************************************************************* //
-    Sphere::Sphere( const Vec3& _p0, const Vec3& _p1, const Vec3& _p2, const Vec3& _p3 )
+    Sphere::Sphere( const Vec3& _p0, const Vec3& _p1, const Vec3& _p2, const Vec3& _p3 ) noexcept
     {
         // It is possible that not all 4 points lie on the surface of the sphere.
         // Just two of them could already define a sphere enclosing all other.
@@ -131,7 +131,7 @@ namespace ei {
         return mbs;
     }
 
-    Sphere::Sphere( const Vec3* _points, uint32 _numPoints )
+    Sphere::Sphere( const Vec3* _points, uint32 _numPoints ) noexcept
     {
         eiAssert( _numPoints > 0, "The point list must have at least one point." );
         // Create a single linked list for the move to front heuristic
@@ -146,7 +146,7 @@ namespace ei {
     }
 
     // ********************************************************************* //
-    Box::Box( const OBox& _box )
+    Box::Box( const OBox& _box ) noexcept
     {
         // Effectively generate all 8 corners and find min/max coordinates.
         // Relative to the center two diagonal opposite corners only differ
@@ -167,7 +167,7 @@ namespace ei {
     }
 
     // ********************************************************************* //
-    Box::Box( const Vec3* _points, uint32 _numPoints )
+    Box::Box( const Vec3* _points, uint32 _numPoints ) noexcept
     {
         eiAssert( _points && _numPoints > 0, "The point list must have at least one point." );
         min = max = *_points++;
@@ -179,7 +179,7 @@ namespace ei {
     }
 
     // ********************************************************************* //
-    OBox::OBox( const Quaternion& _orientation, const Box& _box ) :
+    OBox::OBox( const Quaternion& _orientation, const Box& _box ) noexcept :
         center((_box.min + _box.max) * 0.5f),
         orientation(_orientation)
     {
@@ -191,7 +191,7 @@ namespace ei {
     }
 
     // ********************************************************************* //
-    OBox::OBox( const Mat3x3& _orientation, const Box& _box ) :
+    OBox::OBox( const Mat3x3& _orientation, const Box& _box ) noexcept :
         center((_box.min + _box.max) * 0.5f),
         orientation(_orientation)
     {
@@ -202,7 +202,7 @@ namespace ei {
     }
 
     // ********************************************************************* //
-    OBox::OBox( const Quaternion& _orientation, const Vec3* _points, uint32 _numPoints ) :
+    OBox::OBox( const Quaternion& _orientation, const Vec3* _points, uint32 _numPoints ) noexcept :
         orientation(_orientation)
     {
         eiAssert( _numPoints > 0, "The point list must have at least one point." );
@@ -225,7 +225,7 @@ namespace ei {
     }
 
     // ********************************************************************* //
-    OBox::OBox( const Vec3* _points, uint32 _numPoints )
+    OBox::OBox( const Vec3* _points, uint32 _numPoints ) noexcept
     {
         if(_numPoints == 1)
         {
@@ -291,7 +291,7 @@ namespace ei {
     }
 
     // ********************************************************************* //
-    FastFrustum::FastFrustum(const Frustum& _frustum)
+    FastFrustum::FastFrustum(const Frustum& _frustum) noexcept
     {
         // Initialization of planes is difficult in the list, so the const-cast
         // only defers the initialization a bit.
@@ -374,7 +374,7 @@ namespace ei {
     };
 
     template<typename T>
-    static void swap(T& _a, T& _b)
+    static void swap(T& _a, T& _b) noexcept
     {
         T tmp = _a;
         _a = _b;

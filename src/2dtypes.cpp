@@ -3,7 +3,7 @@
 namespace ei {
 
     // ********************************************************************* //
-    Disc2D::Disc2D( Vec2 _p0, Vec2 _p1, Vec2 _p2 )
+    Disc2D::Disc2D( Vec2 _p0, Vec2 _p1, Vec2 _p2 ) noexcept
     {
         // The center of the circumscribed circle is at (barycentric coords)
         // v0*sin(2 alpha) + v1*sin(2 beta) + v2*sin(2 gamma) and has the radius

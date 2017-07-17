@@ -88,7 +88,7 @@ namespace ei {
     // ********************************************************************* //
     /// \brief Compute the square x*x.
     template<typename T>
-    T sq(T _x);
+    T sq(T _x) noexcept;
 
     // ********************************************************************* //
     /// \brief Get the maximum from x and y.
@@ -96,11 +96,11 @@ namespace ei {
     ///    a difference if you are sorting object types with more than the
     ///    compared value.
     template<typename T>
-    T max(T _x, T _y);                                                         // TESTED
+    T max(T _x, T _y) noexcept;                                                // TESTED
     /// \brief Get the maximum of any number of arguments
     /// \details In case of equal arguments the left most one is returned
     template<typename T, typename... Ttail>
-    T max(T _first, Ttail... _tail);                                           // TESTED
+    T max(T _first, Ttail... _tail) noexcept;                                  // TESTED
 
     // ********************************************************************* //
     /// \brief Get the minimum from x and y.
@@ -108,26 +108,26 @@ namespace ei {
     ///    a difference if you are sorting object types with more than the
     ///    compared value.
     template<typename T>
-    T min(T _x, T _y);                                                         // TESTED
+    T min(T _x, T _y) noexcept;                                                // TESTED
     /// \brief Get the maximum of any number of arguments
     /// \details In case of equal arguments the left most one is returned
     template<typename T, typename... Ttail>
-    T min(T _first, Ttail... _tail);                                           // TESTED
+    T min(T _first, Ttail... _tail) noexcept;                                  // TESTED
 
     // ********************************************************************* //
     /// \brief Clamp a value to the boundaries.
     template<typename T>
-    T clamp(T _x, T _min, T _max);                                             // TESTED
+    T clamp(T _x, T _min, T _max) noexcept;                                    // TESTED
 
     // ********************************************************************* //
     /// \brief Clamp a value to [0,1] interval.
     template<typename T>
-    T saturate(T _x);
+    T saturate(T _x) noexcept;
 
     // ********************************************************************* //
     /// \brief Get the absolute value.
     template<typename T>
-    T abs(T _x);                                                               // TESTED
+    T abs(T _x) noexcept;                                                      // TESTED
 
     // ********************************************************************* //
     /// \brief Get the sign of a value.
@@ -135,7 +135,7 @@ namespace ei {
     ///    know about zero.
     /// \returns -1 (_x < 0), 0 (_x == 0) or 1 (_x > 0)
     template<typename T>
-    T sign(T _x);                                                              // TESTED
+    T sign(T _x) noexcept;                                                     // TESTED
 
     // ********************************************************************* //
     /// \brief Get the sign of a value where 0 is counted as positive.
@@ -143,7 +143,7 @@ namespace ei {
     ///    to know about zero.
     /// \returns -1 (_x < 0) or 1 (_x >= 0)
     template<typename T>
-    T sgn(T _x);                                                               // TESTED
+    T sgn(T _x) noexcept;                                                      // TESTED
 
     // ********************************************************************* //
     /// \brief Check if the relative difference between two scalars is less
@@ -158,28 +158,28 @@ namespace ei {
     ///    between two elements. The default value is 1e-6.
     /// \returns true if the difference is less or equal than _epsilon.
     template<typename T, class = typename std::enable_if<!std::is_base_of<details::NonScalarType, T>::value, class Dummy>::type>
-    bool approx(T _x0, T _x1, T _epsilon = T(1e-6));                           // TESTED
+    bool approx(T _x0, T _x1, T _epsilon = T(1e-6)) noexcept;                  // TESTED
 
     // ********************************************************************* //
     /// \brief Round value towards negative infinity.
     template<typename T, class = typename std::enable_if<!std::is_base_of<details::NonScalarType, T>::value, class Dummy>::type>
-    typename details::Int<sizeof(T)>::stype floor(T _x);
+    typename details::Int<sizeof(T)>::stype floor(T _x) noexcept;
 
     // ********************************************************************* //
     /// \brief Round value towards positive infinity.
     template<typename T, class = typename std::enable_if<!std::is_base_of<details::NonScalarType, T>::value, class Dummy>::type>
-    typename details::Int<sizeof(T)>::stype ceil(T _x);
+    typename details::Int<sizeof(T)>::stype ceil(T _x) noexcept;
 
     // ********************************************************************* //
     /// \brief Round value towards next integral number (0.5 rounds up).
     template<typename T, class = typename std::enable_if<!std::is_base_of<details::NonScalarType, T>::value, class Dummy>::type>
-    typename details::Int<sizeof(T)>::stype round(T _x);
+    typename details::Int<sizeof(T)>::stype round(T _x) noexcept;
 
     // ********************************************************************* //
     /// \brief Get the fraction in (-1,1) with f-int(f).
     /// \param _x [in] The number to be splitted.
     template<typename T>
-    T frac(T _x);                                                              // TESTED
+    T frac(T _x) noexcept;                                                     // TESTED
 
     // ********************************************************************* //
     /// \brief Divide a number into the integer and fractional part.
@@ -187,7 +187,7 @@ namespace ei {
     /// \param _int [out] The integer part of the number.
     /// \returns The fraction of the number in (-1,1).
     template<typename T>
-    T intfrac(T _x, typename details::Int<sizeof(T)>::stype& _int);            // TESTED
+    T intfrac(T _x, typename details::Int<sizeof(T)>::stype& _int) noexcept;   // TESTED
 
     // ********************************************************************* //
     /// \brief Divide a number into an integer and a positive fractional part.
@@ -197,13 +197,13 @@ namespace ei {
     /// \param _int [out] The integer part of the number.
     /// \returns The fraction of the number in [0,1).
     template<typename T>
-    T floorfrac(T _x, typename details::Int<sizeof(T)>::stype& _int);          // TESTED
+    T floorfrac(T _x, typename details::Int<sizeof(T)>::stype& _int) noexcept;  // TESTED
 
     // ********************************************************************* //
     /// \brief Get the smallest positive number m such that x=y*c+m with c in Z.
     /// \returns The mathematically defined positive modulus.
     template<typename T>
-    T mod(T _x, T _y);                                                         // TESTED
+    T mod(T _x, T _y) noexcept;                                                // TESTED
 
     // ********************************************************************* //
     /// \brief Linear interpolation.
@@ -219,7 +219,7 @@ namespace ei {
     /// \param _t [in] Interpolation parameter. Can be scalar or vector.
     /// \returns x + (y - x) * t where the type is derived from the operands.
     template<typename T0, typename T1>
-    auto lerp(T0 _x0, T0 _x1, T1 _t) -> decltype(_x0*_t);                      // TESTED
+    auto lerp(T0 _x0, T0 _x1, T1 _t) noexcept -> decltype(_x0*_t);             // TESTED
 
     // ********************************************************************* //
     /// \brief Bilinear interpolation optimized for scalars.
@@ -237,21 +237,21 @@ namespace ei {
     template<typename T0, typename T1>
     auto bilerp(T0 _x00, T0 _x01,
                 T0 _x10, T0 _x11,
-                T1 _t0, T1 _t1) -> decltype(_x00*_t0);                         // TESTED
+                T1 _t0, T1 _t1) noexcept -> decltype(_x00*_t0);                // TESTED
 
     // ********************************************************************* //
     /// \brief Evalutate the smoothstep polynomial 3t^2 - 2t^3.
     /// \param _t [in] The value to be inserted into the polynomial. The useful
     ///    definition interval is in [0,1].
     template<typename T>
-    T smoothstep(T _t);
+    T smoothstep(T _t) noexcept;
 
     // ********************************************************************* //
     /// \brief Evalutate the smootherstep polynomial 6t^5 - 15t^4 + 10t^3.
     /// \param _t [in] The value to be inserted into the polynomial. The useful
     ///    definition interval is in [0,1].
     template<typename T>
-    T smootherstep(T _t);
+    T smootherstep(T _t) noexcept;
 
     // ********************************************************************* //
     /// \brief Compute the next machine representable number in positive direction.
@@ -259,16 +259,16 @@ namespace ei {
     ///    denormalized range. Thereby the successor of -0 and 0 are both the
     ///    same smallest positive float. Further -INF is transformed into
     ///    -FLOAT_MAX and +INF remains +INF.
-    float successor(float _number);                                            // TESTED
-    double successor(double _number);
+    float successor(float _number) noexcept;                                   // TESTED
+    double successor(double _number) noexcept;
 
     /// \brief Compute the next machine representable number in negative direction.
     /// \details Iterates overall floating point numbers, even through
     ///    denormalized range. Thereby the predecessor of -0 and 0 are both the
     ///    same smallest negative float. Further -INF remains -INF and + INF
     ///    is transformed into FLOAT_MAX.
-    float predecessor(float _number);                                          // TESTED
-    double predecessor(double _number);
+    float predecessor(float _number) noexcept;                                 // TESTED
+    double predecessor(double _number) noexcept;
 
     // Include implementation.
 #   include "details/elementary.inl"

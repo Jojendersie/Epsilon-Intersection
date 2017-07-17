@@ -3,7 +3,7 @@
 namespace ei {
 
     // ********************************************************************* //
-    float successor(float _number)
+    float successor(float _number) noexcept
     {
         // Handling NaN
         if(_number != _number) return _number;
@@ -19,7 +19,7 @@ namespace ei {
         else return details::ReinterpretFloat( mantissa + 1 ).f;
     }
 
-    double successor(double _number)
+    double successor(double _number) noexcept
     {
         // Handling NaN
         if(_number != _number) return _number;
@@ -36,7 +36,7 @@ namespace ei {
     }
 
     // ********************************************************************* //
-    float predecessor(float _number)
+    float predecessor(float _number) noexcept
     {
         // Handling NaN
         if(_number != _number) return _number;
@@ -52,7 +52,7 @@ namespace ei {
         else return details::ReinterpretFloat( mantissa - 1 ).f;
     }
 
-    double predecessor(double _number)
+    double predecessor(double _number) noexcept
     {
         // Handling NaN
         if(_number != _number) return _number;

@@ -3,7 +3,7 @@
 namespace ei {
 
 // ************************************************************************* //
-float volume(const Frustum& _frustum)
+float volume(const Frustum& _frustum) noexcept
 {
     eiAssert( _frustum.r > _frustum.l, "Bad parametrization!" );
     eiAssert( _frustum.t > _frustum.b, "Bad parametrization!" );
@@ -18,7 +18,7 @@ float volume(const Frustum& _frustum)
 }
 
 // ************************************************************************* //
-float surface(const Frustum& _frustum)
+float surface(const Frustum& _frustum) noexcept
 {
     // Calculate area of all 6 sides and add them
     float hratio = (_frustum.f - _frustum.n) / _frustum.f;
@@ -35,7 +35,7 @@ float surface(const Frustum& _frustum)
 }
 
 // ************************************************************************* //
-Vec3 center(const Frustum& _frustum)
+Vec3 center(const Frustum& _frustum) noexcept
 {
     // For a full pyramid the centroid is located on the line segment from apex
     // to base centroid at 3/4 of that segment.
@@ -63,7 +63,7 @@ Vec3 center(const Frustum& _frustum)
 // OBJECT TRANSFORMATIONS
 // ************************************************************************* //
 
-OBox transform(const Box& _box, const Quaternion& _rotation)
+OBox transform(const Box& _box, const Quaternion& _rotation) noexcept
 {
     OBox box(_box);
     box.orientation *= _rotation;
@@ -71,22 +71,22 @@ OBox transform(const Box& _box, const Quaternion& _rotation)
     return box;
 }
 
-OBox transform(const OBox& _box, const Quaternion& _rotation)
+OBox transform(const OBox& _box, const Quaternion& _rotation) noexcept
 {
     return OBox(transform(_box.center, _rotation), _box.halfSides, _box.orientation * _rotation);
 }
 
-Box transform(const Box& _box, const Vec3& _translation)
+Box transform(const Box& _box, const Vec3& _translation) noexcept
 {
     return Box(_box.min + _translation, _box.max + _translation);
 }
 
-OBox transform(const OBox& _box, const Vec3& _translation)
+OBox transform(const OBox& _box, const Vec3& _translation) noexcept
 {
     return OBox(_box.center + _translation, _box.halfSides, _box.orientation);
 }
 
-OBox transform(const Box& _box, const Quaternion& _rotation, const Vec3& _translation)
+OBox transform(const Box& _box, const Quaternion& _rotation, const Vec3& _translation) noexcept
 {
     OBox box(_box);
     box.orientation *= _rotation;
@@ -94,7 +94,7 @@ OBox transform(const Box& _box, const Quaternion& _rotation, const Vec3& _transl
     return box;
 }
 
-OBox transform(const OBox& _box, const Quaternion& _rotation, const Vec3& _translation)
+OBox transform(const OBox& _box, const Quaternion& _rotation, const Vec3& _translation) noexcept
 {
     return OBox(transform(_box.center, _rotation) + _translation,
         _box.halfSides, _box.orientation * _rotation);
