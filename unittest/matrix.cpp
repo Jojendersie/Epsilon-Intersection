@@ -225,6 +225,8 @@ bool test_matrix()
         TEST( v0 * v1 == m0, "Column times row vector should be a matrix!" );
         TEST( v4 * v2 == m1, "Column times row vector should be a matrix!" );
         TEST( m0 * m1 == m2, "Matrix multiplication wrong!" );
+        TEST( transpose(v0) * m0 == RVec3(0.5f, 0.0f, -0.5f), "Vector * Matrix multiplication invalid!" );
+        TEST( m0 * v0 == Vec3(0.5f, 1.0f, 1.5f), "Matrix * Vector multiplication invalid!" );
     }
 
     // ********************************************************************* //
