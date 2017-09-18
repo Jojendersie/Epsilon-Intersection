@@ -1900,8 +1900,9 @@ namespace ei {
     {
         eiAssert(approx(len(_vector), 1.0f), "Expected normalized direction vector!");
         Vec3 y;
-        if(abs(_vector.x) >= 1.0f) y = Vec3(0.0f, 1.0f, 0.0f);
-        else y = normalize(Vec3(0.0f, -_vector.z, _vector.y));
+        if(abs(_vector.z) < abs(_vector.x))
+            y = Vec3(-_vector.y, _vector.x, 0.0f) / sqrt(_vector.y*_vector.y + _vector.x*_vector.x);
+        else y = Vec3(0.0f, -_vector.z, _vector.y) / sqrt(_vector.y*_vector.y + _vector.z*_vector.z);
         return axis(_vector, y, cross(_vector, y));
     }
 
