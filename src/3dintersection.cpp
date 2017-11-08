@@ -528,13 +528,13 @@ namespace ei {
     bool intersects( const Ray& _ray, const FastTriangle& _triangle, float& _distance )
     {
         float dist = dot( _triangle.normal, _ray.direction );
-        float dist2A = dist * _triangle.area * 2.0f;
+        float dist2AInv = 0.5f / (dist * _triangle.area);
         Vec3 o = (_triangle.v0 - _ray.origin);
         Vec3 d = cross( _ray.direction, o );
 
-        float barycentricCoord1 = -dot( d, _triangle.e02 ) / dist2A;
+        float barycentricCoord1 = -dot( d, _triangle.e02 ) * dist2AInv;
         if(barycentricCoord1 < -EPSILON || barycentricCoord1 != barycentricCoord1) return false;
-        float barycentricCoord2 = dot( d, _triangle.e01 ) / dist2A;
+        float barycentricCoord2 = dot( d, _triangle.e01 ) * dist2AInv;
         if(barycentricCoord2 < -EPSILON || barycentricCoord2 != barycentricCoord2) return false;
         if(barycentricCoord1 + barycentricCoord2 > 1.0f) return false;
 
@@ -573,13 +573,13 @@ namespace ei {
     bool intersects( const Ray& _ray, const FastTriangle& _triangle, float& _distance, Vec3& _barycentric )
     {
         float dist = dot( _triangle.normal, _ray.direction );
-        float dist2A = dist * _triangle.area * 2.0f;
+        float dist2AInv = 0.5f / (dist * _triangle.area);
         Vec3 o = (_triangle.v0 - _ray.origin);
         Vec3 d = cross( _ray.direction, o );
 
-        _barycentric.y = -dot( d, _triangle.e02 ) / dist2A;
+        _barycentric.y = -dot( d, _triangle.e02 ) * dist2AInv;
         if(_barycentric.y < -EPSILON) return false;
-        _barycentric.z = dot( d, _triangle.e01 ) / dist2A;
+        _barycentric.z = dot( d, _triangle.e01 ) * dist2AInv;
         if(_barycentric.z < -EPSILON) return false;
         _barycentric.x = 1.0f - (_barycentric.y + _barycentric.z);
         // Do one check on NaN - if any other coordinate is NaN x will be NaN too
