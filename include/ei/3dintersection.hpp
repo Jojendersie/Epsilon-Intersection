@@ -159,10 +159,14 @@ namespace ei {
     ///     This point has a ray parameter >= 0 (no negative direction).
     bool intersects( const Ray& _ray, const Triangle& _triangle );                                          // TESTED
     bool intersects( const Ray& _ray, const Triangle& _triangle, float& _distance );                        // TESTED
+    bool intersects( const Ray& _ray, const FastTriangle& _triangle, float& _distance );                    // TESTED
     bool intersects( const Ray& _ray, const Triangle& _triangle, float& _distance, Vec3& _barycentric );    // TESTED
+    bool intersects( const Ray& _ray, const FastTriangle& _triangle, float& _distance, Vec3& _barycentric );// TESTED
     inline bool intersects( const Triangle& _triangle, const Ray& _ray )  { return intersects( _ray, _triangle ); }
     inline bool intersects( const Triangle& _triangle, const Ray& _ray, float& _distance )  { return intersects( _ray, _triangle, _distance ); }
+    inline bool intersects( const FastTriangle& _triangle, const Ray& _ray, float& _distance )  { return intersects( _ray, _triangle, _distance ); }
     inline bool intersects( const Triangle& _triangle, const Ray& _ray, float& _distance, Vec3& _barycentric )  { return intersects( _ray, _triangle, _distance, _barycentric ); }
+    inline bool intersects( const FastTriangle& _triangle, const Ray& _ray, float& _distance, Vec3& _barycentric )  { return intersects( _ray, _triangle, _distance, _barycentric ); }
 
     /// \brief Do a sphere and a plane intersect or touch?
     /// \return true if there is at least one point in common.

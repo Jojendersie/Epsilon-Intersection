@@ -78,6 +78,13 @@ template<> inline void random<ei::Triangle>(ei::Triangle& _out)
     _out.v2 = pos + ei::Vec3(rnd() * 0.5f - 0.25f, rnd() * 0.5f - 0.25f, rnd() * 0.5f - 0.25f);
 }
 
+template<> inline void random<ei::FastTriangle>(ei::FastTriangle& _out)
+{
+    ei::Triangle rndTriangle;
+    random<ei::Triangle>(rndTriangle);
+    _out = ei::FastTriangle(rndTriangle);
+}
+
 template<> inline void random<ei::Tetrahedron>(ei::Tetrahedron& _out)
 {
     ei::Vec3 pos(rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f, rnd() * 2.0f - 1.0f);
@@ -140,6 +147,7 @@ template<> inline const char* name<ei::OEllipsoid>()    { return "  OEllipsoid";
 template<> inline const char* name<ei::Box>()           { return "         Box"; }
 template<> inline const char* name<ei::OBox>()          { return "Oriented Box"; }
 template<> inline const char* name<ei::Triangle>()      { return "    Triangle"; }
+template<> inline const char* name<ei::FastTriangle>()  { return "FastTriangle"; }
 template<> inline const char* name<ei::Tetrahedron>()   { return " Tetrahedron"; }
 template<> inline const char* name<ei::Capsule>()       { return "     Capsule"; }
 template<> inline const char* name<ei::Plane>()         { return "       Plane"; }
@@ -279,7 +287,7 @@ template<class P0, class P1, class R> void performance(R (*_func)(const P0&, con
 /// \brief Generic performance testing method for 3 parameters
 template<class P0, class P1, class P2, class R> void performance(R (*_func)(const P0&, const P1&, P2&), const char* _funcName)
 {
-    double perfIndex = 0.0f;
+    /*double perfIndex = 0.0f;
     uint64 totalTicks = 0;
     for(int t = 0; t < PERF_ITERATIONS; ++t)
     {
@@ -312,8 +320,41 @@ template<class P0, class P1, class P2, class R> void performance(R (*_func)(cons
         perfIndex += (b-a) / double(c-b);
         totalTicks += b-a;
     }
-    // TODO: apply the same changes as in the other method
-   // std::cerr << "Performance " << _funcName << '(' << name<P0>() << ", " << name<P1>() << ", " << name<P2>() << "): "
-     //   << float(perfIndex/PERF_ITERATIONS) << " absolute ticks: " << totalTicks / float(PERF_ITERATIONS * TEST_PER_ITERATION) << std::endl;
+    std::cerr << "Performance " << _funcName << '(' << name<P0>() << ", " << name<P1>() << ", " << name<P2>() << "): "
+        << float(perfIndex/PERF_ITERATIONS) << " absolute ticks: " << totalTicks / float(PERF_ITERATIONS * TEST_PER_ITERATION) << std::endl;*/
+
+    std::vector<uint64> iterationTimes(PERF_ITERATIONS);
+    for(int t = 0; t < PERF_ITERATIONS; ++t)
+    {
+        // Fill data set for x intersections
+        // Since the Fast... types have no default ctor I use the dummyMem+cast here.
+        char dummyMem[512];
+        std::vector<P0> geo0(TEST_PER_ITERATION, *reinterpret_cast<P0*>(dummyMem));
+        std::vector<P1> geo1(TEST_PER_ITERATION, *reinterpret_cast<P1*>(dummyMem));
+        for(int i = 0; i < TEST_PER_ITERATION; ++i)
+        {
+            random(geo0[i]);
+            random(geo1[i]);
+        }
+
+        // Start
+        uint64 a = ticks();
+        volatile R res;
+        P2 rt;
+        volatile P2 eat;
+        for(int i = 0; i < TEST_PER_ITERATION; ++i)
+            for(int j = 0; j < TEST_PER_ITERATION; ++j)
+            {
+                res = _func(geo0[i], geo1[j], rt);
+                eat = rt;
+            }
+        uint64 b = ticks();
+        iterationTimes[t] = b-a;
+    }
+
+    std::sort(iterationTimes.begin(), iterationTimes.end());
+    std::cerr << "Performance " << _funcName << '(' << name<P0>() << ", " << name<P1>() << ", " << name<P2>() << "):\t"
+        << deltaTicksToMilliSeconds(ei::uint64(iterationTimes[PERF_ITERATIONS/2] * 1000000.0 / (TEST_PER_ITERATION * TEST_PER_ITERATION)))
+        << " ms/M\n";
 }
 

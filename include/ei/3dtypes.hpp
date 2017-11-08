@@ -629,6 +629,39 @@ namespace ei {
         }
     };
 
+    struct FastTriangle
+    {
+        const Vec3 v0;
+        const Vec3 e01;     ///< Edge from v0 to v1
+        const Vec3 e02;     ///< Edge from v0 to v2
+        const Vec3 normal;  ///< Normalized normal
+        const float area;
+
+        /// \brief Construction from dynamic variant.
+        explicit FastTriangle(const Triangle & _triangle) noexcept :
+            v0(_triangle.v0),
+            e01(_triangle.v1 - _triangle.v0),
+            e02(_triangle.v2 - _triangle.v0),
+            normal(0.0f), area(0.0f)
+        {
+            const_cast<Vec3&>(normal) = cross(e01, e02);
+            float a2 = len(normal);
+            const_cast<Vec3&>(normal) /= a2;
+            const_cast<float&>(area) = a2 * 0.5f;
+        }
+
+        /// \brief Overwrite the current data (auto generation not possible because of const members)
+        FastTriangle& operator = (const FastTriangle& _triangle) noexcept
+        {
+            const_cast<Vec3&>(v0) = _triangle.v0;
+            const_cast<Vec3&>(e01) = _triangle.e01;
+            const_cast<Vec3&>(e02) = _triangle.e02;
+            const_cast<Vec3&>(normal) = _triangle.normal;
+            const_cast<float&>(area) = _triangle.area;
+            return *this;
+        }
+    };
+
 
     // ************************************************************************* //
     // VOLUME AND SURFACE METHODS                                                //
