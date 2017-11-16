@@ -346,16 +346,23 @@ namespace ei {
         float t1 = (_box.max.x - _ray.origin.x) / _ray.direction.x;
         float tmin = min(t0, t1);
         float tmax = max(t0, t1);
+        if(tmin != tmin) tmin = -INF; if(tmax != tmax) tmax = INF;
         if(tmax < 0.0f) return false;
         t0 = (_box.min.y - _ray.origin.y) / _ray.direction.y;
         t1 = (_box.max.y - _ray.origin.y) / _ray.direction.y;
-        tmin = max(tmin, min(t0, t1));
-        tmax = min(tmax, max(t0, t1));
+        float min2 = min(t0, t1);
+        float max2 = max(t0, t1);
+        if(min2 != min2) min2 = -INF; if(max2 != max2) max2 = INF;
+        tmin = max(tmin, min2);
+        tmax = min(tmax, max2);
         if(tmax < 0.0f || tmin > tmax) return false;
         t0 = (_box.min.z - _ray.origin.z) / _ray.direction.z;
         t1 = (_box.max.z - _ray.origin.z) / _ray.direction.z;
-        tmin = max(tmin, min(t0, t1));
-        tmax = min(tmax, max(t0, t1));
+        min2 = min(t0, t1);
+        max2 = max(t0, t1);
+        if(min2 != min2) min2 = -INF; if(max2 != max2) max2 = INF;
+        tmin = max(tmin, min2);
+        tmax = min(tmax, max2);
         return (tmax >= 0.0f) && (tmin <= tmax);
         /*Vec3 tbot = (_box.min - _ray.origin) / _ray.direction;
         Vec3 ttop = (_box.max - _ray.origin) / _ray.direction;
@@ -373,16 +380,23 @@ namespace ei {
         float t1 = (_box.max.x - _ray.origin.x) / _ray.direction.x;
         float tmin = min(t0, t1);
         float tmax = max(t0, t1);
+        if(tmin != tmin) tmin = -INF; if(tmax != tmax) tmax = INF;
         if(tmax < 0.0f) return false;
         t0 = (_box.min.y - _ray.origin.y) / _ray.direction.y;
         t1 = (_box.max.y - _ray.origin.y) / _ray.direction.y;
-        tmin = max(tmin, min(t0, t1));
-        tmax = min(tmax, max(t0, t1));
+        float min2 = min(t0, t1);
+        float max2 = max(t0, t1);
+        if(min2 != min2) min2 = -INF; if(max2 != max2) max2 = INF;
+        tmin = max(tmin, min2);
+        tmax = min(tmax, max2);
         if(tmax < 0.0f || tmin > tmax) return false;
         t0 = (_box.min.z - _ray.origin.z) / _ray.direction.z;
         t1 = (_box.max.z - _ray.origin.z) / _ray.direction.z;
-        tmin = max(tmin, min(t0, t1));
-        tmax = min(tmax, max(t0, t1));
+        min2 = min(t0, t1);
+        max2 = max(t0, t1);
+        if(min2 != min2) min2 = -INF; if(max2 != max2) max2 = INF;
+        tmin = max(tmin, min2);
+        tmax = min(tmax, max2);
         _distance = max(tmin, 0.0f);//tmin < 0.0f ? tmax : tmin;
         return tmin <= tmax;
     }
@@ -446,16 +460,23 @@ namespace ei {
         float t1 = (_box.max.x - _ray.origin.x) / _ray.direction.x;
         float tmin = min(t0, t1);
         float tmax = max(t0, t1);
+        if(tmin != tmin) tmin = -INF; if(tmax != tmax) tmax = INF;
         if(tmax < 0.0f) return false;
         t0 = (_box.min.y - _ray.origin.y) / _ray.direction.y;
         t1 = (_box.max.y - _ray.origin.y) / _ray.direction.y;
-        tmin = max(tmin, min(t0, t1));
-        tmax = min(tmax, max(t0, t1));
+        float min2 = min(t0, t1);
+        float max2 = max(t0, t1);
+        if(min2 != min2) min2 = -INF; if(max2 != max2) max2 = INF;
+        tmin = max(tmin, min2);
+        tmax = min(tmax, max2);
         if(tmax < 0.0f || tmin > tmax) return false;
         t0 = (_box.min.z - _ray.origin.z) / _ray.direction.z;
         t1 = (_box.max.z - _ray.origin.z) / _ray.direction.z;
-        tmin = max(tmin, min(t0, t1));
-        tmax = min(tmax, max(t0, t1));
+        min2 = min(t0, t1);
+        max2 = max(t0, t1);
+        if(min2 != min2) min2 = -INF; if(max2 != max2) max2 = INF;
+        tmin = max(tmin, min2);
+        tmax = min(tmax, max2);
         _distance = max(tmin, 0.0f);
         _distanceExit = tmax;
         return tmin <= tmax;
@@ -509,37 +530,37 @@ namespace ei {
         // Normal scaled by 2A
         Vec3 normal = cross( e1, e0 );
 
-        float dist2A = dot( normal, _ray.direction );
+        float cosT2A = dot( normal, _ray.direction );
         Vec3 o = (_triangle.v0 - _ray.origin);
         Vec3 d = cross( _ray.direction, o );
 
-        float barycentricCoord1 = dot( d, e1 ) / dist2A;
+        float barycentricCoord1 = dot( d, e1 ) / cosT2A;
         if(barycentricCoord1 < -EPSILON || barycentricCoord1 != barycentricCoord1) return false;
-        float barycentricCoord2 = dot( d, e0 ) / dist2A;
+        float barycentricCoord2 = dot( d, e0 ) / cosT2A;
         if(barycentricCoord2 < -EPSILON || barycentricCoord2 != barycentricCoord2) return false;
-        if(barycentricCoord1 + barycentricCoord2 > 1.0f) return false;
+        if(barycentricCoord1 + barycentricCoord2 > 1.0f+EPSILON) return false;
 
         // Projection to plane. The 2A from normal is canceled out
-        _distance = dot( normal, o ) / dist2A;
+        _distance = dot( normal, o ) / cosT2A;
         return _distance >= 0.0f;
     }
 
     // ********************************************************************* //
     bool intersects( const Ray& _ray, const FastTriangle& _triangle, float& _distance )
     {
-        float dist = dot( _triangle.normal, _ray.direction );
-        float dist2AInv = 0.5f / (dist * _triangle.area);
+        float cosT = dot( _triangle.normal, _ray.direction );
+        float cosT2AInv = 0.5f / (cosT * _triangle.area);
         Vec3 o = (_triangle.v0 - _ray.origin);
         Vec3 d = cross( _ray.direction, o );
 
-        float barycentricCoord1 = -dot( d, _triangle.e02 ) * dist2AInv;
+        float barycentricCoord1 = -dot( d, _triangle.e02 ) * cosT2AInv;
         if(barycentricCoord1 < -EPSILON || barycentricCoord1 != barycentricCoord1) return false;
-        float barycentricCoord2 = dot( d, _triangle.e01 ) * dist2AInv;
+        float barycentricCoord2 = dot( d, _triangle.e01 ) * cosT2AInv;
         if(barycentricCoord2 < -EPSILON || barycentricCoord2 != barycentricCoord2) return false;
-        if(barycentricCoord1 + barycentricCoord2 > 1.0f) return false;
+        if(barycentricCoord1 + barycentricCoord2 > 1.0f+EPSILON) return false;
 
         // Projection to plane. The 2A from normal is canceled out
-        _distance = dot( _triangle.normal, o ) / dist;
+        _distance = dot( _triangle.normal, o ) / cosT;
         return _distance >= 0.0f;
     }
 
@@ -552,41 +573,41 @@ namespace ei {
         // Normal scaled by 2A
         Vec3 normal = cross( e1, e0 );
 
-        float dist2A = dot( normal, _ray.direction );
+        float cosT2A = dot( normal, _ray.direction );
         Vec3 o = (_triangle.v0 - _ray.origin);
         Vec3 d = cross( _ray.direction, o );
 
-        _barycentric.y = dot( d, e1 ) / dist2A;
+        _barycentric.y = dot( d, e1 ) / cosT2A;
         if(_barycentric.y < -EPSILON) return false;
-        _barycentric.z = dot( d, e0 ) / dist2A;
+        _barycentric.z = dot( d, e0 ) / cosT2A;
         if(_barycentric.z < -EPSILON) return false;
         _barycentric.x = 1.0f - (_barycentric.y + _barycentric.z);
         // Do one check on NaN - if any other coordinate is NaN x will be NaN too
         if(_barycentric.x < -EPSILON || _barycentric.x != _barycentric.x) return false;
 
         // Projection to plane. The 2A from normal is canceled out
-        _distance = dot( normal, o ) / dist2A;
+        _distance = dot( normal, o ) / cosT2A;
         return _distance >= 0.0f;
     }
 
     // ********************************************************************* //
     bool intersects( const Ray& _ray, const FastTriangle& _triangle, float& _distance, Vec3& _barycentric )
     {
-        float dist = dot( _triangle.normal, _ray.direction );
-        float dist2AInv = 0.5f / (dist * _triangle.area);
+        float cosT = dot( _triangle.normal, _ray.direction );
+        float cosT2AInv = 0.5f / (cosT * _triangle.area);
         Vec3 o = (_triangle.v0 - _ray.origin);
         Vec3 d = cross( _ray.direction, o );
 
-        _barycentric.y = -dot( d, _triangle.e02 ) * dist2AInv;
+        _barycentric.y = -dot( d, _triangle.e02 ) * cosT2AInv;
         if(_barycentric.y < -EPSILON) return false;
-        _barycentric.z = dot( d, _triangle.e01 ) * dist2AInv;
+        _barycentric.z = dot( d, _triangle.e01 ) * cosT2AInv;
         if(_barycentric.z < -EPSILON) return false;
         _barycentric.x = 1.0f - (_barycentric.y + _barycentric.z);
         // Do one check on NaN - if any other coordinate is NaN x will be NaN too
         if(_barycentric.x < -EPSILON || _barycentric.x != _barycentric.x) return false;
 
         // Projection to plane. The 2A from normal is canceled out
-        _distance = dot( _triangle.normal, o ) / dist;
+        _distance = dot( _triangle.normal, o ) / cosT;
         return _distance >= 0.0f;
     }
 
