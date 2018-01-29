@@ -376,29 +376,29 @@ namespace ei {
     // ********************************************************************* //
     bool intersects( const Ray& _ray, const Box& _box, float& _distance )
     {
-        float t0 = (_box.min.x - _ray.origin.x) / _ray.direction.x;
-        float t1 = (_box.max.x - _ray.origin.x) / _ray.direction.x;
-        float tmin = min(t0, t1);
-        float tmax = max(t0, t1);
-        if(tmin != tmin) tmin = -INF; if(tmax != tmax) tmax = INF;
-        if(tmax < 0.0f) return false;
-        t0 = (_box.min.y - _ray.origin.y) / _ray.direction.y;
-        t1 = (_box.max.y - _ray.origin.y) / _ray.direction.y;
-        float min2 = min(t0, t1);
-        float max2 = max(t0, t1);
-        if(min2 != min2) min2 = -INF; if(max2 != max2) max2 = INF;
-        tmin = max(tmin, min2);
-        tmax = min(tmax, max2);
-        if(tmax < 0.0f || tmin > tmax) return false;
-        t0 = (_box.min.z - _ray.origin.z) / _ray.direction.z;
-        t1 = (_box.max.z - _ray.origin.z) / _ray.direction.z;
-        min2 = min(t0, t1);
-        max2 = max(t0, t1);
-        if(min2 != min2) min2 = -INF; if(max2 != max2) max2 = INF;
-        tmin = max(tmin, min2);
-        tmax = min(tmax, max2);
-        _distance = max(tmin, 0.0f);//tmin < 0.0f ? tmax : tmin;
-        return tmin <= tmax;
+        float tmin, tmax, tymin, tymax, tzmin, tzmax;
+        const Vec3 * bbounds = (const Vec3 *)&_box;
+
+        tmax  = (bbounds[_ray.direction.x < 0.0f ? 0 : 1].x - _ray.origin.x) / _ray.direction.x;
+        tmin  = (bbounds[_ray.direction.x < 0.0f ? 1 : 0].x - _ray.origin.x) / _ray.direction.x;
+        tymin = (bbounds[_ray.direction.y < 0.0f ? 1 : 0].y - _ray.origin.y) / _ray.direction.y;
+        tymax = (bbounds[_ray.direction.y < 0.0f ? 0 : 1].y - _ray.origin.y) / _ray.direction.y;
+
+        if((tmin > tymax) || (tymin > tmax))
+            return false;
+        if(tymin > tmin) tmin = tymin;
+        if(tymax < tmax) tmax = tymax;
+        if(tmax < 0.0f)
+            return false;
+
+        tzmin = (bbounds[_ray.direction.z < 0.0f ? 1 : 0].z - _ray.origin.z) / _ray.direction.z;
+        tzmax = (bbounds[_ray.direction.z < 0.0f ? 0 : 1].z - _ray.origin.z) / _ray.direction.z;
+
+        if ((tmin > tzmax) || (tzmin > tmax) || (tzmax < 0.0f))
+            return false;
+
+        _distance = max(tzmin, tmin, 0.0f);
+        return true;
     }
 
     // ********************************************************************* //
@@ -456,30 +456,58 @@ namespace ei {
     // ********************************************************************* //
     bool intersects( const Ray& _ray, const Box& _box, float& _distance, float& _distanceExit )
     {
-        float t0 = (_box.min.x - _ray.origin.x) / _ray.direction.x;
-        float t1 = (_box.max.x - _ray.origin.x) / _ray.direction.x;
-        float tmin = min(t0, t1);
-        float tmax = max(t0, t1);
-        if(tmin != tmin) tmin = -INF; if(tmax != tmax) tmax = INF;
-        if(tmax < 0.0f) return false;
-        t0 = (_box.min.y - _ray.origin.y) / _ray.direction.y;
-        t1 = (_box.max.y - _ray.origin.y) / _ray.direction.y;
-        float min2 = min(t0, t1);
-        float max2 = max(t0, t1);
-        if(min2 != min2) min2 = -INF; if(max2 != max2) max2 = INF;
-        tmin = max(tmin, min2);
-        tmax = min(tmax, max2);
-        if(tmax < 0.0f || tmin > tmax) return false;
-        t0 = (_box.min.z - _ray.origin.z) / _ray.direction.z;
-        t1 = (_box.max.z - _ray.origin.z) / _ray.direction.z;
-        min2 = min(t0, t1);
-        max2 = max(t0, t1);
-        if(min2 != min2) min2 = -INF; if(max2 != max2) max2 = INF;
-        tmin = max(tmin, min2);
-        tmax = min(tmax, max2);
-        _distance = max(tmin, 0.0f);
-        _distanceExit = tmax;
-        return tmin <= tmax;
+        float tmin, tmax, tymin, tymax, tzmin, tzmax;
+        const Vec3 * bbounds = (const Vec3 *)&_box;
+
+        tmax  = (bbounds[_ray.direction.x < 0.0f ? 0 : 1].x - _ray.origin.x) / _ray.direction.x;
+        tmin  = (bbounds[_ray.direction.x < 0.0f ? 1 : 0].x - _ray.origin.x) / _ray.direction.x;
+        tymin = (bbounds[_ray.direction.y < 0.0f ? 1 : 0].y - _ray.origin.y) / _ray.direction.y;
+        tymax = (bbounds[_ray.direction.y < 0.0f ? 0 : 1].y - _ray.origin.y) / _ray.direction.y;
+
+        if((tmin > tymax) || (tymin > tmax))
+            return false;
+        if(tymin > tmin) tmin = tymin;
+        if(tymax < tmax) tmax = tymax;
+        if(tmax < 0.0f)
+            return false;
+
+        tzmin = (bbounds[_ray.direction.z < 0.0f ? 1 : 0].z - _ray.origin.z) / _ray.direction.z;
+        tzmax = (bbounds[_ray.direction.z < 0.0f ? 0 : 1].z - _ray.origin.z) / _ray.direction.z;
+
+        if ((tmin > tzmax) || (tzmin > tmax) || (tzmax < 0.0f))
+            return false;
+
+        _distance = max(tzmin, tmin, 0.0f);
+        _distanceExit = min(tzmax, tmax);
+        return true;
+    }
+
+    // ********************************************************************* //
+    bool intersects( const FastRay& _ray, const Box& _box, float& _distance )
+    {
+        float tmin, tmax, tymin, tymax, tzmin, tzmax;
+        const Vec3 * bbounds = (const Vec3 *)&_box;
+
+        tmax  = (bbounds[_ray.invDirection.x < 0.0f ? 0 : 1].x - _ray.origin.x) * _ray.invDirection.x;
+        tmin  = (bbounds[_ray.invDirection.x < 0.0f ? 1 : 0].x - _ray.origin.x) * _ray.invDirection.x;
+        tymin = (bbounds[_ray.invDirection.y < 0.0f ? 1 : 0].y - _ray.origin.y) * _ray.invDirection.y;
+        tymax = (bbounds[_ray.invDirection.y < 0.0f ? 0 : 1].y - _ray.origin.y) * _ray.invDirection.y;
+
+        if((tmin > tymax) || (tymin > tmax))
+            return false;
+        if(tymin > tmin) tmin = tymin;
+        if(tymax < tmax) tmax = tymax;
+        if(tmax < 0.0f)
+            return false;
+
+        tzmin = (bbounds[_ray.invDirection.z < 0.0f ? 1 : 0].z - _ray.origin.z) * _ray.invDirection.z;
+        tzmax = (bbounds[_ray.invDirection.z < 0.0f ? 0 : 1].z - _ray.origin.z) * _ray.invDirection.z;
+
+        if ((tmin > tzmax) || (tzmin > tmax) || (tzmax < 0.0f))
+            return false;
+
+        _distance = max(tzmin, tmin, 0.0f);
+        return true;
     }
 
     // ********************************************************************* //

@@ -577,6 +577,20 @@ namespace ei {
     //                           FAST VARIANTS                               //
     // ********************************************************************* //
 
+    struct FastRay
+    {
+        const Vec3 origin;
+        const Vec3 direction;
+        const Vec3 invDirection;        ///< 1/direction
+
+        /// \brief Construction from dynamic ray struct
+        FastRay(const Ray & _ray) noexcept :
+            origin(_ray.origin),
+            direction(_ray.direction),
+            invDirection(1.0f / _ray.direction)
+        {}
+    };
+
     struct FastFrustum
     {
         const DOP nf;         ///< Parallel near and far planes

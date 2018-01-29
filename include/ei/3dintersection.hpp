@@ -139,10 +139,12 @@ namespace ei {
     bool intersects( const Ray& _ray, const Box& _box, float& _distance );
     bool intersects( const Ray& _ray, const Box& _box, float& _distance, HitSide& _side );
     bool intersects( const Ray& _ray, const Box& _box, float& _distance, float& _distanceExit );
+    bool intersects( const FastRay& _ray, const Box& _box, float& _distance );
     inline bool intersects( const Box& _box, const Ray& _ray )  { return intersects( _ray, _box ); }
     inline bool intersects( const Box& _box, const Ray& _ray, float& _distance )  { return intersects( _ray, _box, _distance ); }
     inline bool intersects( const Box& _box, const Ray& _ray, float& _distance, HitSide& _side )  { return intersects( _ray, _box, _distance, _side ); }
     inline bool intersects( const Box& _box, const Ray& _ray, float& _distance, float& _distanceExit )  { return intersects( _ray, _box, _distance, _distanceExit ); }
+    inline bool intersects( const Box& _box, const FastRay& _ray, float& _distance )  { return intersects( _ray, _box, _distance ); }
 
     /// \brief Do an oriented box and a ray intersect or touch?
     bool intersects( const Ray& _ray, const OBox& _obox );                     // TESTED
