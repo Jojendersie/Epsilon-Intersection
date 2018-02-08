@@ -1268,6 +1268,21 @@ namespace ei {
     using std::pow;
 
     // ********************************************************************* //
+    /// \brief Compute the power for each component
+    template<typename T, unsigned M, unsigned N>
+    inline Matrix<T,M,N> exp(const Matrix<T,M,N>& _v0) noexcept
+    {
+        Matrix<T,M,N> result;
+        for(uint i = 0; i < M * N; ++i)
+            result[i] = std::exp(_v0[i]);
+        return result;
+    }
+
+    // Unfortunately, the above declaration hides the elementary one -> make it
+    // visible again
+    using std::exp;
+
+    // ********************************************************************* //
     /// \brief Element wise natural logarithm for matrices (basis e).
     template<typename T, unsigned M, unsigned N>
     inline Matrix<T,M,N> log(const Matrix<T,M,N>& _mat0) noexcept // TESTED
