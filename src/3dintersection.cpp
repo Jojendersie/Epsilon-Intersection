@@ -379,10 +379,10 @@ namespace ei {
         float tmin, tmax, tymin, tymax, tzmin, tzmax;
         const Vec3 * bbounds = (const Vec3 *)&_box;
 
-        tmax  = (bbounds[_ray.direction.x < 0.0f ? 0 : 1].x - _ray.origin.x) / _ray.direction.x;
-        tmin  = (bbounds[_ray.direction.x < 0.0f ? 1 : 0].x - _ray.origin.x) / _ray.direction.x;
-        tymin = (bbounds[_ray.direction.y < 0.0f ? 1 : 0].y - _ray.origin.y) / _ray.direction.y;
-        tymax = (bbounds[_ray.direction.y < 0.0f ? 0 : 1].y - _ray.origin.y) / _ray.direction.y;
+        tmin  = (bbounds[1-heaviside(_ray.direction.x)].x - _ray.origin.x) / _ray.direction.x;
+        tmax  = (bbounds[  heaviside(_ray.direction.x)].x - _ray.origin.x) / _ray.direction.x;
+        tymin = (bbounds[1-heaviside(_ray.direction.y)].y - _ray.origin.y) / _ray.direction.y;
+        tymax = (bbounds[  heaviside(_ray.direction.y)].y - _ray.origin.y) / _ray.direction.y;
 
         if((tmin > tymax) || (tymin > tmax))
             return false;
@@ -391,8 +391,8 @@ namespace ei {
         if(tmax < 0.0f)
             return false;
 
-        tzmin = (bbounds[_ray.direction.z < 0.0f ? 1 : 0].z - _ray.origin.z) / _ray.direction.z;
-        tzmax = (bbounds[_ray.direction.z < 0.0f ? 0 : 1].z - _ray.origin.z) / _ray.direction.z;
+        tzmin = (bbounds[1-heaviside(_ray.direction.z)].z - _ray.origin.z) / _ray.direction.z;
+        tzmax = (bbounds[  heaviside(_ray.direction.z)].z - _ray.origin.z) / _ray.direction.z;
 
         if ((tmin > tzmax) || (tzmin > tmax) || (tzmax < 0.0f))
             return false;

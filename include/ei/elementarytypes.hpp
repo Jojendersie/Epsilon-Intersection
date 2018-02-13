@@ -61,6 +61,13 @@ namespace details {
         ReinterpretDouble(double _f) : f(_f) {}
     };
     const ReinterpretDouble D_INF = 0x7ff0000000000000ul;
+
+    template<typename T, typename F>
+    T hard_cast(F _from)
+    {
+        static_assert(sizeof(T) == sizeof(F), "Cannot cast types of different sizes");
+        return *(T*)&_from;
+    }
 }
 
 namespace ei {
@@ -155,6 +162,17 @@ namespace ei {
         return _x < static_cast<T>(0) ? -_x : _x;
     }
 
+    inline float abs(float _x) noexcept // TESTED
+    {
+        using details::hard_cast;
+        return hard_cast<float>(hard_cast<uint32>(_x) & 0x7fffffff);
+    }
+    inline double abs(double _x) noexcept // TESTED
+    {
+        using details::hard_cast;
+        return hard_cast<double>(hard_cast<uint64>(_x) & 0x7fffffffffffffffull);
+    }
+
     // ********************************************************************* //
     /// \brief Get the sign of a value.
     /// \details There is a faster version sgn(), if you don't need to 
@@ -168,14 +186,38 @@ namespace ei {
     }
 
     // ********************************************************************* //
-    /// \brief Get the sign of a value where 0 is counted as positive.
-    /// \details This function is faster than sign(). Use it if you don't need
-    ///    to know about zero.
-    /// \returns -1 (_x < 0) or 1 (_x >= 0)
+    /// \brief Get the sign of a value where the sign of 0 is counted too.
+    /// \details This function should be faster than sign().
+    /// \returns -1 (_x <= -0) or 1 (_x >= 0)
     template<typename T>
     inline T sgn(T _x) noexcept // TESTED
     {
         return _x < static_cast<T>(0) ? static_cast<T>(-1) : static_cast<T>(1);
+    }
+    inline float sgn(float _x) noexcept // TESTED
+    {
+        return details::hard_cast<uint32>(_x) & 0x80000000 ? -1.0f : 1.0f;
+    }
+    inline double sgn(double _x) noexcept // TESTED
+    {
+        return details::hard_cast<uint64>(_x) & 0x8000000000000000ull ? -1.0 : 1.0;
+    }
+
+    // ********************************************************************* //
+    /// \brief Get 0 for (_x <= -0) or 1 for (_x >= 0).
+    /// \returns 0 (_x <= -0) or 1 (_x >= 0)
+    template<typename T>
+    inline int heaviside(T _x) noexcept
+    {
+        return _x < static_cast<T>(0) ? 0 : 1;
+    }
+    inline int heaviside(float _x) noexcept // TESTED
+    {
+        return details::hard_cast<uint32>(_x) & 0x80000000 ? 0 : 1;
+    }
+    inline int heaviside(double _x) noexcept // TESTED
+    {
+        return details::hard_cast<uint64>(_x) & 0x8000000000000000ull ? 0 : 1;
     }
 
     // ********************************************************************* //

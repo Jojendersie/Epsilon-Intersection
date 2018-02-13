@@ -99,6 +99,41 @@ bool test_elementaries()
         TEST( mod(a, b) == 1, "mod(a, b) wrong!");
     }
 
+    // abs, sgn, sign
+    {
+        TEST( ei::sign(-1.0f) == -1, "sign(-1) wrong!" );
+        TEST( ei::sign(1.0f) == 1, "sign(1) wrong!" );
+        TEST( ei::sign(-0.0f) == 0, "sign(-0) wrong!" );
+        TEST( ei::sign(0.0f) == 0, "sign(0) wrong!" );
+
+        TEST( ei::abs(-1.0f) == 1.0f, "abs(-1.0f) wrong!" );
+        TEST( ei::abs(1.0f) == 1.0f, "abs(1.0f) wrong!" );
+        TEST( 1.0f/ei::abs(-0.0f) == INF, "abs(-0.0f) wrong!" );
+        TEST( 1.0f/ei::abs(0.0f) == INF, "abs(0.0f) wrong!" );
+        TEST( ei::abs(-1.0) == 1.0, "abs(-1.0) wrong!" );
+        TEST( ei::abs(1.0) == 1.0, "abs(1.0) wrong!" );
+        TEST( 1.0/ei::abs(-0.0) == INF_D, "abs(-0.0) wrong!" );
+        TEST( 1.0/ei::abs(0.0) == INF_D, "abs(0.0) wrong!" );
+
+        TEST( ei::sgn(-1.0f) == -1, "sgn(-1.0f) wrong!" );
+        TEST( ei::sgn(1.0f) == 1, "sgn(1.0f) wrong!" );
+        TEST( ei::sgn(-0.0f) == -1, "sgn(-0.0f) wrong!" );
+        TEST( ei::sgn(0.0f) == 1, "sgn(0.0f) wrong!" );
+        TEST( ei::sgn(-1.0) == -1, "sgn(-1.0) wrong!" );
+        TEST( ei::sgn(1.0) == 1, "sgn(1.0) wrong!" );
+        TEST( ei::sgn(-0.0) == -1, "sgn(-0.0) wrong!" );
+        TEST( ei::sgn(0.0) == 1, "sgn(0.0) wrong!" );
+
+        TEST( heaviside(-1.0f) == 0, "heaviside(-1.0f) wrong!" );
+        TEST( heaviside(1.0f) == 1, "heaviside(1.0f) wrong!" );
+        TEST( heaviside(-0.0f) == 0, "heaviside(-0.0f) wrong!" );
+        TEST( heaviside(0.0f) == 1, "heaviside(0.0f) wrong!" );
+        TEST( heaviside(-1.0) == 0, "heaviside(-1.0) wrong!" );
+        TEST( heaviside(1.0) == 1, "heaviside(1.0) wrong!" );
+        TEST( heaviside(-0.0) == 0, "heaviside(-0.0) wrong!" );
+        TEST( heaviside(0.0) == 1, "heaviside(0.0) wrong!" );
+    }
+
     // successor, predecessor
     {
 #ifdef UNIT_TEST_SUCCESSOR
