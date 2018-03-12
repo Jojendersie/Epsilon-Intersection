@@ -616,6 +616,7 @@ namespace ei {
             const_cast<Plane&>(r) = _frustum.r;
             const_cast<Plane&>(b) = _frustum.b;
             const_cast<Plane&>(t) = _frustum.t;
+            for(int i = 0; i < 8; ++i) const_cast<Vec3&>(vertices[i]) = _frustum.vertices[i];
             return *this;
         }
     };
