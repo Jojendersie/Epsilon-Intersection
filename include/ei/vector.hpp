@@ -234,7 +234,7 @@ namespace ei {
                     RESULT_TYPE(*) acc = (*this)(m,0) * _mat1(0,o);
                     for(uint n = 1; n < N; ++n)
                         acc += (*this)(m,n) * _mat1(n,o);
-                        *(reinterpret_cast<RESULT_TYPE(*)*>(&result) + m * O + o) = acc;
+                    *(reinterpret_cast<RESULT_TYPE(*)*>(&result) + m * O + o) = acc;
                 }
             }
             return result;
@@ -1006,7 +1006,7 @@ namespace ei {
             // if(!(abs(_mat1[i] - _mat0[i]) <= _epsilon)) return false;
             if(!approx(_mat1[i], _mat0[i], _epsilon))
                 return false;
-                return true;
+        return true;
     }
 
     // ********************************************************************* //

@@ -559,10 +559,10 @@ namespace ei {
         /// \param [in] _t Distance to the top plane from center to border on
         ///     the far plane.
         Frustum(const Vec3& _apex, const Vec3& _direction, const Vec3& _up, float _l, float _r, float _b, float _t, float _n, float _f) noexcept :
-            l(_l), r(_r), b(_b), t(_t), n(_n), f(_f),
             apex(_apex),
             up(_up),
-            direction(_direction)
+            direction(_direction),
+            l(_l), r(_r), b(_b), t(_t), n(_n), f(_f)
         {
             eiAssert(approx(lensq(_direction), 1.0f), "Insert a normalized direction!");
             eiAssert(approx(lensq(_up), 1.0f), "Insert a normalized up vector!");

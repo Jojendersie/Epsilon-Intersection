@@ -346,13 +346,15 @@ namespace ei {
         float t1 = (_box.max.x - _ray.origin.x) / _ray.direction.x;
         float tmin = min(t0, t1);
         float tmax = max(t0, t1);
-        if(tmin != tmin) tmin = -INF; if(tmax != tmax) tmax = INF;
+        if(tmin != tmin) tmin = -INF;
+        if(tmax != tmax) tmax = INF;
         if(tmax < 0.0f) return false;
         t0 = (_box.min.y - _ray.origin.y) / _ray.direction.y;
         t1 = (_box.max.y - _ray.origin.y) / _ray.direction.y;
         float min2 = min(t0, t1);
         float max2 = max(t0, t1);
-        if(min2 != min2) min2 = -INF; if(max2 != max2) max2 = INF;
+        if(min2 != min2) min2 = -INF;
+        if(max2 != max2) max2 = INF;
         tmin = max(tmin, min2);
         tmax = min(tmax, max2);
         if(tmax < 0.0f || tmin > tmax) return false;
@@ -360,7 +362,8 @@ namespace ei {
         t1 = (_box.max.z - _ray.origin.z) / _ray.direction.z;
         min2 = min(t0, t1);
         max2 = max(t0, t1);
-        if(min2 != min2) min2 = -INF; if(max2 != max2) max2 = INF;
+        if(min2 != min2) min2 = -INF;
+        if(max2 != max2) max2 = INF;
         tmin = max(tmin, min2);
         tmax = min(tmax, max2);
         return (tmax >= 0.0f) && (tmin <= tmax);
@@ -736,7 +739,6 @@ namespace ei {
     {
         // Go towards closest point and compare its distance to the radius
         Vec3 o = _sphere.center - _ray.origin;
-        float le = len(o) - 1.0f;
         float odotd = max(0.0f, dot(o, _ray.direction));
         o -= _ray.direction * odotd;
         float distSq = lensq(o);
@@ -1199,7 +1201,7 @@ namespace ei {
         if(dp < 0.0f || dp > _cone.height) return false; // Early out: behind cone origin or base
         // Use Pythagoras to avoid computation of d2 and the projected point.
         float dOPSq = dot(oToP, oToP);
-        float coneRadius = _cone.tanTheta * dp;
+        //float coneRadius = _cone.tanTheta * dp;
         // Maybe use an alternative for numerical more stable forms?
         //     dOPSq - dp * dp <= sq(_cone.tanTheta * dp)
         // <=> dOPSq - dp * dp <= sq(_cone.tanTheta) * dp * dp
