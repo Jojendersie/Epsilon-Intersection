@@ -45,28 +45,11 @@ namespace details {
     ///     both operants are matrices.
     class NonScalarType    {};
 
-    // Avoid including <limits> by defining infinity itself.
-    union ReinterpretFloat {
-        float f;
-        Int<4>::utype i;
-        ReinterpretFloat(Int<4>::utype _i) : i(_i) {}
-        ReinterpretFloat(float _f) : f(_f) {}
-    };
-    const ReinterpretFloat F_INF = 0x7f800000u;
-
-    union ReinterpretDouble {
-        double f;
-        Int<8>::utype i;
-        ReinterpretDouble(Int<8>::utype _i) : i(_i) {}
-        ReinterpretDouble(double _f) : f(_f) {}
-    };
-    const ReinterpretDouble D_INF = 0x7ff0000000000000ul;
-
     template<typename T, typename F>
     T hard_cast(F _from)
     {
         static_assert(sizeof(T) == sizeof(F), "Cannot cast types of different sizes");
-        return *(T*)&_from;
+        return *reinterpret_cast<T*>(&_from);
     }
 }
 
@@ -79,8 +62,11 @@ namespace ei {
     constexpr float GOLDEN_RATIO = 1.61803398875f;
     constexpr float PHYTAGORAS = 1.4142135623f;
     // The cmath header has an ugly macro with name INFINITY -> name conflict
-    constexpr float INF = details::F_INF.f;
-    constexpr double INF_D = details::D_INF.f;
+#pragma warning(push)
+#pragma warning(disable:4056) // overflow in fp constant arithmetic
+    constexpr float INF = 1e30f * 1e30f;
+    constexpr double INF_D = 1e300 * 1e300;
+#pragma warning(pop)
     // Unicode names for the above constants
 #ifdef EI_USE_UNICODE_NAMES
     constexpr float π = PI;
@@ -436,14 +422,14 @@ namespace ei {
         if(_number != _number) return _number;
         // Infinity
         if(_number == INF) return _number;
-        if(_number == -INF) return details::ReinterpretFloat(0xff7fffffu).f;
+        if(_number == -INF) return details::hard_cast<float>(0xff7fffffu);
 
-        details::ReinterpretFloat bits = _number;
-        unsigned sign = bits.i & 0x80000000u;
-        unsigned mantissa = bits.i & 0x7fffffffu;
+        uint32 bits = details::hard_cast<uint32>(_number);
+        uint32 sign = bits & 0x80000000u;
+        uint32 mantissa = bits & 0x7fffffffu;
         if( sign && mantissa )
-            return details::ReinterpretFloat( sign | (mantissa - 1) ).f;
-        else return details::ReinterpretFloat( mantissa + 1 ).f;
+            return details::hard_cast<float>( sign | (mantissa - 1) );
+        else return details::hard_cast<float>( mantissa + 1 );
     }
 
     inline double successor(double _number) noexcept
@@ -452,14 +438,14 @@ namespace ei {
         if(_number != _number) return _number;
         // Infinity
         if(_number == INF_D) return _number;
-        if(_number == -INF_D) return details::ReinterpretDouble(0xffeffffffffffffful).f;
+        if(_number == -INF_D) return details::hard_cast<double>(0xffeffffffffffffful);
 
-        details::ReinterpretDouble bits = _number;
-        uint64 sign = bits.i & 0x8000000000000000ul;
-        uint64 mantissa = bits.i & 0x7ffffffffffffffful;
+        uint64 bits = details::hard_cast<uint64>(_number);
+        uint64 sign = bits & 0x8000000000000000ul;
+        uint64 mantissa = bits & 0x7ffffffffffffffful;
         if( sign && mantissa )
-            return details::ReinterpretDouble( sign | (mantissa - 1) ).f;
-        else return details::ReinterpretDouble( mantissa + 1 ).f;
+            return details::hard_cast<double>( sign | (mantissa - 1) );
+        else return details::hard_cast<double>( mantissa + 1 );
     }
 
     /// \brief Compute the next machine representable number in negative direction.
@@ -473,14 +459,14 @@ namespace ei {
         if(_number != _number) return _number;
         // Infinity
         if(_number == -INF) return _number;
-        if(_number == INF) return details::ReinterpretFloat(0x7f7fffffu).f;
+        if(_number == INF) return details::hard_cast<float>(0x7f7fffffu);
 
-        details::ReinterpretFloat bits = _number;
-        unsigned sign = bits.i & 0x80000000u;
-        unsigned mantissa = bits.i & 0x7fffffffu;
+        uint32 bits = details::hard_cast<uint32>(_number);
+        uint32 sign = bits & 0x80000000u;
+        uint32 mantissa = bits & 0x7fffffffu;
         if( sign || !mantissa )
-            return details::ReinterpretFloat( 0x80000000u | (mantissa + 1) ).f;
-        else return details::ReinterpretFloat( mantissa - 1 ).f;
+            return details::hard_cast<float>( 0x80000000u | (mantissa + 1) );
+        else return details::hard_cast<float>( mantissa - 1 );
     }
 
     inline double predecessor(double _number) noexcept
@@ -489,13 +475,13 @@ namespace ei {
         if(_number != _number) return _number;
         // Infinity
         if(_number == -INF) return _number;
-        if(_number == INF) return details::ReinterpretDouble(0x7feffffffffffffful).f;
+        if(_number == INF) return details::hard_cast<double>(0x7feffffffffffffful);
 
-        details::ReinterpretDouble bits = _number;
-        uint64 sign = bits.i & 0x8000000000000000ul;
-        uint64 mantissa = bits.i & 0x7ffffffffffffffful;
+        uint64 bits = details::hard_cast<uint64>(_number);
+        uint64 sign = bits & 0x8000000000000000ul;
+        uint64 mantissa = bits & 0x7ffffffffffffffful;
         if( sign || !mantissa )
-            return details::ReinterpretDouble( 0x8000000000000000ul | (mantissa + 1) ).f;
-        else return details::ReinterpretDouble( mantissa - 1 ).f;
+            return details::hard_cast<double>( 0x8000000000000000ul | (mantissa + 1) );
+        else return details::hard_cast<double>( mantissa - 1 );
     }
 }
