@@ -74,18 +74,18 @@ namespace ei {
     // ********************************************************************* //
     //                             MATH CONSTANTS                            //
     // ********************************************************************* //
-    const float PI = 3.141592654f;
-    const float E = 2.718281828f;
-    const float GOLDEN_RATIO = 1.61803398875f;
-    const float PHYTAGORAS = 1.4142135623f;
+    constexpr float PI = 3.141592654f;
+    constexpr float E = 2.718281828f;
+    constexpr float GOLDEN_RATIO = 1.61803398875f;
+    constexpr float PHYTAGORAS = 1.4142135623f;
     // The cmath header has an ugly macro with name INFINITY -> name conflict
-    const float INF = details::F_INF.f;
-    const double INF_D = details::D_INF.f;
+    constexpr float INF = details::F_INF.f;
+    constexpr double INF_D = details::D_INF.f;
     // Unicode names for the above constants
 #ifdef EI_USE_UNICODE_NAMES
-    const float π = PI;
-    const float Φ = GOLDEN_RATIO;
-    const float ℇ = E;
+    constexpr float π = PI;
+    constexpr float Φ = GOLDEN_RATIO;
+    constexpr float ℇ = E;
 #endif
 
     // ********************************************************************* //
