@@ -179,24 +179,32 @@ namespace ei {
         /// \brief Get access to a subrange [FROM, TO) in the vector.
         /// \tparam FROM First element in the output range (inclusive).
         /// \tparam TO Exclusive right boundary.
-        template<uint FROM, uint TO, ENABLE_IF((N == 1) && sizeof(FROM))>
+        template<uint FROM, uint TO>//, ENABLE_IF((N == 1) && (FROM < TO) && (TO <= M))>
         Matrix<T, TO - FROM, 1>& subcol() noexcept // TESTED
         {
+            static_assert(N == 1, "THIS must be a column vector.");
+            static_assert((FROM >= 0) && (FROM < TO) && (TO <= M), "Invalid parameter range.");
             return *reinterpret_cast<Matrix<T, TO - FROM, 1>*>(this->m_data + FROM);
         }
-        template<uint FROM, uint TO, ENABLE_IF((N == 1) && sizeof(FROM))>
+        template<uint FROM, uint TO>//, ENABLE_IF((N == 1) && (FROM < TO) && (TO <= M))>
         const Matrix<T, TO - FROM, 1>& subcol() const noexcept
         {
+            static_assert(N == 1, "THIS must be a column vector.");
+            static_assert((FROM >= 0) && (FROM < TO) && (TO <= M), "Invalid parameter range.");
             return *reinterpret_cast<const Matrix<T, TO - FROM, 1>*>(this->m_data + FROM);
         }
-        template<uint FROM, uint TO, ENABLE_IF((M == 1) && sizeof(FROM))>
+        template<uint FROM, uint TO>//, ENABLE_IF((M == 1) && (FROM < TO) && (TO <= N))>
         Matrix<T, 1, TO - FROM>& subrow() noexcept // TESTED
         {
+            static_assert(M == 1, "THIS must be a row vector.");
+            static_assert((FROM >= 0) && (FROM < TO) && (TO <= N), "Invalid parameter range.");
             return *reinterpret_cast<Matrix<T, 1, TO - FROM>*>(this->m_data + FROM);
         }
-        template<uint FROM, uint TO, ENABLE_IF((M == 1) && sizeof(FROM))>
+        template<uint FROM, uint TO>//, ENABLE_IF((M == 1) && (FROM < TO) && (TO <= N))>
         const Matrix<T, 1, TO - FROM>& subrow() const noexcept
         {
+            static_assert(M == 1, "THIS must be a row vector.");
+            static_assert((FROM >= 0) && (FROM < TO) && (TO <= N), "Invalid parameter range.");
             return *reinterpret_cast<const Matrix<T, 1, TO - FROM>*>(this->m_data + FROM);
         }
 
