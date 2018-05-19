@@ -64,8 +64,8 @@ namespace ei {
     // The cmath header has an ugly macro with name INFINITY -> name conflict
 #pragma warning(push)
 #pragma warning(disable:4056) // overflow in fp constant arithmetic
-    constexpr float INF = 1e30f * 1e30f;
-    constexpr double INF_D = 1e300 * 1e300;
+    const float INF = 1e30f * 1e30f;
+    const double INF_D = 1e300 * 1e300;
 #pragma warning(pop)
     // Unicode names for the above constants
 #ifdef EI_USE_UNICODE_NAMES
