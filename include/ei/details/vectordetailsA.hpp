@@ -24,7 +24,7 @@ namespace details {
         template<typename T1>
         explicit Components(T1 _s) noexcept
         {
-            for(uint i = 0; i < N * M; ++i)
+            for(ei::uint i = 0; i < N * M; ++i)
                 this->m_data[i] = static_cast<T>(_s);
         }
 
