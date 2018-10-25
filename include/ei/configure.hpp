@@ -20,10 +20,13 @@ namespace egg = ei;
 #   undef EI_DEBUG_BREAK
 #   endif
 
-#   if defined(_WIN32)
-#       define EI_DEBUG_BREAK __debugbreak()
+#   if defined(__CUDA_ARCH__)
+#       include <cstdio>
+#       define EI_DEBUG_BREAK(msg) printf("Assertion violated: %s", msg)
+#   elif defined(_WIN32)
+#       define EI_DEBUG_BREAK(msg) __debugbreak()
 #   else
-#       define EI_DEBUG_BREAK ::kill(0, SIGTRAP)
+#       define EI_DEBUG_BREAK(msg) ::kill(0, SIGTRAP)
 #   endif
 
     /// \brief Default assert macro for all our needs. Use this instead of <cassert>
@@ -41,7 +44,7 @@ namespace egg = ei;
 #   define eiAssert(condition, errorMessage)   \
         do {                                   \
             if((condition) == false) {         \
-                EI_DEBUG_BREAK;                \
+                EI_DEBUG_BREAK(errorMessage);  \
             }                                  \
         } while((void)0,0)
 
@@ -51,7 +54,7 @@ namespace egg = ei;
 #       define eiAssertWeak(condition, errorMessage) \
             do {                                   \
                 if((condition) == false) {         \
-                    EI_DEBUG_BREAK;                \
+                    EI_DEBUG_BREAK(errorMessage);  \
                 }                                  \
             } while((void)0,0)
 #   endif
