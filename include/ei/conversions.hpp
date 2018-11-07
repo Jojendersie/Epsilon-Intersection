@@ -50,7 +50,7 @@ namespace ei {
     // Conversion of CIE XYZ to linear RGB
     inline Vec3 xyzToRgb(const Vec3 & _xyz)
     {
-        static constexpr Mat3x3 XYZ_TO_RGB {
+        static const Mat3x3 XYZ_TO_RGB {
              3.2406f, -1.5372f, -0.4986f,
             -0.9689f,  1.8758f,  0.0415f,
              0.0557f, -0.2040f,  1.0570f
@@ -61,7 +61,7 @@ namespace ei {
     // Conversion of linear RGB to CIE XYZ
     inline Vec3 rgbToXyz(const Vec3 & _rgb)
     {
-        static constexpr Mat3x3 RGB_TO_XYZ {
+        static const Mat3x3 RGB_TO_XYZ {
             0.4124f, 0.3576f, 0.1805f,
             0.2126f, 0.7152f, 0.0722f,
             0.0193f, 0.1192f, 0.9505f
@@ -128,7 +128,7 @@ namespace ei {
         int e;
         float norm = frexpf(maxComp, &e) * 511.5f / maxComp;
         e += 15;
-        if(e < 0) { norm *= exp2f(e); e = 0; }	// Denormalized values
+        if(e < 0) { norm *= exp2f(float(e)); e = 0; }	// Denormalized values
         return floor(_v.r * norm + 0.5f)
             | (floor(_v.g * norm + 0.5f) << 9)
             | (floor(_v.b * norm + 0.5f) << 18)
@@ -138,7 +138,7 @@ namespace ei {
     // Unpack a RGB9E5 value into a full Vec3
     inline Vec3 unpackRGB9E5(uint32 _code)
     {
-        float e = exp2f((_code>>27) - 15 - 9); // - ExponentBias - #MantissaBits
+        float e = exp2f(float((_code>>27) - 15 - 9)); // - ExponentBias - #MantissaBits
         return Vec3 {
             (_code & 0x1ff) * e,
             ((_code>>9) & 0x1ff) * e,
@@ -156,7 +156,7 @@ namespace ei {
         int e;
         float norm = frexpf(maxComp, &e) * 255.5f / maxComp;
         e += 128;
-        if(e < 0) { norm *= exp2f(e); e = 0; }	// Denormalized values
+        if(e < 0) { norm *= exp2f(float(e)); e = 0; }	// Denormalized values
         return floor(_v.r * norm + 0.5f)
             | (floor(_v.g * norm + 0.5f) << 8)
             | (floor(_v.b * norm + 0.5f) << 16)
@@ -166,7 +166,7 @@ namespace ei {
     // Unpack a RGB8E8 value into a full Vec3
     inline Vec3 unpackRGB8E8(uint32 _code)
     {
-        float e = exp2f((_code>>24) - 128 - 8); // - ExponentBias - #MantissaBits
+        float e = exp2f(float((_code>>24) - 128 - 8)); // - ExponentBias - #MantissaBits
         return Vec3 {
             (_code & 0xff) * e,
             ((_code>>8) & 0xff) * e,
@@ -206,7 +206,7 @@ namespace ei {
             x = (1 - abs(v)) * (u >= 0 ? 1 : -1);
             y = (1 - abs(u)) * (v >= 0 ? 1 : -1);
         }
-        return normalize(Vec3{x,y,z})
+        return normalize(Vec3{x,y,z});
     }
 
 } // namespace ei
