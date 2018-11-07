@@ -607,7 +607,7 @@ namespace ei {
         /// \brief Construct from normalized axis and angle
         TQuaternion( const Vec<T,3>& _axis, T _angle ) noexcept // TESTED
         {
-            eiAssert( approx(lensq(_axis), 1.0f), "Expected a normalized axis vector!" );
+            eiAssert( approx(lensq(_axis), static_cast<T>(1)), "Expected a normalized axis vector!" );
             _angle *= 0.5f;
             T sinA = sin(_angle);
             r = cos(_angle);
@@ -743,9 +743,9 @@ namespace ei {
             // Opposite vectors or one vector 0.0 -> 180° rotation
             if(half.x != half.x)
             {
-                if(approx(abs(from.y), 1.0f))
-                    half = Vec3(0.0f, 0.0f, 1.0f);
-                else half = normalize(cross(from, Vec3(0.0f, 1.0f, 0.0f)));
+                if(approx(ei::abs(from.y), static_cast<T>(1)))
+                    half = Vec<T,3>(0, 0, 1);
+                else half = normalize(cross(from, Vec<T,3>(0, 1, 0)));
             }
 
             // cos(theta) = dot product since both vectors are normalized
