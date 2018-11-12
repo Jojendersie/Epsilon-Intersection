@@ -218,7 +218,7 @@ namespace ei {
     /// \param [in] _epsilon A percentage threshold for the difference
     ///    between two elements. The default value is 1e-6.
     /// \returns true if the difference is less or equal than _epsilon.
-    template<typename T, class = typename std::enable_if<!std::is_base_of<details::NonScalarType, T>::value, class Dummy>::type>
+    template<typename T, class = typename std::enable_if<!std::is_base_of<details::NonScalarType, T>::value>::type>
     EIAPI inline bool approx(T _x0, T _x1, T _epsilon = T(1e-6)) noexcept // TESTED
     {
         // Use an offset of 1.0 for comparisons to zero.
@@ -228,7 +228,7 @@ namespace ei {
 
     // ********************************************************************* //
     /// \brief Round value towards negative infinity.
-    template<typename T, class = typename std::enable_if<!std::is_base_of<details::NonScalarType, T>::value, class Dummy>::type>
+    template<typename T, class = typename std::enable_if<!std::is_base_of<details::NonScalarType, T>::value>::type>
     EIAPI inline typename details::Int<sizeof(T)>::stype floor(T _x) noexcept
     {
         typename details::Int<sizeof(T)>::stype r = static_cast<typename details::Int<sizeof(T)>::stype>(_x);
@@ -237,7 +237,7 @@ namespace ei {
 
     // ********************************************************************* //
     /// \brief Round value towards positive infinity.
-    template<typename T, class = typename std::enable_if<!std::is_base_of<details::NonScalarType, T>::value, class Dummy>::type>
+    template<typename T, class = typename std::enable_if<!std::is_base_of<details::NonScalarType, T>::value>::type>
     EIAPI inline typename details::Int<sizeof(T)>::stype ceil(T _x) noexcept
     {
         typename details::Int<sizeof(T)>::stype r = static_cast<typename details::Int<sizeof(T)>::stype>(_x);
@@ -247,7 +247,7 @@ namespace ei {
 
     // ********************************************************************* //
     /// \brief Round value towards next integral number (0.5 rounds to even).
-    template<typename T, class = typename std::enable_if<!std::is_base_of<details::NonScalarType, T>::value, class Dummy>::type>
+    template<typename T, class = typename std::enable_if<!std::is_base_of<details::NonScalarType, T>::value>::type>
     EIAPI inline typename details::Int<sizeof(T)>::stype round(T _x) noexcept
     {
         // Round up
