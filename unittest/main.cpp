@@ -10,9 +10,13 @@ bool test_3dtypes();
 bool test_3dintersections();
 bool test_stdextensions();
 bool test_primes();
+bool test_conversions();
 
 int main()
 {
+    if(  test_conversions() )
+        cerr << "Successfully completed: Conversions." << std::endl;
+
     if( test_elementaries() )
         cerr << "Successfully completed: Elementary types." << std::endl;
 

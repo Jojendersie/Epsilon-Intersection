@@ -139,7 +139,7 @@ namespace ei {
     // Unpack a RGB9E5 value into a full Vec3
     inline Vec3 unpackRGB9E5(uint32 _code)
     {
-        float e = exp2f(float((_code>>27) - 15 - 9)); // - ExponentBias - #MantissaBits
+        float e = exp2f(float(_code>>27) - 15 - 9); // - ExponentBias - #MantissaBits
         return Vec3 {
             (_code & 0x1ff) * e,
             ((_code>>9) & 0x1ff) * e,
@@ -167,7 +167,7 @@ namespace ei {
     // Unpack a RGB8E8 value into a full Vec3
     inline Vec3 unpackRGB8E8(uint32 _code)
     {
-        float e = exp2f(float((_code>>24) - 128 - 8)); // - ExponentBias - #MantissaBits
+        float e = exp2f(float(_code>>24) - 128 - 8); // - ExponentBias - #MantissaBits
         return Vec3 {
             (_code & 0xff) * e,
             ((_code>>8) & 0xff) * e,
