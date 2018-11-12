@@ -28,12 +28,12 @@ namespace ei {
     /// \brief Get the euclidean distance between two objects.
     /// \details The distance for point-solid queries can be negative. All
     ///     other geometries return 0 if they intersect.
-    inline float distance(const Vec3& _point0, const Vec3& _point1)            // TESTED
+    EIAPI inline float distance(const Vec3& _point0, const Vec3& _point1)            // TESTED
     {
         return len(_point1 - _point0);
     }
 
-    inline float distance(const Vec3& _point, const Segment& _line)            // TESTED
+    EIAPI inline float distance(const Vec3& _point, const Segment& _line)            // TESTED
     {
         Vec3 u = _line.b - _line.a;
         Vec3 w = _point - _line.a;
@@ -43,7 +43,7 @@ namespace ei {
         return len(u * s - w);
     }
 
-    inline float distance(const Vec3& _point, const Triangle& _triangle)       // TESTED
+    EIAPI inline float distance(const Vec3& _point, const Triangle& _triangle)       // TESTED
     {
         Vec3 a = _triangle.v1-_triangle.v0;
         Vec3 b = _triangle.v2-_triangle.v1;
@@ -69,17 +69,17 @@ namespace ei {
         return sqrt(dist);
     }
 
-    inline float distance(const Vec3& _point, const Sphere& _sphere)           // TESTED
+    EIAPI inline float distance(const Vec3& _point, const Sphere& _sphere)           // TESTED
     {
         return distance(_sphere.center, _point) - _sphere.radius;
     }
 
-    inline float distance(const Vec3& _point, const Capsule& _capsule)         // TESTED
+    EIAPI inline float distance(const Vec3& _point, const Capsule& _capsule)         // TESTED
     {
         return distance(_point, _capsule.seg) - _capsule.radius;
     }
 
-    inline float distance(const Vec3& _point, const Ray& _ray)
+    EIAPI inline float distance(const Vec3& _point, const Ray& _ray)
     {
         // Project point to the ray
         Vec3 o = _point - _ray.origin;
@@ -89,7 +89,7 @@ namespace ei {
         return len(o);
     }
 
-    inline float distance(const Vec3& _point, const Box& _box)                 // TESTED
+    EIAPI inline float distance(const Vec3& _point, const Box& _box)                 // TESTED
     {
         eiAssert(_box.min <= _box.max, "Invalid box!");
         // Connection vector to box corner
@@ -103,7 +103,7 @@ namespace ei {
         return len(max(d,Vec3(0.0f))) + innerDist;
     }
 
-    inline float distance(const Vec3& _point, const Plane& _plane)             // TESTED
+    EIAPI inline float distance(const Vec3& _point, const Plane& _plane)             // TESTED
     {
         eiAssert(approx(1.0f, len(_plane.n)), "The plane is not normalized!");
         return dot(_plane.n, _point) + _plane.d;
@@ -112,7 +112,7 @@ namespace ei {
 
     /// \returns -x if dot(n,_point) larger then both, x if smaller and 0 if it
     ///     is between both planes
-    inline float distance(const Vec3& _point, const DOP& _dop)
+    EIAPI inline float distance(const Vec3& _point, const DOP& _dop)
     {
         eiAssert(approx(1.0f, len(_dop.n)), "The plane is not normalized!");
         float d = dot(_dop.n, _point);
@@ -126,17 +126,17 @@ namespace ei {
         //return max(-d - _dop.d0, d + _dop.d1);
     }
 
-    inline float distance(const Sphere& _sphere, const Segment& _segment)      // TESTED
+    EIAPI inline float distance(const Sphere& _sphere, const Segment& _segment)      // TESTED
     {
         return max(0.0f, distance(_sphere.center, _segment) - _sphere.radius);
     }
 
-    inline float distance(const Sphere& _sphere, const Capsule& _capsule)      // TESTED
+    EIAPI inline float distance(const Sphere& _sphere, const Capsule& _capsule)      // TESTED
     {
         return max(0.0f, distance(_sphere.center, _capsule.seg) - _capsule.radius - _sphere.radius);
     }
 
-    inline float distance(const Sphere& _sphere, const Box& _box)              // TESTED
+    EIAPI inline float distance(const Sphere& _sphere, const Box& _box)              // TESTED
     {
         eiAssert(_box.min <= _box.max, "Invalid box!");
         eiAssert(_sphere.radius >= 0.0f, "Invalid sphere!");
@@ -144,7 +144,7 @@ namespace ei {
         return max(len(max(d, Vec3(0.0f))) - _sphere.radius, 0.0f);
     }
 
-    inline float distance(const Sphere& _sphere, const Plane& _plane)          // TESTED
+    EIAPI inline float distance(const Sphere& _sphere, const Plane& _plane)          // TESTED
     {
         eiAssert(approx(1.0f, len(_plane.n)), "The plane is not normalized!");
         eiAssert(_sphere.radius >= 0.0f, "Invalid sphere!");
@@ -154,7 +154,7 @@ namespace ei {
         else return max(d - _sphere.radius, 0.0f);
     }
     
-    inline float distance(const Segment& _line0, const Segment& _line1)        // TESTED
+    EIAPI inline float distance(const Segment& _line0, const Segment& _line1)        // TESTED
     {
         // http://geomalgorithms.com/a07-_distance.html
         Vec3 u = _line0.b - _line0.a;
@@ -191,22 +191,22 @@ namespace ei {
         return len(saturate(s) * u - w - saturate(t) * v);
     }
 
-    inline float distance(const Capsule& _capsule0, const Capsule& _capsule1)  // TESTED
+    EIAPI inline float distance(const Capsule& _capsule0, const Capsule& _capsule1)  // TESTED
     {
         return max(0.0f, distance(_capsule0.seg, _capsule1.seg) - _capsule0.radius - _capsule1.radius);
     }
 
-    inline float distance(const Segment& _line, const Vec3& _point)            { return distance(_point, _line); }
-    inline float distance(const Triangle& _triangle, const Vec3& _point)       { return distance(_point, _triangle); }
-    inline float distance(const Sphere& _sphere, const Vec3& _point)           { return distance(_point, _sphere); }
-    inline float distance(const Capsule& _capsule, const Vec3& _point)         { return distance(_point, _capsule); }
-    inline float distance(const Capsule& _capsule, const Sphere& _sphere)      { return distance(_sphere, _capsule); }
-    inline float distance(const Box& _box, const Vec3& _point)                 { return distance(_point, _box); }
-    inline float distance(const Box& _box, const Sphere& _sphere)              { return distance(_sphere, _box); }
-    inline float distance(const Plane& _plane, const Vec3& _point)             { return distance(_point, _plane); }
-    inline float distance(const Plane& _plane, const Sphere& _sphere)          { return distance(_sphere, _plane); }
-    inline float distance(const DOP& _dop, const Vec3& _point)                 { return distance(_point, _dop); }
-    inline float distance(const Ray& _ray, const Vec3& _point)                 { return distance(_point, _ray); }
+    EIAPI inline float distance(const Segment& _line, const Vec3& _point)            { return distance(_point, _line); }
+    EIAPI inline float distance(const Triangle& _triangle, const Vec3& _point)       { return distance(_point, _triangle); }
+    EIAPI inline float distance(const Sphere& _sphere, const Vec3& _point)           { return distance(_point, _sphere); }
+    EIAPI inline float distance(const Capsule& _capsule, const Vec3& _point)         { return distance(_point, _capsule); }
+    EIAPI inline float distance(const Capsule& _capsule, const Sphere& _sphere)      { return distance(_sphere, _capsule); }
+    EIAPI inline float distance(const Box& _box, const Vec3& _point)                 { return distance(_point, _box); }
+    EIAPI inline float distance(const Box& _box, const Sphere& _sphere)              { return distance(_sphere, _box); }
+    EIAPI inline float distance(const Plane& _plane, const Vec3& _point)             { return distance(_point, _plane); }
+    EIAPI inline float distance(const Plane& _plane, const Sphere& _sphere)          { return distance(_sphere, _plane); }
+    EIAPI inline float distance(const DOP& _dop, const Vec3& _point)                 { return distance(_point, _dop); }
+    EIAPI inline float distance(const Ray& _ray, const Vec3& _point)                 { return distance(_point, _ray); }
 
 
     // ********************************************************************* //
@@ -215,23 +215,23 @@ namespace ei {
 
     /// \brief Do two spheres intersect, touch or is one inside the other?
     /// \return true if both spheres have at least one point in common.
-    inline bool intersects( const Sphere& _sphere0, const Sphere& _sphere1 )   // TESTED
+    EIAPI inline bool intersects( const Sphere& _sphere0, const Sphere& _sphere1 )   // TESTED
     {
         return lensq(_sphere1.center-_sphere0.center) <= sq(_sphere0.radius + _sphere1.radius);
     }
 
     /// \brief Does a point lie inside a sphere/on the boundary?
     /// \return true if the point is inside or on the boundary.
-    inline bool intersects( const Vec3& _point, const Sphere& _sphere )        // TESTED
+    EIAPI inline bool intersects( const Vec3& _point, const Sphere& _sphere )        // TESTED
     {
         return lensq(_point-_sphere.center) <= sq(_sphere.radius);
     }
 
-    inline bool intersects( const Sphere& _sphere, const Vec3& _point )  { return intersects( _point, _sphere ); }
+    EIAPI inline bool intersects( const Sphere& _sphere, const Vec3& _point )  { return intersects( _point, _sphere ); }
 
     /// \brief Do a sphere and a box intersect?
     /// \return true if the sphere and the box have at least one point in common.
-    inline bool intersects( const Sphere& _sphere, const Box& _box )               // TESTED
+    EIAPI inline bool intersects( const Sphere& _sphere, const Box& _box )               // TESTED
     {
         float distSq = sq(_sphere.radius);
         if (_sphere.center.x < _box.min.x) distSq -= sq(_sphere.center.x - _box.min.x);
@@ -248,11 +248,11 @@ namespace ei {
         return distSq > 0.0f;
     }
 
-    inline bool intersects( const Box& _box, const Sphere& _sphere )  { return intersects( _sphere, _box ); }
+    EIAPI inline bool intersects( const Box& _box, const Sphere& _sphere )  { return intersects( _sphere, _box ); }
 
     /// \brief Does a point lie inside a box/on the boundary?
     /// \return true if the point is inside or on the boundary.
-    inline bool intersects( const Vec3& _point, const Box& _box )              // TESTED
+    EIAPI inline bool intersects( const Vec3& _point, const Box& _box )              // TESTED
     {
         if(_point.x < _box.min.x) return false;
         if(_point.y < _box.min.y) return false;
@@ -263,11 +263,11 @@ namespace ei {
         //return all(_point >= _box.min) && all(_point <= _box.max);
     }
 
-    inline bool intersects( const Box& _box, const Vec3& _point )  { return intersects( _point, _box ); }
+    EIAPI inline bool intersects( const Box& _box, const Vec3& _point )  { return intersects( _point, _box ); }
 
     /// \brief Does a point lie inside a box/on the boundary?
     /// \return true if both boxes have at least one point in common.
-    inline bool intersects( const Box& _box0, const Box& _box1 )               // TESTED
+    EIAPI inline bool intersects( const Box& _box0, const Box& _box1 )               // TESTED
     {
         eiAssert(_box0.min <= _box0.max, "Box0 is invalid.");
         eiAssert(_box1.min <= _box1.max, "Box1 is invalid.");
@@ -283,14 +283,14 @@ namespace ei {
 
     /// \brief Do two capsules intersect, touch or is one inside the other?
     /// \return true if both spheres have at least one point in common.
-    inline bool intersects( const Capsule& _capsule0, const Capsule& _capsule1 ) // TESTED
+    EIAPI inline bool intersects( const Capsule& _capsule0, const Capsule& _capsule1 ) // TESTED
     {
         return distance(_capsule0.seg, _capsule1.seg) <= (_capsule0.radius + _capsule1.radius);
     }
 
     /// \brief Does a point lie inside an ellipsoid/on the boundary?
     /// \return true if the point is inside or on the boundary.
-    inline bool intersects( const Vec3& _point, const Ellipsoid& _ellipsoid )  // TESTED
+    EIAPI inline bool intersects( const Vec3& _point, const Ellipsoid& _ellipsoid )  // TESTED
     {
         // Use ellipsoid equation.
         //return lensq(Vec<double,3>((_point - _ellipsoid.center) / _ellipsoid.radii)) <= 1.0;
@@ -306,11 +306,11 @@ namespace ei {
         //return exp(t.x*t.x)*exp(t.y*t.y)*exp(t.z*t.z) <= 2.718281828f;
     }
 
-    inline bool intersects( const Ellipsoid& _ellipsoid, const Vec3& _point )  { return intersects( _point, _ellipsoid ); }
+    EIAPI inline bool intersects( const Ellipsoid& _ellipsoid, const Vec3& _point )  { return intersects( _point, _ellipsoid ); }
 
     /// \brief Does a point lie inside an oriented ellipsoid/on the boundary?
     /// \return true if the point is inside or on the boundary.
-    inline bool intersects( const Vec3& _point, const OEllipsoid& _oellipsoid ) // TESTED
+    EIAPI inline bool intersects( const Vec3& _point, const OEllipsoid& _oellipsoid ) // TESTED
     {
         Vec3 o = transform(_point - _oellipsoid.center, _oellipsoid.orientation);
         // Use ellipsoid equation.
@@ -320,22 +320,22 @@ namespace ei {
         return double(o.x*o.x) + double(o.y*o.y) + double(o.z*o.z) <= 1.0;
     }
 
-    inline bool intersects( const OEllipsoid& _oellipsoid, const Vec3& _point )  { return intersects( _point, _oellipsoid ); }
+    EIAPI inline bool intersects( const OEllipsoid& _oellipsoid, const Vec3& _point )  { return intersects( _point, _oellipsoid ); }
 
     /// \brief Does a point lie inside a DOP or on the boundary?
     /// \return true if the point is inside or on the boundary.
-    inline bool intersects( const Vec3& _point, const DOP& _dop )              // TESTED
+    EIAPI inline bool intersects( const Vec3& _point, const DOP& _dop )              // TESTED
     {
         float p = -dot(_point, _dop.n);
         if( p > _dop.d0 ) return false;
         return p > _dop.d1;
     }
 
-    inline bool intersects( const DOP& _dop, const Vec3& _point )  { return intersects( _point, _dop ); }
+    EIAPI inline bool intersects( const DOP& _dop, const Vec3& _point )  { return intersects( _point, _dop ); }
 
     /// \brief Intersection test between point and oriented box.
     /// \return true if the point and the oriented box have at least on point in common.
-    inline bool intersects( const Vec3& _point, const OBox& _obox )            // TESTED
+    EIAPI inline bool intersects( const Vec3& _point, const OBox& _obox )            // TESTED
     {
         Vec3 alignedPoint = _point - _obox.center;
         alignedPoint = transform( alignedPoint, conjugate(_obox.orientation) );
@@ -347,7 +347,7 @@ namespace ei {
         return alignedPoint.z <= _obox.halfSides.z;
     }
 
-    inline bool intersects( const OBox& _obox, const Vec3& _point )          { return intersects(_point, _obox); }
+    EIAPI inline bool intersects( const OBox& _obox, const Vec3& _point )          { return intersects(_point, _obox); }
 
     /// \brief Do a ray and a sphere intersect or touch?
     /// \param [out,opt] _distance The ray parameter (distance) for the first
@@ -355,7 +355,7 @@ namespace ei {
     ///
     ///     If the ray starts inside 0 is returned.
     /// \return true if the ray has at least one point in common with thp sphere
-    inline bool intersects( const Ray& _ray, const Sphere& _sphere )
+    EIAPI inline bool intersects( const Ray& _ray, const Sphere& _sphere )
     {
         // Go towards closest point and compare its distance to the radius
         Vec3 o = _sphere.center - _ray.origin;
@@ -364,7 +364,7 @@ namespace ei {
         return lensq(o) <= _sphere.radius * _sphere.radius;
     }
 
-    inline bool intersects( const Ray& _ray, const Sphere& _sphere, float& _distance )
+    EIAPI inline bool intersects( const Ray& _ray, const Sphere& _sphere, float& _distance )
     {
         // Go towards closest point and compare its distance to the radius
         Vec3 o = _sphere.center - _ray.origin;
@@ -378,8 +378,8 @@ namespace ei {
         return true;
     }
 
-    inline bool intersects( const Sphere& _sphere, const Ray& _ray ) { return intersects(_ray, _sphere); }
-    inline bool intersects( const Sphere& _sphere, const Ray& _ray, float& _distance ) { return intersects(_ray, _sphere, _distance); }
+    EIAPI inline bool intersects( const Sphere& _sphere, const Ray& _ray ) { return intersects(_ray, _sphere); }
+    EIAPI inline bool intersects( const Sphere& _sphere, const Ray& _ray, float& _distance ) { return intersects(_ray, _sphere, _distance); }
 
     /// \brief Do a ray and an ellipsoid intersect or touch?
     /// \param [out,opt] _distance The ray parameter (distance) for the first
@@ -388,7 +388,7 @@ namespace ei {
     ///     If the ray starts inside 0 is returned.
     /// \return true if there is at least one common point between ray and
     ///     ellipsoid.
-    inline bool intersects( const Ray& _ray, const Ellipsoid& _ellipsoid )     // TESTED
+    EIAPI inline bool intersects( const Ray& _ray, const Ellipsoid& _ellipsoid )     // TESTED
     {
         // Translate to origin
         Vec3 o = _ray.origin - _ellipsoid.center;
@@ -413,7 +413,7 @@ namespace ei {
         return phalf * (phalf / ddotd) - q >= 0.0f;
     }
 
-    inline bool intersects( const Ray& _ray, const Ellipsoid& _ellipsoid, float& _distance )
+    EIAPI inline bool intersects( const Ray& _ray, const Ellipsoid& _ellipsoid, float& _distance )
     {
         // Translate to origin
         Vec3 o = _ray.origin - _ellipsoid.center;
@@ -443,8 +443,8 @@ namespace ei {
         return -phalf + rad >= 0.0f;
     }
 
-    inline bool intersects( const Ellipsoid& _ellipsoid, const Ray& _ray )  { return intersects( _ray, _ellipsoid ); }
-    inline bool intersects( const Ellipsoid& _ellipsoid, const Ray& _ray, float& _distance )  { return intersects( _ray, _ellipsoid, _distance ); }
+    EIAPI inline bool intersects( const Ellipsoid& _ellipsoid, const Ray& _ray )  { return intersects( _ray, _ellipsoid ); }
+    EIAPI inline bool intersects( const Ellipsoid& _ellipsoid, const Ray& _ray, float& _distance )  { return intersects( _ray, _ellipsoid, _distance ); }
 
     /// \brief Do a ray and a box intersect or touch?
     /// \param [out,opt] _distance The ray parameter (distance) for the first
@@ -458,7 +458,7 @@ namespace ei {
     ///     and shows away _distance and _distanceExit are the same (0).
     /// \param [out,opt] _side Returns which side of the box was hit.
     /// \return true if there is at least one common point between ray and box
-    inline bool intersects( const Ray& _ray, const Box& _box )                 // TESTED
+    EIAPI inline bool intersects( const Ray& _ray, const Box& _box )                 // TESTED
     {
         float t0 = (_box.min.x - _ray.origin.x) / _ray.direction.x;
         float t1 = (_box.max.x - _ray.origin.x) / _ray.direction.x;
@@ -494,7 +494,7 @@ namespace ei {
         return firstHit <= lastHit;*/
     }
 
-    inline bool intersects( const Ray& _ray, const Box& _box, float& _distance )
+    EIAPI inline bool intersects( const Ray& _ray, const Box& _box, float& _distance )
     {
         float tmin, tmax, tymin, tymax, tzmin, tzmax;
         const Vec3 * bbounds = (const Vec3 *)&_box;
@@ -521,7 +521,7 @@ namespace ei {
         return true;
     }
 
-    inline bool intersects( const Ray& _ray, const Box& _box, float& _distance, HitSide& _side )
+    EIAPI inline bool intersects( const Ray& _ray, const Box& _box, float& _distance, HitSide& _side )
     {
         // Box intersection algorithm:
         // http://people.csail.mit.edu/amy/papers/box-jgt.pdf
@@ -572,7 +572,7 @@ namespace ei {
         return true;
     }
 
-    inline bool intersects( const Ray& _ray, const Box& _box, float& _distance, float& _distanceExit )
+    EIAPI inline bool intersects( const Ray& _ray, const Box& _box, float& _distance, float& _distanceExit )
     {
         float tmin, tmax, tymin, tymax, tzmin, tzmax;
         const Vec3 * bbounds = (const Vec3 *)&_box;
@@ -600,7 +600,7 @@ namespace ei {
         return true;
     }
 
-    inline bool intersects( const FastRay& _ray, const Box& _box, float& _distance )
+    EIAPI inline bool intersects( const FastRay& _ray, const Box& _box, float& _distance )
     {
         float tmin, tmax, tymin, tymax, tzmin, tzmax;
         const Vec3 * bbounds = (const Vec3 *)&_box;
@@ -627,14 +627,14 @@ namespace ei {
         return true;
     }
 
-    inline bool intersects( const Box& _box, const Ray& _ray )  { return intersects( _ray, _box ); }
-    inline bool intersects( const Box& _box, const Ray& _ray, float& _distance )  { return intersects( _ray, _box, _distance ); }
-    inline bool intersects( const Box& _box, const Ray& _ray, float& _distance, HitSide& _side )  { return intersects( _ray, _box, _distance, _side ); }
-    inline bool intersects( const Box& _box, const Ray& _ray, float& _distance, float& _distanceExit )  { return intersects( _ray, _box, _distance, _distanceExit ); }
-    inline bool intersects( const Box& _box, const FastRay& _ray, float& _distance )  { return intersects( _ray, _box, _distance ); }
+    EIAPI inline bool intersects( const Box& _box, const Ray& _ray )  { return intersects( _ray, _box ); }
+    EIAPI inline bool intersects( const Box& _box, const Ray& _ray, float& _distance )  { return intersects( _ray, _box, _distance ); }
+    EIAPI inline bool intersects( const Box& _box, const Ray& _ray, float& _distance, HitSide& _side )  { return intersects( _ray, _box, _distance, _side ); }
+    EIAPI inline bool intersects( const Box& _box, const Ray& _ray, float& _distance, float& _distanceExit )  { return intersects( _ray, _box, _distance, _distanceExit ); }
+    EIAPI inline bool intersects( const Box& _box, const FastRay& _ray, float& _distance )  { return intersects( _ray, _box, _distance ); }
 
     /// \brief Do an oriented box and a ray intersect or touch?
-    inline bool intersects( const Ray& _ray, const OBox& _obox )               // TESTED
+    EIAPI inline bool intersects( const Ray& _ray, const OBox& _obox )               // TESTED
     {
         // Transform the ray such that the box is centered at the origin
         Ray ray;
@@ -643,7 +643,7 @@ namespace ei {
         return intersects( ray, Box(-_obox.halfSides, _obox.halfSides) );
     }
 
-    inline bool intersects( const Ray& _ray, const OBox& _obox, float& _distance )
+    EIAPI inline bool intersects( const Ray& _ray, const OBox& _obox, float& _distance )
     {
         // Transform the ray such that the box is centered at the origin
         Ray ray;
@@ -652,8 +652,8 @@ namespace ei {
         return intersects( ray, Box(-0.5f*_obox.halfSides, 0.5f*_obox.halfSides), _distance );
     }
 
-    inline bool intersects( const OBox& _obox, const Ray& _ray ) { return intersects( _ray, _obox ); }
-    inline bool intersects( const OBox& _obox, const Ray& _ray, float& _distance ) { return intersects( _ray, _obox, _distance ); }
+    EIAPI inline bool intersects( const OBox& _obox, const Ray& _ray ) { return intersects( _ray, _obox ); }
+    EIAPI inline bool intersects( const OBox& _obox, const Ray& _ray, float& _distance ) { return intersects( _ray, _obox, _distance ); }
 
     /// \brief Do a ray and a triangle intersect or touch?
     /// \param [out,opt] _distance The ray parameter (distance) for the first
@@ -662,7 +662,7 @@ namespace ei {
     ///     on the triangle.
     /// \return true if there is at least one common point between ray and triangle.
     ///     This point has a ray parameter >= 0 (no negative direction).
-    inline bool intersects( const Ray& _ray, const Triangle& _triangle )       // TESTED
+    EIAPI inline bool intersects( const Ray& _ray, const Triangle& _triangle )       // TESTED
     {
         // Möller and Trumbore
         Vec3 e0 = _triangle.v1 - _triangle.v0;
@@ -681,7 +681,7 @@ namespace ei {
         return barycentricCoord1 + barycentricCoord2 <= 1.0f && dot(normal, o) * dist2A >= 0.0f;
     }
 
-    inline bool intersects( const Ray& _ray, const Triangle& _triangle, float& _distance )   // TESTED
+    EIAPI inline bool intersects( const Ray& _ray, const Triangle& _triangle, float& _distance )   // TESTED
     {
         // Möller and Trumbore
         Vec3 e0 = _triangle.v1 - _triangle.v0;
@@ -704,7 +704,7 @@ namespace ei {
         return _distance >= 0.0f;
     }
 
-    inline bool intersects( const Ray& _ray, const FastTriangle& _triangle, float& _distance )   // TESTED
+    EIAPI inline bool intersects( const Ray& _ray, const FastTriangle& _triangle, float& _distance )   // TESTED
     {
         float cosT = dot( _triangle.normal, _ray.direction );
         float cosT2AInv = 0.5f / (cosT * _triangle.area);
@@ -722,7 +722,7 @@ namespace ei {
         return _distance >= 0.0f;
     }
 
-    inline bool intersects( const Ray& _ray, const Triangle& _triangle, float& _distance, Vec3& _barycentric )    // TESTED
+    EIAPI inline bool intersects( const Ray& _ray, const Triangle& _triangle, float& _distance, Vec3& _barycentric )    // TESTED
     {
         // Möller and Trumbore
         Vec3 e0 = _triangle.v1 - _triangle.v0;
@@ -747,7 +747,7 @@ namespace ei {
         return _distance >= 0.0f;
     }
 
-    inline bool intersects( const Ray& _ray, const FastTriangle& _triangle, float& _distance, Vec3& _barycentric )  // TESTED
+    EIAPI inline bool intersects( const Ray& _ray, const FastTriangle& _triangle, float& _distance, Vec3& _barycentric )  // TESTED
     {
         float cosT = dot( _triangle.normal, _ray.direction );
         float cosT2AInv = 0.5f / (cosT * _triangle.area);
@@ -767,24 +767,24 @@ namespace ei {
         return _distance >= 0.0f;
     }
 
-    inline bool intersects( const Triangle& _triangle, const Ray& _ray )  { return intersects( _ray, _triangle ); }
-    inline bool intersects( const Triangle& _triangle, const Ray& _ray, float& _distance )  { return intersects( _ray, _triangle, _distance ); }
-    inline bool intersects( const FastTriangle& _triangle, const Ray& _ray, float& _distance )  { return intersects( _ray, _triangle, _distance ); }
-    inline bool intersects( const Triangle& _triangle, const Ray& _ray, float& _distance, Vec3& _barycentric )  { return intersects( _ray, _triangle, _distance, _barycentric ); }
-    inline bool intersects( const FastTriangle& _triangle, const Ray& _ray, float& _distance, Vec3& _barycentric )  { return intersects( _ray, _triangle, _distance, _barycentric ); }
+    EIAPI inline bool intersects( const Triangle& _triangle, const Ray& _ray )  { return intersects( _ray, _triangle ); }
+    EIAPI inline bool intersects( const Triangle& _triangle, const Ray& _ray, float& _distance )  { return intersects( _ray, _triangle, _distance ); }
+    EIAPI inline bool intersects( const FastTriangle& _triangle, const Ray& _ray, float& _distance )  { return intersects( _ray, _triangle, _distance ); }
+    EIAPI inline bool intersects( const Triangle& _triangle, const Ray& _ray, float& _distance, Vec3& _barycentric )  { return intersects( _ray, _triangle, _distance, _barycentric ); }
+    EIAPI inline bool intersects( const FastTriangle& _triangle, const Ray& _ray, float& _distance, Vec3& _barycentric )  { return intersects( _ray, _triangle, _distance, _barycentric ); }
 
     /// \brief Do a sphere and a plane intersect or touch?
     /// \return true if there is at least one point in common.
-    inline bool intersects( const Sphere& _sphere, const Plane& _plane )       // TESTED
+    EIAPI inline bool intersects( const Sphere& _sphere, const Plane& _plane )       // TESTED
     {
         return abs(dot(_plane.n, _sphere.center) + _plane.d) <= _sphere.radius;
     }
 
-    inline bool intersects( const Plane& _plane, const Sphere& _sphere )       { return intersects(_sphere, _plane); }
+    EIAPI inline bool intersects( const Plane& _plane, const Sphere& _sphere )       { return intersects(_sphere, _plane); }
 
     /// \brief Does the sphere touches the triangle?
     /// \return true if the sphere and the triangle have at least one point in common.
-    inline bool intersects( const Sphere& _sphere, const Triangle& _triangle ) // TESTED
+    EIAPI inline bool intersects( const Sphere& _sphere, const Triangle& _triangle ) // TESTED
     {
         Vec3 a = _triangle.v1-_triangle.v0;
         Vec3 b = _triangle.v2-_triangle.v1;
@@ -812,29 +812,29 @@ namespace ei {
         return dist <= sq(_sphere.radius);
     }
 
-    inline bool intersects( const Triangle& _triangle, const Sphere& _sphere ) { return intersects(_sphere, _triangle); }
+    EIAPI inline bool intersects( const Triangle& _triangle, const Sphere& _sphere ) { return intersects(_sphere, _triangle); }
 
     /// \brief Intersection test between sphere and capsule.
     /// \return true if the sphere and the capsule have at least one point in common.
-    inline bool intersects( const Sphere& _sphere, const Capsule& _capsule )   // TESTED
+    EIAPI inline bool intersects( const Sphere& _sphere, const Capsule& _capsule )   // TESTED
     {
         return distance(_sphere.center, _capsule.seg) <= _capsule.radius + _sphere.radius;
     }
 
-    inline bool intersects( const Capsule& _capsule, const Sphere& _sphere )   { return intersects(_sphere, _capsule); }
+    EIAPI inline bool intersects( const Capsule& _capsule, const Sphere& _sphere )   { return intersects(_sphere, _capsule); }
 
     /// \brief Intersection test between point and capsule.
     /// \return true if the point and the capsule have at least one point in common.
-    inline bool intersects( const Vec3& _point, const Capsule& _capsule )      // TESTED
+    EIAPI inline bool intersects( const Vec3& _point, const Capsule& _capsule )      // TESTED
     {
         return distance(_point, _capsule.seg) <= _capsule.radius;
     }
 
-    inline bool intersects( const Capsule& _capsule, const Vec3& _point )      { return intersects(_point, _capsule); }
+    EIAPI inline bool intersects( const Capsule& _capsule, const Vec3& _point )      { return intersects(_point, _capsule); }
 
     /// \brief Intersection test between point and frustum.
     /// \return true if the point and the frustum have at least one point in common.
-    inline bool intersects( const Vec3& _point, const FastFrustum& _frustum )  // TESTED
+    EIAPI inline bool intersects( const Vec3& _point, const FastFrustum& _frustum )  // TESTED
     {
         if(distance(_point, _frustum.nf) > 0.0f) return false;
         if(distance(_point, _frustum.l) < 0.0f) return false;
@@ -844,11 +844,11 @@ namespace ei {
         return true;
     }
 
-    inline bool intersects( const FastFrustum& _frustum, const Vec3& _point )  { return intersects(_point, _frustum); }
+    EIAPI inline bool intersects( const FastFrustum& _frustum, const Vec3& _point )  { return intersects(_point, _frustum); }
 
     /// \brief Intersection test between sphere and frustum.
     /// \return true if the sphere and the frustum have at least one point in common.
-    inline bool intersects( const Sphere& _sphere, const FastFrustum& _frustum )    // TESTED
+    EIAPI inline bool intersects( const Sphere& _sphere, const FastFrustum& _frustum )    // TESTED
     {
         // The usual test by comparing all distances to the sphere radius are
         // wrong because they yield false positives when the sphere is outside
@@ -970,7 +970,7 @@ namespace ei {
         return true;
     }
 
-    inline bool intersects( const FastFrustum& _frustum, const Sphere& _sphere ) { return intersects(_sphere, _frustum); }
+    EIAPI inline bool intersects( const FastFrustum& _frustum, const Sphere& _sphere ) { return intersects(_sphere, _frustum); }
 
     namespace details {
         inline bool separates( const Vec3& _dir, const Vec3* _box, const Vec3* _fru )
@@ -993,7 +993,7 @@ namespace ei {
 
     /// \brief Intersection test between box and frustum.
     /// \return true if the box and the frustum have at least one point in common.
-    inline bool intersects( const Box& _box, const FastFrustum& _frustum )       // TESTED
+    EIAPI inline bool intersects( const Box& _box, const FastFrustum& _frustum )       // TESTED
     {
         // The usual box test (first part) results in false positives if a box
         // is between 0 or 1 plane pairs and intersects the others (3 or 2)
@@ -1089,11 +1089,11 @@ namespace ei {
         return true;
     }
 
-    inline bool intersects( const FastFrustum& _frustum, const Box& _box )     { return intersects(_box, _frustum); }
+    EIAPI inline bool intersects( const FastFrustum& _frustum, const Box& _box )     { return intersects(_box, _frustum); }
 
     /// \brief Intersection test between point and tetrahedron.
     /// \return true if the point and the tetrahedron have at least one point in common.
-    inline bool intersects( const Vec3& _point, const Tetrahedron& _tetrahedron )    // TESTED
+    EIAPI inline bool intersects( const Vec3& _point, const Tetrahedron& _tetrahedron )    // TESTED
     {
         // Check if the point is on the inner side of each plane.
         // First determine edges for the cross products to find normals
@@ -1135,11 +1135,11 @@ namespace ei {
         return dot(normp, Vec3(1.0f)) <= 0.577350269f;*/
     }
 
-    inline bool intersects( const Tetrahedron& _tetrahedron, const Vec3& _point ) { return intersects(_point, _tetrahedron); }
+    EIAPI inline bool intersects( const Tetrahedron& _tetrahedron, const Vec3& _point ) { return intersects(_point, _tetrahedron); }
 
     /// \brief Intersection test between triangle and box (based on SAT).
     /// \return true if the triangle and the box have at least one point in common.
-    inline bool intersects( const Triangle& _triangle, const Box& _box )          // TESTED
+    EIAPI inline bool intersects( const Triangle& _triangle, const Box& _box )          // TESTED
     {
         // Implementation based on SAT.
         // Like "Fast 3D Triangle-Box Overlap Testing" from Tomas Akenine-Möller.
@@ -1204,11 +1204,11 @@ namespace ei {
         return true;
     }
 
-    inline bool intersects( const Box& _box, const Triangle& _triangle ) { return intersects(_triangle, _box); }
+    EIAPI inline bool intersects( const Box& _box, const Triangle& _triangle ) { return intersects(_triangle, _box); }
 
     /// \brief Intersection test between triangle and oriented box (based on SAT).
     /// \return true if the triangle and the box have at least one point in common.
-    inline bool intersects( const Triangle& _triangle, const OBox& _obox )     // TESTED
+    EIAPI inline bool intersects( const Triangle& _triangle, const OBox& _obox )     // TESTED
     {
         // Transform triangle into local box space
         Triangle alignedTriangle;
@@ -1260,11 +1260,11 @@ namespace ei {
         return true;
     }
 
-    inline bool intersects( const OBox& _obox, const Triangle& _triangle ) { return intersects(_triangle, _obox); }
+    EIAPI inline bool intersects( const OBox& _obox, const Triangle& _triangle ) { return intersects(_triangle, _obox); }
 
     /// \brief Intersection test between plane and box.
     /// \return true if the plane and the box have at least one point in common.
-    inline bool intersects( const Plane& _plane, const Box& _box )
+    EIAPI inline bool intersects( const Plane& _plane, const Box& _box )
     {
         // Instead looping over all eight corners we only compute the minimum and
         // the maximum projected coordinate. If they have different signs the
@@ -1288,11 +1288,11 @@ namespace ei {
         return abs(boxLocalPlaneOffset) <= projMax;
     }
 
-    inline bool intersects( const Box& _box, const Plane& _plane ) { return intersects(_plane, _box); }
+    EIAPI inline bool intersects( const Box& _box, const Plane& _plane ) { return intersects(_plane, _box); }
 
     /// \brief Intersection test between plane and oriented box.
     /// \return true if the plane and the oriented box have at least one point in common.
-    inline bool intersects( const Plane& _plane, const OBox& _obox )
+    EIAPI inline bool intersects( const Plane& _plane, const OBox& _obox )
     {
         float boxLocalPlaneOffset = _plane.d + dot(_plane.n, _obox.center);
         Vec3 boxLocalPlaneNormal = transform(_plane.n, conjugate(_obox.orientation));
@@ -1300,10 +1300,10 @@ namespace ei {
         return abs(boxLocalPlaneOffset) <= projMax; // Plane is farther away then the maximum possible box coordinate -> separates
     }
 
-    inline bool intersects( const OBox& _obox, const Plane& _plane ) { return intersects(_plane, _obox); }
+    EIAPI inline bool intersects( const OBox& _obox, const Plane& _plane ) { return intersects(_plane, _obox); }
 
     /// \brief Intersection test between cone and point.
-    inline bool intersects( const Vec3& _point, const Cone& _cone )
+    EIAPI inline bool intersects( const Vec3& _point, const Cone& _cone )
     {
         // The projection of the point to the central ray gives a distance dp.
         // With dp the radius of the cone can be computed and compared to the
@@ -1322,9 +1322,9 @@ namespace ei {
         return dOPSq - dp * dp <= sq(_cone.tanTheta * dp);
     }
 
-    inline bool intersects( const Cone& _cone, const Vec3& _point ) { return intersects(_point, _cone); }
+    EIAPI inline bool intersects( const Cone& _cone, const Vec3& _point ) { return intersects(_point, _cone); }
     
-    inline bool intersects( const Vec3& _point, const FastCone& _cone )
+    EIAPI inline bool intersects( const Vec3& _point, const FastCone& _cone )
     {
         // Given the cos(theta)^2 the point can be compared more
         // easily by computing its cosine over the dot product.
@@ -1336,10 +1336,10 @@ namespace ei {
         return dp * dp >= _cone.cosThetaSq * dot(oToP, oToP);
     }
 
-    inline bool intersects( const FastCone& _cone, const Vec3& _point ) { return intersects(_point, _cone); }
+    EIAPI inline bool intersects( const FastCone& _cone, const Vec3& _point ) { return intersects(_point, _cone); }
 
     /// \brief Intersection test between cone and triangle.
-    inline bool intersects( const Triangle& _triangle, const Cone& _cone )
+    EIAPI inline bool intersects( const Triangle& _triangle, const Cone& _cone )
     {
         // Idea: first get the three closest points between each of the edges
         // and the cone central segment. If at least one of them is inside we
@@ -1455,5 +1455,5 @@ namespace ei {
         return distance >= 0.0f && distance <= _cone.height;
     }
 
-    inline bool intersects( const Cone& _cone, const Triangle& _triangle ) { return intersects(_triangle, _cone); }
+    EIAPI inline bool intersects( const Cone& _cone, const Triangle& _triangle ) { return intersects(_triangle, _cone); }
 }

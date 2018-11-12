@@ -55,25 +55,25 @@ namespace ei {
         float radius;
 
         /// \brief Create uninitialized sphere.
-        Sphere() noexcept {}
+        EIAPI Sphere() noexcept {}
 
         /// \brief Create sphere from center and radius
-        Sphere( const Vec3& _center, float _radius ) noexcept :                // TESTED
+        EIAPI Sphere( const Vec3& _center, float _radius ) noexcept :                // TESTED
             center(_center),
             radius(_radius)
         {}
 
         /// \brief Create the bounding sphere of a box
-        explicit Sphere( const Box& _box ) noexcept;                           // TESTED
+        EIAPI explicit Sphere( const Box& _box ) noexcept;                           // TESTED
 
         /// \brief Create the bounding sphere for two points
-        Sphere( const Vec3& _p0, const Vec3& _p1 ) noexcept :
+        EIAPI Sphere( const Vec3& _p0, const Vec3& _p1 ) noexcept :
             center((_p0 + _p1) * 0.5f),
             radius(len(_p0 - _p1) * 0.5f)
         {}
 
         /// \brief Create the bounding sphere for three points
-        Sphere( const Vec3& _p0, const Vec3& _p1, const Vec3& _p2 ) noexcept
+        EIAPI Sphere( const Vec3& _p0, const Vec3& _p1, const Vec3& _p2 ) noexcept
         {
             // The center of the circumscribed circle is at (barycentric coordinates)
             // v0*sin(2 alpha) + v1*sin(2 beta) + v2*sin(2 gamma) and has the radius
@@ -99,7 +99,7 @@ namespace ei {
         }
 
         /// \brief Create the bounding sphere for four points
-        Sphere( const Vec3& _p0, const Vec3& _p1, const Vec3& _p2, const Vec3& _p3 ) noexcept
+        EIAPI Sphere( const Vec3& _p0, const Vec3& _p1, const Vec3& _p2, const Vec3& _p3 ) noexcept
         {
             // It is possible that not all 4 points lie on the surface of the sphere.
             // Just two of them could already define a sphere enclosing all other.
@@ -143,7 +143,7 @@ namespace ei {
         /// \brief Create the bounding sphere for n points using Welzl's
         ///     algorithm.
         /// \details The algorithm has expected linear run time.
-        Sphere( const Vec3* _points, uint32 _numPoints ) noexcept
+        EIAPI Sphere( const Vec3* _points, uint32 _numPoints ) noexcept
         {
             eiAssert( _numPoints > 0, "The point list must have at least one point." );
             // Create a single linked list for the move to front heuristic
@@ -163,7 +163,7 @@ namespace ei {
             int next;   ///< -1 for the last element
         };
 
-        static Sphere minimalBoundingSphere( SingleLinkedPointList* _points, uint32 _first, uint32 _n, uint32 _boundarySet )
+        EIAPI static Sphere minimalBoundingSphere( SingleLinkedPointList* _points, uint32 _first, uint32 _n, uint32 _boundarySet )
         {
             Sphere mbs;
             eiAssertWeak(_boundarySet > 0, "Expected at least one point.");
@@ -225,11 +225,11 @@ namespace ei {
         float radius;       ///< Disc radius [0,INF) allowed
 
                             /// \brief Create uninitialized Disc.
-        Disc() noexcept {}
+        EIAPI Disc() noexcept {}
 
         /// \brief Create from parameters
-        Disc(const Vec3& _center, const Vec3& _normal, float _radius) noexcept :
-        center(_center),
+        EIAPI Disc(const Vec3& _center, const Vec3& _normal, float _radius) noexcept :
+            center(_center),
             normal(_normal),
             radius(_radius)
         {
@@ -245,20 +245,20 @@ namespace ei {
         Vec3 max;
 
         /// \brief Create uninitialized box.
-        Box() noexcept {}
+        EIAPI Box() noexcept {}
 
         /// \brief Create from minimal and maximal coordinates
         //Box( const Vec3& _min, const Vec3& _max );                             // TESTED
 
         /// \brief Create a box for a single point.
         /// \details This is also the recursion and for the point list constructor.
-        explicit Box( const Vec3& _point ) noexcept :
+        EIAPI explicit Box( const Vec3& _point ) noexcept :
             min(_point),
             max(_point)
         {}
 
         template<typename... Args>
-        Box( const Vec3& _point, Args... _morePoints ) noexcept :
+        EIAPI Box( const Vec3& _point, Args... _morePoints ) noexcept :
             Box(_morePoints...)
         {
             min = ei::min(min, _point);
@@ -266,7 +266,7 @@ namespace ei {
         }
 
         /// \brief Get the smallest box containing two boxes.
-        Box( const Box& _box0, const Box& _box1 ) noexcept :                   // TESTED
+        EIAPI Box( const Box& _box0, const Box& _box1 ) noexcept :                   // TESTED
             min(ei::min(_box0.min, _box1.min)),
             max(ei::max(_box0.max, _box1.max))
         {
@@ -275,7 +275,7 @@ namespace ei {
         }
 
         /// \brief Create the bounding box for a sphere.
-        explicit Box( const Sphere& _sphere ) noexcept :                       // TESTED
+        EIAPI explicit Box( const Sphere& _sphere ) noexcept :                       // TESTED
             min(_sphere.center - _sphere.radius),
             max(_sphere.center + _sphere.radius)
         {
@@ -284,19 +284,19 @@ namespace ei {
         }
 
         /// \brief Create the bounding box for a triangle.
-        explicit Box( const Triangle& _triangle ) noexcept;                    // TESTED
+        EIAPI explicit Box( const Triangle& _triangle ) noexcept;                    // TESTED
 
         /// \brief Create the bounding box of a tetrahedron
-        explicit Box( const Tetrahedron& _tetrahedron ) noexcept;
+        EIAPI explicit Box( const Tetrahedron& _tetrahedron ) noexcept;
 
         /// \brief Create the bounding box for an ellipsoid
-        explicit Box( const Ellipsoid& _ellipsoid ) noexcept;                  // TESTED
+        EIAPI explicit Box( const Ellipsoid& _ellipsoid ) noexcept;                  // TESTED
 
         /// \brief Create the bounding box for an oriented box.
-        explicit Box( const OBox& _box ) noexcept;                             // TESTED
+        EIAPI explicit Box( const OBox& _box ) noexcept;                             // TESTED
 
         /// \brief Create an optimal box for a set of points
-        Box( const Vec3* _points, uint32 _numPoints ) noexcept                 // TESTED
+        EIAPI Box( const Vec3* _points, uint32 _numPoints ) noexcept                 // TESTED
         {
             eiAssert( _points && _numPoints > 0, "The point list must have at least one point." );
             min = max = *_points++;
@@ -320,17 +320,17 @@ namespace ei {
         Quaternion orientation;     ///< Orientation of the box. This gives the rotation from an AABox to the rotated box.
 
         /// \brief Create uninitialized box.
-        OBox() noexcept {}
+        EIAPI OBox() noexcept {}
 
         /// \brief Create from parametrization
-        OBox( const Vec3& _center, const Vec3& _halfSides, const Quaternion& _orientation ) noexcept :
+        EIAPI OBox( const Vec3& _center, const Vec3& _halfSides, const Quaternion& _orientation ) noexcept :
             center(_center),
             halfSides(_halfSides),
             orientation(_orientation)
         {}
 
         /// \brief Create an oriented box from a simple box
-        explicit OBox( const Box& _box ) noexcept :
+        EIAPI explicit OBox( const Box& _box ) noexcept :
             center((_box.max + _box.min) * 0.5f),
             halfSides((_box.max - _box.min) * 0.5f),
             orientation(qidentity())
@@ -340,14 +340,14 @@ namespace ei {
         /// \details Since the disc is isotropic there is one degree of freedom.
         ///     This ambiguity is solved by using the smallest rotation of the
         ///     z-axis towards the disc normal.
-        explicit OBox( const Disc& _disc ) noexcept :
+        EIAPI explicit OBox( const Disc& _disc ) noexcept :
             center(_disc.center),
             halfSides(_disc.radius, _disc.radius, 0.0f),
             orientation( Vec3(0.0f, 0.0f, 1.0f), _disc.normal)
         {}
 
         /// \brief Create an oriented box which contains an aabox
-        OBox( const Quaternion& _orientation, const Box& _box ) noexcept :
+        EIAPI OBox( const Quaternion& _orientation, const Box& _box ) noexcept :
             center((_box.min + _box.max) * 0.5f),
             orientation(_orientation)
         {
@@ -357,7 +357,7 @@ namespace ei {
             Vec3 bmax = _box.max - center;
             halfSides = abs(rotation) * bmax;
         }
-        OBox( const Mat3x3& _orientation, const Box& _box ) noexcept :
+        EIAPI OBox( const Mat3x3& _orientation, const Box& _box ) noexcept :
             center((_box.min + _box.max) * 0.5f),
             orientation(_orientation)
         {
@@ -368,7 +368,7 @@ namespace ei {
         }
 
         /// \brief Create an oriented box which contains a set of points
-        OBox( const Quaternion& _orientation, const Vec3* _points, uint32 _numPoints ) noexcept :
+        EIAPI OBox( const Quaternion& _orientation, const Vec3* _points, uint32 _numPoints ) noexcept :
             orientation(_orientation)
         {
             eiAssert( _numPoints > 0, "The point list must have at least one point." );
@@ -396,7 +396,7 @@ namespace ei {
         /// \param [in] _points The point set for which the box is searched.
         /// \param [in] _numPoints Size of the point array.
         /// \param [in] _tries Number of random tries for the orientation.
-        OBox( const Vec3* _points, uint32 _numPoints ) noexcept                // TESTED
+        EIAPI OBox( const Vec3* _points, uint32 _numPoints ) noexcept                // TESTED
         {
             if(_numPoints == 1)
             {
@@ -470,23 +470,23 @@ namespace ei {
         Vec3 v3;
 
         /// \brief Indexed access to the 4 vertices
-        Vec3& v(int _index) noexcept
+        EIAPI Vec3& v(int _index) noexcept
         {
             eiAssertWeak(_index >= 0 && _index < 4, "A thetrahedron only has 4 vertices!");
             return reinterpret_cast<Vec3*>(this)[_index];
         }
 
-        const Vec3& v(int _index) const noexcept
+        EIAPI const Vec3& v(int _index) const noexcept
         {
             eiAssertWeak(_index >= 0 && _index < 4, "A thetrahedron only has 4 vertices!");
             return reinterpret_cast<const Vec3*>(this)[_index];
         }
 
         /// \brief Create uninitialized tetrahedron.
-        Tetrahedron() noexcept {}
+        EIAPI Tetrahedron() noexcept {}
 
         /// \brief Create from four vertices
-        Tetrahedron(const Vec3& _v0, const Vec3& _v1, const Vec3& _v2, const Vec3& _v3) noexcept :
+        EIAPI Tetrahedron(const Vec3& _v0, const Vec3& _v1, const Vec3& _v2, const Vec3& _v3) noexcept :
             v0(_v0),
             v1(_v1),
             v2(_v2),
@@ -502,23 +502,23 @@ namespace ei {
         Vec3 v2;
 
         /// \brief Indexed access to the 3 vertices
-        Vec3& v(int _index) noexcept
+        EIAPI Vec3& v(int _index) noexcept
         {
             eiAssertWeak(_index >= 0 && _index < 3, "A triangle only has 3 vertices!");
             return reinterpret_cast<Vec3*>(this)[_index];
         }
 
-        const Vec3& v(int _index) const noexcept
+        EIAPI const Vec3& v(int _index) const noexcept
         {
             eiAssertWeak(_index >= 0 && _index < 3, "A triangle only has 3 vertices!");
             return reinterpret_cast<const Vec3*>(this)[_index];
         }
 
         /// \brief Create uninitialized Triangle.
-        Triangle() noexcept {}
+        EIAPI Triangle() noexcept {}
 
         /// \brief Create from three vertex coordinates
-        Triangle(const Vec3& _v0, const Vec3& _v1, const Vec3& _v2) noexcept :
+        EIAPI Triangle(const Vec3& _v0, const Vec3& _v1, const Vec3& _v2) noexcept :
             v0(_v0),
             v1(_v1),
             v2(_v2)
@@ -533,10 +533,10 @@ namespace ei {
         float d;    ///< The distance to the origin such that dot(n,x) + d = 0 for all point in the plane
 
         /// \brief Create uninitialized Plane.
-        Plane() noexcept {}
+        EIAPI Plane() noexcept {}
 
         /// \brief Create a plane from direct parameters
-        Plane(const Vec3& _normal, float _d) noexcept :                        // TESTED
+        EIAPI Plane(const Vec3& _normal, float _d) noexcept :                        // TESTED
             n(_normal),
             d(_d)
         {
@@ -544,7 +544,7 @@ namespace ei {
         }
 
         /// \brief Create a plane from a support vector and a direction vector.
-        Plane(const Vec3& _normal, const Vec3& _support) noexcept :            // TESTED
+        EIAPI Plane(const Vec3& _normal, const Vec3& _support) noexcept :            // TESTED
             n(_normal),
             d(-dot(_normal, _support))
         {
@@ -555,7 +555,7 @@ namespace ei {
         /// \details Creates the RHS normal for courter-clock-wise sorted
         ///     vertices. With other words: the normal is that of the
         ///     triangle.
-        Plane(const Vec3& _v0, const Vec3& _v1, const Vec3& _v2) noexcept      // TESTED
+        EIAPI Plane(const Vec3& _v0, const Vec3& _v1, const Vec3& _v2) noexcept      // TESTED
         {
             n = normalize(cross(_v1 - _v0, _v2 - _v0));
             d = -dot(n, _v0);
@@ -573,14 +573,14 @@ namespace ei {
         float d1;   ///< The negative distance to the origin of the second plane. d0 >= d1
 
         /// \brief Create uninitialized DOP.
-        DOP() noexcept {}
+        EIAPI DOP() noexcept {}
 
         /// \brief Create a DOP from direct parameters
         /// \param [in] _d0 Negated distance from the origin to the first plane
         ///     (-dot(_normal, _support0)).
         /// \param [in] _d0 Negated distance from the origin to the second plane
         ///     (-dot(_normal, _support1)).
-        DOP(const Vec3& _normal, float _d0, float _d1) noexcept :
+        EIAPI DOP(const Vec3& _normal, float _d0, float _d1) noexcept :
             n(_normal),
             d0(max(_d0, _d1)),
             d1(min(_d0, _d1))
@@ -590,7 +590,7 @@ namespace ei {
 
         /// \brief Create a DOP from a direction (normal) and two support
         ///     vectors.
-        DOP(const Vec3& _normal, const Vec3& _support0, const Vec3& _support1) noexcept :
+        EIAPI DOP(const Vec3& _normal, const Vec3& _support0, const Vec3& _support1) noexcept :
             DOP(_normal, -dot(_normal, _support0), -dot(_normal, _support1))
         {}
     };
@@ -602,18 +602,18 @@ namespace ei {
         Vec3 radii;         ///< 3 radii greater 0
 
         /// \brief Create uninitialized Ellipsoid.
-        Ellipsoid() noexcept {}
+        EIAPI Ellipsoid() noexcept {}
 
         /// \brief Create an Ellipsoid from center and radii.
         /// \param [in] _radii The scaling radii. If a radius is <= 1e-30f the
         ///     constructor replaces it with 1e-30f for reasons of stability.
-        Ellipsoid(const Vec3& _center, const Vec3& _radii) noexcept :          // TESTED
+        EIAPI Ellipsoid(const Vec3& _center, const Vec3& _radii) noexcept :          // TESTED
             center(_center),
             radii(max(_radii, Vec3(1e-16f)))
         {}
 
         /// \brief Create bounding Ellipsoid from axis aligned bounding box.
-        explicit Ellipsoid(const Box& _box) noexcept                           // TESTED
+        EIAPI explicit Ellipsoid(const Box& _box) noexcept                           // TESTED
         {
             eiAssert( _box.max >= _box.min, "Invalid bounding box." );
             center = (_box.max + _box.min) * 0.5f;
@@ -634,19 +634,19 @@ namespace ei {
         Quaternion orientation;
 
         /// \brief Create uninitialized Ellipsoid.
-        OEllipsoid() noexcept {}
+        EIAPI OEllipsoid() noexcept {}
 
         /// \brief Create an Ellipsoid from parametrization.
         /// \param [in] _radii The scaling radii. If a radius is <= 1e-30f the
         ///     constructor replaces it with 1e-30f for reasons of stability.
-        OEllipsoid(const Vec3& _center, const Vec3& _radii, const Quaternion& _orientation) noexcept :
+        EIAPI OEllipsoid(const Vec3& _center, const Vec3& _radii, const Quaternion& _orientation) noexcept :
             center(_center),
             radii(_radii),
             orientation(_orientation)
         {}
 
         /// \brief Create bounding Ellipsoid from axis aligned box.
-        explicit OEllipsoid(const Box& _box) noexcept
+        EIAPI explicit OEllipsoid(const Box& _box) noexcept
         {
             eiAssert( _box.max >= _box.min, "Invalid box." );
             center = (_box.max + _box.min) * 0.5f;
@@ -659,7 +659,7 @@ namespace ei {
         }
 
         /// \brief Create bounding Ellipsoid from oriented box.
-        explicit OEllipsoid(const OBox& _box) noexcept
+        EIAPI explicit OEllipsoid(const OBox& _box) noexcept
         {
             eiAssert( _box.halfSides >= 0.0f, "Invalid box." );
             center = _box.center;
@@ -678,13 +678,13 @@ namespace ei {
         Vec3 direction;     ///< Normalized direction vector
 
         /// \brief Create uninitialized Ray.
-        Ray() noexcept {}
+        EIAPI Ray() noexcept {}
 
         /// \brief Create Ray from origin and direction.
         /// \param [in] _direction A normalized direction vector.
         ///     The method does no normalization because it could
         ///     be a redundant operation.
-        Ray(const Vec3& _origin, const Vec3& _direction) noexcept :
+        EIAPI Ray(const Vec3& _origin, const Vec3& _direction) noexcept :
             origin(_origin),
             direction(_direction)
         {
@@ -699,10 +699,10 @@ namespace ei {
         Vec3 b;             ///< End of the line
 
         /// \brief Create uninitialized Line.
-        Segment() noexcept {}
+        EIAPI Segment() noexcept {}
 
         /// \brief Create from two points
-        Segment(const Vec3& _a, const Vec3& _b) noexcept :
+        EIAPI Segment(const Vec3& _a, const Vec3& _b) noexcept :
             a(_a),
             b(_b)
         {}
@@ -710,7 +710,7 @@ namespace ei {
         /// \brief Create from bounded ray
         /// \param [in] _distance Length of the ray to define the end point of
         ///     the line.
-        Segment(const Ray& _ray, float _distance) noexcept :
+        EIAPI Segment(const Ray& _ray, float _distance) noexcept :
             a(_ray.origin),
             b(_ray.origin + _ray.direction * _distance)
         {
@@ -727,12 +727,12 @@ namespace ei {
         float height;       ///< Distance from origin to the base.
 
         /// \brief Create an uninitialized Cone.
-        Cone() noexcept {}
+        EIAPI Cone() noexcept {}
 
         /// \brief Create from intuitive parametrization.
         /// \param [in] _tanHalfOpeningAngle Tangents of the angle from the
         ///     central ray to the hull.
-        Cone(const Vec3& _origin, const Vec3& _direction, float _tanHalfOpeningAngle, float _height) noexcept
+        EIAPI Cone(const Vec3& _origin, const Vec3& _direction, float _tanHalfOpeningAngle, float _height) noexcept
         {
             eiAssert(approx(lensq(_direction), 1.0f), "Expected a normalized direction!");
             tanTheta = _tanHalfOpeningAngle;
@@ -744,7 +744,7 @@ namespace ei {
         /// \brief Create from direct parametrization.
         /// \param [in] _tanHalfOpeningAngle Tangents of the angle from the
         ///     central ray to the hull.
-        Cone(const Ray& _ray, float _tanHalfOpeningAngle, float _height) noexcept :
+        EIAPI Cone(const Ray& _ray, float _tanHalfOpeningAngle, float _height) noexcept :
             centralRay(_ray),
             tanTheta(_tanHalfOpeningAngle),
             height(_height)
@@ -758,10 +758,10 @@ namespace ei {
         float radius;       ///< Size of the boundary (radius of cylinder and hemisphere)
 
         /// \brief Create uninitialized Capsule.
-        Capsule() noexcept {}
+        EIAPI Capsule() noexcept {}
 
         /// \brief Direct create from parameters
-        Capsule(const Vec3& _a, const Vec3& _b, float _radius) noexcept :
+        EIAPI Capsule(const Vec3& _a, const Vec3& _b, float _radius) noexcept :
             seg(_a, _b),
             radius(_radius)
         {
@@ -769,7 +769,7 @@ namespace ei {
         }
 
         /// \brief Create from line and add boundary
-        Capsule(const Segment& _line, float _radius) noexcept :
+        EIAPI Capsule(const Segment& _line, float _radius) noexcept :
             seg(_line),
             radius(_radius)
         {
@@ -800,7 +800,7 @@ namespace ei {
         ///     on the far plane.
         /// \param [in] _t Distance to the top plane from center to border on
         ///     the far plane.
-        Frustum(const Vec3& _apex, const Vec3& _direction, const Vec3& _up, float _l, float _r, float _b, float _t, float _n, float _f) noexcept :
+        EIAPI Frustum(const Vec3& _apex, const Vec3& _direction, const Vec3& _up, float _l, float _r, float _b, float _t, float _n, float _f) noexcept :
             apex(_apex),
             up(_up),
             direction(_direction),
@@ -826,7 +826,7 @@ namespace ei {
         const Vec3 invDirection;        ///< 1/direction
 
         /// \brief Construction from dynamic ray struct
-        FastRay(const Ray & _ray) noexcept :
+        EIAPI FastRay(const Ray & _ray) noexcept :
             origin(_ray.origin),
             direction(_ray.direction),
             invDirection(1.0f / _ray.direction)
@@ -843,7 +843,7 @@ namespace ei {
         const Vec3 vertices[8]; ///< All vertices in the orderd: nlb, nlt, nrb, nlt, flb, flt, frb, frt
 
         /// \brief Construction from dynamic variant
-        FastFrustum(const Frustum& _frustum) noexcept                          // TESTED
+        EIAPI FastFrustum(const Frustum& _frustum) noexcept                          // TESTED
         {
             // Initialization of planes is difficult in the list, so the const-cast
             // only defers the initialization a bit.
@@ -878,12 +878,12 @@ namespace ei {
         }
 
         /// \brief Create from standard frustum parametrization
-        FastFrustum(const Vec3& _apex, const Vec3& _direction, const Vec3& _up, float _l, float _r, float _b, float _t, float _n, float _f) noexcept :
+        EIAPI FastFrustum(const Vec3& _apex, const Vec3& _direction, const Vec3& _up, float _l, float _r, float _b, float _t, float _n, float _f) noexcept :
             FastFrustum(Frustum(_apex, _direction, _up, _l, _r, _b, _t, _n, _f))
         {}
 
         /// \brief Overwrite the current data (auto generation not possible because of const members)
-        FastFrustum& operator = (const FastFrustum& _frustum) noexcept
+        EIAPI FastFrustum& operator = (const FastFrustum& _frustum) noexcept
         {
             const_cast<DOP&>(nf) = _frustum.nf;
             const_cast<Plane&>(l) = _frustum.l;
@@ -902,14 +902,14 @@ namespace ei {
         const float height;       ///< Distance from origin to the base.
 
         /// \brief Construction from dynamic variant.
-        FastCone(const Cone & _cone) noexcept :
+        EIAPI FastCone(const Cone & _cone) noexcept :
             centralRay(_cone.centralRay),
             cosThetaSq(1.0f / (1.0f + _cone.tanTheta * _cone.tanTheta)), // cos(atan(x))^2 == 1/(x^2+1)
             height(_cone.height)
         {}
 
         /// \brief Overwrite the current data (auto generation not possible because of const members)
-        FastCone& operator = (const FastCone& _cone) noexcept
+        EIAPI FastCone& operator = (const FastCone& _cone) noexcept
         {
             const_cast<Ray&>(centralRay) = _cone.centralRay;
             const_cast<float&>(cosThetaSq) = _cone.cosThetaSq;
@@ -927,7 +927,7 @@ namespace ei {
         const float area;
 
         /// \brief Construction from dynamic variant.
-        explicit FastTriangle(const Triangle & _triangle) noexcept :
+        EIAPI explicit FastTriangle(const Triangle & _triangle) noexcept :
             v0(_triangle.v0),
             e01(_triangle.v1 - _triangle.v0),
             e02(_triangle.v2 - _triangle.v0),
@@ -940,7 +940,7 @@ namespace ei {
         }
 
         /// \brief Overwrite the current data (auto generation not possible because of const members)
-        FastTriangle& operator = (const FastTriangle& _triangle) noexcept
+        EIAPI FastTriangle& operator = (const FastTriangle& _triangle) noexcept
         {
             const_cast<Vec3&>(v0) = _triangle.v0;
             const_cast<Vec3&>(e01) = _triangle.e01;
@@ -956,79 +956,79 @@ namespace ei {
     // VOLUME AND SURFACE METHODS                                                //
     // ************************************************************************* //
     /// \brief Get the volume of any object.
-    inline float volume(const Sphere& _sphere) noexcept                        // TESTED
+    EIAPI inline float volume(const Sphere& _sphere) noexcept                        // TESTED
     {
         return 4.0f / 3.0f * PI * _sphere.radius * _sphere.radius * _sphere.radius;
     }
 
-    inline float volume(const Box& _box) noexcept                              // TESTED
+    EIAPI inline float volume(const Box& _box) noexcept                              // TESTED
     {
         Vec3 size = _box.max - _box.min;
         return size.x * size.y * size.z;
     }
 
-    inline float volume(const OBox& _obox) noexcept                            // TESTED
+    EIAPI inline float volume(const OBox& _obox) noexcept                            // TESTED
     {
         return 8.0f * _obox.halfSides.x * _obox.halfSides.y * _obox.halfSides.z;
     }
 
-    inline float volume(const Tetrahedron& _thetrahedron) noexcept             // TESTED
+    EIAPI inline float volume(const Tetrahedron& _thetrahedron) noexcept             // TESTED
     {
         return dot(_thetrahedron.v3-_thetrahedron.v0, cross(_thetrahedron.v2-_thetrahedron.v0, _thetrahedron.v1-_thetrahedron.v0)) / 6.0f;
     }
 
-    inline float volume(const Triangle&) noexcept                              // TESTED
+    EIAPI inline float volume(const Triangle&) noexcept                              // TESTED
     {
         return 0.0f;
     }
 
-    inline float volume(const Disc&) noexcept                                  // TESTED
+    EIAPI inline float volume(const Disc&) noexcept                                  // TESTED
     {
         return 0.0f;
     }
 
-    inline float volume(const Plane&) noexcept                                 // TESTED
+    EIAPI inline float volume(const Plane&) noexcept                                 // TESTED
     {
         return 0.0f;
     }
 
-    inline float volume(const DOP&) noexcept                                   // TESTED
+    EIAPI inline float volume(const DOP&) noexcept                                   // TESTED
     {
         return 0.0f;
     }
 
-    inline float volume(const Ellipsoid& _ellipsoid) noexcept                  // TESTED
+    EIAPI inline float volume(const Ellipsoid& _ellipsoid) noexcept                  // TESTED
     {
         return 4.0f / 3.0f * PI * _ellipsoid.radii.x * _ellipsoid.radii.y * _ellipsoid.radii.z;
     }
 
-    inline float volume(const OEllipsoid& _oellipsoid) noexcept                // TESTED
+    EIAPI inline float volume(const OEllipsoid& _oellipsoid) noexcept                // TESTED
     {
         return 4.0f / 3.0f * PI * _oellipsoid.radii.x * _oellipsoid.radii.y * _oellipsoid.radii.z;
     }
 
-    inline float volume(const Ray&) noexcept                                   // TESTED
+    EIAPI inline float volume(const Ray&) noexcept                                   // TESTED
     {
         return 0.0f;
     }
 
-    inline float volume(const Segment&) noexcept                               // TESTED
+    EIAPI inline float volume(const Segment&) noexcept                               // TESTED
     {
         return 0.0f;
     }
 
-    inline float volume(const Cone& _cone) noexcept                            // TESTED
+    EIAPI inline float volume(const Cone& _cone) noexcept                            // TESTED
     {
         float r = _cone.height * _cone.tanTheta;
         return PI / 3.0f * r * r * _cone.height;
     }
 
-    inline float volume(const Capsule& _capsule) noexcept                      // TESTED
+    EIAPI inline float volume(const Capsule& _capsule) noexcept                      // TESTED
     {
         return PI * sq(_capsule.radius) * (_capsule.radius*4.0f/3.0f + len(_capsule.seg.b-_capsule.seg.a));
     }
 
-    inline float volume(const Frustum& _frustum) noexcept                      // TESTED
+    EIAPI inline float volume(const Frustum& _frustum) noexcept                      // TESTED
     {
         eiAssert( _frustum.r > _frustum.l, "Bad parametrization!" );
         eiAssert( _frustum.t > _frustum.b, "Bad parametrization!" );
@@ -1043,23 +1043,23 @@ namespace ei {
     }
 
     /// \brief Get the surface area of any object.
-    inline float surface(const Sphere& _sphere) noexcept                       // TESTED
+    EIAPI inline float surface(const Sphere& _sphere) noexcept                       // TESTED
     {
         return 4.0f * PI * sq(_sphere.radius);
     }
 
-    inline float surface(const Box& _box) noexcept                             // TESTED
+    EIAPI inline float surface(const Box& _box) noexcept                             // TESTED
     {
         Vec3 size = _box.max - _box.min;
         return 2.0f * (size.x * size.y + size.x * size.z + size.y * size.z);
     }
 
-    inline float surface(const OBox& _obox) noexcept                           // TESTED
+    EIAPI inline float surface(const OBox& _obox) noexcept                           // TESTED
     {
         return 8.0f * (_obox.halfSides.x * _obox.halfSides.y + _obox.halfSides.x * _obox.halfSides.z + _obox.halfSides.y * _obox.halfSides.z);
     }
 
-    inline float surface(const Tetrahedron& _thetrahedron) noexcept            // TESTED
+    EIAPI inline float surface(const Tetrahedron& _thetrahedron) noexcept            // TESTED
     {
         // Analogous to a triangle (repeated four times)
         Vec3 a = _thetrahedron.v1 - _thetrahedron.v0;
@@ -1073,29 +1073,29 @@ namespace ei {
             + len( cross(d, e) ));
     }
 
-    inline float surface(const Triangle& _triangle) noexcept                   // TESTED
+    EIAPI inline float surface(const Triangle& _triangle) noexcept                   // TESTED
     {
         // Heron's formula is much more expensive than cross product because
         // the 3 side lengths must be computed first.
         return len( cross(_triangle.v1 - _triangle.v0, _triangle.v2 - _triangle.v0) ) * 0.5f;
     }
 
-    inline float surface(const Disc& _disc) noexcept                           // TESTED
+    EIAPI inline float surface(const Disc& _disc) noexcept                           // TESTED
     {
         return PI * _disc.radius;
     }
 
-    inline float surface(const Plane&) noexcept                                // TESTED
+    EIAPI inline float surface(const Plane&) noexcept                                // TESTED
     {
         return INF;
     }
 
-    inline float surface(const DOP&) noexcept                                  // TESTED
+    EIAPI inline float surface(const DOP&) noexcept                                  // TESTED
     {
         return INF;
     }
 
-    inline float surface(const Ellipsoid& _ellipsoid) noexcept                 // TESTED
+    EIAPI inline float surface(const Ellipsoid& _ellipsoid) noexcept                 // TESTED
     {
         // Use approximation (Knud Thomsen's formula) only! Everything else is a
         // lot larger.
@@ -1105,7 +1105,7 @@ namespace ei {
         return 4.0f * PI * pow((pr.x * pr.y + pr.x * pr.z + pr.y * pr.z) / 3.0f, 0.622083981f);
     }
 
-    inline float surface(const OEllipsoid& _oellipsoid) noexcept               // TESTED
+    EIAPI inline float surface(const OEllipsoid& _oellipsoid) noexcept               // TESTED
     {
         // Use approximation (Knud Thomsen's formula) only! Everything else is a
         // lot larger.
@@ -1115,28 +1115,28 @@ namespace ei {
         return 4.0f * PI * pow((pr.x * pr.y + pr.x * pr.z + pr.y * pr.z) / 3.0f, 0.622083981f);
     }
 
-    inline float surface(const Ray&) noexcept                                  // TESTED
+    EIAPI inline float surface(const Ray&) noexcept                                  // TESTED
     {
         return 0.0f;
     }
 
-    inline float surface(const Segment&) noexcept                              // TESTED
+    EIAPI inline float surface(const Segment&) noexcept                              // TESTED
     {
         return 0.0f;
     }
 
-    inline float surface(const Cone& _cone) noexcept                           // TESTED
+    EIAPI inline float surface(const Cone& _cone) noexcept                           // TESTED
     {
         float r = _cone.height * _cone.tanTheta;
         return PI * r * (r + sqrt(r*r + _cone.height*_cone.height));
     }
 
-    inline float surface(const Capsule& _capsule) noexcept                     // TESTED
+    EIAPI inline float surface(const Capsule& _capsule) noexcept                     // TESTED
     {
         return 2 * PI * _capsule.radius * (2 * _capsule.radius + len(_capsule.seg.b-_capsule.seg.a));
     }
 
-    inline float surface(const Frustum& _frustum) noexcept                     // TESTED
+    EIAPI inline float surface(const Frustum& _frustum) noexcept                     // TESTED
     {
         // Calculate area of all 6 sides and add them
         float hratio = (_frustum.f - _frustum.n) / _frustum.f;
@@ -1153,35 +1153,35 @@ namespace ei {
     }
 
     /// \brief Transform a box (rotation).
-    inline OBox transform(const Box& _box, const Quaternion& _rotation) noexcept
+    EIAPI inline OBox transform(const Box& _box, const Quaternion& _rotation) noexcept
     {
         OBox box(_box);
         box.orientation *= _rotation;
         box.center = transform(box.center, _rotation);
         return box;
     }
-    inline OBox transform(const OBox& _box, const Quaternion& _rotation) noexcept
+    EIAPI inline OBox transform(const OBox& _box, const Quaternion& _rotation) noexcept
     {
         return OBox(transform(_box.center, _rotation), _box.halfSides, _box.orientation * _rotation);
     }
     /// \brief Transform a box (translation).
-    inline Box transform(const Box& _box, const Vec3& _translation) noexcept
+    EIAPI inline Box transform(const Box& _box, const Vec3& _translation) noexcept
     {
         return Box(_box.min + _translation, _box.max + _translation);
     }
-    inline OBox transform(const OBox& _box, const Vec3& _translation) noexcept
+    EIAPI inline OBox transform(const OBox& _box, const Vec3& _translation) noexcept
     {
         return OBox(_box.center + _translation, _box.halfSides, _box.orientation);
     }
     /// \brief Transform a box (first rotate then translate).
-    inline OBox transform(const Box& _box, const Quaternion& _rotation, const Vec3& _translation) noexcept
+    EIAPI inline OBox transform(const Box& _box, const Quaternion& _rotation, const Vec3& _translation) noexcept
     {
         OBox box(_box);
         box.orientation *= _rotation;
         box.center = transform(box.center, _rotation) + _translation;
         return box;
     }
-    inline OBox transform(const OBox& _box, const Quaternion& _rotation, const Vec3& _translation) noexcept
+    EIAPI inline OBox transform(const OBox& _box, const Quaternion& _rotation, const Vec3& _translation) noexcept
     {
         return OBox(transform(_box.center, _rotation) + _translation,
             _box.halfSides, _box.orientation * _rotation);
@@ -1198,57 +1198,57 @@ namespace ei {
     ///    sum(center(G_i)*volume(G_i)) / sum(volume(G_i)). Where negative
     ///    volumes can be used to model holes or to subtract the overlapping
     ///    regions again.
-    inline Vec3 center(const Sphere& _sphere) noexcept                         // TESTED
+    EIAPI inline Vec3 center(const Sphere& _sphere) noexcept                         // TESTED
     {
         return _sphere.center;
     }
 
-    inline Vec3 center(const Box& _box) noexcept                               // TESTED
+    EIAPI inline Vec3 center(const Box& _box) noexcept                               // TESTED
     {
         return (_box.min + _box.max) * 0.5f;
     }
 
-    inline Vec3 center(const OBox& _obox) noexcept                             // TESTED
+    EIAPI inline Vec3 center(const OBox& _obox) noexcept                             // TESTED
     {
         return _obox.center;
     }
 
-    inline Vec3 center(const Tetrahedron& _thetrahedron) noexcept              // TESTED
+    EIAPI inline Vec3 center(const Tetrahedron& _thetrahedron) noexcept              // TESTED
     {
         return (_thetrahedron.v0 + _thetrahedron.v1 + _thetrahedron.v2 + _thetrahedron.v3) / 4.0f;
     }
 
-    inline Vec3 center(const Triangle& _triangle) noexcept                     // TESTED
+    EIAPI inline Vec3 center(const Triangle& _triangle) noexcept                     // TESTED
     {
         return (_triangle.v0 + _triangle.v1 + _triangle.v2) / 3.0f;
     }
 
-    inline Vec3 center(const Disc& _disc) noexcept                             // TESTED
+    EIAPI inline Vec3 center(const Disc& _disc) noexcept                             // TESTED
     {
         return _disc.center;
     }
 
-    inline Vec3 center(const Ellipsoid& _ellipsoid) noexcept                   // TESTED
+    EIAPI inline Vec3 center(const Ellipsoid& _ellipsoid) noexcept                   // TESTED
     {
         return _ellipsoid.center;
     }
 
-    inline Vec3 center(const Segment& _line) noexcept                          // TESTED
+    EIAPI inline Vec3 center(const Segment& _line) noexcept                          // TESTED
     {
         return (_line.a + _line.b) * 0.5f;
     }
 
-    inline Vec3 center(const Cone& _cone) noexcept                             // TESTED
+    EIAPI inline Vec3 center(const Cone& _cone) noexcept                             // TESTED
     {
         return _cone.centralRay.origin + _cone.centralRay.direction * 0.75f;
     }
 
-    inline Vec3 center(const Capsule& _capsule) noexcept                       // TESTED
+    EIAPI inline Vec3 center(const Capsule& _capsule) noexcept                       // TESTED
     {
         return (_capsule.seg.a + _capsule.seg.b) * 0.5f;
     }
 
-    inline Vec3 center(const Frustum& _frustum) noexcept                       // TESTED
+    EIAPI inline Vec3 center(const Frustum& _frustum) noexcept                       // TESTED
     {
         // For a full pyramid the centroid is located on the line segment from apex
         // to base centroid at 3/4 of that segment.
@@ -1279,7 +1279,7 @@ namespace ei {
             Plane p;
             bool isDeleted;
             CHFace() = default;
-            CHFace(uint32 _i0, uint32 _i1, uint32 _i2, const UVec3& _neighbors, const Vec3* _points/*, uint32 _insidePoint*/) :
+            EIAPI CHFace(uint32 _i0, uint32 _i1, uint32 _i2, const UVec3& _neighbors, const Vec3* _points/*, uint32 _insidePoint*/) :
                 indices(_i0, _i1, _i2),
                 neighbors(_neighbors),
                 p(_points[_i0], _points[_i1], _points[_i2]),
@@ -1289,14 +1289,14 @@ namespace ei {
         };
 
         template<typename T>
-        inline void swap(T& _a, T& _b) noexcept
+        EIAPI inline void swap(T& _a, T& _b) noexcept
         {
             T tmp = _a;
             _a = _b;
             _b = tmp;
         }
 
-        inline uint32 quickHull2D(Vec3* _points, uint32& _numPoints, const Vec3& _normal, Vec3 _a, Vec3 _b)
+        EIAPI inline uint32 quickHull2D(Vec3* _points, uint32& _numPoints, const Vec3& _normal, Vec3 _a, Vec3 _b)
         {
             if(_numPoints == 0) return 0;
             // Find the furthest point on the right side relative to line a-b
@@ -1353,7 +1353,7 @@ namespace ei {
     ///     duplicates of vertices.
     /// \return Number of points in the convex set (these are the first elements
     ///     in _points after call).
-    inline uint32 convexSet(Vec3* _points, uint32 _numPoints, float _threshold = 0.0f)
+    EIAPI inline uint32 convexSet(Vec3* _points, uint32 _numPoints, float _threshold = 0.0f)
     {
         float tSq = _threshold * _threshold; // Compare squared numbers
 

@@ -7,7 +7,7 @@ namespace ei {
 
     /// Test if an (positive) integer is prime.
     template<typename T>
-    inline bool isPrime(T _n)
+    EIAPI inline bool isPrime(T _n)
     {
         // No negative primes and no 0 and 1.
         if(_n < 2) return false;
@@ -15,7 +15,7 @@ namespace ei {
         return details::isPrime_MRTest(_n);
     }
     template<>
-    inline bool isPrime(uint64 _n)
+    EIAPI inline bool isPrime(uint64 _n)
     {
         // No negative primes and no 0 and 1.
         if(_n < 2) return false;
@@ -28,14 +28,14 @@ namespace ei {
             details::isPrime_DivisorBasedTest(_n);
     }
     template<>
-    inline bool isPrime(int64 _n) { return isPrime(static_cast<uint64>(_n)); }
+    EIAPI inline bool isPrime(int64 _n) { return isPrime(static_cast<uint64>(_n)); }
 
 
     /// Get a prime number which is greater or equal than the given input.
     /// \returns 2 for all _numbers <= 2, the _number itself if it is prime
     ///    and the smallest prime greater than _number if it is not prime.
     template<typename T>
-    inline T nextPrimeGreaterOrEqual(T _number)
+    EIAPI inline T nextPrimeGreaterOrEqual(T _number)
     {
         if(_number <= 2) return 2;
         if(_number == 3) return _number;
@@ -60,7 +60,7 @@ namespace ei {
     /// \returns 2 for all _numbers < 2 and the smallest prime greater than
     ///    _number otherwise.
     template<typename T>
-    inline T nextPrime(T _number)
+    EIAPI inline T nextPrime(T _number)
     {
         return nextPrimeGreaterOrEqual(_number + 1);
     }
