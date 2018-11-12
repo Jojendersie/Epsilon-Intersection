@@ -13,21 +13,21 @@ namespace eitypes {
     typedef unsigned int uint;                                                 // TESTED
 
     // Declaration of fixed sized int8, uint8 and byte = uint8
-    typedef details::Int<1>::utype uint8;                                      // TESTED
-    typedef details::Int<1>::utype byte;                                       // TESTED
-    typedef details::Int<1>::stype int8;                                       // TESTED
+    typedef ei::details::Int<1>::utype uint8;                                  // TESTED
+    typedef ei::details::Int<1>::utype byte;                                   // TESTED
+    typedef ei::details::Int<1>::stype int8;                                   // TESTED
 
     // Declaration of fixed sized int16, uint16
-    typedef details::Int<2>::utype uint16;                                     // TESTED
-    typedef details::Int<2>::stype int16;                                      // TESTED
+    typedef ei::details::Int<2>::utype uint16;                                 // TESTED
+    typedef ei::details::Int<2>::stype int16;                                  // TESTED
 
     // Declaration of fixed sized int32, uint32
-    typedef details::Int<4>::utype uint32;                                     // TESTED
-    typedef details::Int<4>::stype int32;                                      // TESTED
+    typedef ei::details::Int<4>::utype uint32;                                 // TESTED
+    typedef ei::details::Int<4>::stype int32;                                  // TESTED
 
     // Declaration of fixed sized int64, uint64
-    typedef details::Int<8>::utype uint64;                                     // TESTED
-    typedef details::Int<8>::stype int64;                                      // TESTED
+    typedef ei::details::Int<8>::utype uint64;                                 // TESTED
+    typedef ei::details::Int<8>::stype int64;                                  // TESTED
 }
 
 #ifdef EI_GLOBAL_ELEMENTARIES
@@ -37,7 +37,7 @@ namespace ei {
     using namespace eitypes;
 }
 
-namespace details {
+namespace ei { namespace details {
     /// \brief Dummy class to detect correct types for matrix <-> matrix
     ///     and matrix <-> scalar operations (and the same for quaternions).
     /// \details The overloading mechanism fails when both types of operations
@@ -51,7 +51,7 @@ namespace details {
         static_assert(sizeof(T) == sizeof(F), "Cannot cast types of different sizes");
         return *reinterpret_cast<T*>(&_from);
     }
-}
+}} // namespace ei::details
 
 namespace ei {
     // ********************************************************************* //
@@ -416,7 +416,7 @@ namespace ei {
     ///    denormalized range. Thereby the successor of -0 and 0 are both the
     ///    same smallest positive float. Further -INF is transformed into
     ///    -FLOAT_MAX and +INF remains +INF.
-    inline float successor(float _number) noexcept // TESTED
+    constexpr inline float successor(float _number) noexcept // TESTED
     {
         // Handling NaN
         if(_number != _number) return _number;
@@ -432,7 +432,7 @@ namespace ei {
         else return details::hard_cast<float>( mantissa + 1 );
     }
 
-    inline double successor(double _number) noexcept
+    constexpr inline double successor(double _number) noexcept
     {
         // Handling NaN
         if(_number != _number) return _number;
@@ -453,7 +453,7 @@ namespace ei {
     ///    denormalized range. Thereby the predecessor of -0 and 0 are both the
     ///    same smallest negative float. Further -INF remains -INF and + INF
     ///    is transformed into FLOAT_MAX.
-    inline float predecessor(float _number) noexcept // TESTED
+    constexpr inline float predecessor(float _number) noexcept // TESTED
     {
         // Handling NaN
         if(_number != _number) return _number;
@@ -469,7 +469,7 @@ namespace ei {
         else return details::hard_cast<float>( mantissa - 1 );
     }
 
-    inline double predecessor(double _number) noexcept
+    constexpr inline double predecessor(double _number) noexcept
     {
         // Handling NaN
         if(_number != _number) return _number;
@@ -483,5 +483,22 @@ namespace ei {
         if( sign || !mantissa )
             return details::hard_cast<double>( 0x8000000000000000ul | (mantissa + 1) );
         else return details::hard_cast<double>( mantissa - 1 );
+    }
+
+    /// \brif Helper method to solve ax^2 + bx + c (numerically more stable than naive method).
+    /// \returns Solutions x1 >= x2 (x2 is always the greater of the two results).
+    inline bool solveSquarePoly(float a, float b, float c, float& x1, float& x2)
+    {
+        float discriminant = b*b - 4.0f*a*c;
+        if(discriminant < 0.0f) return false;
+        float dsqrt = sqrt(discriminant);
+        if(b > 0) {
+            x1 = (-b - dsqrt)/(2.0f*a);
+            x2 = -2.0f*c/(b + dsqrt);
+        } else {
+            x1 = -2.0f*c/(b - dsqrt);
+            x2 = (-b + dsqrt)/(2.0f*a);
+        }
+        return true;
     }
 }

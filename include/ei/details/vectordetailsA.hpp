@@ -1,4 +1,4 @@
-namespace details {
+namespace ei { namespace details {
 
     /// \brief Specialized component access for small vectors and matrices.
     /// \details This is the fallback for larger vectors without single component
@@ -307,7 +307,7 @@ namespace details {
         {}
     };
 
-}
+}} // namespace ei::details
 
 
 // ************************************************************************** //

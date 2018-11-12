@@ -1,4 +1,4 @@
-namespace details {
+namespace ei { namespace details {
     // ********************************************************************* //
     // Matrix constants
     static const ei::Matrix<float,2,2> MAT2X2_IDENTITY =
@@ -34,7 +34,7 @@ namespace details {
         _vec1 -= dot(_vec0, _vec1) * _vec0;
         removeProjectedPart(_vec0, _vecs...);
     }
-}
+}} // namespace ei::details
 
 // Remove helper macros from vectordetailsA.hpp.
 #undef EI_CODE_GEN_MAT_MAT_OP

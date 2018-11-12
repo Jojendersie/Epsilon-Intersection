@@ -1,4 +1,4 @@
-namespace details {
+namespace ei { namespace details {
     /// \brief Template construct to create integer types by a size value.
     /// \details The specializations define signed and unsigned types derived
     ///     from a standard type. Using Int<2>::stype... will chose a
@@ -39,4 +39,4 @@ namespace details {
         typedef signed long long stype;
         typedef unsigned long long utype;
     };
-}
+}} // namespace ei::details

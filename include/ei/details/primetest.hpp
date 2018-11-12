@@ -1,5 +1,4 @@
-
-namespace details {
+namespace ei { namespace details {
 
     // Test numbers >= 4 correctly testing all possible dividers up to the
     // square root. This test avoids some ifs for the trivial small primes.
@@ -69,4 +68,4 @@ namespace details {
         return millerRabinTest(_n, 61);
     }
 
-} // namespace details
+}} // namespace details
