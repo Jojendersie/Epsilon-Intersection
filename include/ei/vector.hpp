@@ -56,7 +56,7 @@ namespace ei {
 
         /// \brief Convert a matrix/vector with a different elementary type.
         template<typename T1>
-        explicit Matrix(const Matrix<T1,M,N>& _mat1) noexcept // TESTED
+        constexpr explicit Matrix(const Matrix<T1,M,N>& _mat1) noexcept // TESTED
         {
             for(uint i = 0; i < N * M; ++i)
                 this->m_data[i] = static_cast<T>(_mat1[i]);
@@ -64,17 +64,17 @@ namespace ei {
 
         /// \brief Forward to base constructors
         template<typename T1>
-        explicit Matrix(T1 _a0) noexcept :
+        constexpr explicit Matrix(T1 _a0) noexcept :
             details::Components<T,M,N>(_a0)
         {}
         template<typename T1, typename T2, typename... Args>
-        Matrix(T1 _a0, T2 _a1, Args... _args) noexcept :
+        constexpr Matrix(T1 _a0, T2 _a1, Args... _args) noexcept :
             details::Components<T,M,N>(_a0, _a1, std::forward<Args>(_args)...)
         {}
 
         /// \brief Allow explicit truncation of the dimension sizes.
         template<typename T1, uint M1, uint N1, ENABLE_IF((M < M1 && N <= N1) || (M <= M1 && N < N1))>
-        explicit Matrix(const Matrix<T1,M1,N1>& _mat1, uint _rowOff = 0, uint _colOff = 0) noexcept
+        constexpr explicit Matrix(const Matrix<T1,M1,N1>& _mat1, uint _rowOff = 0, uint _colOff = 0) noexcept
         {
             eiAssert( _rowOff + M <= M1, "Out of boundaries: matrix subsection wrong!" );
             eiAssert( _colOff + N <= N1, "Out of boundaries: matrix subsection wrong!" );
@@ -93,7 +93,7 @@ namespace ei {
         ///
         ///   Appends 1 to vectors: v    =>   (v 1)
         template<typename T1, uint N1, ENABLE_IF((M == 1 && N > N1))>
-        explicit Matrix(const Matrix<T1,1,N1>& _mat1) noexcept // TESTED
+        constexpr explicit Matrix(const Matrix<T1,1,N1>& _mat1) noexcept // TESTED
         {
             for(unsigned i = 0; i < N1; ++i)
                 this->m_data[i] = _mat1[i];
@@ -101,7 +101,7 @@ namespace ei {
                 this->m_data[i] = static_cast<T>(1);
         }
         template<typename T1, uint M1, ENABLE_IF((N == 1 && M > M1))>
-        explicit Matrix(const Matrix<T1,M1,1>& _mat1) noexcept // TESTED
+        constexpr explicit Matrix(const Matrix<T1,M1,1>& _mat1) noexcept // TESTED
         {
             for(unsigned i = 0; i < M1; ++i)
                 this->m_data[i] = _mat1[i];
@@ -109,7 +109,7 @@ namespace ei {
                 this->m_data[i] = static_cast<T>(1);
         }
         template<typename T1, uint M1, uint N1, ENABLE_IF((M > M1 && N >= N1 && N > 1) || (M >= M1 && N > N1 && M > 1))>
-        explicit Matrix(const Matrix<T1,M1,N1>& _mat1) noexcept // TESTED
+        constexpr explicit Matrix(const Matrix<T1,M1,N1>& _mat1) noexcept // TESTED
         {
                 // Indices for _mat1 and result
                 unsigned i = 0, j = 0;
