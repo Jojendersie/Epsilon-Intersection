@@ -63,9 +63,11 @@ namespace ei {
     constexpr float PHYTAGORAS = 1.4142135623f;
     // The cmath header has an ugly macro with name INFINITY -> name conflict
 #pragma warning(push)
-#pragma warning(disable:4056) // overflow in fp constant arithmetic
+#pragma warning(disable:4056 4068) // overflow in fp constant arithmetic
+#pragma diag_suppress = bad_float_operation_result
     const float INF = 1e30f * 1e30f;
     const double INF_D = 1e300 * 1e300;
+#pragma diag_default = bad_float_operation_result
 #pragma warning(pop)
     // Unicode names for the above constants
 #ifdef EI_USE_UNICODE_NAMES
