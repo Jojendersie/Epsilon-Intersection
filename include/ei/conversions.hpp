@@ -48,12 +48,12 @@ namespace ei {
 
 
     // Conversion of CIE XYZ to linear RGB
-    EIAPI inline Vec3 xyzToRgb(const Vec3 & _xyz)
-    {
-        static const Mat3x3 XYZ_TO_RGB {
-             3.2406f, -1.5372f, -0.4986f,
-            -0.9689f,  1.8758f,  0.0415f,
-             0.0557f, -0.2040f,  1.0570f
+    // http://brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
+    EIAPI inline Vec3 xyzToRgb(const Vec3 & _xyz)    {
+        constexpr Mat3x3 XYZ_TO_RGB {
+             3.2404542f, -1.5371385f, -0.4985314f,
+            -0.9692660f,  1.8760108f,  0.0415560f,
+             0.0556434f, -0.2040259f,  1.0572252f
         };
         return XYZ_TO_RGB * _xyz;
     }
@@ -61,10 +61,10 @@ namespace ei {
     // Conversion of linear RGB to CIE XYZ
     EIAPI inline Vec3 rgbToXyz(const Vec3 & _rgb)
     {
-        static const Mat3x3 RGB_TO_XYZ {
-            0.4124f, 0.3576f, 0.1805f,
-            0.2126f, 0.7152f, 0.0722f,
-            0.0193f, 0.1192f, 0.9505f
+        constexpr Mat3x3 RGB_TO_XYZ {
+            0.4124564f, 0.3575761f, 0.1804375f,
+            0.2126729f, 0.7151522f, 0.0721750f,
+            0.0193339f, 0.1191920f, 0.9503041f
         };
         return RGB_TO_XYZ * _rgb;
     }
@@ -138,7 +138,7 @@ namespace ei {
     // Unpack a RGB9E5 value into a full Vec3
     EIAPI inline Vec3 unpackRGB9E5(uint32 _code)
     {
-        float e = exp2f(float((_code>>27) - 15 - 9)); // - ExponentBias - #MantissaBits
+        float e = exp2f(float(_code>>27) - 15 - 9); // - ExponentBias - #MantissaBits
         return Vec3 {
             (_code & 0x1ff) * e,
             ((_code>>9) & 0x1ff) * e,
@@ -166,7 +166,7 @@ namespace ei {
     // Unpack a RGB8E8 value into a full Vec3
     EIAPI inline Vec3 unpackRGB8E8(uint32 _code)
     {
-        float e = exp2f(float((_code>>24) - 128 - 8)); // - ExponentBias - #MantissaBits
+        float e = exp2f(float(_code>>24) - 128 - 8); // - ExponentBias - #MantissaBits
         return Vec3 {
             (_code & 0xff) * e,
             ((_code>>8) & 0xff) * e,
