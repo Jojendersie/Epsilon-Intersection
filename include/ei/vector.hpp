@@ -1577,22 +1577,6 @@ namespace ei {
     // ********************************************************************* //
 
     // ********************************************************************* //
-    /// \brief Generate the N x N identity matrix.
-    template<typename T, unsigned N>
-    EIAPI constexpr inline Matrix<T,N,N> identity() noexcept // TESTED
-    {
-        return diag(Vec<T,N>(1));
-    }
-
-
-    /// \brief Alias for identity<float,2>().
-    EIAPI constexpr inline Mat2x2 identity2x2() noexcept    { return identity<float,2>(); }
-    /// \brief Alias for identity<float,3>().
-    EIAPI constexpr inline Mat3x3 identity3x3() noexcept    { return identity<float,3>(); } // TESTED
-    /// \brief Alias for identity<float,4>().
-    EIAPI constexpr inline Mat4x4 identity4x4() noexcept    { return identity<float,4>(); } // TESTED
-
-    // ********************************************************************* //
     /// \brief Generate the N x N diagonal matrix.
     /// \param [in] _v0 A vector with the diagonal entries.
     template<typename T, unsigned N>
@@ -1603,6 +1587,21 @@ namespace ei {
             result[n * N + n] = _v0[n];
         return result;
     }
+
+    // ********************************************************************* //
+    /// \brief Generate the N x N identity matrix.
+    template<typename T, unsigned N>
+    EIAPI constexpr inline Matrix<T,N,N> identity() noexcept // TESTED
+    {
+        return diag(Vec<T,N>(1));
+    }
+
+    /// \brief Alias for identity<float,2>().
+    EIAPI constexpr inline Mat2x2 identity2x2() noexcept    { return identity<float,2>(); }
+    /// \brief Alias for identity<float,3>().
+    EIAPI constexpr inline Mat3x3 identity3x3() noexcept    { return identity<float,3>(); } // TESTED
+    /// \brief Alias for identity<float,4>().
+    EIAPI constexpr inline Mat4x4 identity4x4() noexcept    { return identity<float,4>(); } // TESTED
 
     // ********************************************************************* //
     /// \brief Convert a vector from Cartesian coordinates in spherical
