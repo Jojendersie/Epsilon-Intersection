@@ -22,7 +22,7 @@ namespace ei { namespace details {
         }
         /// \brief Initialize all members from single scalar
         template<typename T1>
-        EIAPI constexpr explicit Components(T1 _s) noexcept
+        EIAPI constexpr explicit Components(T1 _s) noexcept : m_data{}
         {
             for(ei::uint i = 0; i < N * M; ++i)
                 this->m_data[i] = static_cast<T>(_s);

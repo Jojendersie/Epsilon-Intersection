@@ -38,18 +38,18 @@ namespace ei {
         // operation without the need of a constructor. This type deduction
         // construct inherits rules as [int + float -> float] from the
         // elementary types.
-#       define RESULT_TYPE(op) typename std::enable_if<                 \
-            !std::is_base_of<details::NonScalarType, T1>::value &&      \
-            !std::is_base_of<details::NonScalarType, T>::value,         \
-            decltype(std::declval<T>() op std::declval<T1>())           \
-        >::type
+#       define RESULT_TYPE(op) std::enable_if_t<                   \
+            !std::is_base_of_v<details::NonScalarType, T1> &&      \
+            !std::is_base_of_v<details::NonScalarType, T>,         \
+            decltype(std::declval<T>() op std::declval<T1>())      \
+        >
 
         // Enable a function on a condition via template list.
         // This macro allows conditional compilation even for methods without
         // parameters and return value.
         // Therefore if must be inserted in the template list and `class` at
         // the same position in the implementation.
-#       define ENABLE_IF(condition) typename = typename std::enable_if< (condition) >::type
+#       define ENABLE_IF(condition) typename = std::enable_if_t< (condition) >
 
         /// \brief Construction without initialization. The values are undefined!
         EIAPI Matrix() noexcept {}
@@ -137,12 +137,12 @@ namespace ei {
         ///    this must be zero.
         /// \returns Reference with read or write access to the element
         ///    depending on the constness of the matrix.
-        EIAPI T& operator () (uint _row, uint _col) noexcept // TESTED
+        EIAPI constexpr T& operator () (uint _row, uint _col) noexcept // TESTED
         {
             eiAssertWeak(_row < M && _col < N, "Index out of bounds!");
             return this->m_data[_row * N + _col];
         }
-        EIAPI T operator () (uint _row, uint _col) const noexcept // TESTED
+        EIAPI constexpr T operator () (uint _row, uint _col) const noexcept // TESTED
         {
             eiAssertWeak(_row < M && _col < N, "Index out of bounds!");
             return this->m_data[_row * N + _col];
@@ -150,12 +150,12 @@ namespace ei {
 
         /// \brief Single row access
         /// \param [in] _row Index of the row in [0,M-1].
-        EIAPI Matrix<T,1,N>& operator () (uint _row) noexcept // TESTED
+        EIAPI constexpr Matrix<T,1,N>& operator () (uint _row) noexcept // TESTED
         {
             eiAssertWeak(_row < M, "Index out of bounds!");
             return reinterpret_cast<Matrix<T,1,N>&>(this->m_data[_row * N]);
         }
-        EIAPI const Matrix<T,1,N>& operator () (uint _row) const noexcept // TESTED
+        EIAPI constexpr const Matrix<T,1,N>& operator () (uint _row) const noexcept // TESTED
         {
             eiAssertWeak(_row < M, "Index out of bounds!");
             return reinterpret_cast<const Matrix<T,1,N>&>(this->m_data[_row * N]);
@@ -165,12 +165,12 @@ namespace ei {
         /// \param [in] _index Index in the range [0, N * M - 1].
         /// \returns Reference with read or write access to the element
         ///    depending on the constness of the matrix.
-        EIAPI T& operator [] (uint _index) noexcept // TESTED
+        EIAPI constexpr T& operator [] (uint _index) noexcept // TESTED
         {
             eiAssertWeak(_index < N * M, "Index out of bounds!");
             return this->m_data[_index];
         }
-        EIAPI T operator [] (uint _index) const noexcept // TESTED
+        EIAPI constexpr T operator [] (uint _index) const noexcept // TESTED
         {
             eiAssertWeak(_index < N * M, "Index out of bounds!");
             return this->m_data[_index];
@@ -220,9 +220,11 @@ namespace ei {
             EI_CODE_GEN_MAT_MAT_OP(-)
 
         /// \brief Unary minus on all components.
+        template<typename T1 = T, ENABLE_IF(std::is_signed_v<T1>)>
         EIAPI Matrix<T, M, N> operator - () const noexcept // TESTED
             EI_CODE_GEN_MAT_UNARY_OP(-)
         /// \brief Component wise binary not.
+        template<typename T1 = T, ENABLE_IF(std::is_integral_v<T1>)>
         EIAPI Matrix<T, M, N> operator ~ () const noexcept // TESTED
             EI_CODE_GEN_MAT_UNARY_OP(~)
 
@@ -231,10 +233,10 @@ namespace ei {
         /// \returns Matrix product with dimensions MxO = MxN * NxO. The result
         ///    is a scalar if M = N = 1.
         template<typename T1, uint O>
-        EIAPI typename std::conditional<M * O == 1, RESULT_TYPE(*), Matrix<RESULT_TYPE(*), M, O>>::type
+        EIAPI std::conditional_t<M * O == 1, RESULT_TYPE(*), Matrix<RESULT_TYPE(*), M, O>>
         operator * (const Matrix<T1,N,O>& _mat1) const noexcept // TESTED
         {
-            typename std::conditional<M * O == 1, RESULT_TYPE(*), Matrix<RESULT_TYPE(*), M, O>>::type result;
+            std::conditional_t<M * O == 1, RESULT_TYPE(*), Matrix<RESULT_TYPE(*), M, O>> result;
             for(uint m = 0; m < M; ++m)
             {
                 for(uint o = 0; o < O; ++o)
@@ -1577,41 +1579,24 @@ namespace ei {
     // ********************************************************************* //
     /// \brief Generate the N x N identity matrix.
     template<typename T, unsigned N>
-    EIAPI inline const Matrix<T,N,N>& identity() noexcept // TESTED
+    EIAPI constexpr inline Matrix<T,N,N> identity() noexcept // TESTED
     {
-        static Matrix<T,N,N> result(diag(Vec<T,N>(1)));
-        return result;
+        return diag(Vec<T,N>(1));
     }
 
-    // Faster implementations for known sizes (does not branch due to static)
-    template<>
-    EIAPI inline const Matrix<float,2,2>& identity<float,2>() noexcept
-    {
-        return details::MAT2X2_IDENTITY;
-    }
-    template<>
-    EIAPI inline const Matrix<float,3,3>& identity<float,3>() noexcept
-    {
-        return details::MAT3X3_IDENTITY;
-    }
-    template<>
-    EIAPI inline const Matrix<float,4,4>& identity<float,4>() noexcept
-    {
-        return details::MAT4X4_IDENTITY;
-    }
 
     /// \brief Alias for identity<float,2>().
-    EIAPI inline Mat2x2 identity2x2() noexcept    { return identity<float,2>(); }
+    EIAPI constexpr inline Mat2x2 identity2x2() noexcept    { return identity<float,2>(); }
     /// \brief Alias for identity<float,3>().
-    EIAPI inline Mat3x3 identity3x3() noexcept    { return identity<float,3>(); } // TESTED
+    EIAPI constexpr inline Mat3x3 identity3x3() noexcept    { return identity<float,3>(); } // TESTED
     /// \brief Alias for identity<float,4>().
-    EIAPI inline Mat4x4 identity4x4() noexcept    { return identity<float,4>(); } // TESTED
+    EIAPI constexpr inline Mat4x4 identity4x4() noexcept    { return identity<float,4>(); } // TESTED
 
     // ********************************************************************* //
     /// \brief Generate the N x N diagonal matrix.
     /// \param [in] _v0 A vector with the diagonal entries.
     template<typename T, unsigned N>
-    EIAPI inline Matrix<T,N,N> diag( const Vec<T,N>& _v0 ) noexcept // TESTED
+    EIAPI constexpr inline Matrix<T,N,N> diag( const Vec<T,N>& _v0 ) noexcept // TESTED
     {
         Matrix<T,N,N> result(T(0));
         for(uint n = 0; n < N; ++n)

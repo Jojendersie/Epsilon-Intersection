@@ -39,4 +39,12 @@ namespace ei { namespace details {
         typedef signed long long stype;
         typedef unsigned long long utype;
     };
-}} // namespace ei::details
+
+} // namespace details
+
+    template<int BYTES>
+    using Sint = typename details::Int<BYTES>::stype;
+    template<int BYTES>
+    using Uint = typename details::Int<BYTES>::utype;
+
+} // namespace ei
