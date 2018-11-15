@@ -218,7 +218,7 @@ namespace ei {
     /// \param [in] _epsilon A percentage threshold for the difference
     ///    between two elements. The default value is 1e-6.
     /// \returns true if the difference is less or equal than _epsilon.
-    template<typename T, class = typename std::enable_if<!std::is_base_of<details::NonScalarType, T>::value, class Dummy>::type>
+    template<typename T, class = std::enable_if_t<!std::is_base_of<details::NonScalarType, T>::value>>
     inline bool approx(T _x0, T _x1, T _epsilon = T(1e-6)) noexcept // TESTED
     {
         // Use an offset of 1.0 for comparisons to zero.
@@ -228,33 +228,33 @@ namespace ei {
 
     // ********************************************************************* //
     /// \brief Round value towards negative infinity.
-    template<typename T, class = typename std::enable_if<!std::is_base_of<details::NonScalarType, T>::value, class Dummy>::type>
-    inline typename details::Int<sizeof(T)>::stype floor(T _x) noexcept
+    template<typename T, class = std::enable_if_t<!std::is_base_of<details::NonScalarType, T>::value>>
+    inline Sint<sizeof(T)> floor(T _x) noexcept
     {
-        typename details::Int<sizeof(T)>::stype r = static_cast<typename details::Int<sizeof(T)>::stype>(_x);
-        return r - static_cast<typename details::Int<sizeof(T)>::stype>((_x<static_cast<T>(0)) && (_x-r!=static_cast<T>(0)));
+        Sint<sizeof(T)> r = static_cast<Sint<sizeof(T)>>(_x);
+        return r - static_cast<Sint<sizeof(T)>>((_x<static_cast<T>(0)) && (_x-r!=static_cast<T>(0)));
     }
 
     // ********************************************************************* //
     /// \brief Round value towards positive infinity.
-    template<typename T, class = typename std::enable_if<!std::is_base_of<details::NonScalarType, T>::value, class Dummy>::type>
-    inline typename details::Int<sizeof(T)>::stype ceil(T _x) noexcept
+    template<typename T, class = std::enable_if_t<!std::is_base_of<details::NonScalarType, T>::value>>
+    inline Sint<sizeof(T)> ceil(T _x) noexcept
     {
-        typename details::Int<sizeof(T)>::stype r = static_cast<typename details::Int<sizeof(T)>::stype>(_x);
-        return r + static_cast<typename details::Int<sizeof(T)>::stype>((_x>static_cast<T>(0)) && (_x-r!=static_cast<T>(0)));
+        Sint<sizeof(T)> r = static_cast<Sint<sizeof(T)>>(_x);
+        return r + static_cast<Sint<sizeof(T)>>((_x>static_cast<T>(0)) && (_x-r!=static_cast<T>(0)));
     }
 
 
     // ********************************************************************* //
     /// \brief Round value towards next integral number (0.5 rounds to even).
-    template<typename T, class = typename std::enable_if<!std::is_base_of<details::NonScalarType, T>::value, class Dummy>::type>
-    inline typename details::Int<sizeof(T)>::stype round(T _x) noexcept
+    template<typename T, class = std::enable_if_t<!std::is_base_of<details::NonScalarType, T>::value>>
+    inline Sint<sizeof(T)> round(T _x) noexcept
     {
         // Round up
         //return floor(_x + static_cast<T>(0.5));
         // Round to even
-        typename details::Int<sizeof(T)>::stype r = static_cast<typename details::Int<sizeof(T)>::stype>(_x);
-        r -= static_cast<typename details::Int<sizeof(T)>::stype>((_x<static_cast<T>(0)) && (_x!=static_cast<T>(r)));   // Subtract 1 if _x < 0 -> r is floor(_x)
+        Sint<sizeof(T)> r = static_cast<Sint<sizeof(T)>>(_x);
+        r -= static_cast<Sint<sizeof(T)>>((_x<static_cast<T>(0)) && (_x!=static_cast<T>(r)));   // Subtract 1 if _x < 0 -> r is floor(_x)
         T f = _x - r;    // Fractional part (positive)
         if(f < static_cast<T>(0.5)) return r;
         if(f > static_cast<T>(0.5)) return r+1;
@@ -269,7 +269,7 @@ namespace ei {
     template<typename T>
     inline T frac(T _x) noexcept // TESTED
     {
-        return _x - static_cast<typename details::Int<sizeof(T)>::stype>(_x);
+        return _x - static_cast<Sint<sizeof(T)>>(_x);
     }
 
     // ********************************************************************* //
@@ -278,9 +278,9 @@ namespace ei {
     /// \param _int [out] The integer part of the number.
     /// \returns The fraction of the number in (-1,1).
     template<typename T>
-    inline T intfrac(T _x, typename details::Int<sizeof(T)>::stype& _int) noexcept // TESTED
+    inline T intfrac(T _x, Sint<sizeof(T)>& _int) noexcept // TESTED
     {
-        _int = static_cast<typename details::Int<sizeof(T)>::stype>(_x);
+        _int = static_cast<Sint<sizeof(T)>>(_x);
         return _x - _int;
     }
 
@@ -292,7 +292,7 @@ namespace ei {
     /// \param _int [out] The integer part of the number.
     /// \returns The fraction of the number in [0,1).
     template<typename T>
-    inline T floorfrac(T _x, typename details::Int<sizeof(T)>::stype& _int) noexcept // TESTED
+    inline T floorfrac(T _x, Sint<sizeof(T)>& _int) noexcept // TESTED
     {
         _int = floor(_x);
         return _x - _int;

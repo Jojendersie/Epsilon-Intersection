@@ -1288,14 +1288,6 @@ namespace ei {
             }
         };
 
-        template<typename T>
-        inline void swap(T& _a, T& _b) noexcept
-        {
-            T tmp = _a;
-            _a = _b;
-            _b = tmp;
-        }
-
         inline uint32 quickHull2D(Vec3* _points, uint32& _numPoints, const Vec3& _normal, Vec3 _a, Vec3 _b)
         {
             if(_numPoints == 0) return 0;
@@ -1313,7 +1305,7 @@ namespace ei {
 
             if(idx != _numPoints)
             {
-                if(idx != 0) swap(_points[0], _points[idx]);
+                if(idx != 0) std::swap(_points[0], _points[idx]);
                 // Discard all points within the triangle a,b,p[i].
                 Vec3 e1 = _points[0] - _a;
                 float d00 = dot(e0, e0);
@@ -1327,7 +1319,7 @@ namespace ei {
                     float bary0 = (d11 * d20 - d01 * d21) / denom;
                     float bary1 = (d00 * d21 - d01 * d20) / denom;
                     if((bary0 >= 0.0f) && (bary1 >= 0.0f) && (bary0 + bary1 <= 1.0f))
-                        swap(_points[i--], _points[--_numPoints]);
+                        std::swap(_points[i--], _points[--_numPoints]);
                 }
 
                 // Call recursive for the two new edges
@@ -1400,8 +1392,8 @@ namespace ei {
         eiAssert(dmax > tSq, "Points should have been deleted in duplicate search.");
         // Move the two points to the front. Order could be an issue if idx[1] == 0
         // or idx[0] == 1. If there is a cross reference swap that element first.
-        if(idx[0] == 1) { details::swap(_points[0], _points[1]); details::swap(_points[1], _points[idx[1]]); }
-        else { details::swap(_points[1], _points[idx[1]]); details::swap(_points[0], _points[idx[0]]); }
+        if(idx[0] == 1) { std::swap(_points[0], _points[1]); std::swap(_points[1], _points[idx[1]]); }
+        else { std::swap(_points[1], _points[idx[1]]); std::swap(_points[0], _points[idx[0]]); }
         // Get third point as most distant one to the line of the first two.
         dmax = 0.0f;
         Segment tsegment(_points[0], _points[1]);
@@ -1420,7 +1412,7 @@ namespace ei {
             // (colinear point set).
             return 2;
         }
-        details::swap(_points[2], _points[idx[0]]);
+        std::swap(_points[2], _points[idx[0]]);
         if(_numPoints == 3) return 3;
 
         // Precondition: we have 3 non-colinear points in the front of the list.
@@ -1478,7 +1470,7 @@ namespace ei {
                 if( d > dmax ) { dmax = d; idx[0] = i; }
             }
             if(dmax <= _threshold) continue;
-            if(nconvex != idx[0]) details::swap(_points[nconvex], _points[idx[0]]);
+            if(nconvex != idx[0]) std::swap(_points[nconvex], _points[idx[0]]);
 
             // For the new point find the set of visible faces.
             visibleStack[0] = fidx;
@@ -1503,7 +1495,7 @@ namespace ei {
                     for(int j = 0; j < 4 && inside; ++j)
                         inside &= (dot(sides[j].n, _points[i]) + sides[j].d) <= 0.0f;
                     if(inside)
-                        details::swap(_points[i--], _points[--_numPoints]);
+                        std::swap(_points[i--], _points[--_numPoints]);
                 }
 
                 // Remove the visible face. It is now interior.
@@ -1533,7 +1525,7 @@ namespace ei {
                 {
                     if(edges[i].y == edges[j].x)
                     {
-                        if(i+1 != j) swap(edges[i+1], edges[j]);
+                        if(i+1 != j) std::swap(edges[i+1], edges[j]);
                         break;
                     }
                 }
