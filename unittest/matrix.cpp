@@ -12,6 +12,20 @@ static void doNotOptimizeAway(T& _var)
     static volatile T x = _var;
 }
 
+// Try to instanciate all relevant vector types explicitly.
+template Vec2;
+template Vec3;
+template Vec4;
+template IVec2;
+template IVec3;
+template IVec4;
+template UVec2;
+template UVec3;
+template UVec4;
+template Mat2x2;
+template Mat3x3;
+template Mat4x4;
+
 bool test_matrix()
 {
     bool result = true;

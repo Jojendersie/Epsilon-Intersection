@@ -38,18 +38,18 @@ namespace ei {
         // operation without the need of a constructor. This type deduction
         // construct inherits rules as [int + float -> float] from the
         // elementary types.
-#       define RESULT_TYPE(op) typename std::enable_if<                 \
-            !std::is_base_of<details::NonScalarType, T1>::value &&      \
-            !std::is_base_of<details::NonScalarType, T>::value,         \
-            decltype(std::declval<T>() op std::declval<T1>())           \
-        >::type
+#       define RESULT_TYPE(op) std::enable_if_t<                   \
+            !std::is_base_of_v<details::NonScalarType, T1> &&      \
+            !std::is_base_of_v<details::NonScalarType, T>,         \
+            decltype(std::declval<T>() op std::declval<T1>())      \
+        >
 
         // Enable a function on a condition via template list.
         // This macro allows conditional compilation even for methods without
         // parameters and return value.
         // Therefore if must be inserted in the template list and `class` at
         // the same position in the implementation.
-#       define ENABLE_IF(condition) typename = typename std::enable_if< (condition) >::type
+#       define ENABLE_IF(condition) typename = std::enable_if_t< (condition) >
 
         /// \brief Construction without initialization. The values are undefined!
         Matrix() noexcept = default;
@@ -220,9 +220,11 @@ namespace ei {
             EI_CODE_GEN_MAT_MAT_OP(-)
 
         /// \brief Unary minus on all components.
+        template<typename T1 = T, ENABLE_IF(std::is_signed_v<T1>)>
         Matrix<T, M, N> operator - () const noexcept // TESTED
             EI_CODE_GEN_MAT_UNARY_OP(-)
         /// \brief Component wise binary not.
+        template<typename T1 = T, ENABLE_IF(std::is_integral_v<T1>)>
         Matrix<T, M, N> operator ~ () const noexcept // TESTED
             EI_CODE_GEN_MAT_UNARY_OP(~)
 
