@@ -1280,7 +1280,7 @@ namespace ei {
             Plane p;
             bool isDeleted;
             CHFace() = default;
-            EIAPI CHFace(uint32 _i0, uint32 _i1, uint32 _i2, const UVec3& _neighbors, const Vec3* _points/*, uint32 _insidePoint*/) :
+            CHFace(uint32 _i0, uint32 _i1, uint32 _i2, const UVec3& _neighbors, const Vec3* _points/*, uint32 _insidePoint*/) :
                 indices(_i0, _i1, _i2),
                 neighbors(_neighbors),
                 p(_points[_i0], _points[_i1], _points[_i2]),
@@ -1289,7 +1289,7 @@ namespace ei {
             }
         };
 
-        EIAPI inline uint32 quickHull2D(Vec3* _points, uint32& _numPoints, const Vec3& _normal, Vec3 _a, Vec3 _b)
+        inline uint32 quickHull2D(Vec3* _points, uint32& _numPoints, const Vec3& _normal, Vec3 _a, Vec3 _b)
         {
             if(_numPoints == 0) return 0;
             // Find the furthest point on the right side relative to line a-b
@@ -1346,7 +1346,7 @@ namespace ei {
     ///     duplicates of vertices.
     /// \return Number of points in the convex set (these are the first elements
     ///     in _points after call).
-    EIAPI inline uint32 convexSet(Vec3* _points, uint32 _numPoints, float _threshold = 0.0f)
+    inline uint32 convexSet(Vec3* _points, uint32 _numPoints, float _threshold = 0.0f)
     {
         float tSq = _threshold * _threshold; // Compare squared numbers
 
