@@ -134,6 +134,21 @@ bool test_elementaries()
         TEST( heaviside(0.0) == 1, "heaviside(0.0) wrong!" );
     }
 
+    { // ilog2
+        TEST( ilog2(-1) < 0, "ilog2(-1) should signal wrong position.");
+        TEST( ilog2(0) < 0, "ilog2(0) should signal wrong position.");
+        TEST( ilog2(1) == 0, "ilog2(1) invalid.");
+        TEST( ilog2(2) == 1, "ilog2(2) invalid.");
+        TEST( ilog2(3) == 1, "ilog2(3) invalid.");
+        TEST( ilog2(63) == 5, "ilog2(63) invalid.");
+        TEST( ilog2(64) == 6, "ilog2(64) invalid.");
+        TEST( ilog2(623) == 9, "ilog2(623) invalid.");
+        TEST( ilog2(2147483647) == 30, "ilog2(2147483647) invalid.");
+        TEST( ilog2(2147483648ul) == 31, "ilog2(2147483648) invalid.");
+        TEST( ilog2(2147483649ul) == 31, "ilog2(2147483649) invalid.");
+        TEST( ilog2(0xfabcdefa01010101ull) == 63, "ilog2(0xfabcdefa01010101) invalid.");
+    }
+
     // successor, predecessor
     {
 #ifdef UNIT_TEST_SUCCESSOR
