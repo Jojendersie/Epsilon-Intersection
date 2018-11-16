@@ -348,6 +348,17 @@ namespace ei {
     template<>
     inline uint64 mod<uint64>(uint64 _x, uint64 _y) noexcept { return _x % _y; }
 
+    // ********************************************************************* //
+    /// \brief Compute floor(log2), i.e. the position of the most significant bit.
+    /// \details Expects IEEE and litte-endian (standard PC)
+    template<typename T, typename = std::enable_if_t<std::is_integral<T>::value>>
+    constexpr int ilog2(T _x) noexcept                    // TESTED
+    {
+        if(_x <= 0) return -2147483647-1; // Actually NaN
+        double f = static_cast<double>(_x);
+        return (details::hard_cast<uint64>(f) >> 52) - 1023;
+    }
+
 
     // ********************************************************************* //
     /// \brief Linear interpolation.
