@@ -1335,7 +1335,7 @@ namespace ei {
         }
     } // namespace details
 
-    float distance(const Vec3& _point, const Segment& _line); // Forward declaration
+    EIAPI float distance(const Vec3& _point, const Segment& _line); // Forward declaration
 
     /// \brief Remove all points from the array, which are not part of the
     ///     convex hull.

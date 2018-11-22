@@ -74,10 +74,10 @@ namespace egg = ei;
 namespace ei {
 #if defined(DOUBLE_PRECISION)
 	/// \brief Default threshold value for numerical instable tests
-	const double EPSILON = 1e-14;
+	constexpr double EPSILON = 1e-14;
 #else
 	/// \brief Default threshold value for numerical instable tests
-	const float EPSILON = 1e-6f;
+	constexpr float EPSILON = 1e-6f;
 #endif
 }
 
