@@ -599,12 +599,12 @@ namespace ei {
     {
     public:
         /// \brief Construct uninitialized
-        EIAPI constexpr TQuaternion() noexcept = default;
+        constexpr TQuaternion() noexcept = default;
 
         /// \brief Copy construction
-        EIAPI constexpr TQuaternion( const TQuaternion& _other ) noexcept = default;
+        constexpr TQuaternion( const TQuaternion& _other ) noexcept = default;
         /// \brief Copying assignment
-        EIAPI constexpr TQuaternion& operator = ( const TQuaternion& _rhs ) noexcept = default;
+        constexpr TQuaternion& operator = ( const TQuaternion& _rhs ) noexcept = default;
 
         /// \brief Construct from normalized axis and angle
         EIAPI constexpr TQuaternion( const Vec<T,3>& _axis, T _angle ) noexcept // TESTED
