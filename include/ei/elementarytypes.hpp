@@ -81,7 +81,7 @@ namespace ei {
     // ********************************************************************* //
     /// \brief Compute the square x*x.
     template<typename T>
-    inline T sq(T _x) noexcept
+    constexpr inline T sq(T _x) noexcept
     {
         return _x * _x;
     }
@@ -92,7 +92,7 @@ namespace ei {
     ///    a difference if you are sorting object types with more than the
     ///    compared value.
     template<typename T>
-    inline T max(T _x, T _y) noexcept // TESTED
+    constexpr inline T max(T _x, T _y) noexcept // TESTED
     {
         return _x < _y ? _y : _x;
     }
@@ -100,7 +100,7 @@ namespace ei {
     /// \brief Get the maximum of any number of arguments
     /// \details In case of equal arguments the left most one is returned
     template<typename T, typename... Ttail>
-    inline T max(T _first, Ttail... _tail) noexcept // TESTED
+    constexpr inline T max(T _first, Ttail... _tail) noexcept // TESTED
     {
         return max(_first, max(_tail...));
     }
@@ -111,7 +111,7 @@ namespace ei {
     ///    a difference if you are sorting object types with more than the
     ///    compared value.
     template<typename T>
-    inline T min(T _x, T _y) noexcept // TESTED
+    constexpr inline T min(T _x, T _y) noexcept // TESTED
     {
         return _x > _y ? _y : _x;
     }
@@ -119,7 +119,7 @@ namespace ei {
     /// \brief Get the maximum of any number of arguments
     /// \details In case of equal arguments the left most one is returned
     template<typename T, typename... Ttail>
-    inline T min(T _first, Ttail... _tail) noexcept // TESTED
+    constexpr inline T min(T _first, Ttail... _tail) noexcept // TESTED
     {
         return min(_first, min(_tail...));
     }
@@ -127,7 +127,7 @@ namespace ei {
     // ********************************************************************* //
     /// \brief Clamp a value to the boundaries.
     template<typename T>
-    inline T clamp(T _x, T _min, T _max) noexcept // TESTED
+    constexpr inline T clamp(T _x, T _min, T _max) noexcept // TESTED
     {
         return _x > _max ? _max : (_x < _min ? _min : _x);
     }
@@ -135,7 +135,7 @@ namespace ei {
     // ********************************************************************* //
     /// \brief Clamp a value to [0,1] interval.
     template<typename T>
-    inline T saturate(T _x) noexcept
+    constexpr inline T saturate(T _x) noexcept
     {
         return _x > static_cast<T>(1) ? static_cast<T>(1) : (_x < static_cast<T>(0) ? static_cast<T>(0) : _x);
     }
@@ -143,20 +143,24 @@ namespace ei {
     // ********************************************************************* //
     /// \brief Get the absolute value.
     template<typename T>
-    inline T abs(T _x) noexcept // TESTED
+    constexpr inline T abs(T _x) noexcept // TESTED
     {
         return _x < static_cast<T>(0) ? -_x : _x;
     }
 
-    inline float abs(float _x) noexcept // TESTED
+    constexpr inline float abs(float _x) noexcept // TESTED
     {
-        using details::hard_cast;
-        return hard_cast<float>(hard_cast<uint32>(_x) & 0x7fffffff);
+        // In float there is a negative -0 -> simple ?: does not work
+        // The following bit manipulation does not work in constexpr due to undefined behavior.
+        //using details::hard_cast;
+        //return hard_cast<float>(hard_cast<uint32>(_x) & 0x7fffffff);
+        // The following are valid. TODO: benchmark
+        return _x < 0.0f ? -_x : (_x == 0.0f ? 0.0f : _x);
+        //return _x < 0.0f ? -_x : _x + 0.0f; // IEEE float assumption
     }
-    inline double abs(double _x) noexcept // TESTED
+    constexpr inline double abs(double _x) noexcept // TESTED
     {
-        using details::hard_cast;
-        return hard_cast<double>(hard_cast<uint64>(_x) & 0x7fffffffffffffffull);
+        return _x < 0.0 ? -_x : (_x == 0.0 ? 0.0 : _x);
     }
 
     // ********************************************************************* //
@@ -165,7 +169,7 @@ namespace ei {
     ///    know about zero.
     /// \returns -1 (_x < 0), 0 (_x == 0) or 1 (_x > 0)
     template<typename T>
-    inline T sign(T _x) noexcept // TESTED
+    constexpr inline T sign(T _x) noexcept // TESTED
     {
         return _x < static_cast<T>(0) ? static_cast<T>(-1)
             : (_x > static_cast<T>(0) ? static_cast<T>(1) : static_cast<T>(0));
@@ -176,15 +180,15 @@ namespace ei {
     /// \details This function should be faster than sign().
     /// \returns -1 (_x <= -0) or 1 (_x >= 0)
     template<typename T>
-    inline T sgn(T _x) noexcept // TESTED
+    constexpr inline T sgn(T _x) noexcept // TESTED
     {
         return _x < static_cast<T>(0) ? static_cast<T>(-1) : static_cast<T>(1);
     }
-    inline float sgn(float _x) noexcept // TESTED
+    constexpr inline float sgn(float _x) noexcept // TESTED
     {
         return details::hard_cast<uint32>(_x) & 0x80000000 ? -1.0f : 1.0f;
     }
-    inline double sgn(double _x) noexcept // TESTED
+    constexpr inline double sgn(double _x) noexcept // TESTED
     {
         return details::hard_cast<uint64>(_x) & 0x8000000000000000ull ? -1.0 : 1.0;
     }
@@ -193,15 +197,15 @@ namespace ei {
     /// \brief Get 0 for (_x <= -0) or 1 for (_x >= 0).
     /// \returns 0 (_x <= -0) or 1 (_x >= 0)
     template<typename T>
-    inline int heaviside(T _x) noexcept
+    constexpr inline int heaviside(T _x) noexcept
     {
         return _x < static_cast<T>(0) ? 0 : 1;
     }
-    inline int heaviside(float _x) noexcept // TESTED
+    constexpr inline int heaviside(float _x) noexcept // TESTED
     {
         return details::hard_cast<uint32>(_x) & 0x80000000 ? 0 : 1;
     }
-    inline int heaviside(double _x) noexcept // TESTED
+    constexpr inline int heaviside(double _x) noexcept // TESTED
     {
         return details::hard_cast<uint64>(_x) & 0x8000000000000000ull ? 0 : 1;
     }
@@ -219,7 +223,7 @@ namespace ei {
     ///    between two elements. The default value is 1e-6.
     /// \returns true if the difference is less or equal than _epsilon.
     template<typename T, class = std::enable_if_t<!std::is_base_of<details::NonScalarType, T>::value>>
-    inline bool approx(T _x0, T _x1, T _epsilon = T(1e-6)) noexcept // TESTED
+    constexpr inline bool approx(T _x0, T _x1, T _epsilon = T(1e-6)) noexcept // TESTED
     {
         // Use an offset of 1.0 for comparisons to zero.
         T sum = max(abs(_x0) + abs(_x1), static_cast<T>(1.0));
@@ -229,7 +233,7 @@ namespace ei {
     // ********************************************************************* //
     /// \brief Round value towards negative infinity.
     template<typename T, class = std::enable_if_t<!std::is_base_of<details::NonScalarType, T>::value>>
-    inline Sint<sizeof(T)> floor(T _x) noexcept
+    constexpr inline Sint<sizeof(T)> floor(T _x) noexcept
     {
         Sint<sizeof(T)> r = static_cast<Sint<sizeof(T)>>(_x);
         return r - static_cast<Sint<sizeof(T)>>((_x<static_cast<T>(0)) && (_x-r!=static_cast<T>(0)));
@@ -238,7 +242,7 @@ namespace ei {
     // ********************************************************************* //
     /// \brief Round value towards positive infinity.
     template<typename T, class = std::enable_if_t<!std::is_base_of<details::NonScalarType, T>::value>>
-    inline Sint<sizeof(T)> ceil(T _x) noexcept
+    constexpr inline Sint<sizeof(T)> ceil(T _x) noexcept
     {
         Sint<sizeof(T)> r = static_cast<Sint<sizeof(T)>>(_x);
         return r + static_cast<Sint<sizeof(T)>>((_x>static_cast<T>(0)) && (_x-r!=static_cast<T>(0)));
@@ -248,7 +252,7 @@ namespace ei {
     // ********************************************************************* //
     /// \brief Round value towards next integral number (0.5 rounds to even).
     template<typename T, class = std::enable_if_t<!std::is_base_of<details::NonScalarType, T>::value>>
-    inline Sint<sizeof(T)> round(T _x) noexcept
+    constexpr inline Sint<sizeof(T)> round(T _x) noexcept
     {
         // Round up
         //return floor(_x + static_cast<T>(0.5));
@@ -267,7 +271,7 @@ namespace ei {
     /// \brief Get the fraction in (-1,1) with f-int(f).
     /// \param _x [in] The number to be splitted.
     template<typename T>
-    inline T frac(T _x) noexcept // TESTED
+    constexpr inline T frac(T _x) noexcept // TESTED
     {
         return _x - static_cast<Sint<sizeof(T)>>(_x);
     }
@@ -278,7 +282,7 @@ namespace ei {
     /// \param _int [out] The integer part of the number.
     /// \returns The fraction of the number in (-1,1).
     template<typename T>
-    inline T intfrac(T _x, Sint<sizeof(T)>& _int) noexcept // TESTED
+    constexpr inline T intfrac(T _x, Sint<sizeof(T)>& _int) noexcept // TESTED
     {
         _int = static_cast<Sint<sizeof(T)>>(_x);
         return _x - _int;
@@ -292,7 +296,7 @@ namespace ei {
     /// \param _int [out] The integer part of the number.
     /// \returns The fraction of the number in [0,1).
     template<typename T>
-    inline T floorfrac(T _x, Sint<sizeof(T)>& _int) noexcept // TESTED
+    constexpr inline T floorfrac(T _x, Sint<sizeof(T)>& _int) noexcept // TESTED
     {
         _int = floor(_x);
         return _x - _int;
@@ -302,7 +306,7 @@ namespace ei {
     /// \brief Get the smallest positive number m such that x=y*c+m with c in Z.
     /// \returns The mathematically defined positive modulus.
     template<typename T>
-    inline T mod(T _x, T _y) noexcept // TESTED
+    constexpr inline T mod(T _x, T _y) noexcept // TESTED
     {
         eiAssert(_y != 0.0f, "Modulo 0 is not defined!");
         T m = fmod(_x, _y);
@@ -311,28 +315,28 @@ namespace ei {
 
     // Pure integer specializations
     template<>
-    inline int8 mod<int8>(int8 _x, int8 _y) noexcept
+    constexpr inline int8 mod<int8>(int8 _x, int8 _y) noexcept
     {
         eiAssert(_y != 0, "Modulo 0 is not defined!");
         int8 m = _x % _y;
         return m < 0 ? m+abs(_y) : m;
     }
     template<>
-    inline int16 mod<int16>(int16 _x, int16 _y) noexcept
+    constexpr inline int16 mod<int16>(int16 _x, int16 _y) noexcept
     {
         eiAssert(_y != 0, "Modulo 0 is not defined!");
         int16 m = _x % _y;
         return m < 0 ? m+abs(_y) : m;
     }
     template<>
-    inline int32 mod<int32>(int32 _x, int32 _y) noexcept
+    constexpr inline int32 mod<int32>(int32 _x, int32 _y) noexcept
     {
         eiAssert(_y != 0, "Modulo 0 is not defined!");
         int32 m = _x % _y;
         return m < 0 ? m+abs(_y) : m;
     }
     template<>
-    inline int64 mod<int64>(int64 _x, int64 _y) noexcept
+    constexpr inline int64 mod<int64>(int64 _x, int64 _y) noexcept
     {
         eiAssert(_y != 0, "Modulo 0 is not defined!");
         int64 m = _x % _y;
@@ -340,13 +344,13 @@ namespace ei {
     }
 
     template<>
-    inline uint8 mod<uint8>(uint8 _x, uint8 _y) noexcept { return _x % _y; }
+    constexpr inline uint8 mod<uint8>(uint8 _x, uint8 _y) noexcept { return _x % _y; }
     template<>
-    inline uint16 mod<uint16>(uint16 _x, uint16 _y) noexcept { return _x % _y; }
+    constexpr inline uint16 mod<uint16>(uint16 _x, uint16 _y) noexcept { return _x % _y; }
     template<>
-    inline uint32 mod<uint32>(uint32 _x, uint32 _y) noexcept { return _x % _y; }
+    constexpr inline uint32 mod<uint32>(uint32 _x, uint32 _y) noexcept { return _x % _y; }
     template<>
-    inline uint64 mod<uint64>(uint64 _x, uint64 _y) noexcept { return _x % _y; }
+    constexpr inline uint64 mod<uint64>(uint64 _x, uint64 _y) noexcept { return _x % _y; }
 
     // ********************************************************************* //
     /// \brief Compute floor(log2), i.e. the position of the most significant bit.
@@ -374,7 +378,7 @@ namespace ei {
     /// \param _t [in] Interpolation parameter. Can be scalar or vector.
     /// \returns x + (y - x) * t where the type is derived from the operands.
     template<typename T0, typename T1>
-    inline auto lerp(T0 _x0, T0 _x1, T1 _t) noexcept -> decltype(_x0*_t) // TESTED
+    constexpr inline auto lerp(T0 _x0, T0 _x1, T1 _t) noexcept -> decltype(_x0*_t) // TESTED
     {
         return _x0 + (_x1 - _x0) * _t;
     }
@@ -393,9 +397,9 @@ namespace ei {
     /// \param _t1 [in] Scalar interpolation parameter ("y-direction").
     /// \returns lerp(lerp(_x00, _x01, _t0), lerp(_x10, _x11, _t0), _t1).
     template<typename T0, typename T1>
-    inline auto bilerp(T0 _x00, T0 _x01,
-                       T0 _x10, T0 _x11,
-                       T1 _t0, T1 _t1) noexcept -> decltype(_x00*_t0) // TESTED
+    constexpr inline auto bilerp(T0 _x00, T0 _x01,
+                                 T0 _x10, T0 _x11,
+                                 T1 _t0, T1 _t1) noexcept -> decltype(_x00*_t0) // TESTED
     {
         return lerp(lerp(_x00, _x01, _t0),
                     lerp(_x10, _x11, _t0), _t1);
@@ -406,7 +410,7 @@ namespace ei {
     /// \param _t [in] The value to be inserted into the polynomial. The useful
     ///    definition interval is in [0,1].
     template<typename T>
-    inline T smoothstep(T _t) noexcept
+    constexpr inline T smoothstep(T _t) noexcept
     {
         return _t * _t * (T(3) - T(2) * _t);
     }
@@ -416,7 +420,7 @@ namespace ei {
     /// \param _t [in] The value to be inserted into the polynomial. The useful
     ///    definition interval is in [0,1].
     template<typename T>
-    inline T smootherstep(T _t) noexcept
+    constexpr inline T smootherstep(T _t) noexcept
     {
         return _t * _t * _t * (_t * (_t * T(6) - T(15)) + T(10));
     }
@@ -498,7 +502,7 @@ namespace ei {
 
     /// \brif Helper method to solve ax^2 + bx + c (numerically more stable than naive method).
     /// \returns Solutions x1 >= x2 (x2 is always the greater of the two results).
-    inline bool solveSquarePoly(float a, float b, float c, float& x1, float& x2)
+    constexpr inline bool solveSquarePoly(float a, float b, float c, float& x1, float& x2)
     {
         float discriminant = b*b - 4.0f*a*c;
         if(discriminant < 0.0f) return false;

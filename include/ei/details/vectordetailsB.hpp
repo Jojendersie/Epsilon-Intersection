@@ -1,27 +1,4 @@
 namespace ei { namespace details {
-    // ********************************************************************* //
-    // Matrix constants
-    static const ei::Matrix<float,2,2> MAT2X2_IDENTITY =
-        ei::Mat2x2(1.0f, 0.0f,
-            0.0f, 1.0f);
-
-    static const ei::Matrix<float,3,3> MAT3X3_IDENTITY =
-        ei::Mat3x3(1.0f, 0.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 0.0f, 1.0f);
-
-    static const ei::Matrix<float,4,4> MAT4X4_IDENTITY =
-        ei::Mat4x4(1.0f, 0.0f, 0.0f, 0.0f,
-            0.0f, 1.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 1.0f, 0.0f,
-            0.0f, 0.0f, 0.0f, 1.0f);
-
-    // Quaternion constants
-    static const ei::TQuaternion<float> QUATERNION_IDENTITY =
-        ei::TQuaternion<float>(0.0f, 0.0f, 0.0f, 1.0f);
-    static const ei::TQuaternion<double> QUATERNIOND_IDENTITY =
-        ei::TQuaternion<double>(0.0, 0.0, 0.0, 1.0);
-
     // Recursive helper for orthonormalization
     // Recursion end
     template<typename TVec0>

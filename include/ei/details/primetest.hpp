@@ -7,7 +7,7 @@ namespace ei { namespace details {
     // Main contribution: all primes are in the form of 6k+-1 -> only test those numbers.
     // https://www.quora.com/Is-every-prime-number-other-than-2-and-3-of-the-form-6k%C2%B11
     template<typename T>
-    inline bool isPrime_DivisorBasedTest(T _n)
+    constexpr inline bool isPrime_DivisorBasedTest(T _n)
     {
         eiAssertWeak(_n >= 4, "Wrong input for the reduced prime test");
         if(_n % 2 == 0 || _n % 3 == 0) return false;
@@ -31,7 +31,7 @@ namespace ei { namespace details {
     // for 32 bit integers.
     // Source: https://de.wikipedia.org/wiki/Miller-Rabin-Test
     // _n must be odd and 1 < _a < _n-1
-    inline bool millerRabinTest(const uint32 _n, const uint32 _a)
+    constexpr inline bool millerRabinTest(const uint32 _n, const uint32 _a)
     {
         const uint32 n1 = _n - 1;
         uint32 d = n1 >> 1;
@@ -57,7 +57,7 @@ namespace ei { namespace details {
     }
 
     // Deterministic Miller-Rabin test for 32 bit integers
-    inline bool isPrime_MRTest(uint32 _n)
+    constexpr inline bool isPrime_MRTest(uint32 _n)
     {
         if(_n % 2 == 0 || _n % 3 == 0) return false;
         // _n must be larger than 61 for correctness. The current value is chosen
