@@ -50,5 +50,35 @@ bool test_conversions()
         TEST(pack1 == packRGB9E5(rgb1), "Conversion RGB9E5->Vec3->RGB9E5 not reciprocal.");
     }
 
+    { // Octahedral
+        Vec3 v0 = normalize(Vec3{ 1.0f, 0.0f, 0.0f });
+        Vec3 v1 = normalize(Vec3{ 0.0f, 1.0f, 0.0f });
+        Vec3 v2 = normalize(Vec3{ 0.0f, 0.0f, 1.0f });
+        Vec3 v3 = normalize(Vec3{ -1.0f, 0.0f, 0.0f });
+        Vec3 v4 = normalize(Vec3{ 0.0f, -1.0f, 0.0f });
+        Vec3 v5 = normalize(Vec3{ 0.0f, 0.0f, -1.0f });
+        Vec3 v6 = normalize(Vec3{ 1.0f, 1.0f, 1.0f });
+        Vec3 v7 = normalize(Vec3{ -1.0f, -1.0f, -1.0f });
+        Vec3 v8 = normalize(Vec3{ 0.5f, 0.7f, -0.4f });
+        uint32 oct0 = packOctahedral32(v0);
+        uint32 oct1 = packOctahedral32(v1);
+        uint32 oct2 = packOctahedral32(v2);
+        uint32 oct3 = packOctahedral32(v3);
+        uint32 oct4 = packOctahedral32(v4);
+        uint32 oct5 = packOctahedral32(v5);
+        uint32 oct6 = packOctahedral32(v6);
+        uint32 oct7 = packOctahedral32(v7);
+        uint32 oct8 = packOctahedral32(v8);
+        TEST(approx(v0, unpackOctahedral32(oct0)), "Octahedral packing of v0 invalid.");
+        TEST(approx(v1, unpackOctahedral32(oct1)), "Octahedral packing of v1 invalid.");
+        TEST(approx(v2, unpackOctahedral32(oct2)), "Octahedral packing of v2 invalid.");
+        TEST(approx(v3, unpackOctahedral32(oct3)), "Octahedral packing of v3 invalid.");
+        TEST(approx(v4, unpackOctahedral32(oct4)), "Octahedral packing of v4 invalid.");
+        TEST(approx(v5, unpackOctahedral32(oct5)), "Octahedral packing of v5 invalid.");
+        TEST(approx(v6, unpackOctahedral32(oct6), 1e-4f), "Octahedral packing of v6 invalid.");
+        TEST(approx(v7, unpackOctahedral32(oct7), 1e-4f), "Octahedral packing of v7 invalid.");
+        TEST(approx(v8, unpackOctahedral32(oct8), 1e-4f), "Octahedral packing of v8 invalid.");
+    }
+
     return result;
 }

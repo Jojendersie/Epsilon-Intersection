@@ -7,7 +7,7 @@
 namespace ei {
 
     // Conversion of sRGB to linear RGB (single component)
-    inline float sRgbToRgb(float _c)
+    inline float sRgbToRgb(float _c)  // TESTED
     {
         if(_c <= 0.0031308f)
             return _c * 12.92f;
@@ -21,13 +21,13 @@ namespace ei {
     }
 
     // Conversion of sRGB to linear RGB
-    inline Vec3 sRgbToRgb(const Vec3 & _sRgb)
+    inline Vec3 sRgbToRgb(const Vec3 & _sRgb)  // TESTED
     {
         return Vec3{sRgbToRgb(_sRgb.r), sRgbToRgb(_sRgb.g), sRgbToRgb(_sRgb.b)};
     }
 
     // Conversion of linear RGB to sRGB (single component)
-    inline float rgbToSRgb(float _c)
+    inline float rgbToSRgb(float _c)  // TESTED
     {
         if(_c <= 0.04045f)
             return _c / 12.92f;
@@ -41,7 +41,7 @@ namespace ei {
     }
 
     // Conversion of linear RGB to sRGB
-    inline Vec3 rgbToSRgb(const Vec3 & _rgb)
+    inline Vec3 rgbToSRgb(const Vec3 & _rgb)  // TESTED
     {
         return Vec3{rgbToSRgb(_rgb.r), rgbToSRgb(_rgb.g), rgbToSRgb(_rgb.b)};
     }
@@ -49,7 +49,7 @@ namespace ei {
 
     // Conversion of CIE XYZ to linear RGB
     // http://brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
-    inline Vec3 xyzToRgb(const Vec3 & _xyz)
+    inline Vec3 xyzToRgb(const Vec3 & _xyz)  // TESTED
     {
         constexpr Mat3x3 XYZ_TO_RGB {
              3.2404542f, -1.5371385f, -0.4985314f,
@@ -60,7 +60,7 @@ namespace ei {
     }
 
     // Conversion of linear RGB to CIE XYZ
-    inline Vec3 rgbToXyz(const Vec3 & _rgb)
+    inline Vec3 rgbToXyz(const Vec3 & _rgb)  // TESTED
     {
         constexpr Mat3x3 RGB_TO_XYZ {
             0.4124564f, 0.3575761f, 0.1804375f,
@@ -92,7 +92,7 @@ namespace ei {
     // Discretize a [0,1]^3 vector into a single integer with 11.11.10 bits
     // for the components.
     // Note: This is not the R11G11B10F (float) format from textures!
-    inline uint32 packR11G11B10(Vec3 _v)
+    inline uint32 packR11G11B10(Vec3 _v)  // TESTED
     {
         eiAssertWeak(all(greatereq(_v, 0.0f)) && all(lesseq(_v, 1.0f)), "Unclamped color cannot be converted into R11G11B10 format!");
         _v *= Vec3{2047.0, 2047.0, 1023.0};
@@ -101,7 +101,7 @@ namespace ei {
 
     // Unpack a 11.11.10 bit descretized vector into a full Vec3
     // Note: This is not the R11G11B10F (float) format from textures!
-    inline Vec3 unpackR11G11B10(uint32 _code)
+    inline Vec3 unpackR11G11B10(uint32 _code)  // TESTED
     {
         return Vec3 {
             float(_code >> 21) / 2047.0,
@@ -176,7 +176,7 @@ namespace ei {
     }
 
     // Pack a direction vector into a 32 bit integer using octahedral mapping
-    inline uint32 packOctahedral32(const Vec3 & _d)
+    inline uint32 packOctahedral32(const Vec3 & _d)  // TESTED
     {
         eiAssertWeak(approx(len(_d), 1.0f), "Can only pack direction vectors using octahedral mapping");
         float l1norm = abs(_d.x) + abs(_d.y) + abs(_d.z);
@@ -185,20 +185,20 @@ namespace ei {
             u = _d.x / l1norm;
             v = _d.y / l1norm;
         } else { // warp lower hemisphere
-            u = (1 - _d.y / l1norm) * (_d.x >= 0 ? 1 : -1);
-            v = (1 - _d.x / l1norm) * (_d.y >= 0 ? 1 : -1);
+            u = (1 - abs(_d.y) / l1norm) * (_d.x >= 0 ? 1 : -1);
+            v = (1 - abs(_d.x) / l1norm) * (_d.y >= 0 ? 1 : -1);
         }
-        return floor((u / 2.0f + 0.5f) * 65535.49f + 0.5f)
-            | (floor((v / 2.0f + 0.5f) * 65535.49f + 0.5f) << 16);
+        return uint16(floor(u * 32767.0f + 0.5f))
+            | (uint32(floor(v * 32767.0f + 0.5f)) << 16);
     }
 
     // Unpack a direction vector from octahedral mapping
-    inline Vec3 unpackOctahedral32(uint32 _code)
+    inline Vec3 unpackOctahedral32(uint32 _code)  // TESTED
     {
-        float u = (_code & 0xff) / 65535.0f;
-        float v = (_code >> 16) / 65535.0f;
-        u = u * 2 - 1;
-        v = v * 2 - 1;
+        float u = int16(_code & 0xffff) / 32767.0f;
+        float v = int16(_code >> 16) / 32767.0f;
+        //u = u * 2 - 1;
+        //v = v * 2 - 1;
         float x, y, z = 1 - abs(u) - abs(v);
         if(z >= 0) {
             x = u;
