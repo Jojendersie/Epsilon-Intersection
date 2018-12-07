@@ -33,6 +33,10 @@ namespace ei {
     typedef Matrix<float, 2, 2> Mat2x2;
     /// \brief 3x3 matrix of type float.
     typedef Matrix<float, 3, 3> Mat3x3;
+    /// \brief 3x4 (3 rows) matrix of type float.
+    typedef Matrix<float, 3, 4> Mat3x4;
+    /// \brief 4x3 (3 columns) matrix of type float.
+    typedef Matrix<float, 4, 3> Mat4x3;
     /// \brief 4x4 matrix of type float.
     typedef Matrix<float, 4, 4> Mat4x4;
 
