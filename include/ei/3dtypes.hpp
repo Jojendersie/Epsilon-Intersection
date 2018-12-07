@@ -1188,6 +1188,24 @@ namespace ei {
             _box.halfSides, _box.orientation * _rotation);
     }
 
+    inline Box transform(const Box& _box, const Mat3x3& _rotation)
+    {
+        // See Box::Box(OBox) for details
+        const Vec3 halfSides = (_box.max - _box.min) * 0.5f;
+        const Vec3 newHalfSides = abs(_rotation) * halfSides;
+        const Vec3 newCenter = _rotation * (_box.min + halfSides);
+        return Box(newCenter - newHalfSides, newCenter + newHalfSides);
+    }
+
+    inline Box transform(const Box& _box, const Mat3x4& _rotation)
+    {
+        // See Box::Box(OBox) for details
+        const Vec3 halfSides = (_box.max - _box.min) * 0.5f;
+        const Vec3 newHalfSides = abs(Mat3x3(_rotation)) * halfSides;
+        const Vec3 newCenter = _rotation * Vec4(_box.min + halfSides, 1.0f);
+        return Box(newCenter - newHalfSides, newCenter + newHalfSides);
+    }
+
     // ************************************************************************* //
     // CENTROID METHODS                                                          //
     // ************************************************************************* //
