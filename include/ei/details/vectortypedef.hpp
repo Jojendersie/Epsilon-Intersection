@@ -22,17 +22,14 @@ namespace ei {
     /// \brief 4D column-vector of type float.
     typedef Matrix<float, 4, 1> Vec4;
 
-    /// \brief 2D row-vector of type float.
-    typedef Matrix<float, 1, 2> RVec2;
-    /// \brief 3D row-vector of type float.
-    typedef Matrix<float, 1, 3> RVec3;
-    /// \brief 4D row-vector of type float.
-    typedef Matrix<float, 1, 4> RVec4;
-
     /// \brief 2x2 matrix of type float.
     typedef Matrix<float, 2, 2> Mat2x2;
     /// \brief 3x3 matrix of type float.
     typedef Matrix<float, 3, 3> Mat3x3;
+    /// \brief 3x4 (3 rows) matrix of type float.
+    typedef Matrix<float, 3, 4> Mat3x4;
+    /// \brief 4x3 (3 columns) matrix of type float.
+    typedef Matrix<float, 4, 3> Mat4x3;
     /// \brief 4x4 matrix of type float.
     typedef Matrix<float, 4, 4> Mat4x4;
 
@@ -46,17 +43,14 @@ namespace ei {
     /// \brief 4D column-vector of type double.
     typedef Matrix<double, 4, 1> DVec4;
 
-    /// \brief 2D row-vector of type double.
-    typedef Matrix<double, 1, 2> DRVec2;
-    /// \brief 3D row-vector of type double.
-    typedef Matrix<double, 1, 3> DRVec3;
-    /// \brief 4D row-vector of type double.
-    typedef Matrix<double, 1, 4> DRVec4;
-
     /// \brief 2x2 matrix of type double.
     typedef Matrix<double, 2, 2> DMat2x2;
     /// \brief 3x3 matrix of type double.
     typedef Matrix<double, 3, 3> DMat3x3;
+    /// \brief 3x4 (3 rows) matrix of type float.
+    typedef Matrix<double, 3, 4> DMat3x4;
+    /// \brief 4x3 (3 columns) matrix of type float.
+    typedef Matrix<double, 4, 3> DMat4x3;
     /// \brief 4x4 matrix of type double.
     typedef Matrix<double, 4, 4> DMat4x4;
 
@@ -69,13 +63,6 @@ namespace ei {
     typedef Matrix<int32, 3, 1> IVec3;
     /// \brief 4D column-vector of type int32.
     typedef Matrix<int32, 4, 1> IVec4;
-
-    /// \brief 2D row-vector of type int32.
-    typedef Matrix<int32, 1, 2> IRVec2;
-    /// \brief 3D row-vector of type int32.
-    typedef Matrix<int32, 1, 3> IRVec3;
-    /// \brief 4D row-vector of type int32.
-    typedef Matrix<int32, 1, 4> IRVec4;
 
     /// \brief 2x2 matrix of type int32.
     typedef Matrix<int32, 2, 2> IMat2x2;
@@ -93,13 +80,6 @@ namespace ei {
     typedef Matrix<uint32, 3, 1> UVec3;
     /// \brief 4D column-vector of type uint32.
     typedef Matrix<uint32, 4, 1> UVec4;
-
-    /// \brief 2D row-vector of type uint32.
-    typedef Matrix<uint32, 1, 2> URVec2;
-    /// \brief 3D row-vector of type uint32.
-    typedef Matrix<uint32, 1, 3> URVec3;
-    /// \brief 4D row-vector of type uint32.
-    typedef Matrix<uint32, 1, 4> URVec4;
 
     /// \brief 2x2 matrix of type uint32.
     typedef Matrix<uint32, 2, 2> UMat2x2;

@@ -1020,30 +1020,6 @@ namespace ei {
         return result;
     }
 
-    template<typename T>
-    constexpr TQuaternion<T> slerp(const TQuaternion<T>& _q0, const TQuaternion<T>& _q1, T _t) noexcept // TESTED
-    {
-        // TODO: handness?
-        // http://en.wikipedia.org/wiki/Slerp
-        T theta = acos( clamp(dot(_q0,_q1), T(-1), T(1)) );
-        T so = sin( theta );
-        if(approx(so, T(0)))
-        {
-            // Converges towards linear interpolation for small so
-            return TQuaternion<T>(_q0.i + (_q1.i - _q0.i) * _t,
-                                  _q0.j + (_q1.j - _q0.j) * _t,
-                                  _q0.k + (_q1.k - _q0.k) * _t,
-                                  _q0.r + (_q1.r - _q0.r) * _t);
-        }
-        T f0 = sin( theta * (1.0f-_t) ) / so;
-        T f1 = sin( theta * _t ) / so;
-        return TQuaternion<T>(_q0.i * f0 + _q1.i * f1,
-                              _q0.j * f0 + _q1.j * f1,
-                              _q0.k * f0 + _q1.k * f1,
-                              _q0.r * f0 + _q1.r * f1);
-    }
-
-
     // ********************************************************************* //
     /// \brief Test if at least one element of the matrix is true.
     /// \return false, if all elements off the matrix are false.
@@ -1202,11 +1178,11 @@ namespace ei {
     /// \return The N-1 spherical angles and the length of the vector.
     ///     (r, φ1, φ02, ..., φN-1) where
     ///     φ1, ..., φN-2 ∈ [0,π) and φN-1 ∈ [0,2π)
-    template<typename T, unsigned N>
-    constexpr inline Vec<T,N> sphericalCoords( const Vec<T,N>& _v0 ) noexcept // TESTED
+    template<typename T, unsigned M, unsigned N, ENABLE_IF((M==1) || (N==1))>
+    constexpr inline Matrix<T,M,N> sphericalCoords( const Matrix<T,M,N>& _v0 ) noexcept // TESTED
     {
-        static_assert(N >= 2, "In 1D cartesian and spherical coordinates are the same!");
-        Vec<T,N> result;
+        static_assert(N*M >= 2, "In 1D cartesian and spherical coordinates are the same!");
+        Matrix<T,M,N> result;
         // Accumulate the squared length over the iterations
         result[0] = sq(_v0[N-1]) + sq(_v0[N-2]);
         result[N-1] = atan2(_v0[N-1], _v0[N-2]);
@@ -1221,21 +1197,15 @@ namespace ei {
         return result;
     }
 
-    template<typename T, unsigned N>
-    inline RVec<T,N> sphericalCoords( const RVec<T,N>& _v0 ) noexcept // TESTED
-    {
-        return *reinterpret_cast<RVec<T,N>*>(&sphericalCoords(*reinterpret_cast<Vec<T,N>*>(&_v0)));
-    }
-
     // ********************************************************************* //
     /// \brief Convert a vector from spherical coordinates (r, φ1, φ02, ..., φN-1)
     ///     to regular Cartesian coordinates.
     /// \return The regular Cartesian vector.
-    template<typename T, unsigned N>
-    constexpr inline Vec<T,N> cartesianCoords( const Vec<T,N>& _v0 ) noexcept // TESTED
+    template<typename T, unsigned M, unsigned N, ENABLE_IF((M==1) || (N==1))>
+    constexpr inline Matrix<T,M,N> cartesianCoords( const Matrix<T,M,N>& _v0 ) noexcept // TESTED
     {
         eiAssertWeak(_v0[0] > 0.0f, "Expected the length to be greater 0!");
-        Vec<T,N> result;
+        Matrix<T,M,N> result;
         float tmp = _v0[0];
         for(uint i = 0; i < N-1; ++i)
         {
@@ -1246,18 +1216,12 @@ namespace ei {
         return result;
     }
 
-    template<typename T, unsigned N>
-    constexpr inline RVec<T,N> cartesianCoords( const RVec<T,N>& _v0 ) noexcept // TESTED
-    {
-        return *reinterpret_cast<RVec<T,N>*>(&cartesianCoords(*reinterpret_cast<Vec<T,N>*>(&_v0)));
-    }
-
     // ********************************************************************* //
     /// \brief Apply transformations in homogeneous space. This includes a
     ///     division by w after the transformation
     template<typename T, unsigned N>
-    constexpr inline Matrix<T,N,1> transformDiv( const Matrix<T, N, 1>& _what,
-                                                 const Matrix<T, N+1, N+1>& _space ) noexcept
+    constexpr inline Vec<T,N> transformDiv( const Vec<T, N>& _what,
+                                            const Matrix<T, N+1, N+1>& _space ) noexcept
     {
         T t[N+1];
         // Multiply Matrix * Vector(_what,1)
@@ -1270,39 +1234,19 @@ namespace ei {
                 t[y] += _space(y,x) * _what[x];
         }
         // Create a reduced vector with divided components
-        Matrix<T,N,1> result;
-        for(uint i = 0; i < N; ++i)
-            result[i] = t[i] / t[N];
-        return result;
-    }
-    template<typename T, unsigned N>
-    constexpr inline Matrix<T,1,N> transformDiv( const Matrix<T, 1, N>& _what,
-                                                 const Matrix<T, N+1, N+1>& _space ) noexcept
-    {
-        T t[N+1];
-        // Multiply Vector(_what,1) * Matrix
-        for(uint x = 0; x <= N; ++x)
-        {
-            // Initialize with the last component * 1
-            t[x] = _space(N, x);
-            // Add the other N factors
-            for(uint y = 0; y < N; ++y)
-                t[x] += _what[y] * _space(y,x);
-        }
-        // Create a reduced vector with divided components
-        Matrix<T,1,N> result;
+        Vec<T,N> result;
         for(uint i = 0; i < N; ++i)
             result[i] = t[i] / t[N];
         return result;
     }
 
-    /// \brief Apply transformations in 3x4/4x3 space (rotation + translation).
+    /// \brief Apply transformations in 3x4/4x4 space (rotation + translation).
     ///     This does NOT include a division by w.
     template<typename T, unsigned N>
-    constexpr inline Matrix<T,N,1> transform( const Matrix<T, N, 1>& _what,
-                                              const Matrix<T, N+1, N+1>& _space ) noexcept // TESTED
+    constexpr inline Vec<T,N> transform( const Vec<T, N>& _what,
+                                         const Matrix<T, N+1, N+1>& _space ) noexcept // TESTED
     {
-        Matrix<T,N,1> result;
+        Vec<T,N> result;
         // Multiply Matrix * Vector(_what,1)
         for(uint y = 0; y < N; ++y)
         {
@@ -1314,19 +1258,20 @@ namespace ei {
         }
         return result;
     }
+
     template<typename T, unsigned N>
-    constexpr inline Matrix<T,1,N> transform( const Matrix<T, 1, N>& _what,
-                                              const Matrix<T, N+1, N+1>& _space ) noexcept
+    constexpr inline Vec<T,N> transform( const Vec<T, N>& _what,
+                                         const Matrix<T, N, N+1>& _space ) noexcept // TESTED
     {
-        Matrix<T,1,N> result;
-        // Multiply Vector(_what,1) * Matrix
-        for(uint x = 0; x < N; ++x)
+        Vec<T,N> result;
+        // Multiply Matrix * Vector(_what,1)
+        for(uint y = 0; y < N; ++y)
         {
             // Initialize with the last component * 1
-            result[x] = _space(N, x);
+            result[y] = _space(y, N);
             // Add the other N factors
-            for(uint y = 0; y < N; ++y)
-                result[x] += _what[y] * _space(y,x);
+            for(uint x = 0; x < N; ++x)
+                result[y] += _space(y,x) * _what[x];
         }
         return result;
     }
@@ -1337,10 +1282,10 @@ namespace ei {
     ///     is no normalization involved and the direction might be scaled by
     ///     the matrix.
     template<typename T, unsigned N>
-    constexpr inline Matrix<T,N,1> transformDir( const Matrix<T, N, 1>& _what,
-                                                 const Matrix<T, N+1, N+1>& _space ) noexcept // TESTED
+    constexpr inline Vec<T,N> transformDir( const Vec<T, N>& _what,
+                                            const Matrix<T, N+1, N+1>& _space ) noexcept // TESTED
     {
-        Matrix<T,N,1> result;
+        Vec<T,N> result;
         // Multiply Matrix * Vector(_what,0)
         for(uint y = 0; y < N; ++y)
         {
@@ -1352,52 +1297,30 @@ namespace ei {
         }
         return result;
     }
+
     template<typename T, unsigned N>
-    constexpr inline Matrix<T,1,N> transformDir( const Matrix<T, 1, N>& _what,
-                                                 const Matrix<T, N+1, N+1>& _space ) noexcept
+    constexpr inline Vec<T,N> transformDir( const Vec<T, N>& _what,
+                                            const Matrix<T, N, N+1>& _space ) noexcept // TESTED
     {
-        Matrix<T,1,N> result;
-        // Multiply Vector(_what,0) * Matrix
-        for(uint x = 0; x < N; ++x)
+        Vec<T,N> result;
+        // Multiply Matrix * Vector(_what,0)
+        for(uint y = 0; y < N; ++y)
         {
             // Initialize with the first component
-            result[x] = _space(0,x) * _what[0];
+            result[y] = _space(y,0) * _what[0];
             // Add the other N-1 factors
-            for(uint y = 1; y < N; ++y)
-                result[x] += _what[y] * _space(y,x);
+            for(uint x = 1; x < N; ++x)
+                result[y] += _space(y,x) * _what[x];
         }
         return result;
     }
 
     /// \brief Apply transformations with a matrix multiplication.
     template<typename T, unsigned M>
-    constexpr inline Matrix<T,M,1> transform( const Matrix<T,M,1>& _what,
-                                              const Matrix<T,M,M>& _space ) noexcept
+    constexpr inline Vec<T,M> transform( const Vec<T,M>& _what,
+                                         const Matrix<T,M,M>& _space ) noexcept
     {
         return _space * _what;
-    }
-    template<typename T, unsigned N>
-    constexpr inline Matrix<T,1,N> transform( const Matrix<T,1,N>& _what,
-                                              const Matrix<T,N,N>& _space ) noexcept
-    {
-        return _what * _space;
-    }
-
-    /// \brief Apply a rotation by a quaternion (q v q-1 with v=(0, _v.x, _v.y, _v.z)).
-    template<typename T, unsigned M, unsigned N, ENABLE_IF((M==1) || (N==1))>
-    constexpr inline Matrix<T,M,N> transform( const Matrix<T,M,N>& _what, const TQuaternion<T>& _quaternion ) noexcept
-    {
-        T handness = _quaternion.r < T(0) ? T(-1) : T(1);
-        // http://physicsforgames.blogspot.de/2010/03/quaternion-tricks.html
-        T x1 = _quaternion.j*_what.z - _quaternion.k*_what.y;
-        T y1 = _quaternion.k*_what.x - _quaternion.i*_what.z;
-        T z1 = _quaternion.i*_what.y - _quaternion.j*_what.x;
-
-        return Matrix<T,M,N>(
-             _what.x + 2.0f * (_quaternion.r*x1 + _quaternion.j*z1 - _quaternion.k*y1),
-             _what.y + 2.0f * (_quaternion.r*y1 + _quaternion.k*x1 - _quaternion.i*z1),
-            (_what.z + 2.0f * (_quaternion.r*z1 + _quaternion.i*y1 - _quaternion.j*x1)) * handness
-            );
     }
 
     // ********************************************************************* //
@@ -1408,7 +1331,7 @@ namespace ei {
     ///    To transform a vector append 1 and multiply it from right:
     ///    translation() * VecX(v,1)
     template<typename T, unsigned N>
-    constexpr inline Matrix<T,N+1,N+1> translation( const Matrix<T, N, 1>& _vector ) noexcept
+    constexpr inline Matrix<T,N+1,N+1> translation( const Vec<T, N>& _vector ) noexcept
     {
         Matrix<T,N+1,N+1> result = identity<T,N+1>();
         for(uint i = 0; i < N; ++i)
@@ -1419,7 +1342,7 @@ namespace ei {
     // ********************************************************************* //
     /// \brief Create a scaling/diagonal matrix from vector.
     template<typename T, unsigned N>
-    constexpr inline Matrix<T,N,N> scaling( const Matrix<T, N, 1>& _scale ) noexcept
+    constexpr inline Matrix<T,N,N> scaling( const Vec<T, N>& _scale ) noexcept
     {
         Matrix<T,N,N> result(T(0));
         for(uint n = 0; n < N; ++n)
@@ -1467,9 +1390,9 @@ namespace ei {
     {
         return Vec2(-_vector.y, _vector.x);
     }
-    inline RVec2 perpendicular( const RVec2& _vector ) noexcept
+    constexpr inline Matrix<float, 1, 2> perpendicular( const Matrix<float, 1, 2>& _vector ) noexcept
     {
-        return RVec2(-_vector.y, _vector.x);
+        return Matrix<float, 1, 2>(-_vector.y, _vector.x);
     }
 
     constexpr inline Vec3 perpendicular( const Vec3& _vector ) noexcept
@@ -1478,11 +1401,12 @@ namespace ei {
             Vec3(-_vector.y, _vector.x, 0.0f) :
             Vec3(0.0f, -_vector.z, _vector.y);
     }
-    constexpr inline RVec3 perpendicular( const RVec3& _vector ) noexcept
+
+    constexpr inline Matrix<float, 1, 3> perpendicular( const Matrix<float, 1, 3>& _vector ) noexcept
     {
         return abs(_vector.z) < abs(_vector.x) ?
-            RVec3(-_vector.y, _vector.x, 0.0f) :
-            RVec3(0.0f, -_vector.z, _vector.y);
+            Matrix<float, 1, 3>(-_vector.y, _vector.x, 0.0f) :
+            Matrix<float, 1, 3>(0.0f, -_vector.z, _vector.y);
     }
 
     // ********************************************************************* //
@@ -1626,15 +1550,8 @@ namespace ei {
     /// \param [in] _incident A direction or position vector which should be
     ///     reflected.
     /// \param [in] _at The normal vector for the reflection plane (normalized!).
-    template<typename T, unsigned N>
-    constexpr inline Vec<T,N> reflect( const Vec<T,N>& _incident, const Vec<T,N>& _at ) noexcept
-    {
-        eiAssertWeak(approx(lensq(_at), 1.0f), "The reflection normal must be normalized!");
-        return _incident - (static_cast<T>(2) * dot(_incident, _at)) * _at;
-    }
-
-    template<typename T, unsigned N>
-    constexpr inline RVec<T,N> reflect( const RVec<T,N>& _incident, const RVec<T,N>& _at ) noexcept
+    template<typename T, unsigned M, unsigned N, ENABLE_IF((M==1) || (N==1))>
+    constexpr inline Matrix<T,M,N> reflect( const Matrix<T,M,N>& _incident, const Matrix<T,M,N>& _at ) noexcept
     {
         eiAssertWeak(approx(lensq(_at), 1.0f), "The reflection normal must be normalized!");
         return _incident - (static_cast<T>(2) * dot(_incident, _at)) * _at;
@@ -2017,8 +1934,8 @@ namespace ei {
         // which is then defined by the second block -> defer to later.
         bool deferQ0 = false;
         Mat3x3 B = _A - _lambda.x * identity3x3();
-        RVec3 canditate1 = cross(B(0), B(1));
-        RVec3 canditate2 = cross(B(0), B(2));
+        Matrix<float, 1, 3> canditate1 = cross(B(0), B(1));
+        Matrix<float, 1, 3> canditate2 = cross(B(0), B(2));
         float l1 = lensq(canditate1);
         float l2 = lensq(canditate2);
         if(l1 + l2 == 0.0f) deferQ0 = true;

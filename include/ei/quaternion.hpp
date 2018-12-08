@@ -430,10 +430,53 @@ namespace ei {
     }
 
     // ********************************************************************* //
+    /// \brief Spherical linear interpolation with constant angular speed
+    template<typename T>
+    constexpr TQuaternion<T> slerp(const TQuaternion<T>& _q0, const TQuaternion<T>& _q1, T _t) noexcept // TESTED
+    {
+        // TODO: handness?
+        // http://en.wikipedia.org/wiki/Slerp
+        T theta = acos( clamp(dot(_q0,_q1), T(-1), T(1)) );
+        T so = sin( theta );
+        if(approx(so, T(0)))
+        {
+            // Converges towards linear interpolation for small so
+            return TQuaternion<T>(_q0.i + (_q1.i - _q0.i) * _t,
+                                  _q0.j + (_q1.j - _q0.j) * _t,
+                                  _q0.k + (_q1.k - _q0.k) * _t,
+                                  _q0.r + (_q1.r - _q0.r) * _t);
+        }
+        T f0 = sin( theta * (1.0f-_t) ) / so;
+        T f1 = sin( theta * _t ) / so;
+        return TQuaternion<T>(_q0.i * f0 + _q1.i * f1,
+                              _q0.j * f0 + _q1.j * f1,
+                              _q0.k * f0 + _q1.k * f1,
+                              _q0.r * f0 + _q1.r * f1);
+    }
+
+    // ********************************************************************* //
     /// \brief Rotation matrix from quaternion.
     constexpr inline Mat3x3 rotation( const Quaternion& _quaternion ) noexcept
     {
         return Mat3x3(_quaternion);
+    }
+
+    // ********************************************************************* //
+    /// \brief Apply a rotation by a quaternion (q v q-1 with v=(0, _v.x, _v.y, _v.z)).
+    template<typename T, unsigned M, unsigned N, typename = std::enable_if_t<(M==1) || (N==1)>>
+    constexpr inline Matrix<T,M,N> transform( const Matrix<T,M,N>& _what, const TQuaternion<T>& _quaternion ) noexcept
+    {
+        T handness = _quaternion.r < T(0) ? T(-1) : T(1);
+        // http://physicsforgames.blogspot.de/2010/03/quaternion-tricks.html
+        T x1 = _quaternion.j*_what.z - _quaternion.k*_what.y;
+        T y1 = _quaternion.k*_what.x - _quaternion.i*_what.z;
+        T z1 = _quaternion.i*_what.y - _quaternion.j*_what.x;
+
+        return Matrix<T,M,N>(
+             _what.x + 2.0f * (_quaternion.r*x1 + _quaternion.j*z1 - _quaternion.k*y1),
+             _what.y + 2.0f * (_quaternion.r*y1 + _quaternion.k*x1 - _quaternion.i*z1),
+            (_what.z + 2.0f * (_quaternion.r*z1 + _quaternion.i*y1 - _quaternion.j*x1)) * handness
+            );
     }
 
 } // namespace ei

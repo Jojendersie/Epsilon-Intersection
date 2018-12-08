@@ -24,6 +24,8 @@ template UVec3;
 template UVec4;
 template Mat2x2;
 template Mat3x3;
+template Mat3x4;
+template Mat4x3;
 template Mat4x4;
 
 bool test_matrix()
@@ -59,10 +61,8 @@ bool test_matrix()
         IVec3 v5(-1);   // Used for the truncation tests
         Vec2 v6(v5);    // Truncate and type convert
         Vec3 v7(v2);
-        RVec3 v8(RVec2(1.0f, 0.5f));
         TEST( v6 == v2 , "Truncation operator wrong!" );
         TEST( v7 == Vec3(-1.0f, -1.0f, 1.0f), "Column vector extension failed!" );
-        TEST( v8 == RVec3(1.0f, 0.5f, 1.0f), "Row vector extension failed!" );
 
         Mat3x3 m0(0, 1, 2, 3, 4, 5, 6, 7, 8); // Used for more truncation tests
         Mat2x2 m1(m0);  // Truncate in both dimensions
@@ -102,23 +102,23 @@ bool test_matrix()
 
     // Test vector composition constructors for row vectors
     {
-        RVec2 v0(0.0f, 0.5f);
-        IRVec2 v1(1, 2);
-        RVec3 v2(0.0f, 0.5f, 2.0f);
-        RVec3 v3(0.5f, 1.0f, 2.0f);
-        IRVec4 v4(1, 2, 0, 0);
-        RVec4 v5(0.0f, 0.5f, 1.0f, 2.0f);
-        RVec4 v6(1.0f, 0.0f, 0.5f, 2.0f);
-        RVec4 v7(1.0f, 2.0f, 0.0f, 0.5f);
-        RVec4 v8(0.5f, 1.0f, 2.0f, 7.5f);
-        TEST( RVec3(v0, 2.0) == v2, "rvec2+scalar to rvec3 failed!" );
-        TEST( RVec3(0.5f, v1) == v3, "scalar+rvec2 to rvec3 failed!" );
-        TEST( IRVec4(v1, v0) == v4, "rvec2+rvec2 to rvec4 failed!" );
-        TEST( RVec4(v0, 1.0f, 2.0f) == v5, "rvec2+2*scalar to rvec4 failed!" );
-        TEST( RVec4(1.0f, v0, 2.0f) == v6, "scalar+rvec2+scalar to rvec4 failed!" );
-        TEST( RVec4(1.0f, 2.0f, v0) == v7, "2*scalar+rvec2 to rvec4 failed!" );
-        TEST( RVec4(1.0f, v2) == v6, "scalar+rvec3 to rvec4 failed!" );
-        TEST( RVec4(v3, 7.5f) == v8, "rvec2+scalar to rvec4 failed!" );
+        Matrix<float, 1, 2> v0(0.0f, 0.5f);
+        Matrix<int, 1, 2> v1(1, 2);
+        Matrix<float, 1, 3> v2(0.0f, 0.5f, 2.0f);
+        Matrix<float, 1, 3> v3(0.5f, 1.0f, 2.0f);
+        Matrix<int, 1, 4> v4(1, 2, 0, 0);
+        Matrix<float, 1, 4> v5(0.0f, 0.5f, 1.0f, 2.0f);
+        Matrix<float, 1, 4> v6(1.0f, 0.0f, 0.5f, 2.0f);
+        Matrix<float, 1, 4> v7(1.0f, 2.0f, 0.0f, 0.5f);
+        Matrix<float, 1, 4> v8(0.5f, 1.0f, 2.0f, 7.5f);
+        TEST( (Matrix<float, 1, 3>(v0, 2.0) == v2), "rvec2+scalar to rvec3 failed!" );
+        TEST( (Matrix<float, 1, 3>(0.5f, v1) == v3), "scalar+rvec2 to rvec3 failed!" );
+        TEST( (Matrix<int, 1, 4>(v1, v0) == v4), "rvec2+rvec2 to rvec4 failed!" );
+        TEST( (Matrix<float, 1, 4>(v0, 1.0f, 2.0f) == v5), "rvec2+2*scalar to rvec4 failed!" );
+        TEST( (Matrix<float, 1, 4>(1.0f, v0, 2.0f) == v6), "scalar+rvec2+scalar to rvec4 failed!" );
+        TEST( (Matrix<float, 1, 4>(1.0f, 2.0f, v0) == v7), "2*scalar+rvec2 to rvec4 failed!" );
+        TEST( (Matrix<float, 1, 4>(1.0f, v2) == v6), "scalar+rvec3 to rvec4 failed!" );
+        TEST( (Matrix<float, 1, 4>(v3, 7.5f) == v8), "rvec2+scalar to rvec4 failed!" );
     }
 
     // ********************************************************************* //
@@ -239,7 +239,7 @@ bool test_matrix()
         TEST( v0 * v1 == m0, "Column times row vector should be a matrix!" );
         TEST( v4 * v2 == m1, "Column times row vector should be a matrix!" );
         TEST( m0 * m1 == m2, "Matrix multiplication wrong!" );
-        TEST( transpose(v0) * m0 == RVec3(14.0f, 0.0f, -14.0f), "Vector * Matrix multiplication invalid!" );
+        TEST( (transpose(v0) * m0 == Matrix<float, 1, 3>(14.0f, 0.0f, -14.0f)), "Vector * Matrix multiplication invalid!" );
         TEST( m0 * v0 == Vec3(-2.0f, -4.0f, -6.0f), "Matrix * Vector multiplication invalid!" );
     }
 
@@ -328,9 +328,9 @@ bool test_matrix()
         Vec2 v0(1.0f, 1.0f);
         Vec2 v1(0.0f, 1.0f);
         Vec2 v2(0.0f, 1.0f);
-        RVec2 vr0(1.0f, 1.0f);
-        RVec2 vr1(0.0f, 1.0f);
-        RVec2 vr2(0.0f, 1.0f);
+        Matrix<float, 1, 2> vr0(1.0f, 1.0f);
+        Matrix<float, 1, 2> vr1(0.0f, 1.0f);
+        Matrix<float, 1, 2> vr2(0.0f, 1.0f);
         TEST( (m0 += m1) == m2, "Component wise += failed!" );
         m2 -= m0;
         TEST( (m2 == Matrix<int,2,2>(0)), "Component wise -= failed!" );
