@@ -1,0 +1,21 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 13.04.2 ] */
+
+/* [wxMaxima: input   start ] */
+r0:0;
+r:rq*r0 - iq*i0 - jq*j0 - kq*k0;
+i:rq*i0 + iq*r0 + jq*k0 - kq*j0;
+j:rq*j0 - iq*k0 + jq*r0 + kq*i0;
+k:rq*k0 + iq*j0 - jq*i0 + kq*r0;
+
+x:expand(-r*iq + i*rq - j*kq + k*jq);
+y:expand(-r*jq + i*kq + j*rq - k*iq);
+z:expand(-r*kq - i*jq + j*iq + k*rq);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+expand(x);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
