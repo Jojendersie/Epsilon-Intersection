@@ -205,13 +205,13 @@ namespace ei {
         }
 
         /// \brief TQuaternion multiplication is a combination of rotations.
-        /// \details Non commutative (a*b != a*b)
+        /// \details Non commutative (a*b != b*a)
         constexpr TQuaternion& operator *= (const TQuaternion& _q1) noexcept
         {
             T nr = r*_q1.r - i*_q1.i - j*_q1.j - k*_q1.k;
             T ni = r*_q1.i + i*_q1.r + j*_q1.k - k*_q1.j;
             T nj = r*_q1.j + j*_q1.r + k*_q1.i - i*_q1.k;
-            k = r*_q1.k + k*_q1.r + i*_q1.j - j*_q1.i;
+            k    = r*_q1.k + k*_q1.r + i*_q1.j - j*_q1.i;
             r = nr;
             i = ni;
             j = nj;
@@ -483,21 +483,32 @@ namespace ei {
     // ********************************************************************* //
     /// \brief Storage class to store any orthonormal space, including those
     ///     with det() = -1 (including a reflection).
+    /// \details There is no concatenation or other operation on the compressed
+    ///     spaces because they would be non trivial. The compression always
+    ///     assumes the mirroring to take place in the z-axis. However,
+    ///     rotating another orthonormal space changes this direction and it
+    ///     would be necessary to remember the reflection direction OR to
+    ///     compute a fully new rotation with z-axis reflection.
+    ///     The first option would render the compression useless and the
+    ///     second is essentially OrthoSpace(Mat3x3(ortho1) * Mat3x3(ortho2)).
+    ///     Since this is expensive it is better not to hide its costs.
+    ///     If you are sure that there are only rotations use the faster
+    ///     OrthoSpace(Quaternion(ortho1) * Quaternion(ortho2)).
     template<typename T>
-    class OrthoSpace : public details::NonScalarType
+    class TOrthoSpace : public details::NonScalarType
     {
     public:
-        OrthoSpace() = default;
+        TOrthoSpace() = default;
 
         /// \brief Initialize from normalized quaternion
-        constexpr explicit OrthoSpace(const Quaternion& _q) noexcept :
+        constexpr explicit TOrthoSpace(const Quaternion& _q) noexcept : // TESTED
             m_quaternion(_q * sgn(_q.r))
         {
             eiAssert(approx(len(_q), 1), "Quaternion must be normalized.");
         }
 
         /// \brief Initialize from any 3x3 orthonorml 
-        constexpr explicit OrthoSpace(const Matrix<T,3,3>& _m) noexcept
+        constexpr explicit TOrthoSpace(const Matrix<T,3,3>& _m) noexcept  // TESTED
         {
             T handness = dot(cross(_m(0), _m(1)), _m(2));
             m_quaternion = TQuaternion<T>(transpose(_m(0)), transpose(_m(1)), transpose(handness * _m(2)));
@@ -511,7 +522,7 @@ namespace ei {
 
         /// \brief Reconstruct the full orthonorml system.
         template<typename T1>
-        constexpr explicit operator Matrix<T1,3,3>() const noexcept {
+        constexpr explicit operator Matrix<T1,3,3>() const noexcept {  // TESTED
             // Remove the handness sign and get the rotation matrix
             Matrix<T1,3,3> rot{TQuaternion<T1>(m_quaternion.i, m_quaternion.j, m_quaternion.k, ei::abs(m_quaternion.r))};
             if(isLefthanded())
@@ -521,12 +532,32 @@ namespace ei {
 
         /// \brief Get the rotation. If the stored system contains a reflection it is lost.
         template<typename T1>
-        constexpr explicit operator TQuaternion<T1>() const noexcept {
+        constexpr explicit operator TQuaternion<T1>() const noexcept {  // TESTED
             return TQuaternion<T1>(m_quaternion.i, m_quaternion.j, m_quaternion.k, ei::abs(m_quaternion.r));
         }
 
-        constexpr bool isRighthanded() const { return sgn(m_quaternion.r) == 1.0f; }
-        constexpr bool isLefthanded() const { return sgn(m_quaternion.r) == -1.0f; }
+        constexpr bool isRighthanded() const { return sgn(m_quaternion.r) == 1.0f; }  // TESTED
+        constexpr bool isLefthanded() const { return sgn(m_quaternion.r) == -1.0f; }  // TESTED
+
+        /* This cannot work. See above.
+        constexpr TOrthoSpace& operator *= (const TOrthoSpace _other) noexcept
+        {
+            // Two reflections cancel themself: same sign - RHS afterwards
+            T handness = sgn(m_quaternion.r) * sgn(_other.m_quaternion.r);
+            // Multiply rotations only
+            m_quaternion = TQuaternion<T>(*this) * TQuaternion<T>(_other);
+            // Assert the normalization condition again and store handness.
+            if(sgn(m_quaternion.r) < static_cast<T>(0))
+                m_quaternion = -m_quaternion;
+            if(handness < static_cast<T>(0))
+                m_quaternion.r = -m_quaternion.r;
+            return *this;
+        }
+
+        constexpr TOrthoSpace operator * (const TOrthoSpace& _other) const noexcept
+        {
+            return OrthoSpace(*this) *= _other;
+        }*/
     private:
         // Use a standard quaternion.
         // The sign of the determinant can be encoded in the r component.
@@ -536,5 +567,7 @@ namespace ei {
         // encoded.
         TQuaternion<T> m_quaternion;
     };
+
+    using OrthoSpace = TOrthoSpace<float>;
 
 } // namespace ei

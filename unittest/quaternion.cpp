@@ -60,16 +60,16 @@ bool test_quaternion()
     TEST( approx(transform(v2, q7), v1), "Direct quaternion transformation v2->v1 failed!" );
 
     // Test LHS and RHS orthonormal systems
-    OrthoSpace<float> o0{m0};
-    OrthoSpace<float> o1{m1};
+    OrthoSpace o0{m0};
+    OrthoSpace o1{m1};
     Mat3x3 m5 = diag(Vec3(-1.0f, 1.0f, 1.0f)) * rotation( 0.1f, -0.5f, -0.2f );
     Mat3x3 m3 = diag(Vec3(1.0f, -1.0f, 1.0f)) * rotation( 0.0f, -0.2f, 0.0f );
     Mat3x3 m4 = diag(Vec3(1.0f, 1.0f, -1.0f)) * rotation( -0.5f, -0.1f, -0.2f );
-    OrthoSpace<float> o2{m5};
-    OrthoSpace<float> o3{m3};
-    OrthoSpace<float> o4{m4};
-    OrthoSpace<float> o5{identity3x3()};
-    OrthoSpace<float> o6{diag(Vec3(1.0f, 1.0f, -1.0f))};
+    OrthoSpace o2{m5};
+    OrthoSpace o3{m3};
+    OrthoSpace o4{m4};
+    OrthoSpace o5{identity3x3()};
+    OrthoSpace o6{diag(Vec3(1.0f, 1.0f, -1.0f))};
     TEST(approx(Mat3x3(o0), m0), "RHS rotation m0 -> OrthoSpace -> Mat3x3 wrong.");
     TEST(approx(Mat3x3(o1), m1), "RHS rotation m1 -> OrthoSpace -> Mat3x3 wrong.");
     TEST(approx(Mat3x3(o2), m5), "LHS rotation m5 -> OrthoSpace -> Mat3x3 wrong.");
@@ -82,6 +82,19 @@ bool test_quaternion()
     TEST(o4.isLefthanded(), "o4.isLefthanded wrong.");
     TEST(o5.isRighthanded(), "o5.isRighthanded wrong.");
     TEST(o6.isLefthanded(), "o6.isLefthanded wrong.");
+
+    // Test OrthoSpace multiplications
+    /*OrthoSpace o7 = o0 * o1;
+    Mat3x3 m7 = m0 * m1;
+    OrthoSpace o8 = o0 * o2;
+    Mat3x3 m8 = m0 * m5;
+    OrthoSpace otest(m8);
+    OrthoSpace otest2 = o2 * o0;
+    OrthoSpace o9 = o3 * o4;
+    Mat3x3 m9 = m3 * m4;
+    TEST(approx(Mat3x3(o7), m7), "OrthoSpace multiplication o0*o1 failed.");
+    TEST(approx(Mat3x3(o8), m8), "OrthoSpace multiplication o0*o2 failed.");
+    TEST(approx(Mat3x3(o9), m9), "OrthoSpace multiplication o3*o4 failed.");*/
 
     return result;
 }
