@@ -34,8 +34,6 @@ namespace ei {
             _angle *= 0.5f;
             T sinA = sin(_angle);
             r = cos(_angle);
-            // Assert normalization condition
-            if( r < static_cast<T>(0) ) {r = -r; sinA = -sinA;}
             i = sinA * _axis.x;
             j = sinA * _axis.y;
             k = sinA * _axis.z;
@@ -70,15 +68,6 @@ namespace ei {
             k = T(cosX * sZcY - sinX * cZsY);
             r = T(cosX * cZcY + sinX * sZsY);
 
-            // Assert normalization condition
-            if( r < static_cast<T>(0) )
-            {
-                r = -r;
-                i = -i;
-                j = -j;
-                k = -k;
-            }
-
             //*this = normalize(*this);
         }
         constexpr TQuaternion( const Vec<T,3>& _eulerAngles ) noexcept :
@@ -97,40 +86,38 @@ namespace ei {
             // Check handness
             //eiAssert(dot(cross(_xAxis, _yAxis), _m(2)) > 0.0f, "Quaternions cannot handle reflections. The matrix must be RHS.");
             T handness = dot(cross(_xAxis, _yAxis), _zAxis);
-            Vec<T,3> zAxis;
-            if(handness < T(0)) zAxis = -_zAxis;
-            else zAxis = _zAxis;
-            eiAssert(approx(abs(handness), T(1), 1e-4f), "System is not orthonormal!");
+            eiAssert(handness > 0.0f, "Quaternions cannot handle reflections. The matrix must be RHS.");
+            eiAssert(approx(handness, T(1), 1e-4f), "System is not orthonormal!");
 
             // Build TQuaternion<T> from rotation matrix
             // Src: http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/
-            T trace = _xAxis.x + _yAxis.y + zAxis.z;
+            T trace = _xAxis.x + _yAxis.y + _zAxis.z;
             if( trace > 0 )
             {
                 float s = T(0.5) / sqrt( trace + T(1) );
-                i = (  zAxis.y - _yAxis.z ) * s;
-                j = ( _xAxis.z -  zAxis.x ) * s;
+                i = ( _zAxis.y - _yAxis.z ) * s;
+                j = ( _xAxis.z - _zAxis.x ) * s;
                 k = ( _yAxis.x - _xAxis.y ) * s;
                 r = T(0.25) / s;
             } else {
-                if( _xAxis.x > _yAxis.y && _xAxis.x > zAxis.z )
+                if( _xAxis.x > _yAxis.y && _xAxis.x > _zAxis.z )
                 {
-                    float s = T(2) * sqrt( T(1) + _xAxis.x - _yAxis.y - zAxis.z );
+                    float s = T(2) * sqrt( T(1) + _xAxis.x - _yAxis.y - _zAxis.z );
                     i = T(0.25) * s;
                     j = ( _xAxis.y + _yAxis.x ) / s;
-                    k = ( _xAxis.z +  zAxis.x ) / s;
-                    r = (  zAxis.y - _yAxis.z ) / s;
-                } else if( _yAxis.y > zAxis.z )
+                    k = ( _xAxis.z + _zAxis.x ) / s;
+                    r = ( _zAxis.y - _yAxis.z ) / s;
+                } else if( _yAxis.y > _zAxis.z )
                 {
-                    float s = T(2) * sqrt( T(1) + _yAxis.y - _xAxis.x - zAxis.z );
+                    float s = T(2) * sqrt( T(1) + _yAxis.y - _xAxis.x - _zAxis.z );
                     i = ( _xAxis.y + _yAxis.x ) / s;
                     j = T(0.25) * s;
-                    k = ( _yAxis.z +  zAxis.y ) / s;
-                    r = ( _xAxis.z -  zAxis.x ) / s;
+                    k = ( _yAxis.z + _zAxis.y ) / s;
+                    r = ( _xAxis.z - _zAxis.x ) / s;
                 } else {
-                    float s = T(2) * sqrt( T(1) + zAxis.z - _xAxis.x - _yAxis.y );
-                    i = ( _xAxis.z +  zAxis.x ) / s;
-                    j = ( _yAxis.z +  zAxis.y ) / s;
+                    float s = T(2) * sqrt( T(1) + _zAxis.z - _xAxis.x - _yAxis.y );
+                    i = ( _xAxis.z + _zAxis.x ) / s;
+                    j = ( _yAxis.z + _zAxis.y ) / s;
                     k = T(0.25) * s;
                     r = ( _yAxis.x - _xAxis.y ) / s;
                 }
@@ -142,9 +129,6 @@ namespace ei {
              k = sqrt( max( T(0), T(1) - _m.m00 - _m.m11 + _m.m22 ) ) * T(0.5) * sgn(_m.m10 - _m.m01);//*/
 
             *this = normalize(*this);
-
-            // Assert additional normalization condition
-            if( r * handness < static_cast<T>(0) ) {i = -i; j = -j; k = -k; r = -r;}
         }
 
         /// \brief Create from TQuaternion coefficients
@@ -173,7 +157,6 @@ namespace ei {
 
             // cos(theta) = dot product since both vectors are normalized
             r = dot(from, half);
-            eiAssert(r >= T(0), "Normalization condition violated!");
             // Axis from cross product -> already multiplied with sin(theta)
             i = from.y*half.z - from.z*half.y;
             j = from.z*half.x - from.x*half.z;
@@ -185,13 +168,14 @@ namespace ei {
         /// \brief Compare component wise, if two quaternions are identical.
         constexpr bool operator == (const TQuaternion& _q1) const noexcept
         {
-            // TODO: ambiguity: -q is also == q1 ?
-            return r==_q1.r && i==_q1.i && j==_q1.j && k==_q1.k;
+            return (r== _q1.r && i== _q1.i && j== _q1.j && k== _q1.k)
+                || (r==-_q1.r && i==-_q1.i && j==-_q1.j && k==-_q1.k);
         }
         /// \brief Compare component wise, if two quaternions are different.
         constexpr bool operator!= (const TQuaternion& _q1) const noexcept
         {
-            return r!=_q1.r || i!=_q1.i || j!=_q1.j || k!=_q1.k;
+            return (r!= _q1.r || i!= _q1.i || j!= _q1.j || k!= _q1.k)
+                && (r!=-_q1.r || i!=-_q1.i || j!=-_q1.j || k!=-_q1.k);
         }
 
         template<typename T1>
@@ -224,9 +208,6 @@ namespace ei {
         /// \details Non commutative (a*b != a*b)
         constexpr TQuaternion& operator *= (const TQuaternion& _q1) noexcept
         {
-            // Preserve the sign for handness: the result can contain a mirroring, if
-            // and only if one of the two arguments has a mirroring part.
-            T handness = r*_q1.r;
             T nr = r*_q1.r - i*_q1.i - j*_q1.j - k*_q1.k;
             T ni = r*_q1.i + i*_q1.r + j*_q1.k - k*_q1.j;
             T nj = r*_q1.j + j*_q1.r + k*_q1.i - i*_q1.k;
@@ -234,14 +215,12 @@ namespace ei {
             r = nr;
             i = ni;
             j = nj;
-            if( r * handness < static_cast<T>(0) ) {i = -i; j = -j; k = -k; r = -r;}
             return *this;
         }
 
         /// \brief Scale the TQuaternion
         constexpr TQuaternion& operator *= (T _s) noexcept
         {
-            eiAssert(_s >= T(0), "Using a negative scalar changes handness!");
             i*=_s; j*=_s; k*=_s; r*=_s;
             return *this;
         }
@@ -249,7 +228,6 @@ namespace ei {
         /// \brief TQuaternion division   a/=b  <=>  a=a*(b^-1)=a*conjugated(b).
         constexpr TQuaternion& operator /= (const TQuaternion& _q1) noexcept
         {
-            T handness = r*_q1.r;
             T nr =   r*_q1.r + i*_q1.i + j*_q1.j + k*_q1.k;
             T ni = - r*_q1.i + i*_q1.r - j*_q1.k + k*_q1.j;
             T nj = - r*_q1.j + j*_q1.r - k*_q1.i + i*_q1.k;
@@ -257,14 +235,12 @@ namespace ei {
             r = nr;
             i = ni;
             j = nj;
-            if( r * handness < static_cast<T>(0) ) {i = -i; j = -j; k = -k; r = -r;}
             return *this;
         }
 
         /// \brief Scale the TQuaternion
         constexpr TQuaternion& operator /= (T _s) noexcept
         {
-            eiAssert(_s >= T(0), "Using a negative scalar changes handness!");
             i/=_s; j/=_s; k/=_s; r/=_s;
             return *this;
         }
@@ -285,7 +261,6 @@ namespace ei {
 
         constexpr TQuaternion operator * (const TQuaternion& _q1) const noexcept
         {
-           // TQuaternion q0 = *this;
             return TQuaternion(*this) *= _q1;
         }
         constexpr TQuaternion operator * (T _s) const noexcept
@@ -360,7 +335,7 @@ namespace ei {
     template<typename T>
     constexpr inline Vec<T,3> axis(const TQuaternion<T>& _q) noexcept // TESTED
     {
-        return Vec<T,3>(-_q.i, -_q.j, -_q.k) / max(T(EPSILON), std::sqrt(T(1)-_q.r*_q.r));
+        return Vec<T,3>(_q.i, _q.j, _q.k) / max(T(EPSILON), std::sqrt(T(1)-_q.r*_q.r));
     }
 
     /// \brief Get the x axis of the corresponding orthogonal system (rotation
@@ -384,11 +359,8 @@ namespace ei {
     template<typename T>
     constexpr inline Vec<T,3> zaxis(const TQuaternion<T>& _q) noexcept // TESTED
     {
-        T h = _q.r < T(0) ? T(-1) : T(1);
-        T h2 = h * 2;
-        return Vec<T,3>( h2*(_q.i*_q.k-_q.j*_q.r), h2*(_q.j*_q.k+_q.i*_q.r), h-h2*(_q.i*_q.i+_q.j*_q.j) );
+        return Vec<T,3>( T(2)*(_q.i*_q.k-_q.j*_q.r), T(2)*(_q.j*_q.k+_q.i*_q.r), T(1)-T(2)*(_q.i*_q.i+_q.j*_q.j) );
     }
-    // TODO: row vector axis
 
     /// \brief Get the angle (radians) from a TQuaternion
     template<typename T>
@@ -461,7 +433,6 @@ namespace ei {
     template<typename T>
     constexpr TQuaternion<T> slerp(const TQuaternion<T>& _q0, const TQuaternion<T>& _q1, T _t) noexcept // TESTED
     {
-        // TODO: handness?
         // http://en.wikipedia.org/wiki/Slerp
         T theta = acos( clamp(dot(_q0,_q1), T(-1), T(1)) );
         T so = sin( theta );
@@ -493,7 +464,6 @@ namespace ei {
     template<typename T, unsigned M, unsigned N, typename = std::enable_if_t<(M==1) || (N==1)>>
     constexpr inline Matrix<T,M,N> transform( const Matrix<T,M,N>& _what, const TQuaternion<T>& _quaternion ) noexcept
     {
-        T handness = _quaternion.r < T(0) ? T(-1) : T(1);
         // http://physicsforgames.blogspot.de/2010/03/quaternion-tricks.html
         T x1 = _quaternion.j*_what.z - _quaternion.k*_what.y;
         T y1 = _quaternion.k*_what.x - _quaternion.i*_what.z;
@@ -502,7 +472,7 @@ namespace ei {
         return Matrix<T,M,N>(
              _what.x + 2.0f * (_quaternion.r*x1 + _quaternion.j*z1 - _quaternion.k*y1),
              _what.y + 2.0f * (_quaternion.r*y1 + _quaternion.k*x1 - _quaternion.i*z1),
-            (_what.z + 2.0f * (_quaternion.r*z1 + _quaternion.i*y1 - _quaternion.j*x1)) * handness
+             _what.z + 2.0f * (_quaternion.r*z1 + _quaternion.i*y1 - _quaternion.j*x1)
             );
     }
 

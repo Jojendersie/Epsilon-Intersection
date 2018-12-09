@@ -83,16 +83,5 @@ bool test_quaternion()
     TEST(o5.isRighthanded(), "o5.isRighthanded wrong.");
     TEST(o6.isLefthanded(), "o6.isLefthanded wrong.");
 
-    // Test to encode LHS coordinate systems (include mirror stuff)
-    Vec3 v3(0.0f, 0.0f, -1.0f);
-    Quaternion q8(v0, v1, v3);
-    Quaternion q9(v0, v1, Vec3(0.0f, 0.0f, 1.0f));
-    TEST(approx(xaxis(q8), v0), "LHS-Quaternion handness of x-axis wrong!");
-    TEST(approx(yaxis(q8), v1), "LHS-Quaternion handness of y-axis wrong!");
-    TEST(approx(zaxis(q8), v3), "LHS-Quaternion handness of z-axis wrong!");
-    q8 *= q9;
-    TEST(approx(zaxis(q8), v3), "Quaternion multiplication destroys handness!");
-    TEST(approx(transform(v2, q8), abs(v2)), "Transformation did not mirror correct!");
-
     return result;
 }
