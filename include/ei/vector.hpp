@@ -63,7 +63,7 @@ namespace ei {
         }
 
         /// \brief Forward to base constructors
-        template<typename T1>
+        template<typename T1, ENABLE_IF((!std::is_base_of_v<details::NonScalarType, T1>))>
         constexpr explicit Matrix(T1 _a0) noexcept :
             details::Components<T,M,N>(_a0)
         {}
@@ -1184,14 +1184,14 @@ namespace ei {
         static_assert(N*M >= 2, "In 1D cartesian and spherical coordinates are the same!");
         Matrix<T,M,N> result;
         // Accumulate the squared length over the iterations
-        result[0] = sq(_v0[N-1]) + sq(_v0[N-2]);
-        result[N-1] = atan2(_v0[N-1], _v0[N-2]);
-        if(result[N-1] < 0.0f) result[N-1] += 2.0f * PI;
+        result[0] = sq(_v0[N*M-1]) + sq(_v0[N*M-2]);
+        result[N*M-1] = atan2(_v0[N*M-1], _v0[N*M-2]);
+        if(result[N*M-1] < 0.0f) result[N*M-1] += 2.0f * PI;
         // if( _v0[N-1] < 0.0f ) result[N-1] = 2.0f * PI - result[N-1];
-        for(uint i = 2; i < N; ++i)
+        for(uint i = 2; i < N*M; ++i)
         {
-            result[0] += sq(_v0[N-i-1]);
-            result[N-i] = acos(clamp(_v0[N-i-1]/sqrt(result[0]), -1.0f, 1.0f));
+            result[0] += sq(_v0[N*M-i-1]);
+            result[N*M-i] = acos(clamp(_v0[N*M-i-1]/sqrt(result[0]), -1.0f, 1.0f));
         }
         result[0] = sqrt(result[0]);
         return result;
@@ -1207,12 +1207,12 @@ namespace ei {
         eiAssertWeak(_v0[0] > 0.0f, "Expected the length to be greater 0!");
         Matrix<T,M,N> result;
         float tmp = _v0[0];
-        for(uint i = 0; i < N-1; ++i)
+        for(uint i = 0; i < M*N-1; ++i)
         {
             result[i] = tmp * cos(_v0[i+1]);
             tmp *= sin(_v0[i+1]);
         }
-        result[N-1] = tmp;
+        result[M*N-1] = tmp;
         return result;
     }
 

@@ -7,7 +7,7 @@ namespace ei {
     // ********************************************************************* //
     //                            QUATERNION TYPE                            //
     // ********************************************************************* //
-    
+
     // ********************************************************************* //
     /// \brief 4D complex number equivalent for the representation of rotations
     /// \details The normalized form has len(q) == 1 and r>0 (RHS) / r<0 (LHS).
@@ -185,12 +185,39 @@ namespace ei {
         /// \brief Compare component wise, if two quaternions are identical.
         constexpr bool operator == (const TQuaternion& _q1) const noexcept
         {
+            // TODO: ambiguity: -q is also == q1 ?
             return r==_q1.r && i==_q1.i && j==_q1.j && k==_q1.k;
         }
         /// \brief Compare component wise, if two quaternions are different.
         constexpr bool operator!= (const TQuaternion& _q1) const noexcept
         {
             return r!=_q1.r || i!=_q1.i || j!=_q1.j || k!=_q1.k;
+        }
+
+        template<typename T1>
+        constexpr explicit operator Matrix<T1,3,3>() const noexcept
+        {
+            // Rotation composition from quaternion (remaining rest direct in matrix)
+            // See http://de.wikipedia.org/wiki/Quaternion#Bezug_zu_orthogonalen_Matrizen for
+            // details.
+            T f2i  = 2.0f * i;
+            T f2j  = 2.0f * j;
+            T f2k  = 2.0f * k;
+            T f2ri = f2i  * r;
+            T f2rj = f2j  * r;
+            T f2rk = f2k  * r;
+            T f2ii = f2i  * i;
+            T f2ij = f2j  * i;
+            T f2ik = f2k  * i;
+            T f2jj = f2j  * j;
+            T f2jk = f2k  * j;
+            T f2kk = f2k  * k;
+
+            return Matrix<T1,3,3>{
+                1.0f - ( f2jj + f2kk ), f2ij - f2rk,            f2ik + f2rj,
+                f2ij + f2rk,            1.0f - ( f2ii + f2kk ), f2jk - f2ri,
+                f2ik - f2rj,            f2jk + f2ri,            1.0f - ( f2ii + f2jj )
+            };
         }
 
         /// \brief TQuaternion multiplication is a combination of rotations.
@@ -478,5 +505,66 @@ namespace ei {
             (_what.z + 2.0f * (_quaternion.r*z1 + _quaternion.i*y1 - _quaternion.j*x1)) * handness
             );
     }
+
+
+
+    // ********************************************************************* //
+    //                       ORTHORNORMAL SPACE TYPE                         //
+    // ********************************************************************* //
+    /// \brief Storage class to store any orthonormal space, including those
+    ///     with det() = -1 (including a reflection).
+    template<typename T>
+    class OrthoSpace : public details::NonScalarType
+    {
+    public:
+        OrthoSpace() = default;
+
+        /// \brief Initialize from normalized quaternion
+        constexpr explicit OrthoSpace(const Quaternion& _q) noexcept :
+            m_quaternion(_q * sgn(_q.r))
+        {
+            eiAssert(approx(len(_q), 1), "Quaternion must be normalized.");
+        }
+
+        /// \brief Initialize from any 3x3 orthonorml 
+        constexpr explicit OrthoSpace(const Matrix<T,3,3>& _m) noexcept
+        {
+            T handness = dot(cross(_m(0), _m(1)), _m(2));
+            m_quaternion = TQuaternion<T>(transpose(_m(0)), transpose(_m(1)), transpose(handness * _m(2)));
+            // Assert additional normalization condition for the handness
+            if(sgn(m_quaternion.r) < static_cast<T>(0))
+                m_quaternion = -m_quaternion;
+            // Store the handness
+            if(handness < static_cast<T>(0))
+                m_quaternion.r = -m_quaternion.r;
+        }
+
+        /// \brief Reconstruct the full orthonorml system.
+        template<typename T1>
+        constexpr explicit operator Matrix<T1,3,3>() const noexcept {
+            // Remove the handness sign and get the rotation matrix
+            Matrix<T1,3,3> rot{TQuaternion<T1>(m_quaternion.i, m_quaternion.j, m_quaternion.k, ei::abs(m_quaternion.r))};
+            if(isLefthanded())
+                rot(2) = -rot(2);
+            return rot;
+        }
+
+        /// \brief Get the rotation. If the stored system contains a reflection it is lost.
+        template<typename T1>
+        constexpr explicit operator TQuaternion<T1>() const noexcept {
+            return TQuaternion<T1>(m_quaternion.i, m_quaternion.j, m_quaternion.k, ei::abs(m_quaternion.r));
+        }
+
+        constexpr bool isRighthanded() const { return sgn(m_quaternion.r) == 1.0f; }
+        constexpr bool isLefthanded() const { return sgn(m_quaternion.r) == -1.0f; }
+    private:
+        // Use a standard quaternion.
+        // The sign of the determinant can be encoded in the r component.
+        // Since +q=-q we can make sure to use the one with q.r>0. Then the
+        // sign of the determinant is simply put into the guarenteed positive r.
+        // Important: we need -0 and +0 from float to be sure the sign is always
+        // encoded.
+        TQuaternion<T> m_quaternion;
+    };
 
 } // namespace ei

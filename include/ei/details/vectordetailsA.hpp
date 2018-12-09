@@ -243,28 +243,6 @@ namespace ei { namespace details {
             m10(static_cast<T>(_s1.x)), m11(static_cast<T>(_s1.y)), m12(static_cast<T>(_s1.z)),
             m20(static_cast<T>(_s2.x)), m21(static_cast<T>(_s2.y)), m22(static_cast<T>(_s2.z))
         {}
-        constexpr explicit Components(const ei::TQuaternion<T>& _quaternion) noexcept
-        {
-            // Rotation composition from quaternion (remaining rest direct in matrix)
-            // See http://de.wikipedia.org/wiki/Quaternion#Bezug_zu_orthogonalen_Matrizen for
-            // details.
-            T f2i  = 2.0f * _quaternion.i;
-            T f2j  = 2.0f * _quaternion.j;
-            T f2k  = 2.0f * _quaternion.k;
-            T f2ri = f2i  * _quaternion.r;
-            T f2rj = f2j  * _quaternion.r;
-            T f2rk = f2k  * _quaternion.r;
-            T f2ii = f2i  * _quaternion.i;
-            T f2ij = f2j  * _quaternion.i;
-            T f2ik = f2k  * _quaternion.i;
-            T f2jj = f2j  * _quaternion.j;
-            T f2jk = f2k  * _quaternion.j;
-            T f2kk = f2k  * _quaternion.k;
-
-            this->m00 = 1.0f - ( f2jj + f2kk ); this->m01 = f2ij - f2rk;            this->m02 = f2ik + f2rj;
-            this->m10 = f2ij + f2rk;            this->m11 = 1.0f - ( f2ii + f2kk ); this->m12 = f2jk - f2ri;
-            this->m20 = f2ik - f2rj;            this->m21 = f2jk + f2ri;            this->m22 = 1.0f - ( f2ii + f2jj );
-        }
     };
 
     /// \brief Specialized version for 4x4 matrices.
