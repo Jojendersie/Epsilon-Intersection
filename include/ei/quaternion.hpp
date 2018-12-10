@@ -500,10 +500,10 @@ namespace ei {
         TOrthoSpace() = default;
 
         /// \brief Initialize from normalized quaternion
-        constexpr explicit TOrthoSpace(const Quaternion& _q) noexcept : // TESTED
+        constexpr explicit TOrthoSpace(const TQuaternion<T>& _q) noexcept : // TESTED
             m_quaternion(_q * sgn(_q.r))
         {
-            eiAssert(approx(len(_q), 1), "Quaternion must be normalized.");
+            eiAssert(approx(len(_q), T(1)), "Quaternion must be normalized.");
         }
 
         /// \brief Initialize from any 3x3 orthonorml 
@@ -537,6 +537,22 @@ namespace ei {
 
         constexpr bool isRighthanded() const { return sgn(m_quaternion.r) == 1.0f; }  // TESTED
         constexpr bool isLefthanded() const { return sgn(m_quaternion.r) == -1.0f; }  // TESTED
+
+        constexpr bool operator == (const TOrthoSpace& _other) const {
+            // Unlike quaternions where q = -q we have a unique representation.
+            return m_quaternion.r == _other.m_quaternion.r
+                && m_quaternion.i == _other.m_quaternion.i
+                && m_quaternion.j == _other.m_quaternion.j
+                && m_quaternion.k == _other.m_quaternion.k;
+        }
+
+        constexpr bool operator != (const TOrthoSpace& _other) const {
+            // Unlike quaternions where q = -q we have a unique representation.
+            return m_quaternion.r != _other.m_quaternion.r
+                || m_quaternion.i != _other.m_quaternion.i
+                || m_quaternion.j != _other.m_quaternion.j
+                || m_quaternion.k != _other.m_quaternion.k;
+        }
     private:
         // Use a standard quaternion.
         // The sign of the determinant can be encoded in the r component.
@@ -545,8 +561,29 @@ namespace ei {
         // Important: we need -0 and +0 from float to be sure the sign is always
         // encoded.
         TQuaternion<T> m_quaternion;
+
+        friend constexpr uint64 packOrthoSpace64(const TOrthoSpace<float>& _space) noexcept;
+        friend TOrthoSpace<float> unpackOrthoSpace64(uint64 _code) noexcept;
+        template<typename T1>
+        friend constexpr bool approx(const TOrthoSpace<T1>& _o0,
+                                     const TOrthoSpace<T1>& _o1,
+                                     T1 _epsilon) noexcept;
     };
 
     using OrthoSpace = TOrthoSpace<float>;
+
+    // ********************************************************************* //
+    /// \brief Check if the absolute difference between all elements is smaller
+    ///    or equal than epsilon.
+    template<typename T>
+    constexpr bool approx(const TOrthoSpace<T>& _o0,
+                          const TOrthoSpace<T>& _o1,
+                          T _epsilon = T(1e-6)) noexcept // TESTED
+    {
+        return abs(_o0.m_quaternion.r - _o1.m_quaternion.r) <= _epsilon
+            && abs(_o0.m_quaternion.i - _o1.m_quaternion.i) <= _epsilon
+            && abs(_o0.m_quaternion.j - _o1.m_quaternion.j) <= _epsilon
+            && abs(_o0.m_quaternion.k - _o1.m_quaternion.k) <= _epsilon;
+    }
 
 } // namespace ei

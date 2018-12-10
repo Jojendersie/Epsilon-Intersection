@@ -1,6 +1,7 @@
 #pragma once
 
 #include "vector.hpp"
+#include "quaternion.hpp"
 
 /// \brief Utility functions for conversions of colors and vector representations.
 
@@ -137,7 +138,7 @@ namespace ei {
     }
 
     // Unpack a RGB9E5 value into a full Vec3
-    inline Vec3 unpackRGB9E5(uint32 _code)
+    inline Vec3 unpackRGB9E5(uint32 _code) noexcept
     {
         float e = exp2f(float(_code>>27) - 15 - 9); // - ExponentBias - #MantissaBits
         return Vec3 {
@@ -149,7 +150,7 @@ namespace ei {
 
     // Pack an HDR color value into RGB8E8 shared exponent format.
     // This is used for example by the *.hdr file format
-    inline uint32 packRGB8E8(const Vec3 & _v)
+    inline uint32 packRGB8E8(const Vec3 & _v) noexcept
     {
         eiAssertWeak(all(greatereq(_v, 0.0f)), "Vector must be positive to be packed into RGB8E8");
         float maxComp = ei::max(_v);
@@ -208,6 +209,30 @@ namespace ei {
             y = (1 - abs(u)) * (v >= 0 ? 1 : -1);
         }
         return normalize(Vec3{x,y,z});
+    }
+
+    // Use fixed point discretization to pack an already packed tangent space further.
+    constexpr inline uint64 packOrthoSpace64(const OrthoSpace& _space) noexcept
+    {
+        // Pack only ijk with 21 bits each, r can be reconstructed if its
+        // sign is known (bit 64).
+        NormalizedInt<int32, 21> i(_space.m_quaternion.i);
+        NormalizedInt<int32, 21> j(_space.m_quaternion.j);
+        NormalizedInt<int32, 21> k(_space.m_quaternion.k);
+        uint64 rSign = sgn(_space.m_quaternion.r) > 0.0f ? 0 : (1ull << 63);
+        return rSign | (uint64(k) << 42) | (uint64(j) << 21) | uint64(i);
+    }
+
+    inline OrthoSpace unpackOrthoSpace64(uint64 _code) noexcept
+    {
+        float i { NormalizedInt<int32, 21>(_code) };
+        float j { NormalizedInt<int32, 21>(_code >> 21) };
+        float k { NormalizedInt<int32, 21>(_code >> 42) };
+        float r = sqrt(1.0f - (i*i + j*j + k*k));
+        OrthoSpace res;
+        res.m_quaternion.i = i; res.m_quaternion.j = j; res.m_quaternion.k = k;
+        res.m_quaternion.r = (_code & (1ull<<63)) ? -r : r;
+        return res;
     }
 
 } // namespace ei

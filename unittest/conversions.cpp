@@ -80,5 +80,20 @@ bool test_conversions()
         TEST(approx(v8, unpackOctahedral32(oct8), 1e-4f), "Octahedral packing of v8 invalid.");
     }
 
+    { // Tangent space
+        OrthoSpace o0{Quaternion{normalize(Vec3(1.0f, -0.5f, 0.1f)), 0.234f}};
+        OrthoSpace o1{Quaternion{Vec3(1.0f, 0.0f, 0.0f), PI}};
+        OrthoSpace o2{qidentity()};
+        OrthoSpace o3{diag(Vec3(-1.0f, 1.0f, 1.0f))};
+        uint64 op0 = packOrthoSpace64(o0);
+        uint64 op1 = packOrthoSpace64(o1);
+        uint64 op2 = packOrthoSpace64(o2);
+        uint64 op3 = packOrthoSpace64(o3);
+        TEST(approx(o0, unpackOrthoSpace64(op0), 0.003f), "OrthoSpace o0 packing to 64 bit failed.");
+        TEST(approx(o1, unpackOrthoSpace64(op1)), "OrthoSpace o1 packing to 64 bit failed.");
+        TEST(approx(o2, unpackOrthoSpace64(op2)), "OrthoSpace o2 packing to 64 bit failed.");
+        TEST(approx(o3, unpackOrthoSpace64(op3)), "OrthoSpace o3 packing to 64 bit failed.");
+    }
+
     return result;
 }
