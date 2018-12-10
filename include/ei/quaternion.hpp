@@ -143,27 +143,25 @@ namespace ei {
         ///     be aligned with the target after rotation.
         constexpr TQuaternion( const Vec<T,3>& _from, const Vec<T,3>& _to ) noexcept // TESTED
         {
-            Vec<T,3> from = normalize(_from);
-            Vec<T,3> to = normalize(_to);
+            eiAssert(approx(len(_from),1.0f), "Input (_from) must be normalized direction vector.");
+            eiAssert(approx(len(_to),1.0f), "Input (_to) must be normalized direction vector.");
             // half angle trick from http://physicsforgames.blogspot.de/2010/03/quaternion-tricks.html
-            Vec<T,3> half = normalize(from + to);
+            Vec<T,3> half = normalize(_from + _to);
             // Opposite vectors or one vector 0.0 -> 180° rotation
-            if(half.x != half.x)
+            if(std::isnan(half.x))
             {
-                if(approx(ei::abs(from.y), static_cast<T>(1)))
+                if(approx(ei::abs(_from.y), static_cast<T>(1)))
                     half = Vec<T,3>(0, 0, 1);
-                else half = normalize(cross(from, Vec<T,3>(0, 1, 0)));
+                else half = normalize(cross(_from, Vec<T,3>(0, 1, 0)));
             }
 
             // cos(theta) = dot product since both vectors are normalized
-            r = dot(from, half);
+            r = dot(_from, half);
             // Axis from cross product -> already multiplied with sin(theta)
-            i = from.y*half.z - from.z*half.y;
-            j = from.z*half.x - from.x*half.z;
-            k = from.x*half.y - from.y*half.x;
+            i = _from.y*half.z - _from.z*half.y;
+            j = _from.z*half.x - _from.x*half.z;
+            k = _from.x*half.y - _from.y*half.x;
         }
-
-        // TODO: lookAt parametrization
 
         /// \brief Compare component wise, if two quaternions are identical.
         constexpr bool operator == (const TQuaternion& _q1) const noexcept
@@ -206,7 +204,7 @@ namespace ei {
 
         /// \brief TQuaternion multiplication is a combination of rotations.
         /// \details Non commutative (a*b != b*a)
-        constexpr TQuaternion& operator *= (const TQuaternion& _q1) noexcept
+        constexpr TQuaternion& operator *= (const TQuaternion& _q1) noexcept // TESTED
         {
             T nr = r*_q1.r - i*_q1.i - j*_q1.j - k*_q1.k;
             T ni = r*_q1.i + i*_q1.r + j*_q1.k - k*_q1.j;
@@ -259,7 +257,7 @@ namespace ei {
             return *this;
         }
 
-        constexpr TQuaternion operator * (const TQuaternion& _q1) const noexcept
+        constexpr TQuaternion operator * (const TQuaternion& _q1) const noexcept // TESTED
         {
             return TQuaternion(*this) *= _q1;
         }
@@ -335,7 +333,7 @@ namespace ei {
     template<typename T>
     constexpr inline Vec<T,3> axis(const TQuaternion<T>& _q) noexcept // TESTED
     {
-        return Vec<T,3>(_q.i, _q.j, _q.k) / max(T(EPSILON), std::sqrt(T(1)-_q.r*_q.r));
+        return Vec<T,3>(_q.i, _q.j, _q.k) / std::sqrt(max(T(EPSILON), T(1)-_q.r*_q.r));
     }
 
     /// \brief Get the x axis of the corresponding orthogonal system (rotation
@@ -413,10 +411,11 @@ namespace ei {
                           const TQuaternion<T>& _q1,
                           T _epsilon = T(1e-6)) noexcept // TESTED
     {
-        return abs(_q0.r - _q1.r) <= _epsilon
-            && abs(_q0.i - _q1.i) <= _epsilon
-            && abs(_q0.j - _q1.j) <= _epsilon
-            && abs(_q0.k - _q1.k) <= _epsilon;
+        TQuaternion<T> qt = _q0.r * _q1.r < 0.0f ? -_q1 : _q1;
+        return abs(_q0.r - qt.r) <= _epsilon
+            && abs(_q0.i - qt.i) <= _epsilon
+            && abs(_q0.j - qt.j) <= _epsilon
+            && abs(_q0.k - qt.k) <= _epsilon;
     }
 
     // ********************************************************************* //
@@ -538,26 +537,6 @@ namespace ei {
 
         constexpr bool isRighthanded() const { return sgn(m_quaternion.r) == 1.0f; }  // TESTED
         constexpr bool isLefthanded() const { return sgn(m_quaternion.r) == -1.0f; }  // TESTED
-
-        /* This cannot work. See above.
-        constexpr TOrthoSpace& operator *= (const TOrthoSpace _other) noexcept
-        {
-            // Two reflections cancel themself: same sign - RHS afterwards
-            T handness = sgn(m_quaternion.r) * sgn(_other.m_quaternion.r);
-            // Multiply rotations only
-            m_quaternion = TQuaternion<T>(*this) * TQuaternion<T>(_other);
-            // Assert the normalization condition again and store handness.
-            if(sgn(m_quaternion.r) < static_cast<T>(0))
-                m_quaternion = -m_quaternion;
-            if(handness < static_cast<T>(0))
-                m_quaternion.r = -m_quaternion.r;
-            return *this;
-        }
-
-        constexpr TOrthoSpace operator * (const TOrthoSpace& _other) const noexcept
-        {
-            return OrthoSpace(*this) *= _other;
-        }*/
     private:
         // Use a standard quaternion.
         // The sign of the determinant can be encoded in the r component.
