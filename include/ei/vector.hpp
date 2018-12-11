@@ -96,7 +96,7 @@ namespace ei {
         constexpr explicit Matrix(const Matrix<T1,1,N1>& _mat1) noexcept // TESTED
         {
             for(unsigned i = 0; i < N1; ++i)
-                this->m_data[i] = _mat1[i];
+                this->m_data[i] = static_cast<T>(_mat1[i]);
             for(unsigned i = N1; i < N; ++i)
                 this->m_data[i] = static_cast<T>(1);
         }
@@ -104,7 +104,7 @@ namespace ei {
         constexpr explicit Matrix(const Matrix<T1,M1,1>& _mat1) noexcept // TESTED
         {
             for(unsigned i = 0; i < M1; ++i)
-                this->m_data[i] = _mat1[i];
+                this->m_data[i] = static_cast<T>(_mat1[i]);
             for(unsigned i = M1; i < M; ++i)
                 this->m_data[i] = static_cast<T>(1);
         }
@@ -117,7 +117,7 @@ namespace ei {
                 {
                     // Copy MxN part
                     for(unsigned x = 0; x < N1; ++x)
-                        this->m_data[j++] = _mat1[i++];
+                        this->m_data[j++] = static_cast<T>(_mat1[i++]);
                     // New elements at the end of the row is 0
                     for(unsigned x = N1; x < N; ++x)
                         this->m_data[j++] = static_cast<T>(0);
