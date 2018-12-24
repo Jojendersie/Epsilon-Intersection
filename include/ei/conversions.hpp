@@ -235,4 +235,61 @@ namespace ei {
         return res;
     }
 
+
+    // ********************************************************************* //
+    // Alias types to convert from and to the different models above         //
+    // ********************************************************************* //
+    struct R11G11B10
+    {
+        uint32 code;
+
+        constexpr explicit R11G11B10(const Vec3 & _v) :
+            code(packR11G11B10(_v))
+        {}
+
+        constexpr explicit operator Vec3 () const {
+            return unpackR11G11B10(code);
+        }
+    };
+
+    struct RGB9E5
+    {
+        uint32 code;
+
+        constexpr explicit RGB9E5(const Vec3 & _v) :
+            code(packRGB9E5(_v))
+        {}
+
+        constexpr explicit operator Vec3 () const {
+            return unpackRGB9E5(code);
+        }
+    };
+
+    struct RGB8E8
+    {
+        uint32 code;
+
+        constexpr explicit RGB8E8(const Vec3 & _v) :
+            code(packRGB8E8(_v))
+        {}
+
+        constexpr explicit operator Vec3 () const {
+            return unpackRGB8E8(code);
+        }
+    };
+
+
+    struct OctahedralDir32
+    {
+        uint32 code;
+
+        constexpr explicit OctahedralDir32(const Vec3 & _v) :
+            code(packOctahedral32(_v))
+        {}
+
+        constexpr explicit operator Vec3 () const {
+            return unpackOctahedral32(code);
+        }
+    };
+
 } // namespace ei
