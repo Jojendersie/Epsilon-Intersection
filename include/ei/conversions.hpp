@@ -8,7 +8,7 @@
 namespace ei {
 
     // Conversion of sRGB to linear RGB (single component)
-    inline float sRgbToRgb(float _c)  // TESTED
+    constexpr inline float sRgbToRgb(float _c)  // TESTED
     {
         if(_c <= 0.0031308f)
             return _c * 12.92f;
@@ -16,19 +16,19 @@ namespace ei {
     }
 
     // Conversion of sRGB to linear RGB (two components)
-    inline Vec2 sRgbToRgb(const Vec2 & _sRg)
+    constexpr inline Vec2 sRgbToRgb(const Vec2 & _sRg)
     {
         return Vec2{sRgbToRgb(_sRg.r), sRgbToRgb(_sRg.g)};
     }
 
     // Conversion of sRGB to linear RGB
-    inline Vec3 sRgbToRgb(const Vec3 & _sRgb)  // TESTED
+    constexpr inline Vec3 sRgbToRgb(const Vec3 & _sRgb)  // TESTED
     {
         return Vec3{sRgbToRgb(_sRgb.r), sRgbToRgb(_sRgb.g), sRgbToRgb(_sRgb.b)};
     }
 
     // Conversion of linear RGB to sRGB (single component)
-    inline float rgbToSRgb(float _c)  // TESTED
+    constexpr inline float rgbToSRgb(float _c)  // TESTED
     {
         if(_c <= 0.04045f)
             return _c / 12.92f;
@@ -36,21 +36,24 @@ namespace ei {
     }
 
     // Conversion of linear RGB to sRGB (two components)
-    inline Vec2 rgbToSRgb(const Vec2 & _rg)
+    constexpr inline Vec2 rgbToSRgb(const Vec2 & _rg)
     {
         return Vec2{rgbToSRgb(_rg.r), rgbToSRgb(_rg.g)};
     }
 
     // Conversion of linear RGB to sRGB
-    inline Vec3 rgbToSRgb(const Vec3 & _rgb)  // TESTED
+    constexpr inline Vec3 rgbToSRgb(const Vec3 & _rgb)  // TESTED
     {
         return Vec3{rgbToSRgb(_rgb.r), rgbToSRgb(_rgb.g), rgbToSRgb(_rgb.b)};
     }
 
 
     // Conversion of CIE XYZ to linear RGB
+    // D65 reference white.
+    // Linear RGB means ITU-R BT.709 without the gamma correction part.
+    // Color spectrum 35.9% of visible spectrum.
     // http://brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
-    inline Vec3 xyzToRgb(const Vec3 & _xyz)  // TESTED
+    constexpr inline Vec3 xyzToRgb(const Vec3 & _xyz)  // TESTED
     {
         constexpr Mat3x3 XYZ_TO_RGB {
              3.2404542f, -1.5371385f, -0.4985314f,
@@ -61,7 +64,7 @@ namespace ei {
     }
 
     // Conversion of linear RGB to CIE XYZ
-    inline Vec3 rgbToXyz(const Vec3 & _rgb)  // TESTED
+    constexpr inline Vec3 rgbToXyz(const Vec3 & _rgb)  // TESTED
     {
         constexpr Mat3x3 RGB_TO_XYZ {
             0.4124564f, 0.3575761f, 0.1804375f,
@@ -71,20 +74,89 @@ namespace ei {
         return RGB_TO_XYZ * _rgb;
     }
 
+    // Conversion of CIE XYZ to Adobe RGB (1998)
+    // D65 reference white.
+    // Color spectrum 52.1% of visible spectrum.
+    constexpr inline Vec3 xyzToAdobeRgb(const Vec3 & _xyz)
+    {
+        constexpr Mat3x3 XYZ_TO_ADOBE_RGB {
+             2.0413690, -0.5649464, -0.3446944,
+            -0.9692660,  1.8760108,  0.0415560,
+             0.0134474, -0.1183897,  1.0154096
+        };
+        return XYZ_TO_ADOBE_RGB * _xyz;
+    }
+
+    // Conversion of Adobe RGB to CIE XYZ
+    constexpr inline Vec3 adobeRgbToXyz(const Vec3 & _rgb)
+    {
+        constexpr Mat3x3 ADOBE_RGB_TO_XYZ {
+            0.5767309, 0.1855540, 0.1881852,
+            0.2973769, 0.6273491, 0.0752741,
+            0.0270343, 0.0706872, 0.9911085
+        };
+        return ADOBE_RGB_TO_XYZ * _rgb;
+    }
+
+    // Conversion of CIE XYZ to ITU-R BT.2020 RGB
+    // D65 reference white.
+    // Color spectrum 75.8% of visible spectrum.
+    constexpr inline Vec3 xyzToRec2020Rgb(const Vec3 & _xyz)
+    {
+        constexpr Mat3x3 XYZ_TO_REC2020RGB {
+             1.7166512, -0.3556708, -0.2533663,
+            -0.6666844,  1.6164812,  0.0157685,
+             0.0176399, -0.0427706,  0.9421031
+        };
+        return XYZ_TO_REC2020RGB * _xyz;
+    }
+
+    // Conversion of ITU-R BT.2020 RGB to CIE XYZ
+    constexpr inline Vec3 rec2020RgbToXyz(const Vec3 & _rgb)
+    {
+        constexpr Mat3x3 REC2020RGB_TO_XYZ {
+            0.6369580, 0.1446169, 0.1688810,
+            0.2627002, 0.6779981, 0.0593017,
+            0.0f,      0.0280727, 1.0609851
+        };
+        return REC2020RGB_TO_XYZ * _rgb;
+    }
+
 
     // Conversion of YCgCo color space to linear RGB
-    inline Vec3 yCgCoToRgb(const Vec3 & _yCgCo)
+    constexpr inline Vec3 yCgCoToRgb(const Vec3 & _yCgCo)
     {
         float tmp = _yCgCo.x - _yCgCo.y;
         return Vec3(tmp + _yCgCo.z, _yCgCo.x + _yCgCo.y, tmp - _yCgCo.z);
     }
 
     // Conversion of linear RGB to YCgCo color space
-    inline Vec3 rgbToYCgCo(const Vec3 & _rgb)
+    constexpr inline Vec3 rgbToYCgCo(const Vec3 & _rgb)
     {
         return Vec3{(_rgb.r + _rgb.b) * 0.25f + _rgb.g * 0.5f,
                     (_rgb.r + _rgb.b) * -0.25f + _rgb.g * 0.5f,
                     (_rgb.r - _rgb.b) * 0.5f};
+    }
+
+    // Conversion of YCbCr color space to linear RGB.
+    // Colorspace used by JPEG, MPEG, ...
+    // This conversion does not include the offset (0,128,128 or similar).
+    constexpr inline Vec3 yCbCrToRgb(const Vec3 & _yCbCr)
+    {
+        return Vec3{_yCbCr.x                       + 1.402 * _yCbCr.z,
+                    _yCbCr.x - 0.344136 * _yCbCr.y - 0.714136 * _yCbCr.z,
+                    _yCbCr.x + 1.772 * _yCbCr.y};
+    }
+
+    // Conversion of linear RGB to YCbCr.
+    constexpr inline Vec3 rgbToYCbCr(const Vec3 & _rgb)
+    {
+        constexpr Mat3x3 RGB_TO_YCBCR {
+             0.299,     0.587,     0.114,
+            -0.168736, -0.331264,  0.5,
+             0.5,      -0.418688, -0.081312
+        };
+        return RGB_TO_YCBCR * _rgb;
     }
 
 
@@ -93,7 +165,7 @@ namespace ei {
     // Discretize a [0,1]^3 vector into a single integer with 11.11.10 bits
     // for the components.
     // Note: This is not the R11G11B10F (float) format from textures!
-    inline uint32 packR11G11B10(Vec3 _v)  // TESTED
+    constexpr inline uint32 packR11G11B10(Vec3 _v)  // TESTED
     {
         eiAssertWeak(all(greatereq(_v, 0.0f)) && all(lesseq(_v, 1.0f)), "Unclamped color cannot be converted into R11G11B10 format!");
         _v *= Vec3{2047.0, 2047.0, 1023.0};
@@ -102,7 +174,7 @@ namespace ei {
 
     // Unpack a 11.11.10 bit descretized vector into a full Vec3
     // Note: This is not the R11G11B10F (float) format from textures!
-    inline Vec3 unpackR11G11B10(uint32 _code)  // TESTED
+    constexpr inline Vec3 unpackR11G11B10(uint32 _code)  // TESTED
     {
         return Vec3 {
             float(_code >> 21) / 2047.0,
@@ -114,7 +186,7 @@ namespace ei {
 
     // Pack an HDR color value into RGB9E5 shared exponent format
     // See https://www.khronos.org/registry/OpenGL/extensions/EXT/EXT_texture_shared_exponent.txt
-    inline uint32 packRGB9E5(const Vec3 & _v)
+    constexpr inline uint32 packRGB9E5(const Vec3 & _v)
     {
         eiAssertWeak(all(greatereq(_v, 0.0f)), "Vector must be positive to be packed into RGB9E5");
         float maxComp = ei::max(_v);
@@ -150,7 +222,7 @@ namespace ei {
 
     // Pack an HDR color value into RGB8E8 shared exponent format.
     // This is used for example by the *.hdr file format
-    inline uint32 packRGB8E8(const Vec3 & _v) noexcept
+    constexpr inline uint32 packRGB8E8(const Vec3 & _v) noexcept
     {
         eiAssertWeak(all(greatereq(_v, 0.0f)), "Vector must be positive to be packed into RGB8E8");
         float maxComp = ei::max(_v);
@@ -177,38 +249,35 @@ namespace ei {
     }
 
     // Pack a direction vector into a 32 bit integer using octahedral mapping
-    inline uint32 packOctahedral32(const Vec3 & _d)  // TESTED
+    constexpr inline uint32 packOctahedral32(const Vec3 & _d)  // TESTED
     {
         eiAssertWeak(approx(len(_d), 1.0f), "Can only pack direction vectors using octahedral mapping");
         float l1norm = abs(_d.x) + abs(_d.y) + abs(_d.z);
-        float u,v;
-        if(_d.z >= 0) {
-            u = _d.x / l1norm;
-            v = _d.y / l1norm;
-        } else { // warp lower hemisphere
-            u = (1 - abs(_d.y) / l1norm) * (_d.x >= 0 ? 1 : -1);
-            v = (1 - abs(_d.x) / l1norm) * (_d.y >= 0 ? 1 : -1);
-        }
+        float u = (_d.z >= 0) ? _d.x / l1norm
+                              : (1 - abs(_d.y) / l1norm) * (_d.x >= 0 ? 1 : -1);    // warp lower hemisphere
+        float v = (_d.z >= 0) ? _d.y / l1norm
+                              : (1 - abs(_d.x) / l1norm) * (_d.y >= 0 ? 1 : -1);    // warp lower hemisphere
         return uint16(floor(u * 32767.0f + 0.5f))
             | (uint32(floor(v * 32767.0f + 0.5f)) << 16);
     }
 
     // Unpack a direction vector from octahedral mapping
-    inline Vec3 unpackOctahedral32(uint32 _code)  // TESTED
+    constexpr inline Vec3 unpackOctahedral32(uint32 _code)  // TESTED
     {
         float u = int16(_code & 0xffff) / 32767.0f;
         float v = int16(_code >> 16) / 32767.0f;
         //u = u * 2 - 1;
         //v = v * 2 - 1;
-        float x, y, z = 1 - abs(u) - abs(v);
+        float z = 1 - abs(u) - abs(v);
         if(z >= 0) {
-            x = u;
-            y = v;
+            float x = u;
+            float y = v;
+            return normalize(Vec3{x,y,z});
         } else {
-            x = (1 - abs(v)) * (u >= 0 ? 1 : -1);
-            y = (1 - abs(u)) * (v >= 0 ? 1 : -1);
+            float x = (1 - abs(v)) * (u >= 0 ? 1 : -1);
+            float y = (1 - abs(u)) * (v >= 0 ? 1 : -1);
+            return normalize(Vec3{x,y,z});
         }
-        return normalize(Vec3{x,y,z});
     }
 
     // Use fixed point discretization to pack an already packed tangent space further.
@@ -260,7 +329,7 @@ namespace ei {
             code(packRGB9E5(_v))
         {}
 
-        constexpr explicit operator Vec3 () const {
+        explicit operator Vec3 () const {
             return unpackRGB9E5(code);
         }
     };
@@ -273,7 +342,7 @@ namespace ei {
             code(packRGB8E8(_v))
         {}
 
-        constexpr explicit operator Vec3 () const {
+        explicit operator Vec3 () const {
             return unpackRGB8E8(code);
         }
     };
