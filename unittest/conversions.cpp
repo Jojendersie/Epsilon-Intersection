@@ -30,6 +30,22 @@ bool test_conversions()
         TEST(approx(xyz1, rgbToXyz(rgb1)), "Conversion XYZ->RGB->XYZ not reciprocal.");
     }
 
+
+    { // HSV
+        Vec3 brownRGB{0.36f, 0.18f, 0.09f};
+        Vec3 brownHSV{0.0555555555f, 0.75f, 0.36f};
+        Vec3 magentaRGB{1.0f, 0.0f, 1.0f};
+        Vec3 magentaHSV{0.833333333f, 1.0f, 1.0f};
+        Vec3 hdrgreenRGB{0.0f, 12.0f, 0.0f};
+        Vec3 hdrgreenHSV{0.333333333f, 1.0f, 12.0f};
+        TEST(approx(rgbToHsv(brownRGB), brownHSV), "Conversion RGB->HSV (brown) failed.");
+        TEST(approx(hsvToRgb(brownHSV), brownRGB), "Conversion HSV->RGB (brown) failed.");
+        TEST(approx(rgbToHsv(magentaRGB), magentaHSV), "Conversion RGB->HSV (magenta) failed.");
+        TEST(approx(hsvToRgb(magentaHSV), magentaRGB), "Conversion HSV->RGB (magenta) failed.");
+        TEST(approx(rgbToHsv(hdrgreenRGB), hdrgreenHSV), "Conversion RGB->HSV (green) failed.");
+        TEST(approx(hsvToRgb(hdrgreenHSV), hdrgreenRGB), "Conversion HSV->RGB (green) failed.");
+    }
+
     { // Vec3 <-> R11G11B10
         Vec3 rgb0{0.5f, 0.5f, 0.5f};
         uint32 pack0 = packR11G11B10(rgb0);

@@ -161,6 +161,61 @@ namespace ei {
 
 
 
+    // Converts an RGB value in [0,1]^2x[0,x] to HSV in [0,x]^3
+    // Yes, HSV is capable of HDR colors with greater values.
+    constexpr inline Vec3 rgbToHsv(const Vec3 & _rgb) // TESTED
+    {
+        eiAssert(_rgb >= 0.0f, "Negative color value not allowed.");
+        if(_rgb.r == _rgb.g && _rgb.r == _rgb.b)        // R=G=B
+            return Vec3 { 0.0f, 0.0f, _rgb.r };
+
+        if(_rgb.r >= _rgb.g && _rgb.r >= _rgb.b)          // R max
+        {
+            float m = min(_rgb.g, _rgb.b);
+            float h = (_rgb.g - _rgb.b) / (_rgb.r - m);
+            if(h < 0.0f) h += 6.0f;
+            float s = (_rgb.r - m) / _rgb.r;
+            return Vec3 { h / 6.0f, s, _rgb.r };
+        }
+        
+        if(_rgb.g >= _rgb.r && _rgb.g >= _rgb.b)        // G max
+        {
+            float m = min(_rgb.r, _rgb.b);
+            float h = 2.0f + (_rgb.b - _rgb.r) / (_rgb.g - m);
+            float s = (_rgb.g - m) / _rgb.g;
+            return Vec3 { h / 6.0f, s, _rgb.g };
+        }
+
+        // B max
+        float m = min(_rgb.r, _rgb.g);
+        float h = 4.0f + (_rgb.r - _rgb.g) / (_rgb.b - m);
+        float s = (_rgb.b - m) / _rgb.b;
+        return Vec3 { h / 6.0f, s, _rgb.b };
+    }
+
+    // Converts an HSV value in [0,1]^2x[0,x] to RGB [0,x]^3
+    // Yes, HSV is capable of HDR colors with greater values.
+    constexpr inline Vec3 hsvToRgb(const Vec3 & _hsv) // TESTED
+    {
+        eiAssert(_hsv.x >= 0.0f && _hsv.x <= 1.0f, "Hue out of range");
+        eiAssert(_hsv.y >= 0.0f && _hsv.y <= 1.0f, "Saturation out of range");
+        eiAssert(_hsv.z >= 0.0f, "Value out of range");
+        float chroma = _hsv.y * _hsv.z;
+        float h = _hsv.x * 3.0f; // instead mod(2) use half the factor and frac
+        float x = chroma * (1.0f - ei::abs(frac(h) * 2.0f - 1.0f));
+        float m = _hsv.z - chroma;
+        chroma += m;
+        x += m;
+        if(h <= 0.5f) return Vec3 { chroma, x, m };
+        if(h <= 1.0f) return Vec3 { x, chroma, m };
+        if(h <= 1.5f) return Vec3 { m, chroma, x };
+        if(h <= 2.0f) return Vec3 { m, x, chroma };
+        if(h <= 2.5f) return Vec3 { x, m, chroma };
+        return Vec3 { chroma, m, x };
+    }
+
+
+
 
     // Discretize a [0,1]^3 vector into a single integer with 11.11.10 bits
     // for the components.
