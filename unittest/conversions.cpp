@@ -66,6 +66,21 @@ bool test_conversions()
         TEST(pack1 == packRGB9E5(rgb1), "Conversion RGB9E5->Vec3->RGB9E5 not reciprocal.");
     }
 
+    { // L*a*b*
+        const Vec3 xyz0 = rgbToXyz(Vec3{ 1.0f, 1.0f, 1.0f });
+        const Vec3 xyz1 = rgbToXyz(Vec3{ 0.0f, 0.0f, 0.0f });
+        const Vec3 xyz2 = rgbToXyz(Vec3{ 0.0f, 0.5f, 0.0f });
+        const Vec3 xyz3 = rgbToXyz(Vec3{ 3.0f, 3.0f, 0.0f });
+        const Vec3 lab0 = xyzToLab(xyz0);
+        const Vec3 lab1 = xyzToLab(xyz1);
+        const Vec3 lab2 = xyzToLab(xyz2);
+        const Vec3 lab3 = xyzToLab(xyz3);
+        TEST(approx(lab0, Vec3{1.0f, 0.0f, 0.0f}), "L*a*b* white wrong.");
+        TEST(approx(lab1, Vec3{0.0f, 0.0f, 0.0f}), "L*a*b* black wrong.");
+        TEST(approx(labToXyz(lab2), xyz2), "XYZ -> L*a*b* -> XYZ for xyz2 wrong.");
+        TEST(approx(labToXyz(lab3), xyz3), "XYZ -> L*a*b* -> XYZ for xyz3 wrong.");
+    }
+
     { // Octahedral
         Vec3 v0 = normalize(Vec3{ 1.0f, 0.0f, 0.0f });
         Vec3 v1 = normalize(Vec3{ 0.0f, 1.0f, 0.0f });

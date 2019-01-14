@@ -215,6 +215,37 @@ namespace ei {
     }
 
 
+    // Conversion from CIE XYZ to L*a*b* (CIELAB).
+    // Other than the standardization this methods expects [0,1] normalized colors
+    // and not [0,100].
+    // Output value are within [0,1] x [-1.7,1] x [-1,1.5] for LDR colors.
+    // White point D65.
+    constexpr inline Vec3 xyzToLab(const Vec3 & _xyz) // TESTED
+    {
+        //constexpr Vec3 XYZn {95.047f, 100.0f, 108.883f}; // D65 2°
+        constexpr Vec3 XYZn {0.950470030f, 1.00000012f, 1.08882999f}; // D65 2°
+        const Vec3 ratio = _xyz / XYZn;
+        const float xCurt = ratio.x <= 0.008856452f ? 7.787037037f * ratio.x + 0.137931034f : pow(ratio.x, 1.0f/3.0f);
+        const float yCurt = ratio.y <= 0.008856452f ? 7.787037037f * ratio.y + 0.137931034f : pow(ratio.y, 1.0f/3.0f);
+        const float zCurt = ratio.z <= 0.008856452f ? 7.787037037f * ratio.z + 0.137931034f : pow(ratio.z, 1.0f/3.0f);
+        return Vec3 {1.16f * yCurt - 0.16f, 5.0f * (xCurt - yCurt), 2.0f * (yCurt - zCurt)};
+    }
+
+    constexpr inline Vec3 labToXyz(const Vec3 & _lab) // TESTED
+    {
+        constexpr Vec3 XYZn {0.950470030f, 1.00000012f, 1.08882999f}; // D65 2°
+        const float yCurt = (_lab.x + 0.16f) / 1.16f;
+        const float xCurt = _lab.y / 5.0f + yCurt;
+        const float zCurt = yCurt - _lab.z / 2.0f;
+        const Vec3 ratio {
+            xCurt <= 0.206896554f ? (xCurt - 0.137931034f) / 7.787037037f : xCurt * xCurt * xCurt,
+            yCurt <= 0.206896554f ? (yCurt - 0.137931034f) / 7.787037037f : yCurt * yCurt * yCurt,
+            zCurt <= 0.206896554f ? (zCurt - 0.137931034f) / 7.787037037f : zCurt * zCurt * zCurt
+        };
+        return ratio * XYZn;
+    }
+
+
 
 
     // Discretize a [0,1]^3 vector into a single integer with 11.11.10 bits
