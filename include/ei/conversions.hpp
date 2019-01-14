@@ -245,6 +245,44 @@ namespace ei {
         return ratio * XYZn;
     }
 
+    // Conversion from CIE XYZ to IPT (Intensity - Protan - Tritan).
+    // This colorspace is more uniform than L*a*b* and has a better decorrelation.
+    // Output value are within [0,1] x [-1,1]² for LDR colors.
+    // White point D65.
+    constexpr inline Vec3 xyzToIpt(const Vec3 & _xyz)
+    {
+        constexpr Mat3x3 XYZ_TO_LMS {
+             0.4002f, 0.7075f, -0.0807f,
+            -0.2280f, 1.1500f,  0.0612f,
+             0.0000f, 0.0000f,  0.9184f
+        };
+        const Vec3 lms = XYZ_TO_LMS * _xyz;
+        const Vec3 lmsp = ei::sgn(lms) * pow(ei::abs(lms), 0.43f);
+        constexpr Mat3x3 LMSP_TO_IPT {
+            0.4000f,  0.4000f,  0.2000f,
+            4.4550f, -4.8510f,  0.3960f,
+            0.8056f,  0.3572f, -1.1628f
+        };
+        return LMSP_TO_IPT * lmsp;
+    }
+
+    constexpr inline Vec3 iptToXyz(const Vec3 & _ipt)
+    {
+        constexpr Mat3x3 IPT_TO_LMSP {
+            1.8502f, -1.1383f,  0.2384f,
+            0.3668f,  0.6439f, -0.0107f,
+            0.0000f,  0.0000f,  1.0889f
+        };
+        const Vec3 lmsp = IPT_TO_LMSP * _ipt;
+        const Vec3 lms = ei::sgn(lms) * pow(ei::abs(lms), 1.0f/0.43f);
+        constexpr Mat3x3 LMS_TO_XYZ {
+            1.0000f,  0.0976f,  0.2052f,
+            1.0000f, -1.1139f,  0.1332f,
+            1.0000f,  0.0326f, -0.6769f
+        };
+        return LMS_TO_XYZ * lms;
+    }
+
 
 
 
