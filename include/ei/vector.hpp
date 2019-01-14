@@ -207,6 +207,26 @@ namespace ei {
             static_assert((FROM >= 0) && (FROM < TO) && (TO <= N), "Invalid parameter range.");
             return *reinterpret_cast<const Matrix<T, 1, TO - FROM>*>(this->m_data + FROM);
         }
+        template<uint R_FROM, uint R_TO, uint C_FROM, uint C_TO>
+        constexpr Matrix<T, R_TO - R_FROM, C_TO - C_FROM> submat() const noexcept // TESTED
+        {
+            static_assert((R_FROM >= 0) && (R_FROM < R_TO) && (R_TO <= M), "Invalid parameter range for rows.");
+            static_assert((C_FROM >= 0) && (C_FROM < C_TO) && (C_TO <= N), "Invalid parameter range for columns.");
+            Matrix<T, R_TO - R_FROM, C_TO - C_FROM> result;
+            uint readIdx = R_FROM * N + C_FROM;
+            uint writeIdx = 0;
+            for(uint r = R_FROM; r < R_TO; ++r)
+            {
+                for(uint c = C_FROM; c < C_TO; ++c)
+                {
+                    result.m_data[writeIdx] = this->m_data[readIdx];
+                    ++writeIdx;
+                    ++readIdx;
+                }
+                readIdx += N - (C_TO - C_FROM);
+            }
+            return result;
+        }
 
         /// \brief Add two matrices component wise.
         /// \details Addition is commutative.

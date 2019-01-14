@@ -172,6 +172,14 @@ bool test_matrix()
         m3.subrow<0,3>() = m1;
         TEST( m3 == m4, "Range access for row vectors failed!" );
         TEST( (m5.subcol<1,3>() == m0), "Range access for column vectors failed!" );
+
+        Matrix<int, 3, 4> m6(1, 2, 3, 4,
+                             5, 6, 7, 8,
+                             9, 0, 1, 2);
+        Matrix<int, 2, 2> m6s1 = m6.submat<1,3, 0,2>();
+        Matrix<int, 3, 1> m6s2 = m6.submat<0,3, 3,4>();
+        TEST( (m6s1 == Matrix<int, 2, 2>(5, 6, 9, 0)), "submat()->2x2 access operator failed!" );
+        TEST( (m6s2 == Matrix<int, 3, 1>(4, 8, 2)), "submat()->3x1 access operator failed!" );
     }
 
     // ********************************************************************* //
