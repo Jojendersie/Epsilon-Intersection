@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "vector.hpp"
+#include "quaternion.hpp"
 
 namespace ei {
 
@@ -406,7 +407,7 @@ namespace ei {
             } else if(_numPoints == 2) {
                 Vec3 connection = _points[1] - _points[0];
                 halfSides = Vec3(len(connection) * 0.5f, 0.0f, 0.0f);
-                orientation = Quaternion(connection/halfSides.x, Vec3(1.0f, 0.0f, 0.0f));
+                orientation = Quaternion(normalize(connection/halfSides.x), Vec3(1.0f, 0.0f, 0.0f));
                 center = _points[0] + 0.5f * connection;
             } else {
                 halfSides = Vec3(1e12f);

@@ -518,4 +518,88 @@ namespace ei {
         }
         return true;
     }
+
+
+    // ********************************************************************* //
+    //                 NORMALIZED INTEGERS (FIXED POINT)                     //
+    // ********************************************************************* //
+
+    /// \brief Storage type to discretize [-1,1] into a signed integer or [0,1]
+    ///      into an unsigned integer.
+    /// \details The encoding correctly represents -1, 0 and 1.
+    template<typename T, uint Bits = sizeof(T)*8>
+    struct NormalizedInt
+    {
+    private:
+        // Template helpers to get some compiletime contants
+        template<typename T1> struct MinInterval {
+            static constexpr float value = -1.0f;
+        };
+        template<> struct MinInterval<typename details::Int<sizeof(T)>::utype> {
+            static constexpr float value = 0.0f;
+        };
+        template<typename T1> struct MaxValue {
+            static constexpr uint64 value = 0xffffffffffffffffull >> (64u - Bits + 1u);
+        };
+        template<> struct MaxValue<typename details::Int<sizeof(T)>::utype> {
+            static constexpr uint64 value = 0xffffffffffffffffull >> (64u - Bits);
+        };
+    public:
+        static_assert(std::is_integral_v<T>, "NormalizedInt can only use integer types as basis type.");
+        static_assert(Bits <= sizeof(T)*8, "Base type as not enough bits.");
+        //static constexpr float INTERVAL_MIN = []{ if(std::is_signed_v<T>) return -1.0f; else return 0.0f; }();
+        static constexpr float INTERVAL_MIN = MinInterval<T>::value;
+        static constexpr float INTERVAL_MAX = 1.0f;
+        static constexpr uint BITS = Bits;
+        //static constexpr uint64 MAX_POSITIVE_VALUE = []{ if(std::is_signed_v<T>) return 1ull << (BITS-1); else return 1ull << BITS; }();
+        static constexpr uint64 MAX_POSITIVE_VALUE = MaxValue<T>::value;
+        static constexpr uint64 MASK = (1ull << BITS) - 1;
+
+        NormalizedInt() = default;
+
+        template<typename T1, typename = std::enable_if_t<std::is_integral_v<T> && BITS <= sizeof(T1)*8>>
+        constexpr explicit NormalizedInt(T1 v) noexcept : value(v & MASK)
+        {
+            // Signed types in 2-complement must have all significant bits set.
+            // This is violated if BITS < 8*sizeof(T).
+            if(value > MAX_POSITIVE_VALUE)
+                value |= 0xffffffffffffffffull << BITS;
+        }
+
+        constexpr explicit NormalizedInt(float v)
+        {
+            eiAssert(v >= INTERVAL_MIN && v <= INTERVAL_MAX, "Cannot map an integer outside the unit interval to nint");
+            value = floor(v * MAX_POSITIVE_VALUE + 0.5f) & MASK;
+        }
+
+        constexpr explicit NormalizedInt(double v)
+        {
+            eiAssert(v >= INTERVAL_MIN && v <= INTERVAL_MAX, "Cannot map an integer outside the unit interval to nint");
+            value = floor(v * MAX_POSITIVE_VALUE + 0.5) & MASK;
+        }
+
+        constexpr explicit operator float () const noexcept
+        {
+            return value / float(MAX_POSITIVE_VALUE);
+        }
+
+        constexpr explicit operator double () const noexcept
+        {
+            return value / double(MAX_POSITIVE_VALUE);
+        }
+
+        template<typename T1, typename = std::enable_if_t<std::is_integral_v<T> && BITS <= sizeof(T1)*8>>
+        constexpr explicit operator T1 () const noexcept { return T1(value); }
+    private:
+        T value;
+    };
+
+    using nint8 = NormalizedInt<int8>;
+    using nint16 = NormalizedInt<int16>;
+    using nint32 = NormalizedInt<int32>;
+    using nint64 = NormalizedInt<int64>;
+    using nuint8 = NormalizedInt<uint8>;
+    using nuint16 = NormalizedInt<uint16>;
+    using nuint32 = NormalizedInt<uint32>;
+    using nuint64 = NormalizedInt<uint64>;
 }

@@ -57,6 +57,7 @@ namespace ei { namespace details {
         union {
             struct { T x, y; };
             struct { T r, g; };
+            struct { T u, v; };
             T m_data[2];
         };
 
@@ -74,6 +75,7 @@ namespace ei { namespace details {
         union {
             struct { T x, y; };
             struct { T r, g; };
+            struct { T u, v; };
             T m_data[2];
         };
 

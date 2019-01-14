@@ -63,7 +63,7 @@ namespace ei {
         }
 
         /// \brief Forward to base constructors
-        template<typename T1>
+        template<typename T1, ENABLE_IF((!std::is_base_of_v<details::NonScalarType, T1>))>
         EIAPI constexpr explicit Matrix(T1 _a0) noexcept :
             details::Components<T,M,N>(_a0)
         {}
@@ -96,7 +96,7 @@ namespace ei {
         EIAPI constexpr explicit Matrix(const Matrix<T1,1,N1>& _mat1) noexcept // TESTED
         {
             for(unsigned i = 0; i < N1; ++i)
-                this->m_data[i] = _mat1[i];
+                this->m_data[i] = static_cast<T>(_mat1[i]);
             for(unsigned i = N1; i < N; ++i)
                 this->m_data[i] = static_cast<T>(1);
         }
@@ -104,7 +104,7 @@ namespace ei {
         EIAPI constexpr explicit Matrix(const Matrix<T1,M1,1>& _mat1) noexcept // TESTED
         {
             for(unsigned i = 0; i < M1; ++i)
-                this->m_data[i] = _mat1[i];
+                this->m_data[i] = static_cast<T>(_mat1[i]);
             for(unsigned i = M1; i < M; ++i)
                 this->m_data[i] = static_cast<T>(1);
         }
@@ -117,7 +117,7 @@ namespace ei {
                 {
                     // Copy MxN part
                     for(unsigned x = 0; x < N1; ++x)
-                        this->m_data[j++] = _mat1[i++];
+                        this->m_data[j++] = static_cast<T>(_mat1[i++]);
                     // New elements at the end of the row is 0
                     for(unsigned x = N1; x < N; ++x)
                         this->m_data[j++] = static_cast<T>(0);
@@ -206,6 +206,26 @@ namespace ei {
             static_assert(M == 1, "THIS must be a row vector.");
             static_assert((FROM >= 0) && (FROM < TO) && (TO <= N), "Invalid parameter range.");
             return *reinterpret_cast<const Matrix<T, 1, TO - FROM>*>(this->m_data + FROM);
+        }
+        template<uint R_FROM, uint R_TO, uint C_FROM, uint C_TO>
+        EIAPI constexpr Matrix<T, R_TO - R_FROM, C_TO - C_FROM> submat() const noexcept // TESTED
+        {
+            static_assert((R_FROM >= 0) && (R_FROM < R_TO) && (R_TO <= M), "Invalid parameter range for rows.");
+            static_assert((C_FROM >= 0) && (C_FROM < C_TO) && (C_TO <= N), "Invalid parameter range for columns.");
+            Matrix<T, R_TO - R_FROM, C_TO - C_FROM> result;
+            uint readIdx = R_FROM * N + C_FROM;
+            uint writeIdx = 0;
+            for(uint r = R_FROM; r < R_TO; ++r)
+            {
+                for(uint c = C_FROM; c < C_TO; ++c)
+                {
+                    result.m_data[writeIdx] = this->m_data[readIdx];
+                    ++writeIdx;
+                    ++readIdx;
+                }
+                readIdx += N - (C_TO - C_FROM);
+            }
+            return result;
         }
 
         /// \brief Add two matrices component wise.
@@ -471,536 +491,134 @@ namespace ei {
 
     /// \brief Test all components with respect to a scalar.
     template<typename T, uint M, uint N, typename T1>
-    EIAPI bool operator == (const Matrix<T,M,N>& _mat, T1 _s) noexcept // TESTED
+    EIAPI constexpr bool operator == (const Matrix<T,M,N>& _mat, T1 _s) noexcept // TESTED
         EI_CODE_GEN_MAT_SCALAR_BOOL_ALL_OP(==)
     template<typename T1, typename T, uint M, uint N>
-    EIAPI bool operator == (T1 _s, const Matrix<T,M,N>& _mat) noexcept // TESTED
+    EIAPI constexpr bool operator == (T1 _s, const Matrix<T,M,N>& _mat) noexcept // TESTED
         EI_CODE_GEN_SCALAR_MAT_BOOL_ALL_OP(==)
     template<typename T, uint M, uint N, typename T1>
-    EIAPI bool operator != (const Matrix<T,M,N>& _mat, T1 _s) noexcept // TESTED
+    EIAPI constexpr bool operator != (const Matrix<T,M,N>& _mat, T1 _s) noexcept // TESTED
     {
         for(uint i = 0; i < N * M; ++i)
             if(_mat[i] != _s) return true;
         return false;
     }
     template<typename T1, typename T, uint M, uint N>
-    EIAPI bool operator != (T1 _s, const Matrix<T,M,N>& _mat) noexcept // TESTED
+    EIAPI constexpr bool operator != (T1 _s, const Matrix<T,M,N>& _mat) noexcept // TESTED
     {
         for(uint i = 0; i < N * M; ++i)
             if(_s != _mat[i]) return true;
         return false;
     }
     template<typename T, uint M, uint N, typename T1>
-    EIAPI bool operator < (const Matrix<T,M,N>& _mat, T1 _s) noexcept // TESTED
+    EIAPI constexpr bool operator < (const Matrix<T,M,N>& _mat, T1 _s) noexcept // TESTED
         EI_CODE_GEN_MAT_SCALAR_BOOL_ALL_OP(<)
     template<typename T1, typename T, uint M, uint N>
-    EIAPI bool operator < (T1 _s, const Matrix<T,M,N>& _mat) noexcept // TESTED
+    EIAPI constexpr bool operator < (T1 _s, const Matrix<T,M,N>& _mat) noexcept // TESTED
         EI_CODE_GEN_SCALAR_MAT_BOOL_ALL_OP(<)
     template<typename T, uint M, uint N, typename T1>
-    EIAPI bool operator <= (const Matrix<T,M,N>& _mat, T1 _s) noexcept // TESTED
+    EIAPI constexpr bool operator <= (const Matrix<T,M,N>& _mat, T1 _s) noexcept // TESTED
         EI_CODE_GEN_MAT_SCALAR_BOOL_ALL_OP(<=)
     template<typename T1, typename T, uint M, uint N>
-    EIAPI bool operator <= (T1 _s, const Matrix<T,M,N>& _mat) noexcept // TESTED
+    EIAPI constexpr bool operator <= (T1 _s, const Matrix<T,M,N>& _mat) noexcept // TESTED
         EI_CODE_GEN_SCALAR_MAT_BOOL_ALL_OP(<=)
     template<typename T, uint M, uint N, typename T1>
-    EIAPI bool operator >= (const Matrix<T,M,N>& _mat, T1 _s) noexcept // TESTED
+    EIAPI constexpr bool operator >= (const Matrix<T,M,N>& _mat, T1 _s) noexcept // TESTED
         EI_CODE_GEN_MAT_SCALAR_BOOL_ALL_OP(>=)
     template<typename T1, typename T, uint M, uint N>
-    EIAPI bool operator >= (T1 _s, const Matrix<T,M,N>& _mat) noexcept // TESTED
+    EIAPI constexpr bool operator >= (T1 _s, const Matrix<T,M,N>& _mat) noexcept // TESTED
         EI_CODE_GEN_SCALAR_MAT_BOOL_ALL_OP(>=)
     template<typename T, uint M, uint N, typename T1>
-    EIAPI bool operator > (const Matrix<T,M,N>& _mat, T1 _s) noexcept // TESTED
+    EIAPI constexpr bool operator > (const Matrix<T,M,N>& _mat, T1 _s) noexcept // TESTED
         EI_CODE_GEN_MAT_SCALAR_BOOL_ALL_OP(>)
     template<typename T1, typename T, uint M, uint N>
-    EIAPI bool operator > (T1 _s, const Matrix<T,M,N>& _mat) noexcept // TESTED
+    EIAPI constexpr bool operator > (T1 _s, const Matrix<T,M,N>& _mat) noexcept // TESTED
         EI_CODE_GEN_SCALAR_MAT_BOOL_ALL_OP(>)
 
 
     /// \brief Compare component wise, if two matrices are identical.
     template<typename T, uint M, uint N>
-    EIAPI Matrix<bool,M,N> equal (const Matrix<T,M,N>& _mat0, const Matrix<T,M,N>& _mat1) noexcept // TESTED
+    EIAPI constexpr  Matrix<bool,M,N> equal (const Matrix<T,M,N>& _mat0, const Matrix<T,M,N>& _mat1) noexcept // TESTED
         EI_CODE_GEN_MAT_MAT_BOOL_OP(==)
     /// \brief Compare component wise, if two matrices are distinct.
     template<typename T, uint M, uint N>
-    EIAPI Matrix<bool,M,N> neq (const Matrix<T,M,N>& _mat0, const Matrix<T,M,N>& _mat1) noexcept // TESTED
+    EIAPI constexpr Matrix<bool,M,N> neq (const Matrix<T,M,N>& _mat0, const Matrix<T,M,N>& _mat1) noexcept // TESTED
         EI_CODE_GEN_MAT_MAT_BOOL_OP(!=)
     /// \brief Compare component wise, if elements are smaller or equal.
     template<typename T, uint M, uint N>
-    EIAPI Matrix<bool,M,N> lesseq (const Matrix<T,M,N>& _mat0, const Matrix<T,M,N>& _mat1) noexcept // TESTED
+    EIAPI constexpr Matrix<bool,M,N> lesseq (const Matrix<T,M,N>& _mat0, const Matrix<T,M,N>& _mat1) noexcept // TESTED
         EI_CODE_GEN_MAT_MAT_BOOL_OP(<=)
     /// \brief Compare component wise, if elements are smaller.
     template<typename T, uint M, uint N>
-    EIAPI Matrix<bool,M,N> less (const Matrix<T,M,N>& _mat0, const Matrix<T,M,N>& _mat1) noexcept // TESTED
+    EIAPI constexpr Matrix<bool,M,N> less (const Matrix<T,M,N>& _mat0, const Matrix<T,M,N>& _mat1) noexcept // TESTED
         EI_CODE_GEN_MAT_MAT_BOOL_OP(<)
     /// \brief Compare component wise, if elements are greater.
     template<typename T, uint M, uint N>
-    EIAPI Matrix<bool,M,N> greater (const Matrix<T,M,N>& _mat0, const Matrix<T,M,N>& _mat1) noexcept // TESTED
+    EIAPI constexpr Matrix<bool,M,N> greater (const Matrix<T,M,N>& _mat0, const Matrix<T,M,N>& _mat1) noexcept // TESTED
         EI_CODE_GEN_MAT_MAT_BOOL_OP(>)
     /// \brief Compare component wise, if elements are greater or equal.
     template<typename T, uint M, uint N>
-    EIAPI Matrix<bool,M,N> greatereq (const Matrix<T,M,N>& _mat0, const Matrix<T,M,N>& _mat1) noexcept // TESTED
+    EIAPI constexpr Matrix<bool,M,N> greatereq (const Matrix<T,M,N>& _mat0, const Matrix<T,M,N>& _mat1) noexcept // TESTED
         EI_CODE_GEN_MAT_MAT_BOOL_OP(>=)
 
     /// \brief Test if all components compare equal to a scalar.
     template<typename T, uint M, uint N, typename T1>
-    EIAPI Matrix<bool, M, N> equal (const Matrix<T,M,N>& _mat, T1 _s) noexcept // TESTED
+    EIAPI constexpr Matrix<bool, M, N> equal (const Matrix<T,M,N>& _mat, T1 _s) noexcept // TESTED
         EI_CODE_GEN_MAT_SCALAR_BOOL_OP(==)
     template<typename T1, typename T, uint M, uint N>
-    EIAPI Matrix<bool, M, N> equal (T1 _s, const Matrix<T,M,N>& _mat) noexcept // TESTED
+    EIAPI constexpr Matrix<bool, M, N> equal (T1 _s, const Matrix<T,M,N>& _mat) noexcept // TESTED
         EI_CODE_GEN_SCALAR_MAT_BOOL_OP(==)
     template<typename T, uint M, uint N, typename T1>
     /// \brief Test if any component is non equal to a scalar.
-    EIAPI Matrix<bool, M, N> neq (const Matrix<T,M,N>& _mat, T1 _s) noexcept // TESTED
+    EIAPI constexpr Matrix<bool, M, N> neq (const Matrix<T,M,N>& _mat, T1 _s) noexcept // TESTED
         EI_CODE_GEN_MAT_SCALAR_BOOL_OP(!=)
     template<typename T1, typename T, uint M, uint N>
-    EIAPI Matrix<bool, M, N> neq (T1 _s, const Matrix<T,M,N>& _mat) noexcept // TESTED
+    EIAPI constexpr Matrix<bool, M, N> neq (T1 _s, const Matrix<T,M,N>& _mat) noexcept // TESTED
         EI_CODE_GEN_SCALAR_MAT_BOOL_OP(!=)
     template<typename T, uint M, uint N, typename T1>
     /// \brief Test if all components compare to a scalar.
-    EIAPI Matrix<bool, M, N> less (const Matrix<T,M,N>& _mat, T1 _s) noexcept // TESTED
+    EIAPI constexpr Matrix<bool, M, N> less (const Matrix<T,M,N>& _mat, T1 _s) noexcept // TESTED
         EI_CODE_GEN_MAT_SCALAR_BOOL_OP(<)
     template<typename T1, typename T, uint M, uint N>
-    EIAPI Matrix<bool, M, N> less (T1 _s, const Matrix<T,M,N>& _mat) noexcept // TESTED
+    EIAPI constexpr Matrix<bool, M, N> less (T1 _s, const Matrix<T,M,N>& _mat) noexcept // TESTED
         EI_CODE_GEN_SCALAR_MAT_BOOL_OP(<)
     template<typename T, uint M, uint N, typename T1>
-    EIAPI Matrix<bool, M, N> lesseq (const Matrix<T,M,N>& _mat, T1 _s) noexcept // TESTED
+    EIAPI constexpr Matrix<bool, M, N> lesseq (const Matrix<T,M,N>& _mat, T1 _s) noexcept // TESTED
         EI_CODE_GEN_MAT_SCALAR_BOOL_OP(<=)
     template<typename T1, typename T, uint M, uint N>
-    EIAPI Matrix<bool, M, N> lesseq (T1 _s, const Matrix<T,M,N>& _mat) noexcept // TESTED
+    EIAPI constexpr Matrix<bool, M, N> lesseq (T1 _s, const Matrix<T,M,N>& _mat) noexcept // TESTED
         EI_CODE_GEN_SCALAR_MAT_BOOL_OP(<=)
     template<typename T, uint M, uint N, typename T1>
-    EIAPI Matrix<bool, M, N> greatereq (const Matrix<T,M,N>& _mat, T1 _s) noexcept // TESTED
+    EIAPI constexpr Matrix<bool, M, N> greatereq (const Matrix<T,M,N>& _mat, T1 _s) noexcept // TESTED
         EI_CODE_GEN_MAT_SCALAR_BOOL_OP(>=)
     template<typename T1, typename T, uint M, uint N>
-    EIAPI Matrix<bool, M, N> greatereq (T1 _s, const Matrix<T,M,N>& _mat) noexcept // TESTED
+    EIAPI constexpr Matrix<bool, M, N> greatereq (T1 _s, const Matrix<T,M,N>& _mat) noexcept // TESTED
         EI_CODE_GEN_SCALAR_MAT_BOOL_OP(>=)
     template<typename T, uint M, uint N, typename T1>
-    EIAPI Matrix<bool, M, N> greater (const Matrix<T,M,N>& _mat, T1 _s) noexcept // TESTED
+    EIAPI constexpr Matrix<bool, M, N> greater (const Matrix<T,M,N>& _mat, T1 _s) noexcept // TESTED
         EI_CODE_GEN_MAT_SCALAR_BOOL_OP(>)
     template<typename T1, typename T, uint M, uint N>
-    EIAPI Matrix<bool, M, N> greater (T1 _s, const Matrix<T,M,N>& _mat) noexcept // TESTED
+    EIAPI constexpr Matrix<bool, M, N> greater (T1 _s, const Matrix<T,M,N>& _mat) noexcept // TESTED
         EI_CODE_GEN_SCALAR_MAT_BOOL_OP(>)
 
+// Remove helper macros from vectordetailsA.hpp.
+#undef EI_CODE_GEN_MAT_MAT_OP
+#undef EI_CODE_GEN_MAT_UNARY_OP
+#undef EI_CODE_GEN_MAT_MAT_SEFL_OP
+#undef EI_CODE_GEN_MAT_SCALAR_SEFL_OP
+#undef EI_CODE_GEN_MAT_MAT_BOOL_OP
+#undef EI_CODE_GEN_MAT_SCALAR_OP
+#undef EI_CODE_GEN_SCALAR_MAT_OP
+#undef EI_CODE_GEN_MAT_SCALAR_BOOL_OP
+#undef EI_CODE_GEN_SCALAR_MAT_BOOL_OP
 
 
     // ********************************************************************* //
-    //                            QUATERNION TYPE                            //
-    // ********************************************************************* //
-    
-    // ********************************************************************* //
-    /// \brief 4D complex number equivalent for the representation of rotations
-    /// \details The normalized form has len(q) == 1 and r>0 (RHS) / r<0 (LHS).
-    ///     The second criteria makes the rotation unique because q and -q both
-    ///     represent the same rotation and allows including mirroring.
-    ///     This is not the standard way: Usual quaternions cannot handle
-    ///     mirroring!
-    template<typename T>
-    class TQuaternion: public details::NonScalarType
-    {
-    public:
-        /// \brief Construct uninitialized
-        constexpr TQuaternion() noexcept = default;
-
-        /// \brief Copy construction
-        constexpr TQuaternion( const TQuaternion& _other ) noexcept = default;
-        /// \brief Copying assignment
-        constexpr TQuaternion& operator = ( const TQuaternion& _rhs ) noexcept = default;
-
-        /// \brief Construct from normalized axis and angle
-        EIAPI constexpr TQuaternion( const Vec<T,3>& _axis, T _angle ) noexcept // TESTED
-        {
-            eiAssert( approx(lensq(_axis), static_cast<T>(1)), "Expected a normalized axis vector!" );
-            _angle *= 0.5f;
-            T sinA = sin(_angle);
-            r = cos(_angle);
-            // Assert normalization condition
-            if( r < static_cast<T>(0) ) {r = -r; sinA = -sinA;}
-            i = sinA * _axis.x;
-            j = sinA * _axis.y;
-            k = sinA * _axis.z;
-        }
-
-        /// \brief Create from Euler angles
-        /// \details The rotations are applied in the order x, y, z:
-        ///     rotationZ(_z) * rotationY(_y) * rotationX(_x)
-        EIAPI constexpr TQuaternion( T _x, T _y, T _z ) noexcept // TESTED
-        {
-            double halfAngle;
-
-            halfAngle = _x * 0.5;
-            double sinX = sin(halfAngle);
-            double cosX = cos(halfAngle);
-
-            halfAngle = _y * 0.5;
-            double sinY = sin(halfAngle);
-            double cosY = cos(halfAngle);
-
-            halfAngle = _z * 0.5;
-            double sinZ = sin(halfAngle);
-            double cosZ = cos(halfAngle);
-
-            double cZcY = cosZ * cosY;
-            double cZsY = cosZ * sinY;
-            double sZcY = sinZ * cosY;
-            double sZsY = sinZ * sinY;
-
-            i = T(sinX * cZcY - cosX * sZsY);
-            j = T(cosX * cZsY + sinX * sZcY);
-            k = T(cosX * sZcY - sinX * cZsY);
-            r = T(cosX * cZcY + sinX * sZsY);
-
-            // Assert normalization condition
-            if( r < static_cast<T>(0) )
-            {
-                r = -r;
-                i = -i;
-                j = -j;
-                k = -k;
-            }
-
-            //*this = normalize(*this);
-        }
-        EIAPI constexpr TQuaternion( const Vec<T,3>& _eulerAngles ) noexcept :
-            TQuaternion(_eulerAngles.x, _eulerAngles.y, _eulerAngles.z)
-        {}
-
-        /// \brief Create from rotation matrix (does a decomposition if the
-        ///     matrix contains scaling).
-        EIAPI constexpr TQuaternion( const Matrix<T,3,3>& _matrix ) noexcept : // TESTED
-            TQuaternion<T>(transpose(_matrix(0)), transpose(_matrix(1)), transpose(_matrix(2)))
-        {}
-
-        /// \brief Create from orthogonal basis vectors.
-        EIAPI constexpr TQuaternion( const Vec<T,3>& _xAxis, const Vec<T,3>& _yAxis, const Vec<T,3>& _zAxis ) noexcept 
-        {
-            // Check handness
-            //eiAssert(dot(cross(_xAxis, _yAxis), _m(2)) > 0.0f, "Quaternions cannot handle reflections. The matrix must be RHS.");
-            T handness = dot(cross(_xAxis, _yAxis), _zAxis);
-            Vec<T,3> zAxis;
-            if(handness < T(0)) zAxis = -_zAxis;
-            else zAxis = _zAxis;
-            eiAssert(approx(abs(handness), T(1), 1e-4f), "System is not orthonormal!");
-
-            // Build TQuaternion<T> from rotation matrix
-            // Src: http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/
-            T trace = _xAxis.x + _yAxis.y + zAxis.z;
-            if( trace > 0 )
-            {
-                float s = T(0.5) / sqrt( trace + T(1) );
-                i = (  zAxis.y - _yAxis.z ) * s;
-                j = ( _xAxis.z -  zAxis.x ) * s;
-                k = ( _yAxis.x - _xAxis.y ) * s;
-                r = T(0.25) / s;
-            } else {
-                if( _xAxis.x > _yAxis.y && _xAxis.x > zAxis.z )
-                {
-                    float s = T(2) * sqrt( T(1) + _xAxis.x - _yAxis.y - zAxis.z );
-                    i = T(0.25) * s;
-                    j = ( _xAxis.y + _yAxis.x ) / s;
-                    k = ( _xAxis.z +  zAxis.x ) / s;
-                    r = (  zAxis.y - _yAxis.z ) / s;
-                } else if( _yAxis.y > zAxis.z )
-                {
-                    float s = T(2) * sqrt( T(1) + _yAxis.y - _xAxis.x - zAxis.z );
-                    i = ( _xAxis.y + _yAxis.x ) / s;
-                    j = T(0.25) * s;
-                    k = ( _yAxis.z +  zAxis.y ) / s;
-                    r = ( _xAxis.z -  zAxis.x ) / s;
-                } else {
-                    float s = T(2) * sqrt( T(1) + zAxis.z - _xAxis.x - _yAxis.y );
-                    i = ( _xAxis.z +  zAxis.x ) / s;
-                    j = ( _yAxis.z +  zAxis.y ) / s;
-                    k = T(0.25) * s;
-                    r = ( _yAxis.x - _xAxis.y ) / s;
-                }
-            }//*/
-
-             /*r = sqrt( max( T(0), T(1) + _m.m00 + _m.m11 + _m.m22 ) ) * T(0.5);
-             i = sqrt( max( T(0), T(1) + _m.m00 - _m.m11 - _m.m22 ) ) * T(0.5) * sgn(_m.m21 - _m.m12);
-             j = sqrt( max( T(0), T(1) - _m.m00 + _m.m11 - _m.m22 ) ) * T(0.5) * sgn(_m.m02 - _m.m20);
-             k = sqrt( max( T(0), T(1) - _m.m00 - _m.m11 + _m.m22 ) ) * T(0.5) * sgn(_m.m10 - _m.m01);//*/
-
-            *this = normalize(*this);
-
-            // Assert additional normalization condition
-            if( r * handness < static_cast<T>(0) ) {i = -i; j = -j; k = -k; r = -r;}
-        }
-
-        /// \brief Create from TQuaternion coefficients
-        EIAPI constexpr TQuaternion( T _i, T _j, T _k, T _r ) noexcept :
-            i(_i), j(_j), k(_k), r(_r)
-        {}
-
-        /// \brief Rotate from vector to vector (rotated such that the from
-        ///     vector is aligned with the to vector).
-        /// \param [in] _from One certain direction vector before rotation.
-        /// \param [in] _to Target direction vector. The from direction should
-        ///     be aligned with the target after rotation.
-        EIAPI constexpr TQuaternion( const Vec<T,3>& _from, const Vec<T,3>& _to ) noexcept // TESTED
-        {
-            Vec<T,3> from = normalize(_from);
-            Vec<T,3> to = normalize(_to);
-            // half angle trick from http://physicsforgames.blogspot.de/2010/03/quaternion-tricks.html
-            Vec<T,3> half = normalize(from + to);
-            // Opposite vectors or one vector 0.0 -> 180° rotation
-            if(half.x != half.x)
-            {
-                if(approx(ei::abs(from.y), static_cast<T>(1)))
-                    half = Vec<T,3>(0, 0, 1);
-                else half = normalize(cross(from, Vec<T,3>(0, 1, 0)));
-            }
-
-            // cos(theta) = dot product since both vectors are normalized
-            r = dot(from, half);
-            eiAssert(r >= T(0), "Normalization condition violated!");
-            // Axis from cross product -> already multiplied with sin(theta)
-            i = from.y*half.z - from.z*half.y;
-            j = from.z*half.x - from.x*half.z;
-            k = from.x*half.y - from.y*half.x;
-        }
-
-        // TODO: lookAt parametrization
-
-        /// \brief Compare component wise, if two quaternions are identical.
-        EIAPI constexpr bool operator == (const TQuaternion& _q1) const noexcept
-        {
-            return r==_q1.r && i==_q1.i && j==_q1.j && k==_q1.k;
-        }
-        /// \brief Compare component wise, if two quaternions are different.
-        EIAPI constexpr bool operator!= (const TQuaternion& _q1) const noexcept
-        {
-            return r!=_q1.r || i!=_q1.i || j!=_q1.j || k!=_q1.k;
-        }
-
-        /// \brief TQuaternion multiplication is a combination of rotations.
-        /// \details Non commutative (a*b != a*b)
-        EIAPI constexpr TQuaternion& operator *= (const TQuaternion& _q1) noexcept
-        {
-            // Preserve the sign for handness: the result can contain a mirroring, if
-            // and only if one of the two arguments has a mirroring part.
-            T handness = r*_q1.r;
-            T nr = r*_q1.r - i*_q1.i - j*_q1.j - k*_q1.k;
-            T ni = r*_q1.i + i*_q1.r + j*_q1.k - k*_q1.j;
-            T nj = r*_q1.j + j*_q1.r + k*_q1.i - i*_q1.k;
-            k = r*_q1.k + k*_q1.r + i*_q1.j - j*_q1.i;
-            r = nr;
-            i = ni;
-            j = nj;
-            if( r * handness < static_cast<T>(0) ) {i = -i; j = -j; k = -k; r = -r;}
-            return *this;
-        }
-
-        /// \brief Scale the TQuaternion
-        EIAPI constexpr TQuaternion& operator *= (T _s) noexcept
-        {
-            eiAssert(_s >= T(0), "Using a negative scalar changes handness!");
-            i*=_s; j*=_s; k*=_s; r*=_s;
-            return *this;
-        }
-
-        /// \brief TQuaternion division   a/=b  <=>  a=a*(b^-1)=a*conjugated(b).
-        EIAPI constexpr TQuaternion& operator /= (const TQuaternion& _q1) noexcept
-        {
-            T handness = r*_q1.r;
-            T nr =   r*_q1.r + i*_q1.i + j*_q1.j + k*_q1.k;
-            T ni = - r*_q1.i + i*_q1.r - j*_q1.k + k*_q1.j;
-            T nj = - r*_q1.j + j*_q1.r - k*_q1.i + i*_q1.k;
-            k = - r*_q1.k + k*_q1.r - i*_q1.j + j*_q1.i;
-            r = nr;
-            i = ni;
-            j = nj;
-            if( r * handness < static_cast<T>(0) ) {i = -i; j = -j; k = -k; r = -r;}
-            return *this;
-        }
-
-        /// \brief Scale the TQuaternion
-        EIAPI constexpr TQuaternion& operator /= (T _s) noexcept
-        {
-            eiAssert(_s >= T(0), "Using a negative scalar changes handness!");
-            i/=_s; j/=_s; k/=_s; r/=_s;
-            return *this;
-        }
-
-        /// \brief Vector like addition
-        EIAPI constexpr TQuaternion& operator += (const TQuaternion& _q1) noexcept
-        {
-            i+=_q1.i; j+=_q1.j; k+=_q1.k; r+=_q1.r;
-            return *this;
-        }
-
-        /// \brief Vector like subtraction
-        EIAPI constexpr TQuaternion& operator -= (const TQuaternion& _q1) noexcept
-        {
-            i-=_q1.i; j-=_q1.j; k-=_q1.k; r-=_q1.r;
-            return *this;
-        }
-
-        EIAPI constexpr TQuaternion operator * (const TQuaternion& _q1) const noexcept
-        {
-           // TQuaternion q0 = *this;
-            return TQuaternion(*this) *= _q1;
-        }
-        EIAPI constexpr TQuaternion operator * (T _s) const noexcept
-        {
-            return TQuaternion(*this) *= _s;
-        }
-        EIAPI constexpr TQuaternion operator / (TQuaternion _q1) const noexcept
-        {
-            return _q1 /= *this;
-        }
-        EIAPI constexpr TQuaternion operator / (T _s) const noexcept
-        {
-            return TQuaternion(*this) /= _s;
-        }
-        EIAPI constexpr TQuaternion operator + (TQuaternion _q1) const noexcept
-        {
-            return _q1 += *this;
-        }
-        EIAPI constexpr TQuaternion operator - (TQuaternion _q1) const noexcept
-        {
-            return _q1 -= *this;
-        }
-
-        /// \brief Negate all components, the represented rotation is the same
-        EIAPI constexpr TQuaternion operator - () const noexcept // TESTED
-        {
-            return TQuaternion<T>(-i, -j, -k, -r);
-        }
-
-        /// \brief Conjugate the quaternion
-        EIAPI constexpr TQuaternion operator ~ () const noexcept // TESTED
-        {
-            return TQuaternion<T>(-i, -j, -k, r);
-        }
-
-        union {
-            struct {T i, j, k, r;};         ///< Elements of 4D complex number
-            T z[4];                         ///< Array access, index 3 is the real part
-        };
-    };
-
-}
-
-
-
-#include "details/vectordetailsB.hpp"
-
-
-
-namespace ei {
-
-    // ********************************************************************* //
-    //                               FUNCTIONS                               //
+    // ********************************************************************* //    //                               FUNCTIONS                               //
     // ********************************************************************* //
 
     // ********************************************************************* //
-    /// \brief Returns identity element of the Hamilton-product. (Does not
-    ///     rotate anything.)
-    EIAPI constexpr inline const TQuaternion<float> qidentity() noexcept // TESTED
-    {
-        return ei::TQuaternion<float>(0.0f, 0.0f, 0.0f, 1.0f);
-    }
-
-    EIAPI constexpr inline const TQuaternion<double> qidentityD() noexcept
-    {
-        return ei::TQuaternion<double>(0.0, 0.0, 0.0, 1.0);
-    }
-
-    // ********************************************************************* //
-    /// \brief Scalar multiplication from left
-    template<typename T>
-    EIAPI constexpr inline TQuaternion<T> operator* (T _s, TQuaternion<T> _q) noexcept
-    {
-        return _q *= _s;
-    }
-
-    // ********************************************************************* //
-    /// \brief Complex conjugate: invert sign of complex components
-    template<typename T>
-    EIAPI constexpr inline TQuaternion<T> conjugate(const TQuaternion<T>& _q) noexcept // TESTED
-    {
-        return TQuaternion<T>(-_q.i, -_q.j, -_q.k, _q.r);
-    }
-
-    /// \brief Get the rotation axis from a TQuaternion
-    template<typename T>
-    EIAPI constexpr inline Vec<T,3> axis(const TQuaternion<T>& _q) noexcept // TESTED
-    {
-        return Vec<T,3>(-_q.i, -_q.j, -_q.k) / max(T(EPSILON), std::sqrt(T(1)-_q.r*_q.r));
-    }
-
-    /// \brief Get the x axis of the corresponding orthogonal system (rotation
-    ///     matrix)
-    template<typename T>
-    EIAPI constexpr inline Vec<T,3> xaxis(const TQuaternion<T>& _q) noexcept // TESTED
-    {
-        return Vec<T,3>( T(1)-T(2)*(_q.j*_q.j+_q.k*_q.k), T(2)*(_q.i*_q.j-_q.k*_q.r), T(2)*(_q.i*_q.k+_q.j*_q.r) );
-    }
-
-    /// \brief Get the y axis of the corresponding orthogonal system (rotation
-    ///     matrix)
-    template<typename T>
-    EIAPI constexpr inline Vec<T,3> yaxis(const TQuaternion<T>& _q) noexcept // TESTED
-    {
-        return Vec<T,3>( T(2)*(_q.i*_q.j+_q.k*_q.r), T(1)-T(2)*(_q.i*_q.i+_q.k*_q.k), T(2)*(_q.j*_q.k-_q.i*_q.r) );
-    }
-
-    /// \brief Get the z axis of the corresponding orthogonal system (rotation
-    ///     matrix)
-    template<typename T>
-    EIAPI constexpr inline Vec<T,3> zaxis(const TQuaternion<T>& _q) noexcept // TESTED
-    {
-        T h = _q.r < T(0) ? T(-1) : T(1);
-        T h2 = h * 2;
-        return Vec<T,3>( h2*(_q.i*_q.k-_q.j*_q.r), h2*(_q.j*_q.k+_q.i*_q.r), h-h2*(_q.i*_q.i+_q.j*_q.j) );
-    }
-    // TODO: row vector axis
-
-    /// \brief Get the angle (radians) from a TQuaternion
-    template<typename T>
-    EIAPI constexpr inline T angle(const TQuaternion<T>& _q) noexcept // TESTED
-    {
-        return acos(_q.r) * T(2);
-    }
-
-    // ********************************************************************* //
-    /// \brief Get the Euler angles (radians) from a quaternion
-    template<typename T>
-    EIAPI constexpr inline Vec<T,3> angles(const TQuaternion<T>& _q) noexcept
-    {
-        // TODO: handness?
-        Vec<T,3> angles;
-        // Derivation from http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToEuler/index.htm
-        // but changed angles because of else convention
-        const double m20half = _q.j * _q.r - _q.i * _q.k;
-
-        if(approx(m20half, 0.5))
-        {
-            angles.x = 0.0f;
-            angles.y = PI/2.0f;
-            angles.z = static_cast<T>(-2.0 * atan2(_q.i, _q.r));
-        }
-        else if(approx(m20half, -0.5))
-        {
-            angles.x = 0.0f;
-            angles.y = -PI/2.0f;
-            angles.z = static_cast<T>(2.0 * atan2(_q.i, _q.r));
-        }
-        else
-        {
-            const double sqr = _q.r * _q.r;
-            const double sqi = _q.i * _q.i;
-            const double sqj = _q.j * _q.j;
-            const double sqk = _q.k * _q.k;
-            angles.x = static_cast<T>(atan2(2.0 * (_q.j * _q.k + _q.i * _q.r), -sqi - sqj + sqk + sqr));
-            angles.y = static_cast<T>(asin( clamp(m20half * 2.0, -1.0, 1.0) ));
-            angles.z = static_cast<T>(atan2(2.0 * (_q.i * _q.j + _q.k * _q.r),  sqi - sqj - sqk + sqr));
-        }
-        return angles;
-    }
-
-    // ********************************************************************* //
-    /// \brief Check if the absolute difference between all elements is smaller
+    // ********************************************************************* //    /// \brief Check if the absolute difference between all elements is smaller
     ///    or equal than epsilon.
     /// \param [in] _mat0 First operand.
     /// \param [in] _mat1 Second operand.
@@ -1020,21 +638,7 @@ namespace ei {
     }
 
     // ********************************************************************* //
-    /// \brief Check if the absolute difference between all elements is smaller
-    ///    or equal than epsilon.
-    template<typename T>
-    EIAPI constexpr bool approx(const TQuaternion<T>& _q0,
-                          const TQuaternion<T>& _q1,
-                          T _epsilon = T(1e-6)) noexcept // TESTED
-    {
-        return abs(_q0.r - _q1.r) <= _epsilon
-            && abs(_q0.i - _q1.i) <= _epsilon
-            && abs(_q0.j - _q1.j) <= _epsilon
-            && abs(_q0.k - _q1.k) <= _epsilon;
-    }
-
-    // ********************************************************************* //
-    /// \brief Computes the sum of component wise products.
+    // ********************************************************************* //    /// \brief Computes the sum of component wise products.
     /// \returns Scalar value of the sum of component products.
     template<typename T, unsigned M, unsigned N, typename T1>
     EIAPI constexpr inline RESULT_TYPE(*) dot(const Matrix<T,M,N>& _mat0,
@@ -1047,16 +651,7 @@ namespace ei {
     }
 
     // ********************************************************************* //
-    /// \brief Computes the sum of component wise products.
-    /// \returns Scalar value of the sum of component products.
-    EIAPI constexpr inline float dot(const Quaternion& _q0,
-                               const Quaternion& _q1) noexcept
-    {
-        return _q0.r*_q1.r + _q0.i*_q1.i + _q0.j*_q1.j + _q0.k*_q1.k;
-    }
-
-    // ********************************************************************* //
-    /// \brief Computes the cross product of two 3d vectors (RHS).
+    // ********************************************************************* //    /// \brief Computes the cross product of two 3d vectors (RHS).
     /// \returns Perpendicular vector with length |v0|·|v1|·sin(∡(v0,v1)).
     template<typename T, typename T1, unsigned M, unsigned N, ENABLE_IF((N==1 && M==3) || (N==3 && M==1))>
     EIAPI constexpr inline Matrix<RESULT_TYPE(*),M,N> cross(const Matrix<T,M,N>& _v0,
@@ -1445,30 +1040,6 @@ namespace ei {
         return result;
     }
 
-    template<typename T>
-    EIAPI constexpr TQuaternion<T> slerp(const TQuaternion<T>& _q0, const TQuaternion<T>& _q1, T _t) noexcept // TESTED
-    {
-        // TODO: handness?
-        // http://en.wikipedia.org/wiki/Slerp
-        T theta = acos( clamp(dot(_q0,_q1), T(-1), T(1)) );
-        T so = sin( theta );
-        if(approx(so, T(0)))
-        {
-            // Converges towards linear interpolation for small so
-            return TQuaternion<T>(_q0.i + (_q1.i - _q0.i) * _t,
-                                  _q0.j + (_q1.j - _q0.j) * _t,
-                                  _q0.k + (_q1.k - _q0.k) * _t,
-                                  _q0.r + (_q1.r - _q0.r) * _t);
-        }
-        T f0 = sin( theta * (1.0f-_t) ) / so;
-        T f1 = sin( theta * _t ) / so;
-        return TQuaternion<T>(_q0.i * f0 + _q1.i * f1,
-                              _q0.j * f0 + _q1.j * f1,
-                              _q0.k * f0 + _q1.k * f1,
-                              _q0.r * f0 + _q1.r * f1);
-    }
-
-
     // ********************************************************************* //
     /// \brief Test if at least one element of the matrix is true.
     /// \return false, if all elements off the matrix are false.
@@ -1557,6 +1128,21 @@ namespace ei {
         return true;
     }
 
+    namespace details {
+        // Recursive helper for orthonormalization
+        // Recursion end
+        template<typename TVec0>
+        inline void removeProjectedPart(const TVec0&)
+        {
+        }
+        template<typename TVec0, typename TVec1, typename... TVecs>
+        inline void removeProjectedPart(const TVec0& _vec0, TVec1& _vec1, TVecs&... _vecs)
+        {
+            _vec1 -= dot(_vec0, _vec1) * _vec0;
+            removeProjectedPart(_vec0, _vecs...);
+        }
+    }
+
     /// \brief Gram-Schmidt orthonormalization for a list of vectors.
     template<typename TVec0, typename... TVecs>
     EIAPI constexpr inline bool orthonormalize(TVec0& _vec0, TVecs&... _vecs) noexcept // TESTED
@@ -1612,62 +1198,50 @@ namespace ei {
     /// \return The N-1 spherical angles and the length of the vector.
     ///     (r, φ1, φ02, ..., φN-1) where
     ///     φ1, ..., φN-2 ∈ [0,π) and φN-1 ∈ [0,2π)
-    template<typename T, unsigned N>
-    EIAPI constexpr inline Vec<T,N> sphericalCoords( const Vec<T,N>& _v0 ) noexcept // TESTED
+    template<typename T, unsigned M, unsigned N, ENABLE_IF((M==1) || (N==1))>
+    EIAPI constexpr inline Matrix<T,M,N> sphericalCoords( const Matrix<T,M,N>& _v0 ) noexcept // TESTED
     {
-        static_assert(N >= 2, "In 1D cartesian and spherical coordinates are the same!");
-        Vec<T,N> result;
+        static_assert(N*M >= 2, "In 1D cartesian and spherical coordinates are the same!");
+        Matrix<T,M,N> result;
         // Accumulate the squared length over the iterations
-        result[0] = sq(_v0[N-1]) + sq(_v0[N-2]);
-        result[N-1] = atan2(_v0[N-1], _v0[N-2]);
-        if(result[N-1] < 0.0f) result[N-1] += 2.0f * PI;
+        result[0] = sq(_v0[N*M-1]) + sq(_v0[N*M-2]);
+        result[N*M-1] = atan2(_v0[N*M-1], _v0[N*M-2]);
+        if(result[N*M-1] < 0.0f) result[N*M-1] += 2.0f * PI;
         // if( _v0[N-1] < 0.0f ) result[N-1] = 2.0f * PI - result[N-1];
-        for(uint i = 2; i < N; ++i)
+        for(uint i = 2; i < N*M; ++i)
         {
-            result[0] += sq(_v0[N-i-1]);
-            result[N-i] = acos(clamp(_v0[N-i-1]/sqrt(result[0]), -1.0f, 1.0f));
+            result[0] += sq(_v0[N*M-i-1]);
+            result[N*M-i] = acos(clamp(_v0[N*M-i-1]/sqrt(result[0]), -1.0f, 1.0f));
         }
         result[0] = sqrt(result[0]);
         return result;
-    }
-
-    template<typename T, unsigned N>
-    EIAPI inline RVec<T,N> sphericalCoords( const RVec<T,N>& _v0 ) noexcept // TESTED
-    {
-        return *reinterpret_cast<RVec<T,N>*>(&sphericalCoords(*reinterpret_cast<Vec<T,N>*>(&_v0)));
     }
 
     // ********************************************************************* //
     /// \brief Convert a vector from spherical coordinates (r, φ1, φ02, ..., φN-1)
     ///     to regular Cartesian coordinates.
     /// \return The regular Cartesian vector.
-    template<typename T, unsigned N>
-    EIAPI constexpr inline Vec<T,N> cartesianCoords( const Vec<T,N>& _v0 ) noexcept // TESTED
+    template<typename T, unsigned M, unsigned N, ENABLE_IF((M==1) || (N==1))>
+    EIAPI constexpr inline Matrix<T,M,N> cartesianCoords( const Matrix<T,M,N>& _v0 ) noexcept // TESTED
     {
         eiAssertWeak(_v0[0] > 0.0f, "Expected the length to be greater 0!");
-        Vec<T,N> result;
+        Matrix<T,M,N> result;
         float tmp = _v0[0];
-        for(uint i = 0; i < N-1; ++i)
+        for(uint i = 0; i < M*N-1; ++i)
         {
             result[i] = tmp * cos(_v0[i+1]);
             tmp *= sin(_v0[i+1]);
         }
-        result[N-1] = tmp;
+        result[M*N-1] = tmp;
         return result;
-    }
-
-    template<typename T, unsigned N>
-    EIAPI constexpr inline RVec<T,N> cartesianCoords( const RVec<T,N>& _v0 ) noexcept // TESTED
-    {
-        return *reinterpret_cast<RVec<T,N>*>(&cartesianCoords(*reinterpret_cast<Vec<T,N>*>(&_v0)));
     }
 
     // ********************************************************************* //
     /// \brief Apply transformations in homogeneous space. This includes a
     ///     division by w after the transformation
     template<typename T, unsigned N>
-    EIAPI constexpr inline Matrix<T,N,1> transformDiv( const Matrix<T, N, 1>& _what,
-                                                 const Matrix<T, N+1, N+1>& _space ) noexcept
+    EIAPI constexpr inline Vec<T,N> transformDiv( const Vec<T, N>& _what,
+                                            const Matrix<T, N+1, N+1>& _space ) noexcept
     {
         T t[N+1];
         // Multiply Matrix * Vector(_what,1)
@@ -1680,39 +1254,19 @@ namespace ei {
                 t[y] += _space(y,x) * _what[x];
         }
         // Create a reduced vector with divided components
-        Matrix<T,N,1> result;
-        for(uint i = 0; i < N; ++i)
-            result[i] = t[i] / t[N];
-        return result;
-    }
-    template<typename T, unsigned N>
-    EIAPI constexpr inline Matrix<T,1,N> transformDiv( const Matrix<T, 1, N>& _what,
-                                                 const Matrix<T, N+1, N+1>& _space ) noexcept
-    {
-        T t[N+1];
-        // Multiply Vector(_what,1) * Matrix
-        for(uint x = 0; x <= N; ++x)
-        {
-            // Initialize with the last component * 1
-            t[x] = _space(N, x);
-            // Add the other N factors
-            for(uint y = 0; y < N; ++y)
-                t[x] += _what[y] * _space(y,x);
-        }
-        // Create a reduced vector with divided components
-        Matrix<T,1,N> result;
+        Vec<T,N> result;
         for(uint i = 0; i < N; ++i)
             result[i] = t[i] / t[N];
         return result;
     }
 
-    /// \brief Apply transformations in 3x4/4x3 space (rotation + translation).
+    /// \brief Apply transformations in 3x4/4x4 space (rotation + translation).
     ///     This does NOT include a division by w.
     template<typename T, unsigned N>
-    EIAPI constexpr inline Matrix<T,N,1> transform( const Matrix<T, N, 1>& _what,
-                                              const Matrix<T, N+1, N+1>& _space ) noexcept // TESTED
+    EIAPI constexpr inline Vec<T,N> transform( const Vec<T, N>& _what,
+                                         const Matrix<T, N+1, N+1>& _space ) noexcept // TESTED
     {
-        Matrix<T,N,1> result;
+        Vec<T,N> result;
         // Multiply Matrix * Vector(_what,1)
         for(uint y = 0; y < N; ++y)
         {
@@ -1724,19 +1278,20 @@ namespace ei {
         }
         return result;
     }
+
     template<typename T, unsigned N>
-    EIAPI constexpr inline Matrix<T,1,N> transform( const Matrix<T, 1, N>& _what,
-                                              const Matrix<T, N+1, N+1>& _space ) noexcept
+    EIAPI constexpr inline Vec<T,N> transform( const Vec<T, N>& _what,
+                                         const Matrix<T, N, N+1>& _space ) noexcept // TESTED
     {
-        Matrix<T,1,N> result;
-        // Multiply Vector(_what,1) * Matrix
-        for(uint x = 0; x < N; ++x)
+        Vec<T,N> result;
+        // Multiply Matrix * Vector(_what,1)
+        for(uint y = 0; y < N; ++y)
         {
             // Initialize with the last component * 1
-            result[x] = _space(N, x);
+            result[y] = _space(y, N);
             // Add the other N factors
-            for(uint y = 0; y < N; ++y)
-                result[x] += _what[y] * _space(y,x);
+            for(uint x = 0; x < N; ++x)
+                result[y] += _space(y,x) * _what[x];
         }
         return result;
     }
@@ -1747,10 +1302,10 @@ namespace ei {
     ///     is no normalization involved and the direction might be scaled by
     ///     the matrix.
     template<typename T, unsigned N>
-    EIAPI constexpr inline Matrix<T,N,1> transformDir( const Matrix<T, N, 1>& _what,
-                                                 const Matrix<T, N+1, N+1>& _space ) noexcept // TESTED
+    EIAPI constexpr inline Vec<T,N> transformDir( const Vec<T, N>& _what,
+                                            const Matrix<T, N+1, N+1>& _space ) noexcept // TESTED
     {
-        Matrix<T,N,1> result;
+        Vec<T,N> result;
         // Multiply Matrix * Vector(_what,0)
         for(uint y = 0; y < N; ++y)
         {
@@ -1762,52 +1317,30 @@ namespace ei {
         }
         return result;
     }
+
     template<typename T, unsigned N>
-    EIAPI constexpr inline Matrix<T,1,N> transformDir( const Matrix<T, 1, N>& _what,
-                                                 const Matrix<T, N+1, N+1>& _space ) noexcept
+    EIAPI constexpr inline Vec<T,N> transformDir( const Vec<T, N>& _what,
+                                            const Matrix<T, N, N+1>& _space ) noexcept // TESTED
     {
-        Matrix<T,1,N> result;
-        // Multiply Vector(_what,0) * Matrix
-        for(uint x = 0; x < N; ++x)
+        Vec<T,N> result;
+        // Multiply Matrix * Vector(_what,0)
+        for(uint y = 0; y < N; ++y)
         {
             // Initialize with the first component
-            result[x] = _space(0,x) * _what[0];
+            result[y] = _space(y,0) * _what[0];
             // Add the other N-1 factors
-            for(uint y = 1; y < N; ++y)
-                result[x] += _what[y] * _space(y,x);
+            for(uint x = 1; x < N; ++x)
+                result[y] += _space(y,x) * _what[x];
         }
         return result;
     }
 
     /// \brief Apply transformations with a matrix multiplication.
     template<typename T, unsigned M>
-    EIAPI constexpr inline Matrix<T,M,1> transform( const Matrix<T,M,1>& _what,
-                                              const Matrix<T,M,M>& _space ) noexcept
+    EIAPI constexpr inline Vec<T,M> transform( const Vec<T,M>& _what,
+                                         const Matrix<T,M,M>& _space ) noexcept
     {
         return _space * _what;
-    }
-    template<typename T, unsigned N>
-    EIAPI constexpr inline Matrix<T,1,N> transform( const Matrix<T,1,N>& _what,
-                                              const Matrix<T,N,N>& _space ) noexcept
-    {
-        return _what * _space;
-    }
-
-    /// \brief Apply a rotation by a quaternion (q v q-1 with v=(0, _v.x, _v.y, _v.z)).
-    template<typename T, unsigned M, unsigned N, ENABLE_IF((M==1) || (N==1))>
-    EIAPI constexpr inline Matrix<T,M,N> transform( const Matrix<T,M,N>& _what, const TQuaternion<T>& _quaternion ) noexcept
-    {
-        T handness = _quaternion.r < T(0) ? T(-1) : T(1);
-        // http://physicsforgames.blogspot.de/2010/03/quaternion-tricks.html
-        T x1 = _quaternion.j*_what.z - _quaternion.k*_what.y;
-        T y1 = _quaternion.k*_what.x - _quaternion.i*_what.z;
-        T z1 = _quaternion.i*_what.y - _quaternion.j*_what.x;
-
-        return Matrix<T,M,N>(
-             _what.x + 2.0f * (_quaternion.r*x1 + _quaternion.j*z1 - _quaternion.k*y1),
-             _what.y + 2.0f * (_quaternion.r*y1 + _quaternion.k*x1 - _quaternion.i*z1),
-            (_what.z + 2.0f * (_quaternion.r*z1 + _quaternion.i*y1 - _quaternion.j*x1)) * handness
-            );
     }
 
     // ********************************************************************* //
@@ -1818,7 +1351,7 @@ namespace ei {
     ///    To transform a vector append 1 and multiply it from right:
     ///    translation() * VecX(v,1)
     template<typename T, unsigned N>
-    EIAPI constexpr inline Matrix<T,N+1,N+1> translation( const Matrix<T, N, 1>& _vector ) noexcept
+    EIAPI constexpr inline Matrix<T,N+1,N+1> translation( const Vec<T, N>& _vector ) noexcept
     {
         Matrix<T,N+1,N+1> result = identity<T,N+1>();
         for(uint i = 0; i < N; ++i)
@@ -1829,7 +1362,7 @@ namespace ei {
     // ********************************************************************* //
     /// \brief Create a scaling/diagonal matrix from vector.
     template<typename T, unsigned N>
-    EIAPI constexpr inline Matrix<T,N,N> scaling( const Matrix<T, N, 1>& _scale ) noexcept
+    EIAPI constexpr inline Matrix<T,N,N> scaling( const Vec<T, N>& _scale ) noexcept
     {
         Matrix<T,N,N> result(T(0));
         for(uint n = 0; n < N; ++n)
@@ -1877,9 +1410,9 @@ namespace ei {
     {
         return Vec2(-_vector.y, _vector.x);
     }
-    EIAPI inline RVec2 perpendicular( const RVec2& _vector ) noexcept
+    EIAPI constexpr inline Matrix<float, 1, 2> perpendicular( const Matrix<float, 1, 2>& _vector ) noexcept
     {
-        return RVec2(-_vector.y, _vector.x);
+        return Matrix<float, 1, 2>(-_vector.y, _vector.x);
     }
 
     EIAPI constexpr inline Vec3 perpendicular( const Vec3& _vector ) noexcept
@@ -1888,11 +1421,12 @@ namespace ei {
             Vec3(-_vector.y, _vector.x, 0.0f) :
             Vec3(0.0f, -_vector.z, _vector.y);
     }
-    EIAPI constexpr inline RVec3 perpendicular( const RVec3& _vector ) noexcept
+
+    EIAPI constexpr inline Matrix<float, 1, 3> perpendicular( const Matrix<float, 1, 3>& _vector ) noexcept
     {
         return abs(_vector.z) < abs(_vector.x) ?
-            RVec3(-_vector.y, _vector.x, 0.0f) :
-            RVec3(0.0f, -_vector.z, _vector.y);
+            Matrix<float, 1, 3>(-_vector.y, _vector.x, 0.0f) :
+            Matrix<float, 1, 3>(0.0f, -_vector.z, _vector.y);
     }
 
     // ********************************************************************* //
@@ -2010,14 +1544,7 @@ namespace ei {
     }
 
     // ********************************************************************* //
-    /// \brief Rotation matrix from quaternion.
-    EIAPI constexpr inline Mat3x3 rotation( const Quaternion& _quaternion ) noexcept
-    {
-        return Mat3x3(_quaternion);
-    }
-
-    // ********************************************************************* //
-    /// \brief Reflection matrix for a plane through the origin.
+    // ********************************************************************* //    /// \brief Reflection matrix for a plane through the origin.
     /// \details Use this to construct mirror matrices. To simply reflect a
     ///     vector use the reflect() method (faster). Beware: _normal and _at
     ///     in the two methods are orthogonal.
@@ -2043,15 +1570,8 @@ namespace ei {
     /// \param [in] _incident A direction or position vector which should be
     ///     reflected.
     /// \param [in] _at The normal vector for the reflection plane (normalized!).
-    template<typename T, unsigned N>
-    EIAPI constexpr inline Vec<T,N> reflect( const Vec<T,N>& _incident, const Vec<T,N>& _at ) noexcept
-    {
-        eiAssertWeak(approx(lensq(_at), 1.0f), "The reflection normal must be normalized!");
-        return _incident - (static_cast<T>(2) * dot(_incident, _at)) * _at;
-    }
-
-    template<typename T, unsigned N>
-    EIAPI constexpr inline RVec<T,N> reflect( const RVec<T,N>& _incident, const RVec<T,N>& _at ) noexcept
+    template<typename T, unsigned M, unsigned N, ENABLE_IF((M==1) || (N==1))>
+    EIAPI constexpr inline Matrix<T,M,N> reflect( const Matrix<T,M,N>& _incident, const Matrix<T,M,N>& _at ) noexcept
     {
         eiAssertWeak(approx(lensq(_at), 1.0f), "The reflection normal must be normalized!");
         return _incident - (static_cast<T>(2) * dot(_incident, _at)) * _at;
@@ -2434,8 +1954,8 @@ namespace ei {
         // which is then defined by the second block -> defer to later.
         bool deferQ0 = false;
         Mat3x3 B = _A - _lambda.x * identity3x3();
-        RVec3 canditate1 = cross(B(0), B(1));
-        RVec3 canditate2 = cross(B(0), B(2));
+        Matrix<float, 1, 3> canditate1 = cross(B(0), B(1));
+        Matrix<float, 1, 3> canditate2 = cross(B(0), B(2));
         float l1 = lensq(canditate1);
         float l2 = lensq(canditate2);
         if(l1 + l2 == 0.0f) deferQ0 = true;
