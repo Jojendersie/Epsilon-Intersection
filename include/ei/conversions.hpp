@@ -323,7 +323,7 @@ namespace ei {
         //    norm *= 0.5f;
         //}
         // Equivalent, faster code?:
-        int e;
+        int e = 0;
         float norm = frexpf(maxComp, &e) * 511.5f / maxComp;
         e += 15;
         if(e < 0) { norm *= exp2f(float(e)); e = 0; }	// Denormalized values
@@ -351,7 +351,7 @@ namespace ei {
         eiAssertWeak(all(greatereq(_v, 0.0f)), "Vector must be positive to be packed into RGB8E8");
         float maxComp = ei::max(_v);
         if(maxComp <= 2e-41f) return 0;
-        int e;
+        int e = 0;
         float norm = frexpf(maxComp, &e) * 255.5f / maxComp;
         e += 128;
         if(e < 0) { norm *= exp2f(float(e)); e = 0; }	// Denormalized values
@@ -405,14 +405,14 @@ namespace ei {
     }
 
     // Use fixed point discretization to pack an already packed tangent space further.
-    EIAPI constexpr inline uint64 packOrthoSpace64(const OrthoSpace& _space) noexcept
+    EIAPI constexpr uint64 packOrthoSpace64(const OrthoSpace& _space) noexcept
     {
         // Pack only ijk with 21 bits each, r can be reconstructed if its
         // sign is known (bit 64).
-        NormalizedInt<int32, 21> i(_space.m_quaternion.i);
-        NormalizedInt<int32, 21> j(_space.m_quaternion.j);
-        NormalizedInt<int32, 21> k(_space.m_quaternion.k);
-        uint64 rSign = sgn(_space.m_quaternion.r) > 0.0f ? 0 : (1ull << 63);
+        NormalizedInt<int32, 21> i(_space.data().i);
+        NormalizedInt<int32, 21> j(_space.data().j);
+        NormalizedInt<int32, 21> k(_space.data().k);
+        uint64 rSign = sgn(_space.data().r) > 0.0f ? 0 : (1ull << 63);
         return rSign | (uint64(k) << 42) | (uint64(j) << 21) | uint64(i);
     }
 
@@ -423,8 +423,8 @@ namespace ei {
         float k { NormalizedInt<int32, 21>(_code >> 42) };
         float r = sqrt(1.0f - (i*i + j*j + k*k));
         OrthoSpace res;
-        res.m_quaternion.i = i; res.m_quaternion.j = j; res.m_quaternion.k = k;
-        res.m_quaternion.r = (_code & (1ull<<63)) ? -r : r;
+        res.data().i = i; res.data().j = j; res.data().k = k;
+        res.data().r = (_code & (1ull<<63)) ? -r : r;
         return res;
     }
 

@@ -558,7 +558,7 @@ namespace ei {
         NormalizedInt() = default;
 
         template<typename T1, typename = std::enable_if_t<std::is_integral_v<T> && BITS <= sizeof(T1)*8>>
-        constexpr explicit NormalizedInt(T1 v) noexcept : value(v & MASK)
+        EIAPI constexpr explicit NormalizedInt(T1 v) noexcept : value(v & MASK)
         {
             // Signed types in 2-complement must have all significant bits set.
             // This is violated if BITS < 8*sizeof(T).
@@ -566,30 +566,30 @@ namespace ei {
                 value |= 0xffffffffffffffffull << BITS;
         }
 
-        constexpr explicit NormalizedInt(float v)
+        EIAPI constexpr explicit NormalizedInt(float v)
         {
             eiAssert(v >= INTERVAL_MIN && v <= INTERVAL_MAX, "Cannot map an integer outside the unit interval to nint");
             value = floor(v * MAX_POSITIVE_VALUE + 0.5f) & MASK;
         }
 
-        constexpr explicit NormalizedInt(double v)
+        EIAPI constexpr explicit NormalizedInt(double v)
         {
             eiAssert(v >= INTERVAL_MIN && v <= INTERVAL_MAX, "Cannot map an integer outside the unit interval to nint");
             value = floor(v * MAX_POSITIVE_VALUE + 0.5) & MASK;
         }
 
-        constexpr explicit operator float () const noexcept
+        EIAPI constexpr explicit operator float () const noexcept
         {
             return value / float(MAX_POSITIVE_VALUE);
         }
 
-        constexpr explicit operator double () const noexcept
+        EIAPI constexpr explicit operator double () const noexcept
         {
             return value / double(MAX_POSITIVE_VALUE);
         }
 
         template<typename T1, typename = std::enable_if_t<std::is_integral_v<T> && BITS <= sizeof(T1)*8>>
-        constexpr explicit operator T1 () const noexcept { return T1(value); }
+        EIAPI constexpr explicit operator T1 () const noexcept { return T1(value); }
     private:
         T value;
     };

@@ -28,7 +28,7 @@ namespace ei {
         constexpr TQuaternion& operator = ( const TQuaternion& _rhs ) noexcept = default;
 
         /// \brief Construct from normalized axis and angle
-        constexpr TQuaternion( const Vec<T,3>& _axis, T _angle ) noexcept // TESTED
+        EIAPI constexpr TQuaternion( const Vec<T,3>& _axis, T _angle ) noexcept // TESTED
         {
             eiAssert( approx(lensq(_axis), static_cast<T>(1)), "Expected a normalized axis vector!" );
             _angle *= 0.5f;
@@ -42,7 +42,7 @@ namespace ei {
         /// \brief Create from Euler angles
         /// \details The rotations are applied in the order x, y, z:
         ///     rotationZ(_z) * rotationY(_y) * rotationX(_x)
-        constexpr TQuaternion( T _x, T _y, T _z ) noexcept // TESTED
+        EIAPI constexpr TQuaternion( T _x, T _y, T _z ) noexcept // TESTED
         {
             double halfAngle;
 
@@ -70,18 +70,18 @@ namespace ei {
 
             //*this = normalize(*this);
         }
-        constexpr TQuaternion( const Vec<T,3>& _eulerAngles ) noexcept :
+        EIAPI explicit constexpr TQuaternion( const Vec<T,3>& _eulerAngles ) noexcept :
             TQuaternion(_eulerAngles.x, _eulerAngles.y, _eulerAngles.z)
         {}
 
         /// \brief Create from rotation matrix (does a decomposition if the
         ///     matrix contains scaling).
-        constexpr TQuaternion( const Matrix<T,3,3>& _matrix ) noexcept : // TESTED
+        EIAPI explicit constexpr TQuaternion( const Matrix<T,3,3>& _matrix ) noexcept : // TESTED
             TQuaternion<T>(transpose(_matrix(0)), transpose(_matrix(1)), transpose(_matrix(2)))
         {}
 
         /// \brief Create from orthogonal basis vectors.
-        constexpr TQuaternion( const Vec<T,3>& _xAxis, const Vec<T,3>& _yAxis, const Vec<T,3>& _zAxis ) noexcept 
+        EIAPI constexpr TQuaternion( const Vec<T,3>& _xAxis, const Vec<T,3>& _yAxis, const Vec<T,3>& _zAxis ) noexcept 
         {
             // Check handness
             //eiAssert(dot(cross(_xAxis, _yAxis), _m(2)) > 0.0f, "Quaternions cannot handle reflections. The matrix must be RHS.");
@@ -132,7 +132,7 @@ namespace ei {
         }
 
         /// \brief Create from TQuaternion coefficients
-        constexpr TQuaternion( T _i, T _j, T _k, T _r ) noexcept :
+        EIAPI constexpr TQuaternion( T _i, T _j, T _k, T _r ) noexcept :
             i(_i), j(_j), k(_k), r(_r)
         {}
 
@@ -141,14 +141,14 @@ namespace ei {
         /// \param [in] _from One certain direction vector before rotation.
         /// \param [in] _to Target direction vector. The from direction should
         ///     be aligned with the target after rotation.
-        constexpr TQuaternion( const Vec<T,3>& _from, const Vec<T,3>& _to ) noexcept // TESTED
+        EIAPI constexpr TQuaternion( const Vec<T,3>& _from, const Vec<T,3>& _to ) noexcept // TESTED
         {
             eiAssert(approx(len(_from),1.0f), "Input (_from) must be normalized direction vector.");
             eiAssert(approx(len(_to),1.0f), "Input (_to) must be normalized direction vector.");
             // half angle trick from http://physicsforgames.blogspot.de/2010/03/quaternion-tricks.html
             Vec<T,3> half = normalize(_from + _to);
             // Opposite vectors or one vector 0.0 -> 180° rotation
-            if(std::isnan(half.x))
+            if(isnan(half.x))
             {
                 if(approx(ei::abs(_from.y), static_cast<T>(1)))
                     half = Vec<T,3>(0, 0, 1);
@@ -164,20 +164,20 @@ namespace ei {
         }
 
         /// \brief Compare component wise, if two quaternions are identical.
-        constexpr bool operator == (const TQuaternion& _q1) const noexcept
+        EIAPI constexpr bool operator == (const TQuaternion& _q1) const noexcept
         {
             return (r== _q1.r && i== _q1.i && j== _q1.j && k== _q1.k)
                 || (r==-_q1.r && i==-_q1.i && j==-_q1.j && k==-_q1.k);
         }
         /// \brief Compare component wise, if two quaternions are different.
-        constexpr bool operator!= (const TQuaternion& _q1) const noexcept
+        EIAPI constexpr bool operator!= (const TQuaternion& _q1) const noexcept
         {
             return (r!= _q1.r || i!= _q1.i || j!= _q1.j || k!= _q1.k)
                 && (r!=-_q1.r || i!=-_q1.i || j!=-_q1.j || k!=-_q1.k);
         }
 
         template<typename T1>
-        constexpr explicit operator Matrix<T1,3,3>() const noexcept
+        EIAPI constexpr explicit operator Matrix<T1,3,3>() const noexcept
         {
             // Rotation composition from quaternion (remaining rest direct in matrix)
             // See http://de.wikipedia.org/wiki/Quaternion#Bezug_zu_orthogonalen_Matrizen for
@@ -204,7 +204,7 @@ namespace ei {
 
         /// \brief TQuaternion multiplication is a combination of rotations.
         /// \details Non commutative (a*b != b*a)
-        constexpr TQuaternion& operator *= (const TQuaternion& _q1) noexcept // TESTED
+        EIAPI constexpr TQuaternion& operator *= (const TQuaternion& _q1) noexcept // TESTED
         {
             T nr = r*_q1.r - i*_q1.i - j*_q1.j - k*_q1.k;
             T ni = r*_q1.i + i*_q1.r + j*_q1.k - k*_q1.j;
@@ -217,14 +217,14 @@ namespace ei {
         }
 
         /// \brief Scale the TQuaternion
-        constexpr TQuaternion& operator *= (T _s) noexcept
+        EIAPI constexpr TQuaternion& operator *= (T _s) noexcept
         {
             i*=_s; j*=_s; k*=_s; r*=_s;
             return *this;
         }
 
         /// \brief TQuaternion division   a/=b  <=>  a=a*(b^-1)=a*conjugated(b).
-        constexpr TQuaternion& operator /= (const TQuaternion& _q1) noexcept
+        EIAPI constexpr TQuaternion& operator /= (const TQuaternion& _q1) noexcept
         {
             T nr =   r*_q1.r + i*_q1.i + j*_q1.j + k*_q1.k;
             T ni = - r*_q1.i + i*_q1.r - j*_q1.k + k*_q1.j;
@@ -237,59 +237,59 @@ namespace ei {
         }
 
         /// \brief Scale the TQuaternion
-        constexpr TQuaternion& operator /= (T _s) noexcept
+        EIAPI constexpr TQuaternion& operator /= (T _s) noexcept
         {
             i/=_s; j/=_s; k/=_s; r/=_s;
             return *this;
         }
 
         /// \brief Vector like addition
-        constexpr TQuaternion& operator += (const TQuaternion& _q1) noexcept
+        EIAPI constexpr TQuaternion& operator += (const TQuaternion& _q1) noexcept
         {
             i+=_q1.i; j+=_q1.j; k+=_q1.k; r+=_q1.r;
             return *this;
         }
 
         /// \brief Vector like subtraction
-        constexpr TQuaternion& operator -= (const TQuaternion& _q1) noexcept
+        EIAPI constexpr TQuaternion& operator -= (const TQuaternion& _q1) noexcept
         {
             i-=_q1.i; j-=_q1.j; k-=_q1.k; r-=_q1.r;
             return *this;
         }
 
-        constexpr TQuaternion operator * (const TQuaternion& _q1) const noexcept // TESTED
+        EIAPI constexpr TQuaternion operator * (const TQuaternion& _q1) const noexcept // TESTED
         {
             return TQuaternion(*this) *= _q1;
         }
-        constexpr TQuaternion operator * (T _s) const noexcept
+        EIAPI constexpr TQuaternion operator * (T _s) const noexcept
         {
             return TQuaternion(*this) *= _s;
         }
-        constexpr TQuaternion operator / (TQuaternion _q1) const noexcept
+        EIAPI constexpr TQuaternion operator / (TQuaternion _q1) const noexcept
         {
             return _q1 /= *this;
         }
-        constexpr TQuaternion operator / (T _s) const noexcept
+        EIAPI constexpr TQuaternion operator / (T _s) const noexcept
         {
             return TQuaternion(*this) /= _s;
         }
-        constexpr TQuaternion operator + (TQuaternion _q1) const noexcept
+        EIAPI constexpr TQuaternion operator + (TQuaternion _q1) const noexcept
         {
             return _q1 += *this;
         }
-        constexpr TQuaternion operator - (TQuaternion _q1) const noexcept
+        EIAPI constexpr TQuaternion operator - (TQuaternion _q1) const noexcept
         {
             return _q1 -= *this;
         }
 
         /// \brief Negate all components, the represented rotation is the same
-        constexpr TQuaternion operator - () const noexcept // TESTED
+        EIAPI constexpr TQuaternion operator - () const noexcept // TESTED
         {
             return TQuaternion<T>(-i, -j, -k, -r);
         }
 
         /// \brief Conjugate the quaternion
-        constexpr TQuaternion operator ~ () const noexcept // TESTED
+        EIAPI constexpr TQuaternion operator ~ () const noexcept // TESTED
         {
             return TQuaternion<T>(-i, -j, -k, r);
         }
@@ -303,12 +303,12 @@ namespace ei {
     // ********************************************************************* //
     /// \brief Returns identity element of the Hamilton-product. (Does not
     ///     rotate anything.)
-    constexpr inline const TQuaternion<float> qidentity() noexcept // TESTED
+    EIAPI constexpr inline const TQuaternion<float> qidentity() noexcept // TESTED
     {
         return ei::TQuaternion<float>(0.0f, 0.0f, 0.0f, 1.0f);
     }
 
-    constexpr inline const TQuaternion<double> qidentityD() noexcept
+    EIAPI constexpr inline const TQuaternion<double> qidentityD() noexcept
     {
         return ei::TQuaternion<double>(0.0, 0.0, 0.0, 1.0);
     }
@@ -316,7 +316,7 @@ namespace ei {
     // ********************************************************************* //
     /// \brief Scalar multiplication from left
     template<typename T>
-    constexpr inline TQuaternion<T> operator* (T _s, TQuaternion<T> _q) noexcept
+    EIAPI constexpr inline TQuaternion<T> operator* (T _s, TQuaternion<T> _q) noexcept
     {
         return _q *= _s;
     }
@@ -324,14 +324,14 @@ namespace ei {
     // ********************************************************************* //
     /// \brief Complex conjugate: invert sign of complex components
     template<typename T>
-    constexpr inline TQuaternion<T> conjugate(const TQuaternion<T>& _q) noexcept // TESTED
+    EIAPI constexpr inline TQuaternion<T> conjugate(const TQuaternion<T>& _q) noexcept // TESTED
     {
         return TQuaternion<T>(-_q.i, -_q.j, -_q.k, _q.r);
     }
 
     /// \brief Get the rotation axis from a TQuaternion
     template<typename T>
-    constexpr inline Vec<T,3> axis(const TQuaternion<T>& _q) noexcept // TESTED
+    EIAPI constexpr inline Vec<T,3> axis(const TQuaternion<T>& _q) noexcept // TESTED
     {
         return Vec<T,3>(_q.i, _q.j, _q.k) / std::sqrt(max(T(EPSILON), T(1)-_q.r*_q.r));
     }
@@ -339,7 +339,7 @@ namespace ei {
     /// \brief Get the x axis of the corresponding orthogonal system (rotation
     ///     matrix)
     template<typename T>
-    constexpr inline Vec<T,3> xaxis(const TQuaternion<T>& _q) noexcept // TESTED
+    EIAPI constexpr inline Vec<T,3> xaxis(const TQuaternion<T>& _q) noexcept // TESTED
     {
         return Vec<T,3>( T(1)-T(2)*(_q.j*_q.j+_q.k*_q.k), T(2)*(_q.i*_q.j-_q.k*_q.r), T(2)*(_q.i*_q.k+_q.j*_q.r) );
     }
@@ -347,7 +347,7 @@ namespace ei {
     /// \brief Get the y axis of the corresponding orthogonal system (rotation
     ///     matrix)
     template<typename T>
-    constexpr inline Vec<T,3> yaxis(const TQuaternion<T>& _q) noexcept // TESTED
+    EIAPI constexpr inline Vec<T,3> yaxis(const TQuaternion<T>& _q) noexcept // TESTED
     {
         return Vec<T,3>( T(2)*(_q.i*_q.j+_q.k*_q.r), T(1)-T(2)*(_q.i*_q.i+_q.k*_q.k), T(2)*(_q.j*_q.k-_q.i*_q.r) );
     }
@@ -355,14 +355,14 @@ namespace ei {
     /// \brief Get the z axis of the corresponding orthogonal system (rotation
     ///     matrix)
     template<typename T>
-    constexpr inline Vec<T,3> zaxis(const TQuaternion<T>& _q) noexcept // TESTED
+    EIAPI constexpr inline Vec<T,3> zaxis(const TQuaternion<T>& _q) noexcept // TESTED
     {
         return Vec<T,3>( T(2)*(_q.i*_q.k-_q.j*_q.r), T(2)*(_q.j*_q.k+_q.i*_q.r), T(1)-T(2)*(_q.i*_q.i+_q.j*_q.j) );
     }
 
     /// \brief Get the angle (radians) from a TQuaternion
     template<typename T>
-    constexpr inline T angle(const TQuaternion<T>& _q) noexcept // TESTED
+    EIAPI constexpr inline T angle(const TQuaternion<T>& _q) noexcept // TESTED
     {
         return acos(_q.r) * T(2);
     }
@@ -370,7 +370,7 @@ namespace ei {
     // ********************************************************************* //
     /// \brief Get the Euler angles (radians) from a quaternion
     template<typename T>
-    constexpr inline Vec<T,3> angles(const TQuaternion<T>& _q) noexcept
+    EIAPI constexpr inline Vec<T,3> angles(const TQuaternion<T>& _q) noexcept
     {
         // TODO: handness?
         Vec<T,3> angles;
@@ -407,7 +407,7 @@ namespace ei {
     /// \brief Check if the absolute difference between all elements is smaller
     ///    or equal than epsilon.
     template<typename T>
-    constexpr bool approx(const TQuaternion<T>& _q0,
+    EIAPI constexpr bool approx(const TQuaternion<T>& _q0,
                           const TQuaternion<T>& _q1,
                           T _epsilon = T(1e-6)) noexcept // TESTED
     {
@@ -421,7 +421,7 @@ namespace ei {
     // ********************************************************************* //
     /// \brief Computes the sum of component wise products.
     /// \returns Scalar value of the sum of component products.
-    constexpr inline float dot(const Quaternion& _q0,
+    EIAPI constexpr inline float dot(const Quaternion& _q0,
                                const Quaternion& _q1) noexcept
     {
         return _q0.r*_q1.r + _q0.i*_q1.i + _q0.j*_q1.j + _q0.k*_q1.k;
@@ -430,7 +430,7 @@ namespace ei {
     // ********************************************************************* //
     /// \brief Spherical linear interpolation with constant angular speed
     template<typename T>
-    constexpr TQuaternion<T> slerp(const TQuaternion<T>& _q0, const TQuaternion<T>& _q1, T _t) noexcept // TESTED
+    EIAPI constexpr TQuaternion<T> slerp(const TQuaternion<T>& _q0, const TQuaternion<T>& _q1, T _t) noexcept // TESTED
     {
         // http://en.wikipedia.org/wiki/Slerp
         T theta = acos( clamp(dot(_q0,_q1), T(-1), T(1)) );
@@ -453,7 +453,7 @@ namespace ei {
 
     // ********************************************************************* //
     /// \brief Rotation matrix from quaternion.
-    constexpr inline Mat3x3 rotation( const Quaternion& _quaternion ) noexcept
+    EIAPI constexpr inline Mat3x3 rotation( const Quaternion& _quaternion ) noexcept
     {
         return Mat3x3(_quaternion);
     }
@@ -461,7 +461,7 @@ namespace ei {
     // ********************************************************************* //
     /// \brief Apply a rotation by a quaternion (q v q-1 with v=(0, _v.x, _v.y, _v.z)).
     template<typename T, unsigned M, unsigned N, typename = std::enable_if_t<(M==1) || (N==1)>>
-    constexpr inline Matrix<T,M,N> transform( const Matrix<T,M,N>& _what, const TQuaternion<T>& _quaternion ) noexcept
+    EIAPI constexpr inline Matrix<T,M,N> transform( const Matrix<T,M,N>& _what, const TQuaternion<T>& _quaternion ) noexcept
     {
         // http://physicsforgames.blogspot.de/2010/03/quaternion-tricks.html
         T x1 = _quaternion.j*_what.z - _quaternion.k*_what.y;
@@ -500,14 +500,14 @@ namespace ei {
         TOrthoSpace() = default;
 
         /// \brief Initialize from normalized quaternion
-        constexpr explicit TOrthoSpace(const TQuaternion<T>& _q) noexcept : // TESTED
+        EIAPI constexpr explicit TOrthoSpace(const TQuaternion<T>& _q) noexcept : // TESTED
             m_quaternion(_q * sgn(_q.r))
         {
             eiAssert(approx(len(_q), T(1)), "Quaternion must be normalized.");
         }
 
         /// \brief Initialize from any 3x3 orthonorml 
-        constexpr explicit TOrthoSpace(const Matrix<T,3,3>& _m) noexcept  // TESTED
+        EIAPI constexpr explicit TOrthoSpace(const Matrix<T,3,3>& _m) noexcept  // TESTED
         {
             T handness = dot(cross(_m(0), _m(1)), _m(2));
             m_quaternion = TQuaternion<T>(transpose(_m(0)), transpose(_m(1)), transpose(handness * _m(2)));
@@ -521,7 +521,7 @@ namespace ei {
 
         /// \brief Reconstruct the full orthonorml system.
         template<typename T1>
-        constexpr explicit operator Matrix<T1,3,3>() const noexcept {  // TESTED
+        EIAPI constexpr explicit operator Matrix<T1,3,3>() const noexcept {  // TESTED
             // Remove the handness sign and get the rotation matrix
             Matrix<T1,3,3> rot{TQuaternion<T1>(m_quaternion.i, m_quaternion.j, m_quaternion.k, ei::abs(m_quaternion.r))};
             if(isLefthanded())
@@ -531,14 +531,14 @@ namespace ei {
 
         /// \brief Get the rotation. If the stored system contains a reflection it is lost.
         template<typename T1>
-        constexpr explicit operator TQuaternion<T1>() const noexcept {  // TESTED
+        EIAPI constexpr explicit operator TQuaternion<T1>() const noexcept {  // TESTED
             return TQuaternion<T1>(m_quaternion.i, m_quaternion.j, m_quaternion.k, ei::abs(m_quaternion.r));
         }
 
-        constexpr bool isRighthanded() const { return sgn(m_quaternion.r) == 1.0f; }  // TESTED
-        constexpr bool isLefthanded() const { return sgn(m_quaternion.r) == -1.0f; }  // TESTED
+        EIAPI constexpr bool isRighthanded() const { return sgn(m_quaternion.r) == 1.0f; }  // TESTED
+        EIAPI constexpr bool isLefthanded() const { return sgn(m_quaternion.r) == -1.0f; }  // TESTED
 
-        constexpr bool operator == (const TOrthoSpace& _other) const {
+        EIAPI constexpr bool operator == (const TOrthoSpace& _other) const {
             // Unlike quaternions where q = -q we have a unique representation.
             return m_quaternion.r == _other.m_quaternion.r
                 && m_quaternion.i == _other.m_quaternion.i
@@ -546,13 +546,19 @@ namespace ei {
                 && m_quaternion.k == _other.m_quaternion.k;
         }
 
-        constexpr bool operator != (const TOrthoSpace& _other) const {
+        EIAPI constexpr bool operator != (const TOrthoSpace& _other) const {
             // Unlike quaternions where q = -q we have a unique representation.
             return m_quaternion.r != _other.m_quaternion.r
                 || m_quaternion.i != _other.m_quaternion.i
                 || m_quaternion.j != _other.m_quaternion.j
                 || m_quaternion.k != _other.m_quaternion.k;
         }
+
+        // Get access to the internal quaternion.
+        // WARNING: the quternion has additional information encoded and cannot be
+        // used as a quaternion.
+        EIAPI constexpr const TQuaternion<T>& data() const noexcept { return m_quaternion; }
+        EIAPI constexpr TQuaternion<T>& data() noexcept { return m_quaternion; }
     private:
         // Use a standard quaternion.
         // The sign of the determinant can be encoded in the r component.
@@ -561,13 +567,6 @@ namespace ei {
         // Important: we need -0 and +0 from float to be sure the sign is always
         // encoded.
         TQuaternion<T> m_quaternion;
-
-        friend constexpr uint64 packOrthoSpace64(const TOrthoSpace<float>& _space) noexcept;
-        friend TOrthoSpace<float> unpackOrthoSpace64(uint64 _code) noexcept;
-        template<typename T1>
-        friend constexpr bool approx(const TOrthoSpace<T1>& _o0,
-                                     const TOrthoSpace<T1>& _o1,
-                                     T1 _epsilon) noexcept;
     };
 
     using OrthoSpace = TOrthoSpace<float>;
@@ -576,14 +575,14 @@ namespace ei {
     /// \brief Check if the absolute difference between all elements is smaller
     ///    or equal than epsilon.
     template<typename T>
-    constexpr bool approx(const TOrthoSpace<T>& _o0,
+    EIAPI constexpr bool approx(const TOrthoSpace<T>& _o0,
                           const TOrthoSpace<T>& _o1,
                           T _epsilon = T(1e-6)) noexcept // TESTED
     {
-        return abs(_o0.m_quaternion.r - _o1.m_quaternion.r) <= _epsilon
-            && abs(_o0.m_quaternion.i - _o1.m_quaternion.i) <= _epsilon
-            && abs(_o0.m_quaternion.j - _o1.m_quaternion.j) <= _epsilon
-            && abs(_o0.m_quaternion.k - _o1.m_quaternion.k) <= _epsilon;
+        return abs(_o0.data().r - _o1.data().r) <= _epsilon
+            && abs(_o0.data().i - _o1.data().i) <= _epsilon
+            && abs(_o0.data().j - _o1.data().j) <= _epsilon
+            && abs(_o0.data().k - _o1.data().k) <= _epsilon;
     }
 
 } // namespace ei
