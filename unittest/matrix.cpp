@@ -768,37 +768,70 @@ bool test_matrix()
     }{
         Mat3x3 Q1(1.0f, 2.0f, 3.0f, 2.0f, 1.0f, 0.5f, 0.0f, -1.0f, 1.0f);
         orthonormalize(Q1);
-        Vec3 d1(0.7f, 1.0f, 1.1f);
-        Mat3x3 A1 = transpose(Q1) * diag(d1) * Q1;	// Arbitrary symmetric matrix
-        Mat3x3 A0(1.0f, 0.0f, 0.0f, 0.0f, 2.0f, 0.0f, 0.0f, 0.0f, 0.5f);	// diagonal matrix
+        const Vec3 d1(0.7f, 1.0f, 1.1f);
+        const Mat3x3 A1 = transpose(Q1) * diag(d1) * Q1;	// Arbitrary symmetric matrix
+        const Mat3x3 A0(1.0f, 0.0f, 0.0f, 0.0f, 2.0f, 0.0f, 0.0f, 0.0f, 0.5f);	// diagonal matrix
         Vec3 vtmp; Mat3x3 Qtmp;
+
         int itn = decomposeQl(A1, Qtmp, vtmp);
         TEST(approx(vtmp.x, 1.1f), "Eigenvalue 0 of A1 is wrong!");
         TEST(approx(vtmp.y, 1.0f), "Eigenvalue 1 of A1 is wrong!");
         TEST(approx(vtmp.z, 0.7f), "Eigenvalue 2 of A1 is wrong!");
         TEST(approx(A1, transpose(Qtmp) * diag(vtmp) * Qtmp), "Spectral decomposition of A1 failed!");
+        itn = decomposeQlIter(A1, Qtmp, vtmp);
+        TEST(approx(vtmp.x, 1.1f), "Eigenvalue 0 of A1 is wrong!");
+        TEST(approx(vtmp.y, 1.0f), "Eigenvalue 1 of A1 is wrong!");
+        TEST(approx(vtmp.z, 0.7f), "Eigenvalue 2 of A1 is wrong!");
+        TEST(approx(A1, transpose(Qtmp) * diag(vtmp) * Qtmp), "Spectral decomposition of A1 failed!");
+
         decomposeQl(A0, Qtmp, vtmp);
+        TEST(vtmp == Vec3(2.0f, 1.0f, 0.5f), "Eigenvalues of A0 are wrong!");
+        TEST(approx(A0, transpose(Qtmp) * diag(vtmp) * Qtmp), "Spectral decomposition of A0 failed!");
+        itn = decomposeQlIter(A0, Qtmp, vtmp);
         TEST(vtmp == Vec3(2.0f, 1.0f, 0.5f), "Eigenvalues of A0 are wrong!");
         TEST(approx(A0, transpose(Qtmp) * diag(vtmp) * Qtmp), "Spectral decomposition of A0 failed!");
 
         // More difficult case for power iteration
-        Vec3 d2(1.0f, -1.001f, 1.0001f);
-        Mat3x3 A2 = transpose(Q1) * diag(d2) * Q1;
+        const Vec3 d2(1.0f, -1.001f, 1.0001f);
+        const Mat3x3 A2 = transpose(Q1) * diag(d2) * Q1;
         itn = decomposeQl(A2, Qtmp, vtmp);
         TEST(approx(vtmp.x, 1.0001f), "Eigenvalue 0 of A2 is wrong!");
         TEST(approx(vtmp.y, 1.0f), "Eigenvalue 1 of A2 is wrong!");
         TEST(approx(vtmp.z, -1.001f), "Eigenvalue 2 of A2 is wrong!");
         TEST(approx(A2, transpose(Qtmp) * diag(vtmp) * Qtmp, 5e-6f), "Spectral decomposition of A2 failed!");
-        itn = 0;
+        itn = decomposeQlIter(A2, Qtmp, vtmp);
+        TEST(approx(vtmp.x, 1.0001f), "Eigenvalue 0 of A2 is wrong!");
+        TEST(approx(vtmp.y, 1.0f), "Eigenvalue 1 of A2 is wrong!");
+        TEST(approx(vtmp.z, -1.001f), "Eigenvalue 2 of A2 is wrong!");
+        TEST(approx(A2, transpose(Qtmp) * diag(vtmp) * Qtmp, 2e-5f), "Spectral decomposition of A2 failed!");
 
         // Degenerated cases
-        Mat3x3 A3(1.0f, 0.0f, 0.0f, 0.0f, 2.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+        const Mat3x3 A3(1.0f, 0.0f, 0.0f, 0.0f, 2.0f, 0.0f, 0.0f, 0.0f, 1.0f);
         decomposeQl(A3, Qtmp, vtmp);
         TEST(vtmp == Vec3(2.0f, 1.0f, 1.0f), "Eigenvalues of A3 are wrong!");
         TEST(approx(A3, transpose(Qtmp) * diag(vtmp) * Qtmp), "Spectral decomposition of A3 failed!");
+        decomposeQlIter(A3, Qtmp, vtmp);
+        TEST(vtmp == Vec3(2.0f, 1.0f, 1.0f), "Eigenvalues of A3 are wrong!");
+        TEST(approx(A3, transpose(Qtmp) * diag(vtmp) * Qtmp), "Spectral decomposition of A3 failed!");
+
         decomposeQl(identity3x3(), Qtmp, vtmp);
         TEST(vtmp == Vec3(1.0f, 1.0f, 1.0f), "Eigenvalues of identity3x3 are wrong!");
         TEST(Qtmp == Mat3x3(1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f), "Eigenvectors of identity3x3 are wrong!");
+        itn = decomposeQlIter(identity3x3(), Qtmp, vtmp);
+        TEST(vtmp == Vec3(1.0f, 1.0f, 1.0f), "Eigenvalues of identity3x3 are wrong!");
+        TEST(Qtmp == Mat3x3(1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f), "Eigenvectors of identity3x3 are wrong!");
+    }{
+        const Mat4x4 A0 {   4.0f,  -30.0f,    60.0f,   -35.0f,
+                          -30.0f,  300.0f,  -675.0f,   420.0f,
+                           60.0f, -675.0f,  1620.0f, -1050.0f,
+                          -35.0f,  420.0f, -1050.0f,   700.0f };
+        Vec4 vtmp; Mat4x4 Qtmp;
+        int itn = decomposeQlIter(A0, Qtmp, vtmp);
+        TEST(approx(vtmp, Vec4(2585.2538109f, 37.101491365f, 1.4780548448f, 0.16664286117f), 1e-5f), "Eigenvalues of 4x4 matrix wrong!");
+        TEST(approx(Qtmp(0), Matrix<float,1,4>( 0.02919332f, -0.3287121f,  0.7914111f, -0.5145527f)), "Eigenvector 0 of 4x4 matrix wrong!");
+        TEST(approx(Qtmp(1), Matrix<float,1,4>(-0.17918629f,  0.7419178f, -0.1002281f, -0.6382825f)), "Eigenvector 1 of 4x4 matrix wrong!");
+        TEST(approx(Qtmp(2), Matrix<float,1,4>(-0.58207570f,  0.3705022f,  0.5095786f,  0.5140483f), 1e-5f), "Eigenvector 2 of 4x4 matrix wrong!");
+        TEST(approx(Qtmp(3), Matrix<float,1,4>( 0.79260829f,  0.4519231f,  0.3224164f,  0.2521612f), 1e-5f), "Eigenvector 3 of 4x4 matrix wrong!");
     }
 
     // ********************************************************************* //

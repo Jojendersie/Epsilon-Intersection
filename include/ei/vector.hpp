@@ -1981,64 +1981,68 @@ namespace ei {
         return 1;
     }
 
-    /// \brief Iterative spectral decomposition for 3x3 matrices.
-    // Implementation from http://www.melax.com/diag.html
+    /// \brief Iterative spectral decomposition for general symmetric matrices.
+    // Implementation based on using https://en.wikipedia.org/wiki/Jacobi_rotation
     // Other can be found on http://stackoverflow.com/questions/4372224/fast-method-for-computing-3x3-symmetric-matrix-spectral-decomposition
-    template<typename T>
-    EIAPI inline int decomposeQlIter(const Matrix<T,3,3>& _A, Matrix<T,3,3>& _Q, Vec<T,3>& _lambda, bool _sort = true) noexcept // TESTED
+    // and http://www.melax.com/diag.html
+    template<typename T, int N>
+    EIAPI inline int decomposeQlIter(const Matrix<T,N,N>& _A, Matrix<T,N,N>& _Q, Vec<T,N>& _lambda, bool _sort = true) noexcept // TESTED
     {
         int i = 0;
-        Quaternion q = qidentity();// TODO type T
-        while(i < 50)
+        _Q = ei::identity<T,N>();
+        Matrix<T,N,N> D = _A;	// This matrix is going to be a diagonal matrix over time
+        int maxIter = (N * (N - 1)) / 2		// Number of off-diagonal entries
+            * (ei::ilog2(N)+1);				// Number of likely sweeps (heuristic)
+        for(;i < maxIter; ++i)
         {
-            ++i;
-            _Q = Mat3x3(q);
-            Vec<T,3> offdiag; // elements (1,2), (0,2) and (0,1) of the diagonal matrix D = Q * A * Q^T
-            Matrix<T,3,3> D = _Q * _A * transpose(_Q);
-            _lambda.x = D(0,0); _lambda.y = D(1,1); _lambda.z = D(2,2);
-            offdiag.x = D(1,2); offdiag.y = D(0,2); offdiag.z = D(0,1);
-            // Find index of largest element of offdiag
-            Vec<T,3> absod = abs(offdiag);
-            int k0 = (absod.x > absod.y && absod.x > absod.z) ? 0 : (absod.y > absod.z) ? 1 : 2;
-            int k1 = (k0+1)%3;
-            int k2 = (k0+2)%3;
-            if(offdiag[k0] == static_cast<T>(0)) break;  // Diagonal matrix converged
-            float t = (_lambda[k2] - _lambda[k1]) / (static_cast<T>(2) * offdiag[k0]);
-            float sgnt = (t > static_cast<T>(0)) ? static_cast<T>(1) : static_cast<T>(-1);
-            t = sgnt / (t*sgnt + sqrt(t*t + static_cast<T>(1)));
-            float c = sqrt(t*t + static_cast<T>(1));
-            if(c == static_cast<T>(1)) break;           // reached numeric limit
+            // Find index of largest element of off-side the diagonal
+            int k = 0, l = 1;
+            for(int row = 0; row < N-1; ++row)
+                for(int col = row+1; col < N; ++col)
+                    if(ei::abs(D(row,col)) > ei::abs(D(k,l))) { k=row; l=col; }
+            // Converged to diagonal matrix?
+            if(D(k,l) == static_cast<T>(0)) break;
+            // Compute tan(theta) (see wikipedia)
+            T beta = (D(l,l) - D(k,k)) / (static_cast<T>(2) * D(k,l));
+            T sgnBeta = (beta > static_cast<T>(0)) ? static_cast<T>(1) : static_cast<T>(-1);
+            T t = sgnBeta / (beta*sgnBeta + sqrt(beta*beta + static_cast<T>(1)));
+            T c = sqrt(t*t + static_cast<T>(1));
             c = static_cast<T>(1) / c;
-            // Create a jacobi rotation for this iteration
-            Quaternion jr;
-            jr.z[k0] = sgnt * sqrt((1.0f - c) / 2.0f);
-            jr.z[k1] = jr.z[k2] = 0.0f;
-            jr.r = sqrt((1.0f - jr.z[k0]) * (1.0f + jr.z[k0]));
-            if(jr.r == 1.0f) break;                     // another numeric limit
-            q = normalize(jr * q);
+            T s = c * t;
+            // Update matrix entries of Q
+            for(int h = 0; h < N; ++h) {
+                T qkh = _Q(k,h);
+                T qlh = _Q(l,h);
+                _Q(k,h) = qkh * c - qlh * s;
+                _Q(l,h) = qlh * c + qkh * s;
+            }
+            // Update matrix entries of D
+            T r = s / (static_cast<T>(1) + c);
+            for(int h = 0; h < N; ++h) if(h!=k && h!=l) {
+                T dhk = D(h,k);
+                T dhl = D(h,l);
+                D(h,k) = D(k,h) = dhk - s * (dhl + r * dhk);
+                D(h,l) = D(l,h) = dhl + s * (dhk - r * dhl);
+            }
+            D(k,k) = D(k,k) - t * D(k,l);
+            D(l,l) = D(l,l) + t * D(k,l);
+            D(k,l) = D(l,k) = static_cast<T>(0);
         }
-        _Q = Mat3x3(q);
-        _lambda.x = _Q(0,0)*dot(_A(0), _Q(0)) + _Q(0,1)*dot(_A(1), _Q(0)) + _Q(0,2)*dot(_A(2), _Q(0));
-        _lambda.y = _Q(1,0)*dot(_A(0), _Q(1)) + _Q(1,1)*dot(_A(1), _Q(1)) + _Q(1,2)*dot(_A(2), _Q(1));
-        _lambda.z = _Q(2,0)*dot(_A(0), _Q(2)) + _Q(2,1)*dot(_A(1), _Q(2)) + _Q(2,2)*dot(_A(2), _Q(2));
+        for(int k = 0; k < N; ++k)
+            _lambda[k] = D(k,k);
 
-        // Sort (Network 0,2 0,1 1,2)
         if(_sort)
         {
-            if(_lambda.x < _lambda.z)
+            // Selection sort; TODO use better method.
+            for(int k = 0; k < N-1; ++k)
             {
-                float ts = _lambda.x; _lambda.x = _lambda.z; _lambda.z = ts;
-                Matrix<T,1,3> tv = _Q(0); _Q(0) = _Q(2); _Q(2) = tv;
-            }
-            if(_lambda.x < _lambda.y)
-            {
-                float ts = _lambda.x; _lambda.x = _lambda.y; _lambda.y = ts;
-                Matrix<T,1,3> tv = _Q(0); _Q(0) = _Q(1); _Q(1) = tv;
-            }
-            if(_lambda.y < _lambda.z)
-            {
-                float ts = _lambda.y; _lambda.y = _lambda.z; _lambda.z = ts;
-                Matrix<T,1,3> tv = _Q(1); _Q(1) = _Q(2); _Q(2) = tv;
+                int m = k;
+                for(int l = k+1; l < N; ++l)
+                    if(_lambda[l] > _lambda[m]) m = l;
+                if(k != m) { // Swap
+                    float ts = _lambda[k]; _lambda[k] = _lambda[m]; _lambda[m] = ts;
+                    Matrix<T,1,N> tv = _Q(k); _Q(k) = _Q(m); _Q(m) = tv;
+                }
             }
         }
 
