@@ -1981,35 +1981,36 @@ namespace ei {
         return 1;
     }
 
-    /// \brief Iterative spectral decomposition for 3x3 matrices.
+    /// \brief Iterative spectral decomposition for general symmetric matrices.
     // Implementation based on using https://en.wikipedia.org/wiki/Jacobi_rotation
     // Other can be found on http://stackoverflow.com/questions/4372224/fast-method-for-computing-3x3-symmetric-matrix-spectral-decomposition
     // and http://www.melax.com/diag.html
-    // TODO: more than 3 dimensions
-    template<typename T>
-    inline int decomposeQlIter(const Matrix<T,3,3>& _A, Matrix<T,3,3>& _Q, Vec<T,3>& _lambda, bool _sort = true) noexcept // TESTED
+    template<typename T, int N>
+    inline int decomposeQlIter(const Matrix<T,N,N>& _A, Matrix<T,N,N>& _Q, Vec<T,N>& _lambda, bool _sort = true) noexcept // TESTED
     {
         int i = 0;
-        _Q = ei::identity<T,3>();
-        Matrix<T,3,3> D = _A;	// This matrix is going to be a diagonal matrix over time
-		int maxIter = (3 * (3 - 1)) / 2;	// Number of off diagonal entries
-		for(;i < maxIter; ++i)
+        _Q = ei::identity<T,N>();
+        Matrix<T,N,N> D = _A;	// This matrix is going to be a diagonal matrix over time
+        int maxIter = (N * (N - 1)) / 2		// Number of off-diagonal entries
+            * (ei::ilog2(N)+1);				// Number of likely sweeps (heuristic)
+        for(;i < maxIter; ++i)
         {
-            // Find index of largest element of offside the diagonal
+            // Find index of largest element of off-side the diagonal
             int k = 0, l = 1;
-            if(ei::abs(D(0,2)) > ei::abs(D(k,l))) { k=0; l=2; }
-            if(ei::abs(D(1,2)) > ei::abs(D(k,l))) { k=1; l=2; }
-            if(D(k,l) == static_cast<T>(0)) break;	// Converged to diagonal matrix
+            for(int row = 0; row < N-1; ++row)
+                for(int col = row+1; col < N; ++col)
+                    if(ei::abs(D(row,col)) > ei::abs(D(k,l))) { k=row; l=col; }
+            // Converged to diagonal matrix?
+            if(D(k,l) == static_cast<T>(0)) break;
             // Compute tan(theta) (see wikipedia)
             T beta = (D(l,l) - D(k,k)) / (static_cast<T>(2) * D(k,l));
             T sgnBeta = (beta > static_cast<T>(0)) ? static_cast<T>(1) : static_cast<T>(-1);
             T t = sgnBeta / (beta*sgnBeta + sqrt(beta*beta + static_cast<T>(1)));
             T c = sqrt(t*t + static_cast<T>(1));
-            if(c == static_cast<T>(1)) break;	// reached numeric limit
             c = static_cast<T>(1) / c;
             T s = c * t;
             // Update matrix entries of Q
-            for(int h = 0; h < 3; ++h) {
+            for(int h = 0; h < N; ++h) {
                 T qkh = _Q(k,h);
                 T qlh = _Q(l,h);
                 _Q(k,h) = qkh * c - qlh * s;
@@ -2017,7 +2018,7 @@ namespace ei {
             }
             // Update matrix entries of D
             T r = s / (static_cast<T>(1) + c);
-            for(int h = 0; h < 3; ++h) if(h!=k && h!=l) {
+            for(int h = 0; h < N; ++h) if(h!=k && h!=l) {
                 T dhk = D(h,k);
                 T dhl = D(h,l);
                 D(h,k) = D(k,h) = dhk - s * (dhl + r * dhk);
@@ -2027,25 +2028,21 @@ namespace ei {
             D(l,l) = D(l,l) + t * D(k,l);
             D(k,l) = D(l,k) = static_cast<T>(0);
         }
-        _lambda.x = D(0,0); _lambda.y = D(1,1); _lambda.z = D(2,2);
+        for(int k = 0; k < N; ++k)
+            _lambda[k] = D(k,k);
 
-        // Sort (Network 0,2 0,1 1,2)
         if(_sort)
         {
-            if(_lambda.x < _lambda.z)
+            // Selection sort; TODO use better method.
+            for(int k = 0; k < N-1; ++k)
             {
-                float ts = _lambda.x; _lambda.x = _lambda.z; _lambda.z = ts;
-                Matrix<T,1,3> tv = _Q(0); _Q(0) = _Q(2); _Q(2) = tv;
-            }
-            if(_lambda.x < _lambda.y)
-            {
-                float ts = _lambda.x; _lambda.x = _lambda.y; _lambda.y = ts;
-                Matrix<T,1,3> tv = _Q(0); _Q(0) = _Q(1); _Q(1) = tv;
-            }
-            if(_lambda.y < _lambda.z)
-            {
-                float ts = _lambda.y; _lambda.y = _lambda.z; _lambda.z = ts;
-                Matrix<T,1,3> tv = _Q(1); _Q(1) = _Q(2); _Q(2) = tv;
+                int m = k;
+                for(int l = k+1; l < N; ++l)
+                    if(_lambda[l] > _lambda[m]) m = l;
+                if(k != m) { // Swap
+                    float ts = _lambda[k]; _lambda[k] = _lambda[m]; _lambda[m] = ts;
+                    Matrix<T,1,N> tv = _Q(k); _Q(k) = _Q(m); _Q(m) = tv;
+                }
             }
         }
 

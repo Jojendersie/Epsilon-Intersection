@@ -820,6 +820,18 @@ bool test_matrix()
         itn = decomposeQlIter(identity3x3(), Qtmp, vtmp);
         TEST(vtmp == Vec3(1.0f, 1.0f, 1.0f), "Eigenvalues of identity3x3 are wrong!");
         TEST(Qtmp == Mat3x3(1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f), "Eigenvectors of identity3x3 are wrong!");
+    }{
+        const Mat4x4 A0 {   4.0f,  -30.0f,    60.0f,   -35.0f,
+                          -30.0f,  300.0f,  -675.0f,   420.0f,
+                           60.0f, -675.0f,  1620.0f, -1050.0f,
+                          -35.0f,  420.0f, -1050.0f,   700.0f };
+        Vec4 vtmp; Mat4x4 Qtmp;
+        int itn = decomposeQlIter(A0, Qtmp, vtmp);
+        TEST(approx(vtmp, Vec4(2585.2538109f, 37.101491365f, 1.4780548448f, 0.16664286117f), 1e-5f), "Eigenvalues of 4x4 matrix wrong!");
+        TEST(approx(Qtmp(0), Matrix<float,1,4>( 0.02919332f, -0.3287121f,  0.7914111f, -0.5145527f)), "Eigenvector 0 of 4x4 matrix wrong!");
+        TEST(approx(Qtmp(1), Matrix<float,1,4>(-0.17918629f,  0.7419178f, -0.1002281f, -0.6382825f)), "Eigenvector 1 of 4x4 matrix wrong!");
+        TEST(approx(Qtmp(2), Matrix<float,1,4>(-0.58207570f,  0.3705022f,  0.5095786f,  0.5140483f), 1e-5f), "Eigenvector 2 of 4x4 matrix wrong!");
+        TEST(approx(Qtmp(3), Matrix<float,1,4>( 0.79260829f,  0.4519231f,  0.3224164f,  0.2521612f), 1e-5f), "Eigenvector 3 of 4x4 matrix wrong!");
     }
 
     // ********************************************************************* //
