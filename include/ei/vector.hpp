@@ -1982,45 +1982,52 @@ namespace ei {
     }
 
     /// \brief Iterative spectral decomposition for 3x3 matrices.
-    // Implementation from http://www.melax.com/diag.html
+    // Implementation based on using https://en.wikipedia.org/wiki/Jacobi_rotation
     // Other can be found on http://stackoverflow.com/questions/4372224/fast-method-for-computing-3x3-symmetric-matrix-spectral-decomposition
+    // and http://www.melax.com/diag.html
+    // TODO: more than 3 dimensions
     template<typename T>
     inline int decomposeQlIter(const Matrix<T,3,3>& _A, Matrix<T,3,3>& _Q, Vec<T,3>& _lambda, bool _sort = true) noexcept // TESTED
     {
         int i = 0;
-        Quaternion q = qidentity();// TODO type T
-        while(i < 50)
+        _Q = ei::identity<T,3>();
+        Matrix<T,3,3> D = _A;	// This matrix is going to be a diagonal matrix over time
+		int maxIter = (3 * (3 - 1)) / 2;	// Number of off diagonal entries
+		for(;i < maxIter; ++i)
         {
-            ++i;
-            _Q = Mat3x3(q);
-            Vec<T,3> offdiag; // elements (1,2), (0,2) and (0,1) of the diagonal matrix D = Q * A * Q^T
-            Matrix<T,3,3> D = _Q * _A * transpose(_Q);
-            _lambda.x = D(0,0); _lambda.y = D(1,1); _lambda.z = D(2,2);
-            offdiag.x = D(1,2); offdiag.y = D(0,2); offdiag.z = D(0,1);
-            // Find index of largest element of offdiag
-            Vec<T,3> absod = abs(offdiag);
-            int k0 = (absod.x > absod.y && absod.x > absod.z) ? 0 : (absod.y > absod.z) ? 1 : 2;
-            int k1 = (k0+1)%3;
-            int k2 = (k0+2)%3;
-            if(offdiag[k0] == static_cast<T>(0)) break;  // Diagonal matrix converged
-            float t = (_lambda[k2] - _lambda[k1]) / (static_cast<T>(2) * offdiag[k0]);
-            float sgnt = (t > static_cast<T>(0)) ? static_cast<T>(1) : static_cast<T>(-1);
-            t = sgnt / (t*sgnt + sqrt(t*t + static_cast<T>(1)));
-            float c = sqrt(t*t + static_cast<T>(1));
-            if(c == static_cast<T>(1)) break;           // reached numeric limit
+            // Find index of largest element of offside the diagonal
+            int k = 0, l = 1;
+            if(ei::abs(D(0,2)) > ei::abs(D(k,l))) { k=0; l=2; }
+            if(ei::abs(D(1,2)) > ei::abs(D(k,l))) { k=1; l=2; }
+            if(D(k,l) == static_cast<T>(0)) break;	// Converged to diagonal matrix
+            // Compute tan(theta) (see wikipedia)
+            T beta = (D(l,l) - D(k,k)) / (static_cast<T>(2) * D(k,l));
+            T sgnBeta = (beta > static_cast<T>(0)) ? static_cast<T>(1) : static_cast<T>(-1);
+            T t = sgnBeta / (beta*sgnBeta + sqrt(beta*beta + static_cast<T>(1)));
+            T c = sqrt(t*t + static_cast<T>(1));
+            if(c == static_cast<T>(1)) break;	// reached numeric limit
             c = static_cast<T>(1) / c;
-            // Create a jacobi rotation for this iteration
-            Quaternion jr;
-            jr.z[k0] = sgnt * sqrt((1.0f - c) / 2.0f);
-            jr.z[k1] = jr.z[k2] = 0.0f;
-            jr.r = sqrt((1.0f - jr.z[k0]) * (1.0f + jr.z[k0]));
-            if(jr.r == 1.0f) break;                     // another numeric limit
-            q = normalize(jr * q);
+            T s = c * t;
+            // Update matrix entries of Q
+            for(int h = 0; h < 3; ++h) {
+                T qkh = _Q(k,h);
+                T qlh = _Q(l,h);
+                _Q(k,h) = qkh * c - qlh * s;
+                _Q(l,h) = qlh * c + qkh * s;
+            }
+            // Update matrix entries of D
+            T r = s / (static_cast<T>(1) + c);
+            for(int h = 0; h < 3; ++h) if(h!=k && h!=l) {
+                T dhk = D(h,k);
+                T dhl = D(h,l);
+                D(h,k) = D(k,h) = dhk - s * (dhl + r * dhk);
+                D(h,l) = D(l,h) = dhl + s * (dhk - r * dhl);
+            }
+            D(k,k) = D(k,k) - t * D(k,l);
+            D(l,l) = D(l,l) + t * D(k,l);
+            D(k,l) = D(l,k) = static_cast<T>(0);
         }
-        _Q = Mat3x3(q);
-        _lambda.x = _Q(0,0)*dot(_A(0), _Q(0)) + _Q(0,1)*dot(_A(1), _Q(0)) + _Q(0,2)*dot(_A(2), _Q(0));
-        _lambda.y = _Q(1,0)*dot(_A(0), _Q(1)) + _Q(1,1)*dot(_A(1), _Q(1)) + _Q(1,2)*dot(_A(2), _Q(1));
-        _lambda.z = _Q(2,0)*dot(_A(0), _Q(2)) + _Q(2,1)*dot(_A(1), _Q(2)) + _Q(2,2)*dot(_A(2), _Q(2));
+        _lambda.x = D(0,0); _lambda.y = D(1,1); _lambda.z = D(2,2);
 
         // Sort (Network 0,2 0,1 1,2)
         if(_sort)
