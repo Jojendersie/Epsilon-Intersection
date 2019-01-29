@@ -689,7 +689,7 @@ namespace ei {
             origin(_origin),
             direction(_direction)
         {
-            eiAssert(approx(lensq(_direction), 1.0f), "Insert a normalized normal!");
+            eiAssert(approx(len(_direction), 1.0f), "Insert a normalized normal!");
         }
     };
 

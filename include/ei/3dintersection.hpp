@@ -353,8 +353,8 @@ namespace ei {
     /// \param [out,opt] _distance The ray parameter (distance) for the first
     ///     intersection point in positive direction.
     ///
-    ///     If the ray starts inside 0 is returned.
-    /// \return true if the ray has at least one point in common with thp sphere
+    ///     If the ray starts inside the distance to the exit point is returned.
+    /// \return true if the ray has at least one point in common with the sphere
     EIAPI inline bool intersects( const Ray& _ray, const Sphere& _sphere )
     {
         // Go towards closest point and compare its distance to the radius
@@ -368,13 +368,18 @@ namespace ei {
     {
         // Go towards closest point and compare its distance to the radius
         Vec3 o = _sphere.center - _ray.origin;
-        float odotd = max(0.0f, dot(o, _ray.direction));
-        o -= _ray.direction * odotd;
+        float odotd = dot(o, _ray.direction);
+        o -= _ray.direction * max(0.0f, odotd); // The max0 ensures we do not travel along negative ray direction (there might be an intersection behind the ray)
         float distSq = lensq(o);
         float rSq = _sphere.radius * _sphere.radius;
         if(distSq > rSq) return false;
-        // Compute the correct distance via phytagoras
-        _distance = max(0.0f, odotd - sqrt(rSq - distSq));
+        // Compute the correct distance via phytagoras.
+        float innerSegLenHalf = sqrt(rSq - distSq);
+        // If the ray started inside the distances must be added instead substracted.
+        // In that case the sign of odotd is important (moving toward or away from the
+        // closest point).
+        _distance = ei::abs(odotd) <= _sphere.radius ? innerSegLenHalf + odotd
+                                                     : odotd - innerSegLenHalf;
         return true;
     }
 
