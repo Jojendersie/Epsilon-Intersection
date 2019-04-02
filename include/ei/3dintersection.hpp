@@ -359,22 +359,28 @@ namespace ei {
     {
         // Go towards closest point and compare its distance to the radius
         Vec3 o = _sphere.center - _ray.origin;
-        float odotd = max(0.0f, dot(o, _ray.direction));
+        float odotd = max(0.0f, dot(o, _ray.direction)); // The max0 ensures we do not travel along negative ray direction (there might be an intersection behind the ray)
         o -= _ray.direction * odotd;
         return lensq(o) <= _sphere.radius * _sphere.radius;
     }
 
     inline bool intersects( const Ray& _ray, const Sphere& _sphere, float& _distance )
     {
+        float rSq = _sphere.radius * _sphere.radius;
         // Go towards closest point and compare its distance to the radius
         Vec3 o = _sphere.center - _ray.origin;
-        float odotd = max(0.0f, dot(o, _ray.direction));
-        o -= _ray.direction * odotd;
-        float distSq = lensq(o);
-        float rSq = _sphere.radius * _sphere.radius;
-        if(distSq > rSq) return false;
-        // Compute the correct distance via phytagoras
-        _distance = max(0.0f, odotd - sqrt(rSq - distSq));
+        float odoto = dot(o, o);				// Distance ray.origin <-> sphere.center
+        float odotd = dot(o, _ray.direction);	// Distance ray.origin <-> closest point to sphere center
+        // If the ray starts outside and the closest point is behind us there is no intersection
+        if(odotd < 0.0f && odoto > rSq) return false;
+        float dClosestSq = odoto - odotd * odotd;	// Distance sphere.center <-> closest point on ray (via Pythagorean theorem)
+        // If the closest point is outside the sphere there is no intersection
+        if(dClosestSq > rSq) return false;
+        // Compute the t for the closest intersection
+        float innerSegLenHalf = sqrt(rSq - dClosestSq);
+        // If the ray started inside the distances must be added instead substracted.
+        _distance = odoto <= _sphere.radius ? odotd + innerSegLenHalf
+                                            : odotd - innerSegLenHalf;
         return true;
     }
 
