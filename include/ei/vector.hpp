@@ -2190,6 +2190,19 @@ namespace ei {
         else return identity<T,N>();
     }
 
+    /// \brief Invert a 2x2 matrix.
+    /// \details Direct inversion of small matrices is faster than decomposition.
+    template<typename T>
+    EIAPI Matrix<T,2,2> invert(const Matrix<T,2,2>& _mat) noexcept // TESTED
+    {
+        float det = _mat[0] * _mat[3] - _mat[1] * _mat[2];
+        if(det == 0.0f) return identity<T,2>();
+        return Matrix<T,2,2>{
+             _mat[3] / det, -_mat[1] / det,
+            -_mat[2] / det,  _mat[0] / det
+        };
+    }
+
     // ********************************************************************* //
     /// \brief Compute the determinant of a matrix.
     /// \details This uses fixed implementations for N=2 and N=3 and LU
