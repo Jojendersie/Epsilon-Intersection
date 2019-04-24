@@ -503,18 +503,26 @@ namespace ei {
     }
 
     /// \brif Helper method to solve ax^2 + bx + c (numerically more stable than naive method).
-    /// \returns Solutions x1 >= x2 (x2 is always the greater of the two results).
-    EIAPI constexpr inline bool solveSquarePoly(float a, float b, float c, float& x1, float& x2)
+    /// \returns Solutions x1 >= x2 (x1 is always the greater of the two results).
+    template<typename T>
+    EIAPI constexpr inline bool solveSquarePoly(T a, T b, T c, T& x1, T& x2)
     {
-        float discriminant = b*b - 4.0f*a*c;
-        if(discriminant < 0.0f) return false;
-        float dsqrt = sqrt(discriminant);
+        // Special case: linear equation
+        if(a == 0) {
+            if(b == 0) return false;
+            x1 = -c / b;
+            x2 = x1;
+            return true;
+        }
+        T discriminant = b*b - static_cast<T>(4)*a*c;
+        if(discriminant < 0) return false;
+        T dsqrt = sqrt(discriminant);
         if(b > 0) {
-            x1 = (-b - dsqrt)/(2.0f*a);
-            x2 = -2.0f*c/(b + dsqrt);
+            x1 = (-b - dsqrt)/(static_cast<T>(2)*a);
+            x2 = -static_cast<T>(2)*c/(b + dsqrt);
         } else {
-            x1 = -2.0f*c/(b - dsqrt);
-            x2 = (-b + dsqrt)/(2.0f*a);
+            x1 = -static_cast<T>(2)*c/(b - dsqrt);
+            x2 = (-b + dsqrt)/(static_cast<T>(2)*a);
         }
         return true;
     }
