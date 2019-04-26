@@ -820,17 +820,16 @@ namespace ei {
     //                           FAST VARIANTS                               //
     // ********************************************************************* //
 
-    struct FastRay
+    struct FastRay : public Ray   // Const inheritance would be nice!
     {
-        const Vec3 origin;
-        const Vec3 direction;
         const Vec3 invDirection;        ///< 1/direction
+        const Vec3 oDivDir;             ///< origin / direction
 
         /// \brief Construction from dynamic ray struct
         EIAPI FastRay(const Ray & _ray) noexcept :
-            origin(_ray.origin),
-            direction(_ray.direction),
-            invDirection(1.0f / _ray.direction)
+            Ray{_ray},
+            invDirection{ei::clamp(1.0f / _ray.direction, -1e38f, 1e38f)},
+            oDivDir{_ray.origin * ei::clamp(1.0f / _ray.direction, -1e38f, 1e38f)}
         {}
     };
 
