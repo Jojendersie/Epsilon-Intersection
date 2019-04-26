@@ -611,10 +611,14 @@ namespace ei {
         float tmin, tmax, tymin, tymax, tzmin, tzmax;
         const Vec3 * bbounds = (const Vec3 *)&_box;
 
-        tmax  = (bbounds[_ray.invDirection.x < 0.0f ? 0 : 1].x - _ray.origin.x) * _ray.invDirection.x;
+        /*tmax  = (bbounds[_ray.invDirection.x < 0.0f ? 0 : 1].x - _ray.origin.x) * _ray.invDirection.x;
         tmin  = (bbounds[_ray.invDirection.x < 0.0f ? 1 : 0].x - _ray.origin.x) * _ray.invDirection.x;
         tymin = (bbounds[_ray.invDirection.y < 0.0f ? 1 : 0].y - _ray.origin.y) * _ray.invDirection.y;
-        tymax = (bbounds[_ray.invDirection.y < 0.0f ? 0 : 1].y - _ray.origin.y) * _ray.invDirection.y;
+        tymax = (bbounds[_ray.invDirection.y < 0.0f ? 0 : 1].y - _ray.origin.y) * _ray.invDirection.y;*/
+        tmax  = bbounds[_ray.invDirection.x < 0.0f ? 0 : 1].x * _ray.invDirection.x - _ray.oDivDir.x;
+        tmin  = bbounds[_ray.invDirection.x < 0.0f ? 1 : 0].x * _ray.invDirection.x - _ray.oDivDir.x;
+        tymin = bbounds[_ray.invDirection.y < 0.0f ? 1 : 0].y * _ray.invDirection.y - _ray.oDivDir.y;
+        tymax = bbounds[_ray.invDirection.y < 0.0f ? 0 : 1].y * _ray.invDirection.y - _ray.oDivDir.y;
 
         if((tmin > tymax) || (tymin > tmax))
             return false;
@@ -623,10 +627,12 @@ namespace ei {
         if(tmax < 0.0f)
             return false;
 
-        tzmin = (bbounds[_ray.invDirection.z < 0.0f ? 1 : 0].z - _ray.origin.z) * _ray.invDirection.z;
-        tzmax = (bbounds[_ray.invDirection.z < 0.0f ? 0 : 1].z - _ray.origin.z) * _ray.invDirection.z;
+        //tzmin = (bbounds[_ray.invDirection.z < 0.0f ? 1 : 0].z - _ray.origin.z) * _ray.invDirection.z;
+        //tzmax = (bbounds[_ray.invDirection.z < 0.0f ? 0 : 1].z - _ray.origin.z) * _ray.invDirection.z;
+        tzmin = bbounds[_ray.invDirection.z < 0.0f ? 1 : 0].z * _ray.invDirection.z - _ray.oDivDir.z;
+        tzmax = bbounds[_ray.invDirection.z < 0.0f ? 0 : 1].z * _ray.invDirection.z - _ray.oDivDir.z;
 
-        if ((tmin > tzmax) || (tzmin > tmax) || (tzmax < 0.0f))
+        if((tmin > tzmax) || (tzmin > tmax) || (tzmax < 0.0f))
             return false;
 
         _distance = max(tzmin, tmin, 0.0f);
