@@ -828,8 +828,8 @@ namespace ei {
         /// \brief Construction from dynamic ray struct
         FastRay(const Ray & _ray) noexcept :
             Ray{_ray},
-            invDirection{ei::clamp(1.0f / _ray.direction, -1e38f, 1e38f)},
-            oDivDir{_ray.origin * ei::clamp(1.0f / _ray.direction, -1e38f, 1e38f)}
+            invDirection{ei::clamp(1.0f / _ray.direction, -1e19f, 1e19f)},
+            oDivDir{_ray.origin * ei::clamp(1.0f / _ray.direction, -1e19f, 1e19f)}
         {}
 
         /// \brief Overwrite the current data (auto generation not possible because of const members)
