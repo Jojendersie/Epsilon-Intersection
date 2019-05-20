@@ -364,6 +364,40 @@ namespace ei {
         return lensq(o) <= _sphere.radius * _sphere.radius;
     }
 
+	/* http://www.ti3.tuhh.de/paper/rump/OgRuOi05.pdf
+	inline Vec2 split(float a)
+	{
+		float c = 4097.0f * a;
+		float x = c - (c - a);
+		return Vec2{x, a - x};
+	}
+	inline Vec2 smul(float a, float b)
+	{
+		float x = a * b;
+		Vec2 A = split(a);
+		Vec2 B = split(b);
+		return Vec2{x, A.y*B.y - (((x - A.x * B.x) - A.y * B.x) - A.x * B.y)};
+	}
+	inline Vec2 sadd(float a, float b)
+	{
+		float x = a + b;
+		float z = x - a;
+		return Vec2{x, (a-(x-z)) + (b-z)};
+	}
+	inline float sdot(const Vec3& a, const Vec3& b)
+	{
+		Vec2 r = smul(a.x, b.x);
+		for(int i = 1; i < 3; ++i)
+		{
+			Vec2 x = smul(a[i], b[i]);
+			Vec2 y = sadd(r.x, x.x);
+			r.x = y.x;
+			r.y += (y.y + x.y);
+		}
+		return r.x + r.y;
+	}
+	*/
+
     EIAPI inline bool intersects( const Ray& _ray, const Sphere& _sphere, float& _distance )
     {
         float rSq = _sphere.radius * _sphere.radius;
@@ -372,15 +406,19 @@ namespace ei {
         float odoto = dot(o, o);				// Distance ray.origin <-> sphere.center
         float odotd = dot(o, _ray.direction);	// Distance ray.origin <-> closest point to sphere center
         // If the ray starts outside and the closest point is behind us there is no intersection
-        if(odotd < 0.0f && odoto > rSq) return false;
-        float dClosestSq = odoto - odotd * odotd;	// Distance sphere.center <-> closest point on ray (via Pythagorean theorem)
+        bool outside = odoto > rSq;
+        if(odotd < 0.0f && outside) return false;
+        // Jump to the closest point for numerical reasons
+        o -= _ray.direction * odotd;
+        float dClosestSq = dot(o, o);
         // If the closest point is outside the sphere there is no intersection
         if(dClosestSq > rSq) return false;
         // Compute the t for the closest intersection
+        //float innerSegLenHalf = sqrt(rSq - ei::max(0.0f, dClosestSq));
         float innerSegLenHalf = sqrt(rSq - dClosestSq);
         // If the ray started inside the distances must be added instead substracted.
-        _distance = odoto <= _sphere.radius ? odotd + innerSegLenHalf
-                                            : odotd - innerSegLenHalf;
+        _distance = outside ? odotd - innerSegLenHalf
+                            : odotd + innerSegLenHalf;
         return true;
     }
 
