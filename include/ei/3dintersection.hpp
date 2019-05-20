@@ -353,8 +353,11 @@ namespace ei {
     /// \param [out,opt] _distance The ray parameter (distance) for the first
     ///     intersection point in positive direction.
     ///
-    ///     If the ray starts inside 0 is returned.
-    /// \return true if the ray has at least one point in common with thp sphere
+    ///     If the ray starts inside the distance to the exit point is returned.
+    /// \param[out,opt] _distance2 The distance to the other intersection point.
+    ///     This is smaller zero and _distance > _distance2, if the ray started inside.
+    ///     Otherwise, it is the distance to the exit point with _distance2 >= _distance
+    /// \return true if the ray has at least one point in common with the sphere
     inline bool intersects( const Ray& _ray, const Sphere& _sphere )
     {
         // Go towards closest point and compare its distance to the radius
@@ -364,7 +367,7 @@ namespace ei {
         return lensq(o) <= _sphere.radius * _sphere.radius;
     }
 
-    inline bool intersects( const Ray& _ray, const Sphere& _sphere, float& _distance )
+    inline bool intersects( const Ray& _ray, const Sphere& _sphere, float& _distance, float& _distance2)
     {
         float rSq = _sphere.radius * _sphere.radius;
         // Go towards closest point and compare its distance to the radius
@@ -380,16 +383,21 @@ namespace ei {
         // If the closest point is outside the sphere there is no intersection
         if(dClosestSq > rSq) return false;
         // Compute the t for the closest intersection
-        //float innerSegLenHalf = sqrt(rSq - ei::max(0.0f, dClosestSq));
         float innerSegLenHalf = sqrt(rSq - dClosestSq);
-        // If the ray started inside the distances must be added instead substracted.
-        _distance = outside ? odotd - innerSegLenHalf
-                            : odotd + innerSegLenHalf;
+        // If the ray started inside, the distance for the first point must
+        // be added instead substracted.
+        if(outside) {
+            _distance  = odotd - innerSegLenHalf;
+            _distance2 = odotd + innerSegLenHalf;
+        } else {
+            _distance  = odotd + innerSegLenHalf;
+            _distance2 = odotd - innerSegLenHalf;
+        }
         return true;
     }
 
     inline bool intersects( const Sphere& _sphere, const Ray& _ray ) { return intersects(_ray, _sphere); }
-    inline bool intersects( const Sphere& _sphere, const Ray& _ray, float& _distance ) { return intersects(_ray, _sphere, _distance); }
+    inline bool intersects( const Sphere& _sphere, const Ray& _ray, float& _distance, float& _distance2 ) { return intersects(_ray, _sphere, _distance, _distance2); }
 
     /// \brief Do a ray and an ellipsoid intersect or touch?
     /// \param [out,opt] _distance The ray parameter (distance) for the first

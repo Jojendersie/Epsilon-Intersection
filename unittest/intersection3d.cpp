@@ -186,16 +186,16 @@ bool test_3dintersections()
         TEST( !intersects( ray4, sph0 ), "ray4 should miss sph0!" );
         TEST( !intersects( ray4, sph1 ), "ray4 should miss sph1!" );
 
-        float d;
-        TEST( !intersects( ray0, sph0, d ), "2: ray0 should miss sph0!" );
-        TEST( intersects( ray0, sph1, d ) && d==0.458257616f, "ray0 should hit sph1 in a distance of 0!" );
-        TEST( intersects( ray1, sph0, d ) && approx(d, 99999.3359f), "ray1 should hit sph0 in a distance of 99999.3359f!" );
-        TEST( !intersects( ray1, sph1, d ), "2: ray1 should miss sph1!" );
-        TEST( intersects( ray2, sph0, d ) && d==24.7731895f, "ray2 should hit sph0 in a distance of 24.7731895!" );
-        TEST( intersects( ray2, sph1, d ) && d==23.1899151f, "ray2 should hit sph1 in a distance of 23.1899151!" );
-        TEST( !intersects( ray3, sph0, d ), "2: ray3 should miss sph0!" );
-        TEST( !intersects( ray3, sph1, d ), "2: ray3 should miss sph1!" );
-        TEST( !intersects( ray4, sph0, d ), "2: ray4 should miss sph0!" );
+        float d, d2;
+        TEST( !intersects( ray0, sph0, d, d2 ), "2: ray0 should miss sph0!" );
+        TEST( intersects( ray0, sph1, d, d2 ) && d==0.458257616f && d2==-0.458257616f, "ray0 should hit sph1 in a distance of 0!" );
+        TEST( intersects( ray1, sph0, d, d2 ) && approx(d, 99999.3359f) && approx(d2, 100001.344f), "ray1 should hit sph0 in a distance of 99999.3359f!" );
+        TEST( !intersects( ray1, sph1, d, d2 ), "2: ray1 should miss sph1!" );
+        TEST( intersects( ray2, sph0, d, d2 ) && d==24.7731895f && approx(d2, 26.3591423f), "ray2 should hit sph0 in a distance of 24.7731895!" );
+        TEST( intersects( ray2, sph1, d, d2 ) && d==23.1899151f && approx(d2, 25.3899155f), "ray2 should hit sph1 in a distance of 23.1899151!" );
+        TEST( !intersects( ray3, sph0, d, d2 ), "2: ray3 should miss sph0!" );
+        TEST( !intersects( ray3, sph1, d, d2 ), "2: ray3 should miss sph1!" );
+        TEST( !intersects( ray4, sph0, d, d2 ), "2: ray4 should miss sph0!" );
 
         performance<Ray, Sphere, bool>(intersects, "intersects");
     }
