@@ -188,7 +188,7 @@ bool test_3dintersections()
 
         float d;
         TEST( !intersects( ray0, sph0, d ), "2: ray0 should miss sph0!" );
-        TEST( intersects( ray0, sph1, d ) && d==0.0f, "ray0 should hit sph1 in a distance of 0!" );
+        TEST( intersects( ray0, sph1, d ) && d==0.458257616f, "ray0 should hit sph1 in a distance of 0!" );
         TEST( intersects( ray1, sph0, d ) && approx(d, 99999.3359f), "ray1 should hit sph0 in a distance of 99999.3359f!" );
         TEST( !intersects( ray1, sph1, d ), "2: ray1 should miss sph1!" );
         TEST( intersects( ray2, sph0, d ) && d==24.7731895f, "ray2 should hit sph0 in a distance of 24.7731895!" );
@@ -439,7 +439,7 @@ bool test_3dintersections()
         TEST( intersects(box1, tri3), "tri3 intersects box1!" );
         performance<Triangle,Box>(intersects, "intersects");
 
-        OBox obo0(Vec3(0.0f, 0.5f, 0.0f), Vec3(0.5f), rotationZ(0.1f));
+		OBox obo0(Vec3(0.0f, 0.5f, 0.0f), Vec3(0.5f), Quaternion{0.0f, 0.0f, 0.1f});
         Triangle tri4(Vec3(0.1f, 0.0f, -0.3f), Vec3(0.1f, 0.0f, 0.3f), Vec3(2.0f, 0.0f, 0.0f));
         Triangle tri5(Vec3(0.1f, 0.0f, -0.3f), Vec3(0.1f, 0.0f, 0.3f), Vec3(-2.0f, 0.0f, 0.0f));
         TEST( !intersects(obo0, tri4), "tri4 outside obo0!" );

@@ -372,15 +372,19 @@ namespace ei {
         float odoto = dot(o, o);				// Distance ray.origin <-> sphere.center
         float odotd = dot(o, _ray.direction);	// Distance ray.origin <-> closest point to sphere center
         // If the ray starts outside and the closest point is behind us there is no intersection
-        if(odotd < 0.0f && odoto > rSq) return false;
-        float dClosestSq = odoto - odotd * odotd;	// Distance sphere.center <-> closest point on ray (via Pythagorean theorem)
+        bool outside = odoto > rSq;
+        if(odotd < 0.0f && outside) return false;
+        // Jump to the closest point for numerical reasons
+        o -= _ray.direction * odotd;
+        float dClosestSq = dot(o, o);
         // If the closest point is outside the sphere there is no intersection
         if(dClosestSq > rSq) return false;
         // Compute the t for the closest intersection
+        //float innerSegLenHalf = sqrt(rSq - ei::max(0.0f, dClosestSq));
         float innerSegLenHalf = sqrt(rSq - dClosestSq);
         // If the ray started inside the distances must be added instead substracted.
-        _distance = odoto <= _sphere.radius ? odotd + innerSegLenHalf
-                                            : odotd - innerSegLenHalf;
+        _distance = outside ? odotd - innerSegLenHalf
+                            : odotd + innerSegLenHalf;
         return true;
     }
 
