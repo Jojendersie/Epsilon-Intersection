@@ -12,12 +12,14 @@ bool test_conversions()
 
     { // RGB <-> sRGB
         Vec3 rgb0{0.5f, 0.5f, 0.5f};
-        Vec3 sRgb0 = rgbToSRgb(rgb0);
+        Vec3 sRgb0{0.735356927f, 0.735356927f, 0.735356927f};
         Vec3 sRgb1{0.5f, 0.5f, 0.5f};
-        Vec3 rgb1 = sRgbToRgb(sRgb1);
+        Vec3 rgb1{0.214041144f, 0.214041144f, 0.214041144f};
 
-        TEST(approx(rgb0, sRgbToRgb(sRgb0)), "Conversion RGB->sRGB->RGB not reciprocal.");
-        TEST(approx(sRgb1, rgbToSRgb(rgb1)), "Conversion sRGB->RGB->sRGB not reciprocal.");
+        TEST(approx(rgb0, sRgbToRgb(sRgb0)), "Conversion sRGB->RGB not correct.");
+        TEST(approx(rgb0, sRgbToRgb(rgbToSRgb(rgb0))), "Conversion RGB->sRGB->RGB not reciprocal.");
+        TEST(approx(sRgb1, rgbToSRgb(rgb1)), "Conversion RGB->sRGB not correct.");
+        TEST(approx(sRgb1, rgbToSRgb(sRgbToRgb(sRgb1))), "Conversion sRGB->RGB->sRGB not reciprocal.");
     }
 
     { // XYZ <-> RGB
