@@ -432,9 +432,11 @@ namespace ei {
     // ********************************************************************* //
     // Alias types to convert from and to the different models above         //
     // ********************************************************************* //
-    struct R11G11B10
+    struct R11G11B10 : public details::NonScalarType
     {
         uint32 code;
+
+        R11G11B10() = default;
 
         constexpr explicit R11G11B10(const Vec3 & _v) :
             code(packR11G11B10(_v))
@@ -445,9 +447,11 @@ namespace ei {
         }
     };
 
-    struct RGB9E5
+    struct RGB9E5 : public details::NonScalarType
     {
         uint32 code;
+
+        RGB9E5() = default;
 
         constexpr explicit RGB9E5(const Vec3 & _v) :
             code(packRGB9E5(_v))
@@ -458,9 +462,11 @@ namespace ei {
         }
     };
 
-    struct RGB8E8
+    struct RGB8E8 : public details::NonScalarType
     {
         uint32 code;
+
+        RGB8E8() = default;
 
         constexpr explicit RGB8E8(const Vec3 & _v) :
             code(packRGB8E8(_v))
@@ -472,9 +478,11 @@ namespace ei {
     };
 
 
-    struct OctahedralDir32
+    struct OctahedralDir32 : public details::NonScalarType
     {
         uint32 code;
+
+        OctahedralDir32() = default;
 
         constexpr explicit OctahedralDir32(const Vec3 & _v) :
             code(packOctahedral32(_v))
