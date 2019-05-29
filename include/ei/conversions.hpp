@@ -10,9 +10,9 @@ namespace ei {
     // Conversion of sRGB to linear RGB (single component)
     constexpr inline float sRgbToRgb(float _c)  // TESTED
     {
-        if(_c <= 0.0031308f)
-            return _c * 12.92f;
-        return 1.055f * pow(_c, 1.0f/2.4f) - 0.055f;;
+        if(_c <= 0.04045f)
+            return _c / 12.92f;
+        return pow((_c + 0.055f) / 1.055f, 2.4f);
     }
 
     // Conversion of sRGB to linear RGB (two components)
@@ -30,9 +30,9 @@ namespace ei {
     // Conversion of linear RGB to sRGB (single component)
     constexpr inline float rgbToSRgb(float _c)  // TESTED
     {
-        if(_c <= 0.04045f)
-            return _c / 12.92f;
-        return pow((_c + 0.055f) / 1.055f, 2.4f);
+        if(_c <= 0.0031308f)
+            return _c * 12.92f;
+        return 1.055f * pow(_c, 1.0f/2.4f) - 0.055f;;
     }
 
     // Conversion of linear RGB to sRGB (two components)
