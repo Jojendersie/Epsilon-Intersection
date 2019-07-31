@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include <type_traits>
 #include <utility>
@@ -52,7 +52,7 @@ namespace ei {
 #       define ENABLE_IF(condition) typename = std::enable_if_t< (condition) >
 
         /// \brief Construction without initialization. The values are undefined!
-        Matrix() noexcept {}
+        constexpr Matrix() noexcept {}
 
         /// \brief Convert a matrix/vector with a different elementary type.
         template<typename T1>
@@ -1163,6 +1163,18 @@ namespace ei {
     // ********************************************************************* //
 
     // ********************************************************************* //
+    /// \brief Generate the N x N diagonal matrix.
+    /// \param [in] _v0 A vector with the diagonal entries.
+    template<typename T, unsigned N>
+    constexpr inline Matrix<T,N,N> diag( const Vec<T,N>& _v0 ) noexcept // TESTED
+    {
+        Matrix<T,N,N> result(T(0));
+        for(uint n = 0; n < N; ++n)
+            result[n * N + n] = _v0[n];
+        return result;
+    }
+
+    // ********************************************************************* //
     /// \brief Generate the N x N identity matrix.
     template<typename T, unsigned N>
     constexpr inline Matrix<T,N,N> identity() noexcept // TESTED
@@ -1176,18 +1188,6 @@ namespace ei {
     constexpr inline Mat3x3 identity3x3() noexcept    { return identity<float,3>(); } // TESTED
     /// \brief Alias for identity<float,4>().
     constexpr inline Mat4x4 identity4x4() noexcept    { return identity<float,4>(); } // TESTED
-
-    // ********************************************************************* //
-    /// \brief Generate the N x N diagonal matrix.
-    /// \param [in] _v0 A vector with the diagonal entries.
-    template<typename T, unsigned N>
-    constexpr inline Matrix<T,N,N> diag( const Vec<T,N>& _v0 ) noexcept // TESTED
-    {
-        Matrix<T,N,N> result(T(0));
-        for(uint n = 0; n < N; ++n)
-            result[n * N + n] = _v0[n];
-        return result;
-    }
 
     // ********************************************************************* //
     /// \brief Convert a vector from Cartesian coordinates in spherical

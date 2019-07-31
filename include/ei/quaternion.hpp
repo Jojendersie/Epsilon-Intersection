@@ -44,9 +44,7 @@ namespace ei {
         ///     rotationZ(_z) * rotationY(_y) * rotationX(_x)
         constexpr TQuaternion( T _x, T _y, T _z ) noexcept // TESTED
         {
-            double halfAngle;
-
-            halfAngle = _x * 0.5;
+            double halfAngle = _x * 0.5;
             double sinX = sin(halfAngle);
             double cosX = cos(halfAngle);
 
@@ -147,7 +145,7 @@ namespace ei {
             eiAssert(approx(len(_to),1.0f), "Input (_to) must be normalized direction vector.");
             // half angle trick from http://physicsforgames.blogspot.de/2010/03/quaternion-tricks.html
             Vec<T,3> half = normalize(_from + _to);
-            // Opposite vectors or one vector 0.0 -> 180° rotation
+            // Opposite vectors or one vector 0.0 -> 180Â° rotation
             if(std::isnan(half.x))
             {
                 if(approx(ei::abs(_from.y), static_cast<T>(1)))
