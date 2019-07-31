@@ -187,11 +187,13 @@ namespace ei {
     }
     constexpr inline float sgn(float _x) noexcept // TESTED
     {
-        return details::hard_cast<uint32>(_x) & 0x80000000 ? -1.0f : 1.0f;
+        if(_x == 0.0f) return std::signbit(_x) ? -1.0f : 1.0f;
+        return _x < 0.0f ? -1.0f : 1.0f;
     }
     constexpr inline double sgn(double _x) noexcept // TESTED
     {
-        return details::hard_cast<uint64>(_x) & 0x8000000000000000ull ? -1.0 : 1.0;
+        if(_x == 0.0) return std::signbit(_x) ? -1.0 : 1.0;
+        return _x < 0.0 ? -1.0 : 1.0;
     }
 
     // ********************************************************************* //
