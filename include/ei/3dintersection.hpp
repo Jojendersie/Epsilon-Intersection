@@ -431,7 +431,7 @@ namespace ei {
     }
 
     EIAPI inline bool intersects( const Sphere& _sphere, const Ray& _ray ) { return intersects(_ray, _sphere); }
-    EIAPI inline bool intersects( const Sphere& _sphere, const Ray& _ray, float& _distance, float _distance2 ) { return intersects(_ray, _sphere, _distance, _distance2); }
+    EIAPI inline bool intersects( const Sphere& _sphere, const Ray& _ray, float& _distance, float& _distance2 ) { return intersects(_ray, _sphere, _distance, _distance2); }
 
     /// \brief Do a ray and an ellipsoid intersect or touch?
     /// \param [out,opt] _distance The ray parameter (distance) for the first
