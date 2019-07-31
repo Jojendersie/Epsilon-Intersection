@@ -7,7 +7,7 @@ namespace ei {
     /// \brief Get the euclidean distance between two objects.
     /// \details The distance for point-solid queries can be negative. All
     ///     other geometries return 0 if they intersect.
-    inline float distanceSq(const Vec2& _point, const Segment2D& _line)         // TESTED
+    EIAPI float distanceSq(const Vec2& _point, const Segment2D& _line)         // TESTED
     {
         Vec2 u = _line.b - _line.a;
         Vec2 w = _point - _line.a;
@@ -16,7 +16,7 @@ namespace ei {
         // _line.a + u * s - _point
         return lensq(u * s - w);
     }
-    inline float distance(const Vec2& _point, const Rect2D& _rect)
+    EIAPI float distance(const Vec2& _point, const Rect2D& _rect)
     {
         eiAssert(_rect.min <= _rect.max, "Invalid box!");
         // Connection vector to rectangle corner
@@ -28,31 +28,31 @@ namespace ei {
         // Point is outside if len is greater than 0
         return len(max(d,Vec2(0.0f))) + innerDist;
     }
-    inline float distance(const Vec2& _point, const Segment2D& _line)           { return sqrt(distanceSq(_point, _line)); }
-    inline float distanceSq(const Segment2D& _line, const Vec2& _point)         { return distanceSq(_point, _line); }
-    inline float distance(const Segment2D& _line, const Vec2& _point)           { return sqrt(distanceSq(_point, _line)); }
-    inline float distance(const Rect2D& _rect, const Vec2& _point)              { return distance(_point, _rect); }
+    EIAPI float distance(const Vec2& _point, const Segment2D& _line)           { return sqrt(distanceSq(_point, _line)); }
+    EIAPI float distanceSq(const Segment2D& _line, const Vec2& _point)         { return distanceSq(_point, _line); }
+    EIAPI float distance(const Segment2D& _line, const Vec2& _point)           { return sqrt(distanceSq(_point, _line)); }
+    EIAPI float distance(const Rect2D& _rect, const Vec2& _point)              { return distance(_point, _rect); }
 
-    inline bool intersects( const Vec2& _point, const Capsule2D& _capsule )     // TESTED
+    EIAPI bool intersects( const Vec2& _point, const Capsule2D& _capsule )     // TESTED
     {
         return distanceSq(_point, _capsule.seg) <= _capsule.radius * _capsule.radius;
     }
-    inline bool intersects( const Capsule2D& _capsule, const Vec2& _point )     { return intersects(_point, _capsule); }
+    EIAPI bool intersects( const Capsule2D& _capsule, const Vec2& _point )     { return intersects(_point, _capsule); }
 
     /// \brief Does a point lie inside a circle/on the boundary?
     /// \details Performance index: TODO
     /// \return true if the point is inside or on the boundary.
-    inline bool intersects( const Vec2& _point, const Disc2D& _disc )           // TESTED
+    EIAPI bool intersects( const Vec2& _point, const Disc2D& _disc )           // TESTED
     {
         return lensq(_point - _disc.center) <= sq(_disc.radius);
     }
-    inline bool intersects( const Disc2D& _disc, const Vec2& _point )  { return intersects( _point, _disc ); }
+    EIAPI bool intersects( const Disc2D& _disc, const Vec2& _point )  { return intersects( _point, _disc ); }
 
     /// \brief Do two discs intersect/touch?
     /// \details Performance index: TODO
     /// \return true if the discs intersect in two or one point or one lies
     ///    fully inside the other one.
-    inline bool intersects( const Disc2D& _disc0, const Disc2D& _disc1 )        // TESTED
+    EIAPI bool intersects( const Disc2D& _disc0, const Disc2D& _disc1 )        // TESTED
     {
         return lensq(_disc0.center - _disc1.center)
             <= sq(_disc0.radius + _disc1.radius);
@@ -65,7 +65,7 @@ namespace ei {
     ///    in the other one this info is its center.
     /// \return true if the discs intersect in two or one point or one lies
     ///    fully inside the other one.
-    inline bool intersects( const Disc2D& _disc0, const Disc2D& _disc1, Vec2& _outInfo ) // TESTED
+    EIAPI bool intersects( const Disc2D& _disc0, const Disc2D& _disc1, Vec2& _outInfo ) // TESTED
     {
         // Compute intermediate results to determine _outInfo later.
         Vec2 dir = _disc1.center - _disc0.center;
@@ -96,7 +96,7 @@ namespace ei {
     /// \details Performance index: TODO
     /// \return true if the rectangles intersect or one lies
     ///    fully inside the other one.
-    inline bool intersects( const Rect2D& _rect0, const Rect2D& _rect1 )        // TESTED
+    EIAPI bool intersects( const Rect2D& _rect0, const Rect2D& _rect1 )        // TESTED
     {
         // There must be an intersection if the sum of side length is larger
         // than that of the bounding rectangle.
@@ -107,27 +107,27 @@ namespace ei {
     /// \brief Does a point lie inside a rectangle/on the boundary?
     /// \details Performance index: TODO
     /// \return true if the point is inside or on the boundary.
-    inline bool intersects( const Vec2& _point, const Rect2D& _rect )           // TESTED
+    EIAPI bool intersects( const Vec2& _point, const Rect2D& _rect )           // TESTED
     {
         return (_point >= _rect.min) && (_point <= _rect.max);
     }
-    inline bool intersects( const Rect2D& _rect, const Vec2& _point )  { return intersects( _point, _rect ); }
+    EIAPI bool intersects( const Rect2D& _rect, const Vec2& _point )  { return intersects( _point, _rect ); }
 
     /// \brief Do a rectangle and disc intersect/touch?
     /// \details Performance index: TODO
     /// \return true if the rectangle and disc intersect or one lies
     ///    fully inside the other one.
-    inline bool intersects( const Disc2D& _disc, const Rect2D& _rect )          // TESTED
+    EIAPI bool intersects( const Disc2D& _disc, const Rect2D& _rect )          // TESTED
     {
         return ( _disc.center + _disc.radius >= _rect.min )
             && ( _disc.center - _disc.radius <= _rect.max );
     }
-    inline bool intersects( const Rect2D& _rect, const Disc2D& _disc )  { return intersects(_disc, _rect); }
+    EIAPI bool intersects( const Rect2D& _rect, const Disc2D& _disc )  { return intersects(_disc, _rect); }
 
     /// \brief Do two lines intersect/touch?
     /// \details Performance index: TODO
     /// \return true if the lines intersect.
-    inline bool intersects( const Segment2D& _line0, const Segment2D& _line1 )  // TESTED
+    EIAPI bool intersects( const Segment2D& _line0, const Segment2D& _line1 )  // TESTED
     {
         Vec2 dir0 = _line0.b - _line0.a;
         Vec2 dir1 = _line1.b - _line1.a;
@@ -150,7 +150,7 @@ namespace ei {
     /// \param [out] _outInfo The point of the intersection. If the two lines
     ///    overlap the returned point is the center of this overlap.
     /// \return true if the lines intersect.
-    inline bool intersects( const Segment2D& _line0, const Segment2D& _line1, Vec2& _outInfo )  // TESTED
+    EIAPI bool intersects( const Segment2D& _line0, const Segment2D& _line1, Vec2& _outInfo )  // TESTED
     {
         Vec2 dir0 = _line0.b - _line0.a;
         Vec2 dir1 = _line1.b - _line1.a;

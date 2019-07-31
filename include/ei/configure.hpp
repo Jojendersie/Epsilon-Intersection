@@ -77,3 +77,11 @@ namespace ei {
 	const float EPSILON = 1e-6f;
 #endif
 }
+
+
+// Make (partial) CUDA compatible
+#ifdef __CUDACC__
+#define EIAPI	__host__ __device__ inline
+#else
+#define EIAPI inline
+#endif
