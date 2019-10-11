@@ -170,6 +170,7 @@ template<> inline const char* name<ei::DOP>()           { return "         DOP";
 /// by the following method.
 inline float getTimePer1MElements()
 {
+	using namespace eitypes;
     static float s_timePer1MElements;
     if(s_timePer1MElements == 0.0f) // Not determined yet?
     {
