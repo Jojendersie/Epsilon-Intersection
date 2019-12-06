@@ -63,11 +63,8 @@ namespace ei {
     constexpr float GOLDEN_RATIO = 1.61803398875f;
     constexpr float PHYTAGORAS = 1.4142135623f;
     // The cmath header has an ugly macro with name INFINITY -> name conflict
-#pragma warning(push)
-#pragma warning(disable:4056) // overflow in fp constant arithmetic
     constexpr float INF { std::numeric_limits<float>::infinity() };
     constexpr double INF_D { std::numeric_limits<double>::infinity() };
-#pragma warning(pop)
     // Unicode names for the above constants
 #ifdef EI_USE_UNICODE_NAMES
     constexpr float π = PI;
@@ -204,11 +201,11 @@ namespace ei {
     {
         return _x < static_cast<T>(0) ? 0 : 1;
     }
-    constexpr EIAPI int heaviside(float _x) noexcept // TESTED
+    EIAPI int heaviside(float _x) noexcept // TESTED
     {
         return details::hard_cast<uint32>(_x) & 0x80000000 ? 0 : 1;
     }
-    constexpr EIAPI int heaviside(double _x) noexcept // TESTED
+    EIAPI int heaviside(double _x) noexcept // TESTED
     {
         return details::hard_cast<uint64>(_x) & 0x8000000000000000ull ? 0 : 1;
     }
@@ -359,7 +356,7 @@ namespace ei {
     /// \brief Compute floor(log2), i.e. the position of the most significant bit.
     /// \details Expects IEEE and litte-endian (standard PC)
     template<typename T, typename = std::enable_if_t<std::is_integral<T>::value>>
-    constexpr int ilog2(T _x) noexcept                    // TESTED
+    int ilog2(T _x) noexcept                    // TESTED
     {
         if(_x <= 0) return -2147483647-1; // Actually NaN
         double f = static_cast<double>(_x);
@@ -434,7 +431,7 @@ namespace ei {
     ///    denormalized range. Thereby the successor of -0 and 0 are both the
     ///    same smallest positive float. Further -INF is transformed into
     ///    -FLOAT_MAX and +INF remains +INF.
-    constexpr EIAPI float successor(float _number) noexcept // TESTED
+    EIAPI float successor(float _number) noexcept // TESTED
     {
         // Handling NaN
         if(_number != _number) return _number;
@@ -450,7 +447,7 @@ namespace ei {
         else return details::hard_cast<float>( mantissa + 1 );
     }
 
-    constexpr EIAPI double successor(double _number) noexcept
+    EIAPI double successor(double _number) noexcept
     {
         // Handling NaN
         if(_number != _number) return _number;
@@ -471,7 +468,7 @@ namespace ei {
     ///    denormalized range. Thereby the predecessor of -0 and 0 are both the
     ///    same smallest negative float. Further -INF remains -INF and + INF
     ///    is transformed into FLOAT_MAX.
-    constexpr EIAPI float predecessor(float _number) noexcept // TESTED
+    EIAPI float predecessor(float _number) noexcept // TESTED
     {
         // Handling NaN
         if(_number != _number) return _number;
@@ -487,7 +484,7 @@ namespace ei {
         else return details::hard_cast<float>( mantissa - 1 );
     }
 
-    constexpr EIAPI double predecessor(double _number) noexcept
+    EIAPI double predecessor(double _number) noexcept
     {
         // Handling NaN
         if(_number != _number) return _number;
@@ -541,37 +538,37 @@ namespace ei {
     {
     private:
         // Template helpers to get some compiletime contants
-        template<typename T1> struct MinInterval {
+        template<typename T1, typename Dummy = void> struct MinInterval {
             static constexpr float value = -1.0f;
         };
-        template<> struct MinInterval<typename details::Int<sizeof(T)>::utype> {
+        template<typename Dummy> struct MinInterval<typename details::Int<sizeof(T)>::utype, Dummy> {
             static constexpr float value = 0.0f;
         };
-        template<typename T1> struct MaxValue {
+        template<typename T1, typename Dummy = void> struct MaxValue {
             static constexpr uint64 value = 0xffffffffffffffffull >> (64u - Bits + 1u);
         };
-        template<> struct MaxValue<typename details::Int<sizeof(T)>::utype> {
+        template<typename Dummy> struct MaxValue<typename details::Int<sizeof(T)>::utype, Dummy> {
             static constexpr uint64 value = 0xffffffffffffffffull >> (64u - Bits);
         };
     public:
-        static_assert(std::is_integral_v<T>, "NormalizedInt can only use integer types as basis type.");
+        static_assert(std::is_integral<T>::value, "NormalizedInt can only use integer types as basis type.");
         static_assert(Bits <= sizeof(T)*8, "Base type as not enough bits.");
-        //static constexpr float INTERVAL_MIN = []{ if(std::is_signed_v<T>) return -1.0f; else return 0.0f; }();
+        //static constexpr float INTERVAL_MIN = []{ if(std::is_signed<T>::value) return -1.0f; else return 0.0f; }();
         static constexpr float INTERVAL_MIN = MinInterval<T>::value;
         static constexpr float INTERVAL_MAX = 1.0f;
         static constexpr uint BITS = Bits;
-        //static constexpr uint64 MAX_POSITIVE_VALUE = []{ if(std::is_signed_v<T>) return 1ull << (BITS-1); else return 1ull << BITS; }();
+        //static constexpr uint64 MAX_POSITIVE_VALUE = []{ if(std::is_signed<T>::value) return 1ull << (BITS-1); else return 1ull << BITS; }();
         static constexpr uint64 MAX_POSITIVE_VALUE = MaxValue<T>::value;
         static constexpr uint64 MASK = (1ull << BITS) - 1;
 
         EIAPI NormalizedInt() = default;
 
-        template<typename T1, typename = std::enable_if_t<std::is_integral_v<T> && BITS <= sizeof(T1)*8>>
+        template<typename T1, typename = std::enable_if_t<std::is_integral<T>::value && BITS <= sizeof(T1)*8>>
         constexpr EIAPI  explicit NormalizedInt(T1 v) noexcept : value(v & MASK)
         {
             // Signed types in 2-complement must have all significant bits set.
             // This is violated if BITS < 8*sizeof(T).
-            if(value > MAX_POSITIVE_VALUE)
+            if(value > static_cast<T>(MAX_POSITIVE_VALUE))
                 value |= 0xffffffffffffffffull << BITS;
         }
 
@@ -597,7 +594,7 @@ namespace ei {
             return value / double(MAX_POSITIVE_VALUE);
         }
 
-        template<typename T1, typename = std::enable_if_t<std::is_integral_v<T> && BITS <= sizeof(T1)*8>>
+        template<typename T1, typename = std::enable_if_t<std::is_integral<T>::value && BITS <= sizeof(T1)*8>>
         constexpr EIAPI explicit operator T1 () const noexcept { return T1(value); }
     private:
         T value;

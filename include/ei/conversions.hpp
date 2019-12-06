@@ -274,7 +274,7 @@ namespace ei {
             0.0000f,  0.0000f,  1.0889f
         };
         const Vec3 lmsp = IPT_TO_LMSP * _ipt;
-        const Vec3 lms = ei::sgn(lms) * pow(ei::abs(lms), 1.0f/0.43f);
+        const Vec3 lms = ei::sgn(lmsp) * pow(ei::abs(lmsp), 1.0f/0.43f);
         constexpr Mat3x3 LMS_TO_XYZ {
             1.0000f,  0.0976f,  0.2052f,
             1.0000f, -1.1139f,  0.1332f,

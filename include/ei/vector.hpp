@@ -39,8 +39,8 @@ namespace ei {
         // construct inherits rules as [int + float -> float] from the
         // elementary types.
 #       define RESULT_TYPE(op) std::enable_if_t<                   \
-            !std::is_base_of_v<details::NonScalarType, T1> &&      \
-            !std::is_base_of_v<details::NonScalarType, T>,         \
+            !std::is_base_of<details::NonScalarType, T1>::value && \
+            !std::is_base_of<details::NonScalarType, T>::value,    \
             decltype(std::declval<T>() op std::declval<T1>())      \
         >
 
@@ -63,7 +63,7 @@ namespace ei {
         }
 
         /// \brief Forward to base constructors
-        template<typename T1, ENABLE_IF((!std::is_base_of_v<details::NonScalarType, T1>))>
+        template<typename T1, ENABLE_IF((!std::is_base_of<details::NonScalarType, T1>::value))>
         constexpr EIAPI explicit Matrix(T1 _a0) noexcept :
             details::Components<T,M,N>(_a0)
         {}
@@ -240,11 +240,11 @@ namespace ei {
             EI_CODE_GEN_MAT_MAT_OP(-)
 
         /// \brief Unary minus on all components.
-        template<typename T1 = T, ENABLE_IF(std::is_signed_v<T1>)>
+        template<typename T1 = T, ENABLE_IF(std::is_signed<T1>::value)>
         constexpr EIAPI Matrix<T, M, N> operator - () const noexcept // TESTED
             EI_CODE_GEN_MAT_UNARY_OP(-)
         /// \brief Component wise binary not.
-        template<typename T1 = T, ENABLE_IF(std::is_integral_v<T1>)>
+        template<typename T1 = T, ENABLE_IF(std::is_integral<T1>::value)>
         constexpr EIAPI Matrix<T, M, N> operator ~ () const noexcept // TESTED
             EI_CODE_GEN_MAT_UNARY_OP(~)
 
@@ -256,7 +256,7 @@ namespace ei {
         constexpr EIAPI std::conditional_t<M * O == 1, RESULT_TYPE(*), Matrix<RESULT_TYPE(*), M, O>>
         operator * (const Matrix<T1,N,O>& _mat1) const noexcept // TESTED
         {
-            std::conditional_t<M * O == 1, RESULT_TYPE(*), Matrix<RESULT_TYPE(*), M, O>> result;
+			std::conditional_t<M * O == 1, RESULT_TYPE(*), Matrix<RESULT_TYPE(*), M, O>> result{};
             for(uint m = 0; m < M; ++m)
             {
                 for(uint o = 0; o < O; ++o)
@@ -1437,7 +1437,7 @@ namespace ei {
                      -_vector.y, _vector.x);
     }
 
-    constexpr EIAPI Mat3x3 basis( const Vec3& _vector ) noexcept // TESTED
+    EIAPI Mat3x3 basis( const Vec3& _vector ) noexcept // TESTED
     {
         eiAssert(approx(len(_vector), 1.0f), "Expected normalized direction vector!");
         Vec3 y;
@@ -1856,7 +1856,7 @@ namespace ei {
     /// \return Number of iterations (50 is the maximum used internally) or -1
     ///     if no solution can be found (complex eigenvalues).
     template<typename T>
-    EIAPI int decomposeQl(const Matrix<T,2,2>& _A, Matrix<T,2,2>& _Q, Vec<T,2>& _lambda) noexcept
+    EIAPI int decomposeQl(const Matrix<T,2u,2u>& _A, Matrix<T,2u,2u>& _Q, Vec<T,2u>& _lambda) noexcept
     {
         T p = -_A[0] - _A[3];
         T q = _A[0] * _A[3] - _A[1] * _A[2];
@@ -1896,7 +1896,7 @@ namespace ei {
     }
 
     template<typename T>
-    EIAPI int decomposeQl(const Matrix<T,3,3>& _A, Matrix<T,3,3>& _Q, Vec<T,3>& _lambda) noexcept // TESTED
+    EIAPI int decomposeQl(const Matrix<T,3u,3u>& _A, Matrix<T,3u,3u>& _Q, Vec<T,3u>& _lambda) noexcept // TESTED
     {
         // It follows some substitution magic from https://en.wikipedia.org/wiki/Eigenvalue_algorithm#3.C3.973_matrices.
         // Another useful source is the paper Efficient numerical diagonalization of hermitian 3x3 matrices
@@ -1985,7 +1985,7 @@ namespace ei {
     // Implementation based on using https://en.wikipedia.org/wiki/Jacobi_rotation
     // Other can be found on http://stackoverflow.com/questions/4372224/fast-method-for-computing-3x3-symmetric-matrix-spectral-decomposition
     // and http://www.melax.com/diag.html
-    template<typename T, int N>
+    template<typename T, uint N>
     EIAPI int decomposeQlIter(const Matrix<T,N,N>& _A, Matrix<T,N,N>& _Q, Vec<T,N>& _lambda, bool _sort = true) noexcept // TESTED
     {
         int i = 0;
@@ -2145,7 +2145,7 @@ namespace ei {
     // code with the loop implementation only. Surly, the specializations are faster
     // in debug mode.
     template<typename T>
-    EIAPI bool decomposeCholesky(const Matrix<T,2,2>& _A, Matrix<T,2,2>& _L) noexcept // TESTED
+    EIAPI bool decomposeCholesky(const Matrix<T,2u,2u>& _A, Matrix<T,2u,2u>& _L) noexcept // TESTED
     {
         if(_A[0] <= 0.0f) return false;
         _L[0] = sqrt(_A[0]);
@@ -2157,7 +2157,7 @@ namespace ei {
     }
 
     template<typename T>
-    EIAPI bool decomposeCholesky(const Matrix<T,3,3>& _A, Matrix<T,3,3>& _L) noexcept // TESTED
+    EIAPI bool decomposeCholesky(const Matrix<T,3u,3u>& _A, Matrix<T,3u,3u>& _L) noexcept // TESTED
     {
         if(_A[0] <= 0.0f) return false;
         _L[0] = sqrt(_A[0]);

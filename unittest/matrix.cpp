@@ -13,20 +13,20 @@ static void doNotOptimizeAway(T& _var)
 }
 
 // Try to instanciate all relevant vector types explicitly.
-template Vec2;
-template Vec3;
-template Vec4;
-template IVec2;
-template IVec3;
-template IVec4;
-template UVec2;
-template UVec3;
-template UVec4;
-template Mat2x2;
-template Mat3x3;
-template Mat3x4;
-template Mat4x3;
-template Mat4x4;
+template class Matrix<float, 2, 1>; // Vec2;
+template class Matrix<float, 3, 1>; // Vec3;
+template class Matrix<float, 4, 1>; // Vec4;
+template class Matrix<int32, 2, 1>; // IVec2;
+template class Matrix<int32, 3, 1>; // IVec3;
+template class Matrix<int32, 4, 1>; // IVec4;
+template class Matrix<uint32, 2, 1>; // UVec2;
+template class Matrix<uint32, 3, 1>; // UVec3;
+template class Matrix<uint32, 4, 1>; // UVec4;
+template class Matrix<float, 2, 2>; // Mat2x2;
+template class Matrix<float, 3, 3>; // Mat3x3;
+template class Matrix<float, 3, 4>; // Mat3x4;
+template class Matrix<float, 4, 3>; // Mat4x3;
+template class Matrix<float, 4, 4>; // Mat4x4;
 
 bool test_matrix()
 {
