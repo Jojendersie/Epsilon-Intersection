@@ -5,8 +5,8 @@
 
 #include <type_traits>
 #include <limits>
-// Ugly to include this here but you will miss sqrt,sin,... otherwise
 #include <cmath>
+#include <math.h>
 
 namespace eitypes {
     /// \brief Short name for unsigned / unsigned int.

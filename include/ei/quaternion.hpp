@@ -578,10 +578,10 @@ namespace ei {
                           const TOrthoSpace<T>& _o1,
                           T _epsilon = T(1e-6)) noexcept // TESTED
     {
-        return abs(_o0.m_quaternion.r - _o1.m_quaternion.r) <= _epsilon
-            && abs(_o0.m_quaternion.i - _o1.m_quaternion.i) <= _epsilon
-            && abs(_o0.m_quaternion.j - _o1.m_quaternion.j) <= _epsilon
-            && abs(_o0.m_quaternion.k - _o1.m_quaternion.k) <= _epsilon;
+        return abs(_o0.data().r - _o1.data().r) <= _epsilon
+            && abs(_o0.data().i - _o1.data().i) <= _epsilon
+            && abs(_o0.data().j - _o1.data().j) <= _epsilon
+            && abs(_o0.data().k - _o1.data().k) <= _epsilon;
     }
 
 } // namespace ei
