@@ -409,10 +409,10 @@ namespace ei {
     {
         // Pack only ijk with 21 bits each, r can be reconstructed if its
         // sign is known (bit 64).
-        NormalizedInt<int32, 21> i(_space.m_quaternion.i);
-        NormalizedInt<int32, 21> j(_space.m_quaternion.j);
-        NormalizedInt<int32, 21> k(_space.m_quaternion.k);
-        uint64 rSign = sgn(_space.m_quaternion.r) > 0.0f ? 0 : (1ull << 63);
+        NormalizedInt<int32, 21> i(_space.data().i);
+        NormalizedInt<int32, 21> j(_space.data().j);
+        NormalizedInt<int32, 21> k(_space.data().k);
+        uint64 rSign = sgn(_space.data().r) > 0.0f ? 0 : (1ull << 63);
         return rSign | (uint64(k) << 42) | (uint64(j) << 21) | uint64(i);
     }
 
@@ -423,8 +423,8 @@ namespace ei {
         float k { NormalizedInt<int32, 21>(_code >> 42) };
         float r = sqrt(1.0f - (i*i + j*j + k*k));
         OrthoSpace res;
-        res.m_quaternion.i = i; res.m_quaternion.j = j; res.m_quaternion.k = k;
-        res.m_quaternion.r = (_code & (1ull<<63)) ? -r : r;
+        res.data().i = i; res.data().j = j; res.data().k = k;
+        res.data().r = (_code & (1ull<<63)) ? -r : r;
         return res;
     }
 
@@ -436,7 +436,7 @@ namespace ei {
     {
         uint32 code;
 
-        EIAPI R11G11B10() = default;
+        R11G11B10() = default;
 
         constexpr EIAPI explicit R11G11B10(const Vec3 & _v) :
             code(packR11G11B10(_v))
@@ -451,7 +451,7 @@ namespace ei {
     {
         uint32 code;
 
-        EIAPI RGB9E5() = default;
+        RGB9E5() = default;
 
         EIAPI explicit RGB9E5(const Vec3 & _v) :
             code(packRGB9E5(_v))
@@ -466,7 +466,7 @@ namespace ei {
     {
         uint32 code;
 
-        EIAPI RGB8E8() = default;
+        RGB8E8() = default;
 
         EIAPI explicit RGB8E8(const Vec3 & _v) :
             code(packRGB8E8(_v))
@@ -482,7 +482,7 @@ namespace ei {
     {
         uint32 code;
 
-        EIAPI OctahedralDir32() = default;
+        OctahedralDir32() = default;
 
         constexpr EIAPI explicit OctahedralDir32(const Vec3 & _v) :
             code(packOctahedral32(_v))

@@ -517,10 +517,10 @@ namespace ei {
         float tmin, tmax, tymin, tymax, tzmin, tzmax;
         const Vec3 * bbounds = (const Vec3 *)&_box;
 
-        tmin  = (bbounds[1-heaviside(_ray.direction.x)].x - _ray.origin.x) / _ray.direction.x;  if(std::isnan(tmin)) tmin = 0.0f;
-        tmax  = (bbounds[  heaviside(_ray.direction.x)].x - _ray.origin.x) / _ray.direction.x;  if(std::isnan(tmax)) tmax = 0.0f;
-        tymin = (bbounds[1-heaviside(_ray.direction.y)].y - _ray.origin.y) / _ray.direction.y;  if(std::isnan(tymin)) tymin = 0.0f;
-        tymax = (bbounds[  heaviside(_ray.direction.y)].y - _ray.origin.y) / _ray.direction.y;  if(std::isnan(tymax)) tymax = 0.0f;
+        tmin  = (bbounds[1-heaviside(_ray.direction.x)].x - _ray.origin.x) / _ray.direction.x;  if(isnan(tmin)) tmin = 0.0f;
+        tmax  = (bbounds[  heaviside(_ray.direction.x)].x - _ray.origin.x) / _ray.direction.x;  if(isnan(tmax)) tmax = 0.0f;
+        tymin = (bbounds[1-heaviside(_ray.direction.y)].y - _ray.origin.y) / _ray.direction.y;  if(isnan(tymin)) tymin = 0.0f;
+        tymax = (bbounds[  heaviside(_ray.direction.y)].y - _ray.origin.y) / _ray.direction.y;  if(isnan(tymax)) tymax = 0.0f;
 
         if((tmin > tymax) || (tymin > tmax))
             return false;
@@ -529,8 +529,8 @@ namespace ei {
         if(tmax < 0.0f)
             return false;
 
-        tzmin = (bbounds[1-heaviside(_ray.direction.z)].z - _ray.origin.z) / _ray.direction.z;  if(std::isnan(tzmin)) tzmin = 0.0f;
-        tzmax = (bbounds[  heaviside(_ray.direction.z)].z - _ray.origin.z) / _ray.direction.z;  if(std::isnan(tzmax)) tzmax = 0.0f;
+        tzmin = (bbounds[1-heaviside(_ray.direction.z)].z - _ray.origin.z) / _ray.direction.z;  if(isnan(tzmin)) tzmin = 0.0f;
+        tzmax = (bbounds[  heaviside(_ray.direction.z)].z - _ray.origin.z) / _ray.direction.z;  if(isnan(tzmax)) tzmax = 0.0f;
 
         if ((tmin > tzmax) || (tzmin > tmax) || (tzmax < 0.0f))
             return false;

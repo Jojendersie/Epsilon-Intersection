@@ -10,19 +10,19 @@ namespace ei { namespace details {
         T m_data[M * N < 1 ? 1 : N * M];
 
     public:
-        Components() noexcept {}
+        EIAPI Components() noexcept {}
         /// \brief Construct from exactly N*M arguments.
         /// \details The int argument is a dummy to prevent some compilers (vc120) from generating
         ///     two constructors with 0 arguments.
         template<typename T1, typename... Args>
-        constexpr Components(T1 _a0, T1 _a1, Args... _args) noexcept// : m_data{ _a0, T(_args)... }
+        constexpr EIAPI Components(T1 _a0, T1 _a1, Args... _args) noexcept// : m_data{ _a0, T(_args)... }
         {
             static_assert(sizeof...(Args)+2 == M*N, "Wrong number of arguments!");
             init<0>(_a0, _a1, _args...);
         }
         /// \brief Initialize all members from single scalar
         template<typename T1>
-        constexpr explicit Components(T1 _s) noexcept : m_data{}
+        constexpr EIAPI explicit Components(T1 _s) noexcept : m_data{}
         {
             for(ei::uint i = 0; i < N * M; ++i)
                 this->m_data[i] = static_cast<T>(_s);
@@ -32,9 +32,9 @@ namespace ei { namespace details {
         // Helper to unroll the M*N argument construction. The Syntax with
         // : m_data{ _a0, T(_args)... } is much prettier, but does not work in vc120.
         template<int Index>
-        constexpr void init() noexcept {}
+        constexpr EIAPI void init() noexcept {}
         template<int Index, typename T1, typename... Args>
-        constexpr void init(T1 _a0, Args... _args) noexcept { m_data[Index] = _a0; init<Index+1>(_args...); }
+        constexpr EIAPI void init(T1 _a0, Args... _args) noexcept { m_data[Index] = _a0; init<Index+1>(_args...); }
     };
 
 
@@ -47,7 +47,7 @@ namespace ei { namespace details {
             T m_data[1];
         };
 
-        Components() noexcept {}
+        EIAPI Components() noexcept {}
         template<typename T1> constexpr explicit Components(T1 _s) noexcept : x(static_cast<T>(_s)) {}
     };
 
@@ -61,10 +61,10 @@ namespace ei { namespace details {
             T m_data[2];
         };
 
-        Components() noexcept {}
-        template<typename T1> constexpr explicit Components(T1 _s) noexcept : x(static_cast<T>(_s)), y(static_cast<T>(_s)) {}
+        EIAPI Components() noexcept {}
+        template<typename T1> constexpr EIAPI explicit Components(T1 _s) noexcept : x(static_cast<T>(_s)), y(static_cast<T>(_s)) {}
         template<typename T1, typename T2>
-        constexpr Components(T1 _s0, T2 _s1) noexcept : x(static_cast<T>(_s0)), y(static_cast<T>(_s1)) {}
+        constexpr EIAPI Components(T1 _s0, T2 _s1) noexcept : x(static_cast<T>(_s0)), y(static_cast<T>(_s1)) {}
         /*template<typename T1>
         Components(T _s0, Components<T1, 1, 1> _s1) : x(_s0), y(_s1.x) {}
         template<typename T1>
@@ -79,10 +79,10 @@ namespace ei { namespace details {
             T m_data[2];
         };
 
-        Components() noexcept {}
-        template<typename T1> constexpr explicit Components(T1 _s) noexcept : x(static_cast<T>(_s)), y(static_cast<T>(_s)) {}
+        EIAPI Components() noexcept {}
+        template<typename T1> constexpr EIAPI explicit Components(T1 _s) noexcept : x(static_cast<T>(_s)), y(static_cast<T>(_s)) {}
         template<typename T1, typename T2>
-        constexpr Components(T1 _s0, T2 _s1) noexcept : x(static_cast<T>(_s0)), y(static_cast<T>(_s1)) {}
+        constexpr EIAPI Components(T1 _s0, T2 _s1) noexcept : x(static_cast<T>(_s0)), y(static_cast<T>(_s1)) {}
         /*template<typename T1>
         Components(T _s0, Components<T1, 1, 1> _s1) : x(_s0), y(_s1.x) {}
         template<typename T1>
@@ -98,14 +98,14 @@ namespace ei { namespace details {
             T m_data[3];
         };
 
-        Components() noexcept {}
-        template<typename T1> constexpr explicit Components(T1 _s) noexcept : x(static_cast<T>(_s)), y(static_cast<T>(_s)), z(static_cast<T>(_s)) {}
+        EIAPI Components() noexcept {}
+        template<typename T1> constexpr EIAPI explicit Components(T1 _s) noexcept : x(static_cast<T>(_s)), y(static_cast<T>(_s)), z(static_cast<T>(_s)) {}
         template<typename T1, typename T2, typename T3>
-        constexpr Components(T1 _s0, T2 _s1, T3 _s2) noexcept : x(static_cast<T>(_s0)), y(static_cast<T>(_s1)), z(static_cast<T>(_s2)) {}
+        constexpr EIAPI Components(T1 _s0, T2 _s1, T3 _s2) noexcept : x(static_cast<T>(_s0)), y(static_cast<T>(_s1)), z(static_cast<T>(_s2)) {}
         template<typename T1, typename T2>
-        constexpr Components(T1 _s0, const Components<T2, 2, 1>& _s1) noexcept : x(static_cast<T>(_s0)), y(static_cast<T>(_s1.x)), z(static_cast<T>(_s1.y)) {}
+        constexpr EIAPI Components(T1 _s0, const Components<T2, 2, 1>& _s1) noexcept : x(static_cast<T>(_s0)), y(static_cast<T>(_s1.x)), z(static_cast<T>(_s1.y)) {}
         template<typename T1, typename T2>
-        constexpr Components(const Components<T1, 2, 1>& _s0, T2 _s1) noexcept : x(static_cast<T>(_s0.x)), y(static_cast<T>(_s0.y)), z(static_cast<T>(_s1)) {}
+        constexpr EIAPI Components(const Components<T1, 2, 1>& _s0, T2 _s1) noexcept : x(static_cast<T>(_s0.x)), y(static_cast<T>(_s0.y)), z(static_cast<T>(_s1)) {}
     };
     template<typename T> struct Components<T, 1, 3>: public NonScalarType
     {
@@ -115,14 +115,14 @@ namespace ei { namespace details {
             T m_data[3];
         };
 
-        Components() noexcept {}
-        template<typename T1> constexpr explicit Components(T1 _s) noexcept : x(static_cast<T>(_s)), y(static_cast<T>(_s)), z(static_cast<T>(_s)) {}
+        EIAPI Components() noexcept {}
+        template<typename T1> constexpr EIAPI explicit Components(T1 _s) noexcept : x(static_cast<T>(_s)), y(static_cast<T>(_s)), z(static_cast<T>(_s)) {}
         template<typename T1, typename T2, typename T3>
-        constexpr Components(T1 _s0, T2 _s1, T3 _s2) noexcept : x(static_cast<T>(_s0)), y(static_cast<T>(_s1)), z(static_cast<T>(_s2)) {}
+        constexpr EIAPI Components(T1 _s0, T2 _s1, T3 _s2) noexcept : x(static_cast<T>(_s0)), y(static_cast<T>(_s1)), z(static_cast<T>(_s2)) {}
         template<typename T1, typename T2>
-        constexpr Components(T1 _s0, const Components<T2, 1, 2>& _s1) noexcept : x(static_cast<T>(_s0)), y(static_cast<T>(_s1.x)), z(static_cast<T>(_s1.y)) {}
+        constexpr EIAPI Components(T1 _s0, const Components<T2, 1, 2>& _s1) noexcept : x(static_cast<T>(_s0)), y(static_cast<T>(_s1.x)), z(static_cast<T>(_s1.y)) {}
         template<typename T1, typename T2>
-        constexpr Components(const Components<T1, 1, 2>& _s0, T2 _s1) noexcept : x(static_cast<T>(_s0.x)), y(static_cast<T>(_s0.y)), z(static_cast<T>(_s1)) {}
+        constexpr EIAPI Components(const Components<T1, 1, 2>& _s0, T2 _s1) noexcept : x(static_cast<T>(_s0.x)), y(static_cast<T>(_s0.y)), z(static_cast<T>(_s1)) {}
     };
 
     /// \brief Specialized version for 4 component row and column vectors and
@@ -135,22 +135,22 @@ namespace ei { namespace details {
             T m_data[4];
         };
 
-        Components() noexcept {}
-        template<typename T1> constexpr explicit Components(T1 _s) noexcept : x(static_cast<T>(_s)), y(static_cast<T>(_s)), z(static_cast<T>(_s)), w(static_cast<T>(_s)) {}
+        EIAPI Components() noexcept {}
+        template<typename T1> constexpr EIAPI explicit Components(T1 _s) noexcept : x(static_cast<T>(_s)), y(static_cast<T>(_s)), z(static_cast<T>(_s)), w(static_cast<T>(_s)) {}
         template<typename T1, typename T2, typename T3, typename T4>
-        constexpr Components(T1 _s0, T2 _s1, T3 _s2, T4 _s3) noexcept : x(static_cast<T>(_s0)), y(static_cast<T>(_s1)), z(static_cast<T>(_s2)), w(static_cast<T>(_s3)) {}
+        constexpr EIAPI Components(T1 _s0, T2 _s1, T3 _s2, T4 _s3) noexcept : x(static_cast<T>(_s0)), y(static_cast<T>(_s1)), z(static_cast<T>(_s2)), w(static_cast<T>(_s3)) {}
         template<typename T1>
-        constexpr Components(T _s0, const Components<T1, 3, 1>& _s1) noexcept : x(static_cast<T>(_s0)), y(static_cast<T>(_s1.x)), z(static_cast<T>(_s1.y)), w(static_cast<T>(_s1.z)) {}
+        constexpr EIAPI Components(T _s0, const Components<T1, 3, 1>& _s1) noexcept : x(static_cast<T>(_s0)), y(static_cast<T>(_s1.x)), z(static_cast<T>(_s1.y)), w(static_cast<T>(_s1.z)) {}
         template<typename T1>
-        constexpr Components(const Components<T1, 3, 1>& _s0, T _s1) noexcept : x(static_cast<T>(_s0.x)), y(static_cast<T>(_s0.y)), z(static_cast<T>(_s0.z)), w(static_cast<T>(_s1)) {}
+        constexpr EIAPI Components(const Components<T1, 3, 1>& _s0, T _s1) noexcept : x(static_cast<T>(_s0.x)), y(static_cast<T>(_s0.y)), z(static_cast<T>(_s0.z)), w(static_cast<T>(_s1)) {}
         template<typename T1>
-        constexpr Components(const Components<T1, 2, 1>& _s0, T _s1, T _s2) noexcept : x(static_cast<T>(_s0.x)), y(static_cast<T>(_s0.y)), z(static_cast<T>(_s1)), w(static_cast<T>(_s2)) {}
+        constexpr EIAPI Components(const Components<T1, 2, 1>& _s0, T _s1, T _s2) noexcept : x(static_cast<T>(_s0.x)), y(static_cast<T>(_s0.y)), z(static_cast<T>(_s1)), w(static_cast<T>(_s2)) {}
         template<typename T1>
-        constexpr Components(T _s0, const Components<T1, 2, 1>& _s1, T _s2) noexcept : x(static_cast<T>(_s0)), y(static_cast<T>(_s1.x)), z(static_cast<T>(_s1.y)), w(static_cast<T>(_s2)) {}
+        constexpr EIAPI Components(T _s0, const Components<T1, 2, 1>& _s1, T _s2) noexcept : x(static_cast<T>(_s0)), y(static_cast<T>(_s1.x)), z(static_cast<T>(_s1.y)), w(static_cast<T>(_s2)) {}
         template<typename T1>
-        constexpr Components(T _s0, T _s1, const Components<T1, 2, 1>& _s2) noexcept : x(static_cast<T>(_s0)), y(static_cast<T>(_s1)), z(static_cast<T>(_s2.x)), w(static_cast<T>(_s2.y)) {}
+        constexpr EIAPI Components(T _s0, T _s1, const Components<T1, 2, 1>& _s2) noexcept : x(static_cast<T>(_s0)), y(static_cast<T>(_s1)), z(static_cast<T>(_s2.x)), w(static_cast<T>(_s2.y)) {}
         template<typename T1, typename T2>
-        constexpr Components(const Components<T1, 2, 1>& _s0, const Components<T2, 2, 1>& _s1) noexcept : x(static_cast<T>(_s0.x)), y(static_cast<T>(_s0.y)), z(static_cast<T>(_s1.x)), w(static_cast<T>(_s1.y)) {}
+        constexpr EIAPI Components(const Components<T1, 2, 1>& _s0, const Components<T2, 2, 1>& _s1) noexcept : x(static_cast<T>(_s0.x)), y(static_cast<T>(_s0.y)), z(static_cast<T>(_s1.x)), w(static_cast<T>(_s1.y)) {}
     };
     template <typename T> struct Components<T, 1, 4>: public NonScalarType
     {
@@ -160,22 +160,22 @@ namespace ei { namespace details {
             T m_data[4];
         };
 
-        Components() noexcept {}
-        template<typename T1> constexpr explicit Components(T1 _s) noexcept : x(static_cast<T>(_s)), y(static_cast<T>(_s)), z(static_cast<T>(_s)), w(static_cast<T>(_s)) {}
+        EIAPI Components() noexcept {}
+        template<typename T1> constexpr EIAPI explicit Components(T1 _s) noexcept : x(static_cast<T>(_s)), y(static_cast<T>(_s)), z(static_cast<T>(_s)), w(static_cast<T>(_s)) {}
         template<typename T1, typename T2, typename T3, typename T4>
-        constexpr Components(T1 _s0, T2 _s1, T3 _s2, T4 _s3) noexcept : x(static_cast<T>(_s0)), y(static_cast<T>(_s1)), z(static_cast<T>(_s2)), w(static_cast<T>(_s3)) {}
+        constexpr EIAPI Components(T1 _s0, T2 _s1, T3 _s2, T4 _s3) noexcept : x(static_cast<T>(_s0)), y(static_cast<T>(_s1)), z(static_cast<T>(_s2)), w(static_cast<T>(_s3)) {}
         template<typename T1>
-        constexpr Components(T _s0, const Components<T1, 1, 3>& _s1) noexcept : x(static_cast<T>(_s0)), y(static_cast<T>(_s1.x)), z(static_cast<T>(_s1.y)), w(static_cast<T>(_s1.z)) {}
+        constexpr EIAPI Components(T _s0, const Components<T1, 1, 3>& _s1) noexcept : x(static_cast<T>(_s0)), y(static_cast<T>(_s1.x)), z(static_cast<T>(_s1.y)), w(static_cast<T>(_s1.z)) {}
         template<typename T1>
-        constexpr Components(const Components<T1, 1, 3>& _s0, T _s1) noexcept : x(static_cast<T>(_s0.x)), y(static_cast<T>(_s0.y)), z(static_cast<T>(_s0.z)), w(static_cast<T>(_s1)) {}
+        constexpr EIAPI Components(const Components<T1, 1, 3>& _s0, T _s1) noexcept : x(static_cast<T>(_s0.x)), y(static_cast<T>(_s0.y)), z(static_cast<T>(_s0.z)), w(static_cast<T>(_s1)) {}
         template<typename T1>
-        constexpr Components(const Components<T1, 1, 2>& _s0, T _s1, T _s2) noexcept : x(static_cast<T>(_s0.x)), y(static_cast<T>(_s0.y)), z(static_cast<T>(_s1)), w(static_cast<T>(_s2)) {}
+        constexpr EIAPI Components(const Components<T1, 1, 2>& _s0, T _s1, T _s2) noexcept : x(static_cast<T>(_s0.x)), y(static_cast<T>(_s0.y)), z(static_cast<T>(_s1)), w(static_cast<T>(_s2)) {}
         template<typename T1>
-        constexpr Components(T _s0, const Components<T1, 1, 2>& _s1, T _s2) noexcept : x(static_cast<T>(_s0)), y(static_cast<T>(_s1.x)), z(static_cast<T>(_s1.y)), w(static_cast<T>(_s2)) {}
+        constexpr EIAPI Components(T _s0, const Components<T1, 1, 2>& _s1, T _s2) noexcept : x(static_cast<T>(_s0)), y(static_cast<T>(_s1.x)), z(static_cast<T>(_s1.y)), w(static_cast<T>(_s2)) {}
         template<typename T1>
-        constexpr Components(T _s0, T _s1, const Components<T1, 1, 2>& _s2) noexcept : x(static_cast<T>(_s0)), y(static_cast<T>(_s1)), z(static_cast<T>(_s2.x)), w(static_cast<T>(_s2.y)) {}
+        constexpr EIAPI Components(T _s0, T _s1, const Components<T1, 1, 2>& _s2) noexcept : x(static_cast<T>(_s0)), y(static_cast<T>(_s1)), z(static_cast<T>(_s2.x)), w(static_cast<T>(_s2.y)) {}
         template<typename T1, typename T2>
-        constexpr Components(const Components<T1, 1, 2>& _s0, const Components<T2, 1, 2>& _s1) noexcept : x(static_cast<T>(_s0.x)), y(static_cast<T>(_s0.y)), z(static_cast<T>(_s1.x)), w(static_cast<T>(_s1.y)) {}
+        constexpr EIAPI Components(const Components<T1, 1, 2>& _s0, const Components<T2, 1, 2>& _s1) noexcept : x(static_cast<T>(_s0.x)), y(static_cast<T>(_s0.y)), z(static_cast<T>(_s1.x)), w(static_cast<T>(_s1.y)) {}
     };
     template <typename T> struct Components<T, 2, 2>: public NonScalarType
     {
@@ -186,23 +186,23 @@ namespace ei { namespace details {
             T m_data[4];
         };
 
-        Components() noexcept {}
-        template<typename T1> constexpr explicit Components(T1 _s) :
+        EIAPI Components() noexcept {}
+        template<typename T1> constexpr EIAPI explicit Components(T1 _s) :
             m00(static_cast<T>(_s)), m01(static_cast<T>(_s)),
             m10(static_cast<T>(_s)), m11(static_cast<T>(_s))
         {}
         template<typename T1, typename T2, typename T3, typename T4>
-        constexpr Components(T1 _s0, T2 _s1, T3 _s2, T4 _s3) noexcept :
+        constexpr EIAPI Components(T1 _s0, T2 _s1, T3 _s2, T4 _s3) noexcept :
             m00(static_cast<T>(_s0)), m01(static_cast<T>(_s1)),
             m10(static_cast<T>(_s2)), m11(static_cast<T>(_s3))
         {}
         template<typename T1>
-        constexpr Components(const Components<T1, 2, 1>& _s0, const Components<T1, 2, 1>& _s1) noexcept :
+        constexpr EIAPI Components(const Components<T1, 2, 1>& _s0, const Components<T1, 2, 1>& _s1) noexcept :
             m00(static_cast<T>(_s0.x)), m01(static_cast<T>(_s1.x)),
             m10(static_cast<T>(_s0.y)), m11(static_cast<T>(_s1.y))
         {}
         template<typename T1>
-        constexpr Components(const Components<T1, 1, 2>& _s0, const Components<T1, 1, 2>& _s1) noexcept :
+        constexpr EIAPI Components(const Components<T1, 1, 2>& _s0, const Components<T1, 1, 2>& _s1) noexcept :
             m00(static_cast<T>(_s0.x)), m01(static_cast<T>(_s0.y)),
             m10(static_cast<T>(_s1.x)), m11(static_cast<T>(_s1.y))
         {}
@@ -219,26 +219,26 @@ namespace ei { namespace details {
             T m_data[9];
         };
 
-        Components() noexcept {}
-        template<typename T1> constexpr explicit Components(T1 _s) :
+        EIAPI Components() noexcept {}
+        template<typename T1> constexpr EIAPI explicit Components(T1 _s) :
             m00(static_cast<T>(_s)), m01(static_cast<T>(_s)), m02(static_cast<T>(_s)),
             m10(static_cast<T>(_s)), m11(static_cast<T>(_s)), m12(static_cast<T>(_s)),
             m20(static_cast<T>(_s)), m21(static_cast<T>(_s)), m22(static_cast<T>(_s))
         {}
         template<typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7, typename T8, typename T9>
-        constexpr Components(T1 _s0, T2 _s1, T3 _s2, T4 _s3, T5 _s4, T6 _s5, T7 _s6, T8 _s7, T9 _s8) noexcept :
+        constexpr EIAPI Components(T1 _s0, T2 _s1, T3 _s2, T4 _s3, T5 _s4, T6 _s5, T7 _s6, T8 _s7, T9 _s8) noexcept :
             m00(static_cast<T>(_s0)), m01(static_cast<T>(_s1)), m02(static_cast<T>(_s2)),
             m10(static_cast<T>(_s3)), m11(static_cast<T>(_s4)), m12(static_cast<T>(_s5)),
             m20(static_cast<T>(_s6)), m21(static_cast<T>(_s7)), m22(static_cast<T>(_s8))
         {}
         template<typename T1>
-        constexpr Components(const Components<T1, 3, 1>& _s0, const Components<T1, 3, 1>& _s1, const Components<T1, 3, 1>& _s2) noexcept :
+        constexpr EIAPI Components(const Components<T1, 3, 1>& _s0, const Components<T1, 3, 1>& _s1, const Components<T1, 3, 1>& _s2) noexcept :
             m00(static_cast<T>(_s0.x)), m01(static_cast<T>(_s1.x)), m02(static_cast<T>(_s2.x)),
             m10(static_cast<T>(_s0.y)), m11(static_cast<T>(_s1.y)), m12(static_cast<T>(_s2.y)),
             m20(static_cast<T>(_s0.z)), m21(static_cast<T>(_s1.z)), m22(static_cast<T>(_s2.z))
         {}
         template<typename T1>
-        constexpr Components(const Components<T1, 1, 3>& _s0, const Components<T1, 1, 3>& _s1, const Components<T1, 1, 3>& _s2) noexcept :
+        constexpr EIAPI Components(const Components<T1, 1, 3>& _s0, const Components<T1, 1, 3>& _s1, const Components<T1, 1, 3>& _s2) noexcept :
             m00(static_cast<T>(_s0.x)), m01(static_cast<T>(_s0.y)), m02(static_cast<T>(_s0.z)),
             m10(static_cast<T>(_s1.x)), m11(static_cast<T>(_s1.y)), m12(static_cast<T>(_s1.z)),
             m20(static_cast<T>(_s2.x)), m21(static_cast<T>(_s2.y)), m22(static_cast<T>(_s2.z))
@@ -257,29 +257,29 @@ namespace ei { namespace details {
             T m_data[16];
         };
 
-        Components() {}
-        template<typename T1> constexpr explicit Components(T1 _s) noexcept :
+        EIAPI Components() {}
+        template<typename T1> constexpr EIAPI explicit Components(T1 _s) noexcept :
             m00(static_cast<T>(_s)), m01(static_cast<T>(_s)), m02(static_cast<T>(_s)), m03(static_cast<T>(_s)),
             m10(static_cast<T>(_s)), m11(static_cast<T>(_s)), m12(static_cast<T>(_s)), m13(static_cast<T>(_s)),
             m20(static_cast<T>(_s)), m21(static_cast<T>(_s)), m22(static_cast<T>(_s)), m23(static_cast<T>(_s)),
             m30(static_cast<T>(_s)), m31(static_cast<T>(_s)), m32(static_cast<T>(_s)), m33(static_cast<T>(_s))
         {}
         template<typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7, typename T8, typename T9, typename T10, typename T11, typename T12, typename T13, typename T14, typename T15, typename T16>
-        constexpr Components(T1 _s0, T2 _s1, T3 _s2, T4 _s3, T5 _s4, T6 _s5, T7 _s6, T8 _s7, T9 _s8, T10 _s9, T11 _s10, T12 _s11, T13 _s12, T14 _s13, T15 _s14, T16 _s15) noexcept :
+        constexpr EIAPI Components(T1 _s0, T2 _s1, T3 _s2, T4 _s3, T5 _s4, T6 _s5, T7 _s6, T8 _s7, T9 _s8, T10 _s9, T11 _s10, T12 _s11, T13 _s12, T14 _s13, T15 _s14, T16 _s15) noexcept :
             m00(static_cast<T>(_s0)), m01(static_cast<T>(_s1)), m02(static_cast<T>(_s2)), m03(static_cast<T>(_s3)),
             m10(static_cast<T>(_s4)), m11(static_cast<T>(_s5)), m12(static_cast<T>(_s6)), m13(static_cast<T>(_s7)),
             m20(static_cast<T>(_s8)), m21(static_cast<T>(_s9)), m22(static_cast<T>(_s10)), m23(static_cast<T>(_s11)),
             m30(static_cast<T>(_s12)), m31(static_cast<T>(_s13)), m32(static_cast<T>(_s14)), m33(static_cast<T>(_s15))
         {}
         template<typename T1>
-        constexpr Components(const Components<T1, 4, 1>& _s0, const Components<T1, 4, 1>& _s1, const Components<T1, 4, 1>& _s2, const Components<T1, 4, 1>& _s3) noexcept :
+        constexpr EIAPI Components(const Components<T1, 4, 1>& _s0, const Components<T1, 4, 1>& _s1, const Components<T1, 4, 1>& _s2, const Components<T1, 4, 1>& _s3) noexcept :
             m00(static_cast<T>(_s0.x)), m01(static_cast<T>(_s1.x)), m02(static_cast<T>(_s2.x)), m03(static_cast<T>(_s3.x)),
             m10(static_cast<T>(_s0.y)), m11(static_cast<T>(_s1.y)), m12(static_cast<T>(_s2.y)), m13(static_cast<T>(_s3.y)),
             m20(static_cast<T>(_s0.z)), m21(static_cast<T>(_s1.z)), m22(static_cast<T>(_s2.z)), m23(static_cast<T>(_s3.z)),
             m30(static_cast<T>(_s0.w)), m31(static_cast<T>(_s1.w)), m32(static_cast<T>(_s2.w)), m33(static_cast<T>(_s3.w))
         {}
         template<typename T1>
-        constexpr Components(const Components<T1, 1, 4>& _s0, const Components<T1, 1, 4>& _s1, const Components<T1, 1, 4>& _s2, const Components<T1, 1, 4>& _s3) noexcept :
+        constexpr EIAPI Components(const Components<T1, 1, 4>& _s0, const Components<T1, 1, 4>& _s1, const Components<T1, 1, 4>& _s2, const Components<T1, 1, 4>& _s3) noexcept :
             m00(static_cast<T>(_s0.x)), m01(static_cast<T>(_s0.y)), m02(static_cast<T>(_s0.z)), m03(static_cast<T>(_s0.w)),
             m10(static_cast<T>(_s1.x)), m11(static_cast<T>(_s1.y)), m12(static_cast<T>(_s1.z)), m13(static_cast<T>(_s1.w)),
             m20(static_cast<T>(_s2.x)), m21(static_cast<T>(_s2.y)), m22(static_cast<T>(_s2.z)), m23(static_cast<T>(_s2.w)),

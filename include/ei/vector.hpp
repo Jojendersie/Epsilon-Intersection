@@ -1406,27 +1406,31 @@ namespace ei {
 
     // ********************************************************************* //
     /// \brief Create a vector which is perpendicular to the input one
-    constexpr EIAPI Vec2 perpendicular( const Vec2& _vector ) noexcept
+    template<typename T>
+    constexpr EIAPI Vec<T,2u> perpendicular( const Vec<T,2u>& _vector ) noexcept
     {
-        return Vec2(-_vector.y, _vector.x);
+        return Vec<T,2u>(-_vector.y, _vector.x);
     }
-    constexpr EIAPI Matrix<float, 1, 2> perpendicular( const Matrix<float, 1, 2>& _vector ) noexcept
+    template<typename T>
+    constexpr EIAPI Matrix<T, 1, 2> perpendicular( const Matrix<T, 1, 2>& _vector ) noexcept
     {
-        return Matrix<float, 1, 2>(-_vector.y, _vector.x);
-    }
-
-    constexpr EIAPI Vec3 perpendicular( const Vec3& _vector ) noexcept
-    {
-        return abs(_vector.z) < abs(_vector.x) ?
-            Vec3(-_vector.y, _vector.x, 0.0f) :
-            Vec3(0.0f, -_vector.z, _vector.y);
+        return Matrix<T, 1, 2>(-_vector.y, _vector.x);
     }
 
-    constexpr EIAPI Matrix<float, 1, 3> perpendicular( const Matrix<float, 1, 3>& _vector ) noexcept
+    template<typename T>
+    constexpr EIAPI Vec<T, 3> perpendicular( const Vec<T, 3>& _vector ) noexcept
     {
         return abs(_vector.z) < abs(_vector.x) ?
-            Matrix<float, 1, 3>(-_vector.y, _vector.x, 0.0f) :
-            Matrix<float, 1, 3>(0.0f, -_vector.z, _vector.y);
+            Vec<T, 3>(-_vector.y, _vector.x, 0) :
+            Vec<T, 3>(0, -_vector.z, _vector.y);
+    }
+
+    template<typename T>
+    constexpr EIAPI Matrix<T, 1, 3> perpendicular( const Matrix<T, 1, 3>& _vector ) noexcept
+    {
+        return abs(_vector.z) < abs(_vector.x) ?
+            Matrix<T, 1, 3>(-_vector.y, _vector.x, 0.0f) :
+            Matrix<T, 1, 3>(0.0f, -_vector.z, _vector.y);
     }
 
     // ********************************************************************* //

@@ -561,10 +561,10 @@ namespace ei {
         static constexpr uint64 MAX_POSITIVE_VALUE = MaxValue<T>::value;
         static constexpr uint64 MASK = (1ull << BITS) - 1;
 
-        EIAPI NormalizedInt() = default;
+        NormalizedInt() = default;
 
         template<typename T1, typename = std::enable_if_t<std::is_integral<T>::value && BITS <= sizeof(T1)*8>>
-        constexpr EIAPI  explicit NormalizedInt(T1 v) noexcept : value(v & MASK)
+        constexpr EIAPI explicit NormalizedInt(T1 v) noexcept : value(v & MASK)
         {
             // Signed types in 2-complement must have all significant bits set.
             // This is violated if BITS < 8*sizeof(T).

@@ -20,12 +20,12 @@ namespace ei {
     {
     public:
         /// \brief Construct uninitialized
-        constexpr EIAPI TQuaternion() noexcept = default;
+        constexpr TQuaternion() noexcept = default;
 
         /// \brief Copy construction
-        constexpr EIAPI TQuaternion( const TQuaternion& _other ) noexcept = default;
+        constexpr TQuaternion( const TQuaternion& _other ) noexcept = default;
         /// \brief Copying assignment
-        constexpr EIAPI TQuaternion& operator = ( const TQuaternion& _rhs ) noexcept = default;
+        constexpr TQuaternion& operator = ( const TQuaternion& _rhs ) noexcept = default;
 
         /// \brief Construct from normalized axis and angle
         constexpr EIAPI TQuaternion( const Vec<T,3>& _axis, T _angle ) noexcept // TESTED
@@ -144,14 +144,15 @@ namespace ei {
             eiAssert(approx(len(_from),1.0f), "Input (_from) must be normalized direction vector.");
             eiAssert(approx(len(_to),1.0f), "Input (_to) must be normalized direction vector.");
             // half angle trick from http://physicsforgames.blogspot.de/2010/03/quaternion-tricks.html
-            Vec<T,3> half = normalize(_from + _to);
+            Vec<T,3> half = (_from + _to);
+            T hlensq = lensq(half);
             // Opposite vectors or one vector 0.0 -> 180° rotation
-            if(std::isnan(half.x))
+            if(hlensq < 1e-10f)
             {
-                if(approx(ei::abs(_from.y), static_cast<T>(1)))
-                    half = Vec<T,3>(0, 0, 1);
-                else half = normalize(cross(_from, Vec<T,3>(0, 1, 0)));
+                half = perpendicular(_from);
+                hlensq = lensq(half);
             }
+            half /= sqrt(hlensq);
 
             // cos(theta) = dot product since both vectors are normalized
             r = dot(_from, half);
@@ -495,7 +496,7 @@ namespace ei {
     class TOrthoSpace : public details::NonScalarType
     {
     public:
-        EIAPI TOrthoSpace() = default;
+        TOrthoSpace() = default;
 
         /// \brief Initialize from normalized quaternion
         constexpr EIAPI explicit TOrthoSpace(const TQuaternion<T>& _q) noexcept : // TESTED
@@ -551,6 +552,12 @@ namespace ei {
                 || m_quaternion.j != _other.m_quaternion.j
                 || m_quaternion.k != _other.m_quaternion.k;
         }
+
+        // Get access to the internal quaternion.
+        // WARNING: the quternion has additional information encoded and cannot be
+        // used as a quaternion.
+        constexpr EIAPI const TQuaternion<T>& data() const noexcept { return m_quaternion; }
+        constexpr EIAPI TQuaternion<T>& data() noexcept { return m_quaternion; }
     private:
         // Use a standard quaternion.
         // The sign of the determinant can be encoded in the r component.
@@ -559,13 +566,6 @@ namespace ei {
         // Important: we need -0 and +0 from float to be sure the sign is always
         // encoded.
         TQuaternion<T> m_quaternion;
-
-        friend constexpr uint64 packOrthoSpace64(const TOrthoSpace<float>& _space) noexcept;
-        friend TOrthoSpace<float> unpackOrthoSpace64(uint64 _code) noexcept;
-        template<typename T1>
-        friend constexpr bool approx(const TOrthoSpace<T1>& _o0,
-                                     const TOrthoSpace<T1>& _o1,
-                                     T1 _epsilon) noexcept;
     };
 
     using OrthoSpace = TOrthoSpace<float>;
