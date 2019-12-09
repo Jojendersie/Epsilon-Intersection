@@ -7,6 +7,7 @@
 #include <limits>
 #include <cmath>
 #include <math.h>
+#include <cstring>
 
 namespace eitypes {
     /// \brief Short name for unsigned / unsigned int.
@@ -50,7 +51,9 @@ namespace ei { namespace details {
     EIAPI T hard_cast(F _from)
     {
         static_assert(sizeof(T) == sizeof(F), "Cannot cast types of different sizes");
-        return *reinterpret_cast<T*>(&_from);
+        T to;
+        std::memcpy(&to, &_from, sizeof(T));
+        return to;
     }
 }} // namespace ei::details
 
