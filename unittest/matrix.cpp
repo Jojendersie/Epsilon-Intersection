@@ -76,6 +76,10 @@ bool test_matrix()
 
         Vec<float, 0> v9;
         Vec<float, 1> v10;
+
+        Mat3x4 m3(m0, v7);
+        Mat4x3 m4(transpose(m0), transpose(v7));
+        TEST( m3 == transpose(m4), "Non-square matrix composition constructor wrong." );
     }
 
     // ********************************************************************* //

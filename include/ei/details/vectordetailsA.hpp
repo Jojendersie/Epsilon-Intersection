@@ -304,6 +304,108 @@ namespace ei { namespace details {
         {}
     };
 
+    /// \brief Specialized version for 3x4 matrices.
+    template <typename T> struct Components<T, 3, 4>: public NonScalarType
+    {
+        union {
+            struct { T m00, m01, m02, m03,
+                       m10, m11, m12, m13,
+                       m20, m21, m22, m23;
+            };
+            T m_data[12];
+        };
+
+        EIAPI Components() noexcept {
+#if defined(DEBUG) || defined(_DEBUG)
+            for(ei::uint i = 0; i < 12; ++i)
+                this->m_data[i] = details::IniVal<T>::value;
+#endif
+            // Empty on release
+        }
+        template<typename T1> constexpr EIAPI explicit Components(T1 _s) :
+            m00(static_cast<T>(_s)), m01(static_cast<T>(_s)), m02(static_cast<T>(_s)), m03(static_cast<T>(_s)),
+            m10(static_cast<T>(_s)), m11(static_cast<T>(_s)), m12(static_cast<T>(_s)), m13(static_cast<T>(_s)),
+            m20(static_cast<T>(_s)), m21(static_cast<T>(_s)), m22(static_cast<T>(_s)), m23(static_cast<T>(_s))
+        {}
+        template<typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7, typename T8, typename T9, typename T10, typename T11, typename T12>
+        constexpr EIAPI Components(T1 _m00, T2 _m01, T3 _m02, T4 _m03, T5 _m10, T6 _m11, T7 _m12, T8 _m13, T9 _m20, T10 _m21, T11 _m22, T12 _m23) noexcept :
+            m00(static_cast<T>(_m00)), m01(static_cast<T>(_m01)), m02(static_cast<T>(_m02)), m03(static_cast<T>(_m03)),
+            m10(static_cast<T>(_m10)), m11(static_cast<T>(_m11)), m12(static_cast<T>(_m12)), m13(static_cast<T>(_m13)),
+            m20(static_cast<T>(_m20)), m21(static_cast<T>(_m21)), m22(static_cast<T>(_m22)), m23(static_cast<T>(_m23))
+        {}
+        template<typename T1>
+        constexpr EIAPI Components(const Components<T1, 3, 1>& _s0, const Components<T1, 3, 1>& _s1, const Components<T1, 3, 1>& _s2, const Components<T1, 3, 1>& _s3) noexcept :
+            m00(static_cast<T>(_s0.x)), m01(static_cast<T>(_s1.x)), m02(static_cast<T>(_s2.x)), m03(static_cast<T>(_s3.x)),
+            m10(static_cast<T>(_s0.y)), m11(static_cast<T>(_s1.y)), m12(static_cast<T>(_s2.y)), m13(static_cast<T>(_s3.y)),
+            m20(static_cast<T>(_s0.z)), m21(static_cast<T>(_s1.z)), m22(static_cast<T>(_s2.z)), m23(static_cast<T>(_s3.z))
+        {}
+        template<typename T1>
+        constexpr EIAPI Components(const Components<T1, 1, 4>& _s0, const Components<T1, 1, 4>& _s1, const Components<T1, 1, 4>& _s2) noexcept :
+            m00(static_cast<T>(_s0.x)), m01(static_cast<T>(_s0.y)), m02(static_cast<T>(_s0.z)), m03(static_cast<T>(_s0.w)),
+            m10(static_cast<T>(_s1.x)), m11(static_cast<T>(_s1.y)), m12(static_cast<T>(_s1.z)), m13(static_cast<T>(_s1.w)),
+            m20(static_cast<T>(_s2.x)), m21(static_cast<T>(_s2.y)), m22(static_cast<T>(_s2.z)), m23(static_cast<T>(_s2.w))
+        {}
+        template<typename T1, typename T2>
+        constexpr EIAPI Components(const Components<T1, 3, 3>& _m0, const Components<T2, 3, 1>& _s1) noexcept :
+            m00(static_cast<T>(_m0.m00)), m01(static_cast<T>(_m0.m01)), m02(static_cast<T>(_m0.m02)), m03(static_cast<T>(_s1.x)),
+            m10(static_cast<T>(_m0.m10)), m11(static_cast<T>(_m0.m11)), m12(static_cast<T>(_m0.m12)), m13(static_cast<T>(_s1.y)),
+            m20(static_cast<T>(_m0.m20)), m21(static_cast<T>(_m0.m21)), m22(static_cast<T>(_m0.m22)), m23(static_cast<T>(_s1.z))
+        {}
+    };
+    template <typename T> struct Components<T, 4, 3>: public NonScalarType
+    {
+        union {
+            struct { T m00, m01, m02,
+                       m10, m11, m12,
+                       m20, m21, m22,
+                       m30, m31, m32;
+            };
+            T m_data[12];
+        };
+
+        EIAPI Components() noexcept {
+#if defined(DEBUG) || defined(_DEBUG)
+            for(ei::uint i = 0; i < 12; ++i)
+                this->m_data[i] = details::IniVal<T>::value;
+#endif
+            // Empty on release
+        }
+        template<typename T1> constexpr EIAPI explicit Components(T1 _s) :
+            m00(static_cast<T>(_s)), m01(static_cast<T>(_s)), m02(static_cast<T>(_s)),
+            m10(static_cast<T>(_s)), m11(static_cast<T>(_s)), m12(static_cast<T>(_s)),
+            m20(static_cast<T>(_s)), m21(static_cast<T>(_s)), m22(static_cast<T>(_s)),
+            m30(static_cast<T>(_s)), m31(static_cast<T>(_s)), m32(static_cast<T>(_s))
+        {}
+        template<typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7, typename T8, typename T9, typename T10, typename T11, typename T12>
+        constexpr EIAPI Components(T1 _m00, T2 _m01, T3 _m02, T4 _m10, T5 _m11, T6 _m12, T7 _m20, T8 _m21, T9 _m22, T10 _m30, T11 _m31, T12 _m32) noexcept :
+            m00(static_cast<T>(_m00)), m01(static_cast<T>(_m01)), m02(static_cast<T>(_m02)),
+            m10(static_cast<T>(_m10)), m11(static_cast<T>(_m11)), m12(static_cast<T>(_m12)),
+            m20(static_cast<T>(_m20)), m21(static_cast<T>(_m21)), m22(static_cast<T>(_m22)),
+            m30(static_cast<T>(_m30)), m31(static_cast<T>(_m31)), m32(static_cast<T>(_m32))
+        {}
+        template<typename T1>
+        constexpr EIAPI Components(const Components<T1, 4, 1>& _s0, const Components<T1, 4, 1>& _s1, const Components<T1, 4, 1>& _s2) noexcept :
+            m00(static_cast<T>(_s0.x)), m01(static_cast<T>(_s1.x)), m02(static_cast<T>(_s2.x)),
+            m10(static_cast<T>(_s0.y)), m11(static_cast<T>(_s1.y)), m12(static_cast<T>(_s2.y)),
+            m20(static_cast<T>(_s0.z)), m21(static_cast<T>(_s1.z)), m22(static_cast<T>(_s2.z)),
+            m30(static_cast<T>(_s0.w)), m31(static_cast<T>(_s1.w)), m32(static_cast<T>(_s2.w))
+        {}
+        template<typename T1>
+        constexpr EIAPI Components(const Components<T1, 1, 3>& _s0, const Components<T1, 1, 3>& _s1, const Components<T1, 1, 3>& _s2, const Components<T1, 1, 3>& _s3) noexcept :
+            m00(static_cast<T>(_s0.x)), m01(static_cast<T>(_s0.y)), m02(static_cast<T>(_s0.z)),
+            m10(static_cast<T>(_s1.x)), m11(static_cast<T>(_s1.y)), m12(static_cast<T>(_s1.z)),
+            m20(static_cast<T>(_s2.x)), m21(static_cast<T>(_s2.y)), m22(static_cast<T>(_s2.z)),
+            m30(static_cast<T>(_s3.x)), m31(static_cast<T>(_s3.y)), m32(static_cast<T>(_s3.z))
+        {}
+        template<typename T1, typename T2>
+        constexpr EIAPI Components(const Components<T1, 3, 3>& _m0, const Components<T2, 1, 3>& _s1) noexcept :
+            m00(static_cast<T>(_m0.m00)), m01(static_cast<T>(_m0.m01)), m02(static_cast<T>(_m0.m02)),
+            m10(static_cast<T>(_m0.m10)), m11(static_cast<T>(_m0.m11)), m12(static_cast<T>(_m0.m12)),
+            m20(static_cast<T>(_m0.m20)), m21(static_cast<T>(_m0.m21)), m22(static_cast<T>(_m0.m22)),
+            m30(static_cast<T>(_s1.x)), m31(static_cast<T>(_s1.y)), m32(static_cast<T>(_s1.z))
+        {}
+    };
+
     /// \brief Specialized version for 4x4 matrices.
     template <typename T> struct Components<T, 4, 4>: public NonScalarType
     {
