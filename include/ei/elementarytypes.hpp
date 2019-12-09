@@ -332,7 +332,7 @@ namespace ei {
     /// \details This method uses f-floor(f) instead of f-int(f) and therefore
     ///      has a continous behavior around zero
     /// \param _x [in] The number to be splitted.
-    /// \param _int [out] The integer part of the number.
+    /// \param _int [out] The integer part of the number (rounded to zero).
     /// \returns The fraction of the number in [0,1).
     template<typename T>
     constexpr EIAPI T floorfrac(T _x, Sint<sizeof(T)>& _int) noexcept // TESTED

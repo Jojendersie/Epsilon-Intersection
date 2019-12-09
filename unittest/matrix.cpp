@@ -475,6 +475,20 @@ bool test_matrix()
     }
 
     // ********************************************************************* //
+    // Test frac, intfrac, floorfrac
+    {
+        const Vec4 v0(0.6f, 1.7f, -0.7f, -2.1f);
+        const Vec4 v1(0.6f, 0.7f, -0.7f, -0.1f);
+        const IVec4 v2(0, 1, 0, -2);
+        const IVec4 v3(0, 1, -1, -3);
+        const Vec4 v4(0.6f, 0.7f, 0.3f, 0.9f);
+        IVec4 tmp;
+        TEST( approx(frac(v0), v1), "Vector overerload of frac() wrong!" );
+        TEST( approx(intfrac(v0, tmp), v1) && tmp == v2, "Vector overerload of intfrac() wrong!" );
+        TEST( approx(floorfrac(v0, tmp), v4) && tmp == v3, "Vector overerload of floorfrac() wrong!" );
+    }
+
+    // ********************************************************************* //
     // Test lerp, bilerp, slerp
     {
         Vec3 v0(0.0f);

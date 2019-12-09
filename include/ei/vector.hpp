@@ -821,6 +821,48 @@ namespace ei {
         return result;
     }
 
+     // ********************************************************************* //
+    /// \brief Get the fraction in (-1,1) using elementary frac().
+    /// \param _x [in] The number to be splitted.
+    template<typename T, unsigned M, unsigned N>
+    constexpr EIAPI Matrix<T,M,N> frac(const Matrix<T,M,N>& _x) noexcept
+    {
+        Matrix<T,M,N> result;
+        for(uint i = 0; i < N * M; ++i)
+            result[i] = frac(_x[i]);
+        return result;
+    }
+
+    // ********************************************************************* //
+    /// \brief Divide a number into the integer and fractional part.
+    /// \param _x [in] The number to be splitted.
+    /// \param _int [out] The integer part of the number (rounded to zero).
+    /// \returns The fraction of the number in (-1,1).
+    template<typename T, unsigned M, unsigned N>
+    constexpr EIAPI Matrix<T,M,N> intfrac(const Matrix<T,M,N>& _x, Matrix<Sint<sizeof(T)>,M,N>& _int) noexcept
+    {
+        Matrix<T,M,N> result;
+        for(uint i = 0; i < N * M; ++i)
+            result[i] = intfrac(_x[i], _int[i]);
+        return result;
+    }
+
+    // ********************************************************************* //
+    /// \brief Divide a number into an integer and a positive fractional part.
+    /// \details This method uses f-floor(f) instead of f-int(f) and therefore
+    ///      has a continous behavior around zero
+    /// \param _x [in] The number to be splitted.
+    /// \param _int [out] The integer part of the number.
+    /// \returns The fraction of the number in [0,1).
+    template<typename T, unsigned M, unsigned N>
+    constexpr EIAPI Matrix<T,M,N> floorfrac(const Matrix<T,M,N>& _x, Matrix<Sint<sizeof(T)>,M,N>& _int) noexcept
+    {
+        Matrix<T,M,N> result;
+        for(uint i = 0; i < N * M; ++i)
+            result[i] = floorfrac(_x[i], _int[i]);
+        return result;
+    }
+
     // ********************************************************************* //
     /// \brief Get the smallest positive number m, such that x=y*c+m with c
     ///     in Z, for each component.
