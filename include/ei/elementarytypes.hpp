@@ -55,6 +55,42 @@ namespace ei { namespace details {
         std::memcpy(&to, &_from, sizeof(T));
         return to;
     }
+
+    // Type traits to mark invalid values on initialization
+    template<typename T> struct IniVal {
+        static constexpr T value {};
+    };
+    template<> struct IniVal<float> {
+        static constexpr float value { std::numeric_limits<float>::signaling_NaN() };
+    };
+    template<> struct IniVal<double> {
+        static constexpr double value { std::numeric_limits<double>::signaling_NaN() };
+    };
+    template<> struct IniVal<uint8> {
+        static constexpr uint8 value { static_cast<uint8>(0xcdu) };
+    };
+    template<> struct IniVal<int8> {
+        static constexpr int8 value { '\xcd' };
+    };
+    template<> struct IniVal<uint16> {
+        static constexpr uint16 value { static_cast<uint16>(0xcdcdu) };
+    };
+    template<> struct IniVal<int16> {
+        static constexpr int16 value { -12851 }; // 0xcdcd
+    };
+    template<> struct IniVal<uint32> {
+        static constexpr uint32 value { 0xcdcdcdcdul };
+    };
+    template<> struct IniVal<int32> {
+        static constexpr uint32 value { 0xcdcdcdcd };
+    };
+    template<> struct IniVal<uint64> {
+        static constexpr uint64 value { 0xcdcdcdcdcdcdcdcdull };
+    };
+    template<> struct IniVal<int64> {
+        static constexpr int64 value { -3617008641903833651ll };
+    };
+
 }} // namespace ei::details
 
 namespace ei {
