@@ -4,6 +4,8 @@ namespace ei {
     // Basic template classes
     template<typename T>
     class TQuaternion;
+    template<typename T>
+    class TDualQuaternion;
 
     template<typename T, uint M, uint N>
     class Matrix;
@@ -91,4 +93,5 @@ namespace ei {
     // ********************************************************************* //
     typedef TQuaternion<float> Quaternion;
     typedef TQuaternion<double> DQuaternion;
+    using DualQuaternion = TDualQuaternion<float>;
 }
