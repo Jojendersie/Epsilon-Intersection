@@ -220,7 +220,7 @@ namespace ei {
     {
         // q q' where q' is the complex conjugate.
         // The full norm is: q0 q0' + ε (q0 qε' + qε q0')
-        lq0 = dot(_q.q0, _q.q0);
+        T lq0 = dot(_q.q0, _q.q0);
         eiAssertWeak( approx(static_cast<T>(0), dot(_q.q0, _q.qe)), "Not a union dual quaternion!" );
         return lq0;	// Return only real part
     }
