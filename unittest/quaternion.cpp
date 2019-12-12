@@ -93,5 +93,14 @@ bool test_quaternion()
         TEST(o6.isLefthanded(), "o6.isLefthanded wrong.");
     }
 
+    { // Test basic math opertators
+        const Quaternion q6( 0.1f, 0.3f, 0.4f );
+        const Quaternion q7( -0.25f, 0.5f, -0.7f );
+        Quaternion res = (q6 / q7) * q7;
+        TEST(approx(q6, res), "Quaternion: division and multiplication do not cancel each other.");
+        res = q6 * q7;
+        TEST(approx(len(res), 1.0f), "Quaternion: multiplication of unit quaternions should keep the length.");
+    }
+
     return result;
 }

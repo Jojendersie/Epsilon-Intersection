@@ -1385,6 +1385,19 @@ namespace ei {
         return _space * _what;
     }
 
+    /// \brief Multiply two 3x4 matrices by virtually padding a (0,0,0,1) row and
+    ///     removing it again in the end.
+    template<typename T>
+    constexpr EIAPI Matrix<T,3,4> transform( const Matrix<T,3,4>& _l,
+                                             const Matrix<T,3,4>& _r ) noexcept // TESTED
+    {
+        return Matrix<T,3,4>{
+            _l.m00*_r.m00+_l.m01*_r.m10+_l.m02*_r.m20, _l.m00*_r.m01+_l.m01*_r.m11+_l.m02*_r.m21, _l.m00*_r.m02+_l.m01*_r.m12+_l.m02*_r.m22, _l.m00*_r.m03+_l.m01*_r.m13+_l.m02*_r.m23+_l.m03,
+            _l.m10*_r.m00+_l.m11*_r.m10+_l.m12*_r.m20, _l.m10*_r.m01+_l.m11*_r.m11+_l.m12*_r.m21, _l.m10*_r.m02+_l.m11*_r.m12+_l.m12*_r.m22, _l.m10*_r.m03+_l.m11*_r.m13+_l.m12*_r.m23+_l.m13,
+            _l.m20*_r.m00+_l.m21*_r.m10+_l.m22*_r.m20, _l.m20*_r.m01+_l.m21*_r.m11+_l.m22*_r.m21, _l.m20*_r.m02+_l.m21*_r.m12+_l.m22*_r.m22, _l.m20*_r.m03+_l.m21*_r.m13+_l.m22*_r.m23+_l.m23
+        };
+    }
+
     // ********************************************************************* //
     /// \brief Create a translation matrix in homogeneous coordinate space.
     /// \param [in] _vector Translate by/Add this vector.

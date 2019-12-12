@@ -223,8 +223,9 @@ namespace ei {
         }
 
         /// \brief TQuaternion division   a/=b  <=>  a=a*(b^-1)=a*conjugated(b).
-        constexpr EIAPI TQuaternion& operator /= (const TQuaternion& _q1) noexcept
+        constexpr EIAPI TQuaternion& operator /= (const TQuaternion& _q1) noexcept // TESTED
         {
+            eiAssertWeak(approx(len(_q1), 1.0f), "Not a unit quaternion");
             T nr =   r*_q1.r + i*_q1.i + j*_q1.j + k*_q1.k;
             T ni = - r*_q1.i + i*_q1.r - j*_q1.k + k*_q1.j;
             T nj = - r*_q1.j + j*_q1.r - k*_q1.i + i*_q1.k;
@@ -264,9 +265,9 @@ namespace ei {
         {
             return TQuaternion(*this) *= _s;
         }
-        constexpr TQuaternion operator / (TQuaternion _q1) const noexcept
+        constexpr TQuaternion operator / (TQuaternion _q1) const noexcept // TESTED
         {
-            return _q1 /= *this;
+            return TQuaternion(*this) /= _q1;
         }
         constexpr EIAPI TQuaternion operator / (T _s) const noexcept
         {
@@ -421,7 +422,7 @@ namespace ei {
     /// \brief Computes the sum of component wise products.
     /// \returns Scalar value of the sum of component products.
     constexpr EIAPI float dot(const Quaternion& _q0,
-                               const Quaternion& _q1) noexcept
+                              const Quaternion& _q1) noexcept
     {
         return _q0.r*_q1.r + _q0.i*_q1.i + _q0.j*_q1.j + _q0.k*_q1.k;
     }
