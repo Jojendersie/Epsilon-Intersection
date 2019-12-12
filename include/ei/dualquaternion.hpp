@@ -25,7 +25,7 @@ namespace ei {
         /// \brief Construct uninitialized
         EIAPI TDualQuaternion() noexcept {
 #if defined(DEBUG) || defined(_DEBUG)
-            r = i = j = k = re = ie = je = ke = details::IniVal<T>::value;
+            q0.r = q0.i = q0.j = q0.k = qe.r = qe.i = qe.j = qe.k = details::IniVal<T>::value;
 #endif
             // Empty on release
         }
