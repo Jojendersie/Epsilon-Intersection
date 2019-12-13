@@ -45,5 +45,16 @@ bool test_dualquaternion()
         TEST( approx(len(res), 1.0f), "Dual Quaternion: multiplication of unit quaternions should keep the length.");
     }
 
+    { // Test transformations
+        const DualQuaternion qq0{ Quaternion{0.1f, 0.3f, 0.4f}, Vec3{0.1f, 0.2f, -0.3f} };
+        const Mat3x4 m0 { qq0 };
+        const Vec3 v0 = transform(Vec3{0.0f, 1.0f, 1.5f}, qq0);
+        const Vec3 v1 = transform(Vec3{0.0f, 1.0f, 1.5f}, m0);
+        TEST( approx(v0, v1), "Applying quaternion or matrix transform() disagree." );
+        const Vec3 v2 = transformDir(Vec3{0.0f, 1.0f, 1.5f}, qq0);
+        const Vec3 v3 = transformDir(Vec3{0.0f, 1.0f, 1.5f}, m0);
+        TEST( approx(v2, v3), "Applying quaternion or matrix transformDir() disagree." );
+    }
+
     return result;
 }

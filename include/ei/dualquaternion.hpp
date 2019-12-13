@@ -56,7 +56,7 @@ namespace ei {
         template<typename T1>
         constexpr EIAPI explicit operator Matrix<T1,3,4>() const noexcept // TESTED
         {
-            eiAssertWeak( approx(static_cast<T>(1), dot(q0, q0)), "Not a union dual quaternion!" );
+            eiAssertWeak( approx(static_cast<T>(1), dot(q0, q0), 1e-4f), "Not a union dual quaternion!" );
             constexpr T1 ONE = static_cast<T1>(1);
             constexpr T1 TWO = static_cast<T1>(2);
             T1 f2i = TWO * q0.i;
@@ -260,7 +260,7 @@ namespace ei {
     // ********************************************************************* //
     /// \brief Apply a rotation by a quaternion (ignore translation)
     template<typename T, unsigned M, unsigned N, typename = std::enable_if_t<(M==1) || (N==1)>>
-    constexpr EIAPI Matrix<T,M,N> transformDir( const Matrix<T,M,N>& _what, const TDualQuaternion<T>& _qq ) noexcept
+    constexpr EIAPI Matrix<T,M,N> transformDir( const Matrix<T,M,N>& _what, const TDualQuaternion<T>& _qq ) noexcept // TESTED
     {
         return transform(_what, _qq.q0);
     }
@@ -268,7 +268,7 @@ namespace ei {
     // ********************************************************************* //
     /// \brief Apply full transformation (rotation + translation).
     template<typename T, unsigned M, unsigned N, typename = std::enable_if_t<(M==1) || (N==1)>>
-    constexpr EIAPI Matrix<T,M,N> transform( const Matrix<T,M,N>& _what, const TDualQuaternion<T>& _qq ) noexcept
+    constexpr EIAPI Matrix<T,M,N> transform( const Matrix<T,M,N>& _what, const TDualQuaternion<T>& _qq ) noexcept // TESTED
     {
         constexpr T TWO = static_cast<T>(2);
         const T f2i = TWO * _qq.q0.i;
