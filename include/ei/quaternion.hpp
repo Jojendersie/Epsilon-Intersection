@@ -303,14 +303,10 @@ namespace ei {
     // ********************************************************************* //
     /// \brief Returns identity element of the Hamilton-product. (Does not
     ///     rotate anything.)
+    template<typename T = float>
     constexpr EIAPI const TQuaternion<float> qidentity() noexcept // TESTED
     {
-        return ei::TQuaternion<float>(0.0f, 0.0f, 0.0f, 1.0f);
-    }
-
-    constexpr EIAPI const TQuaternion<double> qidentityD() noexcept
-    {
-        return ei::TQuaternion<double>(0.0, 0.0, 0.0, 1.0);
+        return ei::TQuaternion<T>(static_cast<T>(0), static_cast<T>(0), static_cast<T>(0), static_cast<T>(1));
     }
 
     // ********************************************************************* //
@@ -463,15 +459,16 @@ namespace ei {
     template<typename T, unsigned M, unsigned N, typename = std::enable_if_t<(M==1) || (N==1)>>
     constexpr EIAPI Matrix<T,M,N> transform( const Matrix<T,M,N>& _what, const TQuaternion<T>& _quaternion ) noexcept
     {
+        constexpr T TWO = static_cast<T>(2);
         // http://physicsforgames.blogspot.de/2010/03/quaternion-tricks.html
         T x1 = _quaternion.j*_what.z - _quaternion.k*_what.y;
         T y1 = _quaternion.k*_what.x - _quaternion.i*_what.z;
         T z1 = _quaternion.i*_what.y - _quaternion.j*_what.x;
 
         return Matrix<T,M,N>(
-             _what.x + 2.0f * (_quaternion.r*x1 + _quaternion.j*z1 - _quaternion.k*y1),
-             _what.y + 2.0f * (_quaternion.r*y1 + _quaternion.k*x1 - _quaternion.i*z1),
-             _what.z + 2.0f * (_quaternion.r*z1 + _quaternion.i*y1 - _quaternion.j*x1)
+             _what.x + TWO * (_quaternion.r*x1 + _quaternion.j*z1 - _quaternion.k*y1),
+             _what.y + TWO * (_quaternion.r*y1 + _quaternion.k*x1 - _quaternion.i*z1),
+             _what.z + TWO * (_quaternion.r*z1 + _quaternion.i*y1 - _quaternion.j*x1)
             );
     }
 

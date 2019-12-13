@@ -184,6 +184,24 @@ namespace ei {
         }
     };
 
+    // ********************************************************************* //
+    /// \brief Returns identity element of the Hamilton-product. (Does not
+    ///     rotate or translate anything.)
+    template<typename T = float>
+    constexpr EIAPI const TDualQuaternion<T> qqidentity() noexcept
+    {
+        return ei::TDualQuaternion<T>(static_cast<T>(0), static_cast<T>(0), static_cast<T>(0), static_cast<T>(1),
+                                      static_cast<T>(0), static_cast<T>(0), static_cast<T>(0), static_cast<T>(0));
+    }
+
+    // ********************************************************************* //
+    /// \brief Scalar multiplication from left
+    template<typename T>
+    constexpr EIAPI TDualQuaternion<T> operator* (T _s, TDualQuaternion<T> _q) noexcept
+    {
+        return _q *= _s;
+    }
+
 
     // ********************************************************************* //
     /// \brief Complex conjugate: invert sign of complex components
@@ -237,6 +255,49 @@ namespace ei {
         T lq0 = len(_q.q0);
         eiAssertWeak( approx(static_cast<T>(0), dot(_q.q0, _q.qe)), "Not a union dual quaternion!" );
         return lq0;
+    }
+
+    // ********************************************************************* //
+    /// \brief Apply a rotation by a quaternion (ignore translation)
+    template<typename T, unsigned M, unsigned N, typename = std::enable_if_t<(M==1) || (N==1)>>
+    constexpr EIAPI Matrix<T,M,N> transformDir( const Matrix<T,M,N>& _what, const TDualQuaternion<T>& _qq ) noexcept
+    {
+        return transform(_what, _qq.q0);
+    }
+
+    // ********************************************************************* //
+    /// \brief Apply full transformation (rotation + translation).
+    template<typename T, unsigned M, unsigned N, typename = std::enable_if_t<(M==1) || (N==1)>>
+    constexpr EIAPI Matrix<T,M,N> transform( const Matrix<T,M,N>& _what, const TDualQuaternion<T>& _qq ) noexcept
+    {
+        constexpr T TWO = static_cast<T>(2);
+        const T f2i = TWO * _qq.q0.i;
+        const T f2j = TWO * _qq.q0.j;
+        const T f2k = TWO * _qq.q0.k;
+        const T f2r = TWO * _qq.q0.r;
+        //T t0 = -_qq.qe.r*f2i + _qq.qe.i*f2r - _qq.qe.j*f2k + _qq.qe.k*f2j;
+        //T t1 = -_qq.qe.r*f2j + _qq.qe.i*f2k + _qq.qe.j*f2r - _qq.qe.k*f2i;
+        //T t2 = -_qq.qe.r*f2k - _qq.qe.i*f2j + _qq.qe.j*f2i + _qq.qe.k*f2r;
+        // http://physicsforgames.blogspot.de/2010/03/quaternion-tricks.html
+        const T x1 = _qq.q0.j*_what.z - _qq.q0.k*_what.y;
+        const T y1 = _qq.q0.k*_what.x - _qq.q0.i*_what.z;
+        const T z1 = _qq.q0.i*_what.y - _qq.q0.j*_what.x;
+
+        //return Matrix<T,M,N>(
+        //     _what.x + f2r*x1 + f2j*z1 - f2k*y1 + t0,
+        //     _what.y + f2r*y1 + f2k*x1 - f2i*z1 + t1,
+        //     _what.z + f2r*z1 + f2i*y1 - f2j*x1 + t2
+        //);
+
+        // Optimized further by rearanging floats
+        const T x1i = x1 + _qq.qe.i;
+        const T y1j = y1 + _qq.qe.j;
+        const T z1k = z1 + _qq.qe.k;
+        return Matrix<T,M,N>(
+            _what.x + f2r*x1i + f2j*z1k - f2k*y1j - f2i*_qq.qe.r,
+            _what.y + f2r*y1j + f2k*x1i - f2i*z1k - f2j*_qq.qe.r,
+            _what.z + f2r*z1k + f2i*y1j - f2j*x1i - f2k*_qq.qe.r
+        );
     }
 
 } // namespace ei
