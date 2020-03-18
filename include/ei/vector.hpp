@@ -39,8 +39,8 @@ namespace ei {
         // construct inherits rules as [int + float -> float] from the
         // elementary types.
 #       define RESULT_TYPE(op) std::enable_if_t<                   \
-            !std::is_base_of_v<details::NonScalarType, T1> &&      \
-            !std::is_base_of_v<details::NonScalarType, T>,         \
+            !std::is_base_of<details::NonScalarType, T1>::value &&      \
+            !std::is_base_of<details::NonScalarType, T>::value,         \
             decltype(std::declval<T>() op std::declval<T1>())      \
         >
 
@@ -52,7 +52,7 @@ namespace ei {
 #       define ENABLE_IF(condition) typename = std::enable_if_t< (condition) >
 
         /// \brief Construction without initialization. The values are undefined!
-        EIAPI Matrix() noexcept {}
+        EIAPI constexpr Matrix() noexcept {}
 
         /// \brief Convert a matrix/vector with a different elementary type.
         template<typename T1>
@@ -63,7 +63,7 @@ namespace ei {
         }
 
         /// \brief Forward to base constructors
-        template<typename T1, ENABLE_IF((!std::is_base_of_v<details::NonScalarType, T1>))>
+        template<typename T1, ENABLE_IF((!std::is_base_of<details::NonScalarType, T1>::value))>
         EIAPI constexpr explicit Matrix(T1 _a0) noexcept :
             details::Components<T,M,N>(_a0)
         {}
@@ -240,11 +240,11 @@ namespace ei {
             EI_CODE_GEN_MAT_MAT_OP(-)
 
         /// \brief Unary minus on all components.
-        template<typename T1 = T, ENABLE_IF(std::is_signed_v<T1>)>
+        template<typename T1 = T, ENABLE_IF(std::is_signed<T1>::value)>
         EIAPI constexpr Matrix<T, M, N> operator - () const noexcept // TESTED
             EI_CODE_GEN_MAT_UNARY_OP(-)
         /// \brief Component wise binary not.
-        template<typename T1 = T, ENABLE_IF(std::is_integral_v<T1>)>
+        template<typename T1 = T, ENABLE_IF(std::is_integral<T1>::value)>
         EIAPI constexpr Matrix<T, M, N> operator ~ () const noexcept // TESTED
             EI_CODE_GEN_MAT_UNARY_OP(~)
 
@@ -1437,7 +1437,7 @@ namespace ei {
                      -_vector.y, _vector.x);
     }
 
-    EIAPI constexpr inline Mat3x3 basis( const Vec3& _vector ) noexcept // TESTED
+    EIAPI inline Mat3x3 basis( const Vec3& _vector ) noexcept // TESTED
     {
         eiAssert(approx(len(_vector), 1.0f), "Expected normalized direction vector!");
         Vec3 y;

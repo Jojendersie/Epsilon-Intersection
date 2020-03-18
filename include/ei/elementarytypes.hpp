@@ -186,11 +186,11 @@ namespace ei {
     {
         return _x < static_cast<T>(0) ? static_cast<T>(-1) : static_cast<T>(1);
     }
-    EIAPI constexpr inline float sgn(float _x) noexcept // TESTED
+    EIAPI inline float sgn(float _x) noexcept // TESTED
     {
         return details::hard_cast<uint32>(_x) & 0x80000000 ? -1.0f : 1.0f;
     }
-    EIAPI constexpr inline double sgn(double _x) noexcept // TESTED
+    EIAPI inline double sgn(double _x) noexcept // TESTED
     {
         return details::hard_cast<uint64>(_x) & 0x8000000000000000ull ? -1.0 : 1.0;
     }
@@ -203,11 +203,11 @@ namespace ei {
     {
         return _x < static_cast<T>(0) ? 0 : 1;
     }
-    EIAPI constexpr inline int heaviside(float _x) noexcept // TESTED
+    EIAPI inline int heaviside(float _x) noexcept // TESTED
     {
         return details::hard_cast<uint32>(_x) & 0x80000000 ? 0 : 1;
     }
-    EIAPI constexpr inline int heaviside(double _x) noexcept // TESTED
+    EIAPI inline int heaviside(double _x) noexcept // TESTED
     {
         return details::hard_cast<uint64>(_x) & 0x8000000000000000ull ? 0 : 1;
     }
@@ -433,7 +433,7 @@ namespace ei {
     ///    denormalized range. Thereby the successor of -0 and 0 are both the
     ///    same smallest positive float. Further -INF is transformed into
     ///    -FLOAT_MAX and +INF remains +INF.
-    EIAPI constexpr inline float successor(float _number) noexcept // TESTED
+    EIAPI inline float successor(float _number) noexcept // TESTED
     {
         // Handling NaN
         if(_number != _number) return _number;
@@ -449,7 +449,7 @@ namespace ei {
         else return details::hard_cast<float>( mantissa + 1 );
     }
 
-    EIAPI constexpr inline double successor(double _number) noexcept
+    EIAPI inline double successor(double _number) noexcept
     {
         // Handling NaN
         if(_number != _number) return _number;
@@ -470,7 +470,7 @@ namespace ei {
     ///    denormalized range. Thereby the predecessor of -0 and 0 are both the
     ///    same smallest negative float. Further -INF remains -INF and + INF
     ///    is transformed into FLOAT_MAX.
-    EIAPI constexpr inline float predecessor(float _number) noexcept // TESTED
+    EIAPI inline float predecessor(float _number) noexcept // TESTED
     {
         // Handling NaN
         if(_number != _number) return _number;
@@ -486,7 +486,7 @@ namespace ei {
         else return details::hard_cast<float>( mantissa - 1 );
     }
 
-    EIAPI constexpr inline double predecessor(double _number) noexcept
+    EIAPI inline double predecessor(double _number) noexcept
     {
         // Handling NaN
         if(_number != _number) return _number;
@@ -540,20 +540,20 @@ namespace ei {
     {
     private:
         // Template helpers to get some compiletime contants
-        template<typename T1> struct MinInterval {
+        template<typename T1, class Dummy = void> struct MinInterval {
             static constexpr float value = -1.0f;
         };
-        template<> struct MinInterval<typename details::Int<sizeof(T)>::utype> {
+        template<class Dummy> struct MinInterval<typename details::Int<sizeof(T)>::utype, Dummy> {
             static constexpr float value = 0.0f;
         };
-        template<typename T1> struct MaxValue {
+        template<typename T1, class Dummy = void> struct MaxValue {
             static constexpr uint64 value = 0xffffffffffffffffull >> (64u - Bits + 1u);
         };
-        template<> struct MaxValue<typename details::Int<sizeof(T)>::utype> {
+        template<class Dummy> struct MaxValue<typename details::Int<sizeof(T)>::utype, Dummy> {
             static constexpr uint64 value = 0xffffffffffffffffull >> (64u - Bits);
         };
     public:
-        static_assert(std::is_integral_v<T>, "NormalizedInt can only use integer types as basis type.");
+        static_assert(std::is_integral<T>::value, "NormalizedInt can only use integer types as basis type.");
         static_assert(Bits <= sizeof(T)*8, "Base type as not enough bits.");
         //static constexpr float INTERVAL_MIN = []{ if(std::is_signed_v<T>) return -1.0f; else return 0.0f; }();
         static constexpr float INTERVAL_MIN = MinInterval<T>::value;
@@ -565,7 +565,7 @@ namespace ei {
 
         NormalizedInt() = default;
 
-        template<typename T1, typename = std::enable_if_t<std::is_integral_v<T> && BITS <= sizeof(T1)*8>>
+        template<typename T1, typename = std::enable_if_t<std::is_integral<T>::value && BITS <= sizeof(T1)*8>>
         EIAPI constexpr explicit NormalizedInt(T1 v) noexcept : value(v & MASK)
         {
             // Signed types in 2-complement must have all significant bits set.
@@ -596,7 +596,7 @@ namespace ei {
             return value / double(MAX_POSITIVE_VALUE);
         }
 
-        template<typename T1, typename = std::enable_if_t<std::is_integral_v<T> && BITS <= sizeof(T1)*8>>
+        template<typename T1, typename = std::enable_if_t<std::is_integral<T>::value && BITS <= sizeof(T1)*8>>
         EIAPI constexpr explicit operator T1 () const noexcept { return T1(value); }
     private:
         T value;
