@@ -12,7 +12,7 @@ namespace ei {
     {
         if(_c <= 0.04045f)
             return _c / 12.92f;
-        return pow((_c + 0.055f) / 1.055f, 2.4f);
+        return pow(_c / 1.055f + float(0.055 / 1.055), 2.4f);
     }
 
     // Conversion of sRGB to linear RGB (two components)
@@ -30,9 +30,10 @@ namespace ei {
     // Conversion of linear RGB to sRGB (single component)
     constexpr EIAPI float rgbToSRgb(float _c)  // TESTED
     {
-        if(_c <= 0.0031308f)
+        if(_c <= 0.00313080495356f)
             return _c * 12.92f;
-        return 1.055f * pow(_c, 1.0f/2.4f) - 0.055f;;
+        const float p = pow(_c, float(1.0/2.4));
+        return p + 0.055f * (p - 1.0f);
     }
 
     // Conversion of linear RGB to sRGB (two components)
