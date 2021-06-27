@@ -75,6 +75,18 @@ namespace ei {
         return RGB_TO_XYZ * _rgb;
     }
 
+    // Conversion of CIE XYZ to sRGB
+    constexpr EIAPI Vec3 xyzToSrgb(const Vec3 & _xyz)
+    {
+        return rgbToSRgb(xyzToRgb(_xyz));
+    }
+
+    // Conversion of sRGB to CIE XYZ
+    constexpr EIAPI Vec3 srgbToXyz(const Vec3 & _srgb)
+    {
+        return rgbToXyz(sRgbToRgb(_srgb));
+    }
+
     // Conversion of CIE XYZ to Adobe RGB (1998)
     // D65 reference white.
     // Color spectrum 52.1% of visible spectrum.
@@ -139,10 +151,33 @@ namespace ei {
                     (_rgb.r - _rgb.b) * 0.5f};
     }
 
-    // Conversion of YCbCr color space to linear RGB.
+    // Conversion of YCgCo color space to CIE XYZ
+    constexpr EIAPI Vec3 yCgCoToXyz(const Vec3 & _yCgCo)
+    {
+        constexpr Mat3x3 YCGCO_TO_XYZ {
+            0.95047f, -0.2353178f, 0.2320189f,
+            1.0f,      0.4303043f, 0.1404979f,
+            1.08883f, -0.850446f, -0.9309702f
+        };
+        return YCGCO_TO_XYZ * _yCgCo;
+    }
+
+    // Conversion of CIE XYZ to YCgCo color space
+    constexpr EIAPI Vec3 xyzToYCgCo(const Vec3 & _xyz)
+    {
+        constexpr Mat3x3 XYZ_TO_YCGCO {
+            0.3393914f,  0.5027143f,  0.16045145f,
+           -1.3086574f,  1.3732965f, -0.11889545f,
+            1.5924054f, -0.6665563f, -0.7778783f
+        };
+        return XYZ_TO_YCGCO * _xyz;
+    }
+
+
+    // Conversion of YCbCr color space to sRGB.
     // Colorspace used by JPEG, MPEG, ...
     // This conversion does not include the offset (0,128,128 or similar).
-    constexpr EIAPI Vec3 yCbCrToRgb(const Vec3 & _yCbCr)
+    constexpr EIAPI Vec3 yCbCrToSrgb(const Vec3 & _yCbCr)
     {
         return Vec3{_yCbCr.x                       + 1.402 * _yCbCr.z,
                     _yCbCr.x - 0.344136 * _yCbCr.y - 0.714136 * _yCbCr.z,
@@ -150,7 +185,7 @@ namespace ei {
     }
 
     // Conversion of linear RGB to YCbCr.
-    constexpr EIAPI Vec3 rgbToYCbCr(const Vec3 & _rgb)
+    constexpr EIAPI Vec3 srgbToYCbCr(const Vec3 & _rgb)
     {
         constexpr Mat3x3 RGB_TO_YCBCR {
              0.299,     0.587,     0.114,
@@ -158,6 +193,18 @@ namespace ei {
              0.5,      -0.418688, -0.081312
         };
         return RGB_TO_YCBCR * _rgb;
+    }
+
+    // Conversion of YCbCr color space to CIE XYZ
+    constexpr EIAPI Vec3 yCbCrToXyz(const Vec3 & _yCbCr)
+    {
+        return srgbToXyz(yCbCrToSrgb(_yCbCr));
+    }
+
+    // Conversion of CIE XYZ to YCbCr color space
+    constexpr EIAPI Vec3 xyzToYCbCr(const Vec3 & _xyz)
+    {
+        return srgbToYCbCr(xyzToSrgb(_xyz));
     }
 
 
