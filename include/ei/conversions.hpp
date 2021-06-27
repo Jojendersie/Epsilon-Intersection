@@ -317,16 +317,16 @@ namespace ei {
     constexpr EIAPI Vec3 iptToXyz(const Vec3 & _ipt)
     {
         constexpr Mat3x3 IPT_TO_LMSP {
-            1.8502f, -1.1383f,  0.2384f,
-            0.3668f,  0.6439f, -0.0107f,
-            0.0000f,  0.0000f,  1.0889f
+            1.0000f,  0.0976f,  0.2052f,
+            1.0000f, -0.1139f,  0.1332f,
+            1.0000f,  0.0326f, -0.6769f
         };
         const Vec3 lmsp = IPT_TO_LMSP * _ipt;
         const Vec3 lms = ei::sgn(lmsp) * pow(ei::abs(lmsp), 1.0f/0.43f);
         constexpr Mat3x3 LMS_TO_XYZ {
-            1.0000f,  0.0976f,  0.2052f,
-            1.0000f, -1.1139f,  0.1332f,
-            1.0000f,  0.0326f, -0.6769f
+            1.8502f, -1.1383f,  0.2384f,
+            0.3668f,  0.6439f, -0.0107f,
+            0.0000f,  0.0000f,  1.0889f
         };
         return LMS_TO_XYZ * lms;
     }
