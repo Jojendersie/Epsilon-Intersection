@@ -10,10 +10,9 @@ Due to its lean design you can easily integrate the parts you need into your pro
 How to use the library?
 -------------------------------------------------------------------------------
 
-There are 2 different ways to include ε into your project:
+ε is a header only library. Add all files to your project and include the needed portion. Then add the include path to ``epsilon/include`` to your compile options/IDE.
 
-  1. Add all files to your current project and compile as usual.
-  2. Compile a library and use that
+The best way to include ε into a project is to use git-submodules should your parent project be a git repository too.
 
 All interfaces are declared in ``include/ei/<xyz>.hpp`` files. You never need to
 include or look into files from the ``include/ei/details`` or ``src`` directory.
@@ -38,6 +37,13 @@ The configuration system of epsilon works as follows:
 All files expect to include the config.hpp (or depend on it). The repository only contains a defaultconfig.hpp. This should be copied and renamed accordingly. Thus, you can use epsilon as submodule in other repositories. Since the new (renamed) config file is not part of this repository you can change it as you want.
 You only need to make sure the file is found from your compiler if parsing the epsilon files.
 
+
+Pretty Printing in GDB
+-------------------------------------------------------------------------------
+
+In the directory ``doc`` you can find three files which enable pretty printing in GDB. To load the pretty printer ``epsilon_pretty_gdb_load.py`` must be imported from GDB. This is achieved by either placing ``.gdbinit`` into the execution directory of your application or into the user's directory and editing the path inside this file. The path must point to the ``epsilon/doc`` directory which contains the python files.
+
+Note, if your user directory already contains a ``.gdbinit`` file, open it and edit it with the lines from ``epsilon/doc/.gdbinit``. The important point is to add the proper search path and then call ``import epsilon_pretty_gdb_load.py``
 
 Range of Functions
 -------------------------------------------------------------------------------

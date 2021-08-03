@@ -17,6 +17,7 @@ bin/
 *.sdf
 *.dll
 *.exe
+*.pyc
 
 ### OS Files ###
 *~

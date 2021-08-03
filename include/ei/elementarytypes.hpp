@@ -539,7 +539,7 @@ namespace ei {
         else return details::hard_cast<double>( mantissa - 1 );
     }
 
-    /// \brif Helper method to solve ax^2 + bx + c (numerically more stable than naive method).
+    /// \brief Helper method to solve ax^2 + bx + c (numerically more stable than naive method).
     /// \returns Solutions x1 >= x2 (x1 is always the greater of the two results).
     template<typename T>
     constexpr EIAPI bool solveSquarePoly(T a, T b, T c, T& x1, T& x2)
