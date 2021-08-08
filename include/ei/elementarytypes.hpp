@@ -540,7 +540,7 @@ namespace ei {
     }
 
     /// \brief Helper method to solve ax^2 + bx + c (numerically more stable than naive method).
-    /// \returns Solutions x1 >= x2 (x1 is always the greater of the two results).
+    /// \returns Solutions x1, x2 (can be the same if a~0).
     template<typename T>
     constexpr EIAPI bool solveSquarePoly(T a, T b, T c, T& x1, T& x2)
     {
@@ -555,11 +555,11 @@ namespace ei {
         if(discriminant < 0) return false;
         T dsqrt = sqrt(discriminant);
         if(b > 0) {
-            x1 = (-b - dsqrt)/(static_cast<T>(2)*a);
+            x1 = -(b + dsqrt)/(static_cast<T>(2)*a);
             x2 = -static_cast<T>(2)*c/(b + dsqrt);
         } else {
             x1 = -static_cast<T>(2)*c/(b - dsqrt);
-            x2 = (-b + dsqrt)/(static_cast<T>(2)*a);
+            x2 = -(b - dsqrt)/(static_cast<T>(2)*a);
         }
         return true;
     }
