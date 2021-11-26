@@ -1590,6 +1590,20 @@ namespace ei {
     }
 
     // ********************************************************************* //
+    /// \brief Rotation matrix in 3D/homogeneous space around a ray (arbitrary
+    //      position and normalized axis).
+    EIAPI Mat3x4 translatedRotation( const Vec3& _origin, const Vec3& _axis, float _angle ) noexcept
+    {
+        const Mat3x3 rot { rotation(_axis, _angle) };
+        // To rotate around an arbitrary position we have to compute
+        // translate(o) * rotation() * translate(-o). I.e. first move to origin
+        // and later move back. The 3x3 rotation part stays untouched, but there
+        // is a rotated translation in the last column.
+        const Vec3 translation = _origin + rot * -_origin;
+        return Mat3x4 { rot, translation };
+    }
+
+    // ********************************************************************* //
     /// \brief Reflection matrix for a plane through the origin.
     /// \details Use this to construct mirror matrices. To simply reflect a
     ///     vector use the reflect() method (faster). Beware: _normal and _at
