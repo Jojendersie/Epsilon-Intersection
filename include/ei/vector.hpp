@@ -1186,6 +1186,7 @@ namespace ei {
     }
 
     /// \brief Gram-Schmidt orthonormalization for a list of vectors.
+    /// \details The first vector will only be normalized, the others orthogonalized on top.
     template<typename TVec0, typename... TVecs>
     constexpr EIAPI bool orthonormalize(TVec0& _vec0, TVecs&... _vecs) noexcept // TESTED
     {
