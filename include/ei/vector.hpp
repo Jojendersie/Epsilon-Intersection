@@ -1579,12 +1579,13 @@ namespace ei {
         //float lt = len(_to);
         Vec3 axis = cross(_from, _to);
         // Compute sin(alpha) from cross product lf * lt * sin(alpha) and normalize
-        float sinA = len(axis);
-        if(sinA) axis /= sinA;
+        const float l = len(axis);
+        const float sinA = clamp(l, 0.0f, 1.0f);
+        if(l != 0.0f) axis /= l;
         //sinA /= lf * lt;
-        float cosA = sqrt((1.0f - sinA) * (1.0f + sinA));
+        const float cosA = sqrt((1.0f - sinA) * (1.0f + sinA));
         // Create axis-angle matrix
-        float iCosA = 1.0f - cosA;
+        const float iCosA = 1.0f - cosA;
         return Mat3x3(axis.x * axis.x * iCosA + cosA,          axis.x * axis.y * iCosA - axis.z * sinA, axis.x * axis.z * iCosA + axis.y * sinA,
                       axis.x * axis.y * iCosA + axis.z * sinA, axis.y * axis.y * iCosA + cosA,          axis.y * axis.z * iCosA - axis.x * sinA,
                       axis.x * axis.z * iCosA - axis.y * sinA, axis.y * axis.z * iCosA + axis.x * sinA, axis.z * axis.z * iCosA + cosA         );
