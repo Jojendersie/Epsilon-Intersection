@@ -10,13 +10,7 @@ namespace ei { namespace details {
         T m_data[M * N < 1 ? 1 : N * M];
 
     public:
-        EIAPI Components() noexcept {
-#if defined(DEBUG) || defined(_DEBUG)
-            for(ei::uint i = 0; i < N * M; ++i)
-                this->m_data[i] = details::IniVal<T>::value;
-#endif
-            // Empty on release
-        }
+        EIAPI Components() noexcept = default;
         /// \brief Construct from exactly N*M arguments.
         /// \details The int argument is a dummy to prevent some compilers (vc120) from generating
         ///     two constructors with 0 arguments.
@@ -53,13 +47,8 @@ namespace ei { namespace details {
             T m_data[1];
         };
 
-        EIAPI Components() noexcept {
-#if defined(DEBUG) || defined(_DEBUG)
-            x = details::IniVal<T>::value;
-#endif
-            // Empty on release
-        }
-        template<typename T1> constexpr explicit Components(T1 _s) noexcept : x(static_cast<T>(_s)) {}
+        EIAPI Components() noexcept = default;
+        template<typename T1> constexpr EIAPI explicit Components(T1 _s) noexcept : x(static_cast<T>(_s)) {}
     };
 
     /// \brief Specialized version for 2 component row and column vectors.
@@ -72,13 +61,7 @@ namespace ei { namespace details {
             T m_data[2];
         };
 
-        EIAPI Components() noexcept {
-#if defined(DEBUG) || defined(_DEBUG)
-            for(ei::uint i = 0; i < 2; ++i)
-                this->m_data[i] = details::IniVal<T>::value;
-#endif
-            // Empty on release
-        }
+        EIAPI Components() noexcept = default;
         template<typename T1> constexpr EIAPI explicit Components(T1 _s) noexcept : x(static_cast<T>(_s)), y(static_cast<T>(_s)) {}
         template<typename T1, typename T2>
         constexpr EIAPI Components(T1 _s0, T2 _s1) noexcept : x(static_cast<T>(_s0)), y(static_cast<T>(_s1)) {}
@@ -96,13 +79,7 @@ namespace ei { namespace details {
             T m_data[2];
         };
 
-        EIAPI Components() noexcept {
-#if defined(DEBUG) || defined(_DEBUG)
-            for(ei::uint i = 0; i < 2; ++i)
-                this->m_data[i] = details::IniVal<T>::value;
-#endif
-            // Empty on release
-        }
+        EIAPI Components() noexcept = default;
         template<typename T1> constexpr EIAPI explicit Components(T1 _s) noexcept : x(static_cast<T>(_s)), y(static_cast<T>(_s)) {}
         template<typename T1, typename T2>
         constexpr EIAPI Components(T1 _s0, T2 _s1) noexcept : x(static_cast<T>(_s0)), y(static_cast<T>(_s1)) {}
@@ -121,13 +98,7 @@ namespace ei { namespace details {
             T m_data[3];
         };
 
-        EIAPI Components() noexcept {
-#if defined(DEBUG) || defined(_DEBUG)
-            for(ei::uint i = 0; i < 3; ++i)
-                this->m_data[i] = details::IniVal<T>::value;
-#endif
-            // Empty on release
-        }
+        EIAPI Components() noexcept = default;
         template<typename T1> constexpr EIAPI explicit Components(T1 _s) noexcept : x(static_cast<T>(_s)), y(static_cast<T>(_s)), z(static_cast<T>(_s)) {}
         template<typename T1, typename T2, typename T3>
         constexpr EIAPI Components(T1 _s0, T2 _s1, T3 _s2) noexcept : x(static_cast<T>(_s0)), y(static_cast<T>(_s1)), z(static_cast<T>(_s2)) {}
@@ -144,13 +115,7 @@ namespace ei { namespace details {
             T m_data[3];
         };
 
-        EIAPI Components() noexcept {
-#if defined(DEBUG) || defined(_DEBUG)
-            for(ei::uint i = 0; i < 3; ++i)
-                this->m_data[i] = details::IniVal<T>::value;
-#endif
-            // Empty on release
-        }
+        EIAPI Components() noexcept = default;
         template<typename T1> constexpr EIAPI explicit Components(T1 _s) noexcept : x(static_cast<T>(_s)), y(static_cast<T>(_s)), z(static_cast<T>(_s)) {}
         template<typename T1, typename T2, typename T3>
         constexpr EIAPI Components(T1 _s0, T2 _s1, T3 _s2) noexcept : x(static_cast<T>(_s0)), y(static_cast<T>(_s1)), z(static_cast<T>(_s2)) {}
@@ -170,13 +135,7 @@ namespace ei { namespace details {
             T m_data[4];
         };
 
-        EIAPI Components() noexcept {
-#if defined(DEBUG) || defined(_DEBUG)
-            for(ei::uint i = 0; i < 4; ++i)
-                this->m_data[i] = details::IniVal<T>::value;
-#endif
-            // Empty on release
-        }
+        EIAPI Components() noexcept = default;
         template<typename T1> constexpr EIAPI explicit Components(T1 _s) noexcept : x(static_cast<T>(_s)), y(static_cast<T>(_s)), z(static_cast<T>(_s)), w(static_cast<T>(_s)) {}
         template<typename T1, typename T2, typename T3, typename T4>
         constexpr EIAPI Components(T1 _s0, T2 _s1, T3 _s2, T4 _s3) noexcept : x(static_cast<T>(_s0)), y(static_cast<T>(_s1)), z(static_cast<T>(_s2)), w(static_cast<T>(_s3)) {}
@@ -201,13 +160,7 @@ namespace ei { namespace details {
             T m_data[4];
         };
 
-        EIAPI Components() noexcept {
-#if defined(DEBUG) || defined(_DEBUG)
-            for(ei::uint i = 0; i < 4; ++i)
-                this->m_data[i] = details::IniVal<T>::value;
-#endif
-            // Empty on release
-        }
+        EIAPI Components() noexcept = default;
         template<typename T1> constexpr EIAPI explicit Components(T1 _s) noexcept : x(static_cast<T>(_s)), y(static_cast<T>(_s)), z(static_cast<T>(_s)), w(static_cast<T>(_s)) {}
         template<typename T1, typename T2, typename T3, typename T4>
         constexpr EIAPI Components(T1 _s0, T2 _s1, T3 _s2, T4 _s3) noexcept : x(static_cast<T>(_s0)), y(static_cast<T>(_s1)), z(static_cast<T>(_s2)), w(static_cast<T>(_s3)) {}
@@ -233,13 +186,7 @@ namespace ei { namespace details {
             T m_data[4];
         };
 
-        EIAPI Components() noexcept {
-#if defined(DEBUG) || defined(_DEBUG)
-            for(ei::uint i = 0; i < 4; ++i)
-                this->m_data[i] = details::IniVal<T>::value;
-#endif
-            // Empty on release
-        }
+        EIAPI Components() noexcept = default;
         template<typename T1> constexpr EIAPI explicit Components(T1 _s) :
             m00(static_cast<T>(_s)), m01(static_cast<T>(_s)),
             m10(static_cast<T>(_s)), m11(static_cast<T>(_s))
@@ -272,13 +219,7 @@ namespace ei { namespace details {
             T m_data[9];
         };
 
-        EIAPI Components() noexcept {
-#if defined(DEBUG) || defined(_DEBUG)
-            for(ei::uint i = 0; i < 9; ++i)
-                this->m_data[i] = details::IniVal<T>::value;
-#endif
-            // Empty on release
-        }
+        EIAPI Components() noexcept = default;
         template<typename T1> constexpr EIAPI explicit Components(T1 _s) :
             m00(static_cast<T>(_s)), m01(static_cast<T>(_s)), m02(static_cast<T>(_s)),
             m10(static_cast<T>(_s)), m11(static_cast<T>(_s)), m12(static_cast<T>(_s)),
@@ -315,13 +256,7 @@ namespace ei { namespace details {
             T m_data[12];
         };
 
-        EIAPI Components() noexcept {
-#if defined(DEBUG) || defined(_DEBUG)
-            for(ei::uint i = 0; i < 12; ++i)
-                this->m_data[i] = details::IniVal<T>::value;
-#endif
-            // Empty on release
-        }
+        EIAPI Components() noexcept = default;
         template<typename T1> constexpr EIAPI explicit Components(T1 _s) :
             m00(static_cast<T>(_s)), m01(static_cast<T>(_s)), m02(static_cast<T>(_s)), m03(static_cast<T>(_s)),
             m10(static_cast<T>(_s)), m11(static_cast<T>(_s)), m12(static_cast<T>(_s)), m13(static_cast<T>(_s)),
@@ -363,13 +298,7 @@ namespace ei { namespace details {
             T m_data[12];
         };
 
-        EIAPI Components() noexcept {
-#if defined(DEBUG) || defined(_DEBUG)
-            for(ei::uint i = 0; i < 12; ++i)
-                this->m_data[i] = details::IniVal<T>::value;
-#endif
-            // Empty on release
-        }
+        EIAPI Components() noexcept = default;
         template<typename T1> constexpr EIAPI explicit Components(T1 _s) :
             m00(static_cast<T>(_s)), m01(static_cast<T>(_s)), m02(static_cast<T>(_s)),
             m10(static_cast<T>(_s)), m11(static_cast<T>(_s)), m12(static_cast<T>(_s)),
@@ -418,13 +347,7 @@ namespace ei { namespace details {
             T m_data[16];
         };
 
-        EIAPI Components() {
-#if defined(DEBUG) || defined(_DEBUG)
-            for(ei::uint i = 0; i < 16; ++i)
-                this->m_data[i] = details::IniVal<T>::value;
-#endif
-            // Empty on release
-        }
+        EIAPI Components() noexcept = default;
         template<typename T1> constexpr EIAPI explicit Components(T1 _s) noexcept :
             m00(static_cast<T>(_s)), m01(static_cast<T>(_s)), m02(static_cast<T>(_s)), m03(static_cast<T>(_s)),
             m10(static_cast<T>(_s)), m11(static_cast<T>(_s)), m12(static_cast<T>(_s)), m13(static_cast<T>(_s)),
