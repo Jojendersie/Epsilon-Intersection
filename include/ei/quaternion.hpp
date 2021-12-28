@@ -83,7 +83,9 @@ namespace ei {
         {
             // Check handness
             //eiAssert(dot(cross(_xAxis, _yAxis), _m(2)) > 0.0f, "Quaternions cannot handle reflections. The matrix must be RHS.");
+#if defined(DEBUG) || defined(_DEBUG)
             T handness = dot(cross(_xAxis, _yAxis), _zAxis);
+#endif
             eiAssert(handness > 0.0f, "Quaternions cannot handle reflections. The matrix must be RHS.");
             eiAssert(approx(handness, T(1), 1e-4f), "System is not orthonormal!");
 
@@ -296,6 +298,7 @@ namespace ei {
         union {
             struct {T i, j, k, r;};         ///< Elements of 4D complex number
             T z[4];                         ///< Array access, index 3 is the real part
+            struct { Vec<T, 3> complex; float real; };   ///< Access to the complex part as a vector
         };
     };
 
