@@ -853,7 +853,8 @@ namespace ei {
         const Vec3 vertices[8]; ///< All vertices in the orderd: nlb, nlt, nrb, nlt, flb, flt, frb, frt
 
         /// \brief Construction from dynamic variant
-        EIAPI FastFrustum(const Frustum& _frustum) noexcept                          // TESTED
+        EIAPI FastFrustum(const Frustum& _frustum) noexcept :                        // TESTED
+            nf{}, l{}, r{}, b{}, t{}, vertices{}
         {
             // Initialization of planes is difficult in the list, so the const-cast
             // only defers the initialization a bit.
