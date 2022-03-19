@@ -211,7 +211,7 @@ namespace ei {
 
     // Converts an RGB value in [0,1]^2x[0,x] to HSV in [0,x]^3
     // Yes, HSV is capable of HDR colors with greater values.
-    constexpr EIAPI Vec3 rgbToHsv(const Vec3 & _rgb) // TESTED
+    EIAPI Vec3 rgbToHsv(const Vec3 & _rgb) // TESTED
     {
         eiAssert(_rgb >= 0.0f, "Negative color value not allowed.");
         if(_rgb.r == _rgb.g && _rgb.r == _rgb.b)        // R=G=B
@@ -337,7 +337,7 @@ namespace ei {
     // Discretize a [0,1]^3 vector into a single integer with 11.11.10 bits
     // for the components.
     // Note: This is not the R11G11B10F (float) format from textures!
-    constexpr EIAPI uint32 packR11G11B10(const Vec3 & _v)  // TESTED
+    EIAPI uint32 packR11G11B10(const Vec3 & _v)  // TESTED
     {
         eiAssertWeak(all(greatereq(_v, 0.0f)) && all(lesseq(_v, 1.0f)), "Unclamped color cannot be converted into R11G11B10 format!");
         const Vec3 vs {_v.x * 2047.0f, _v.y * 2047.0f, _v.z * 1023.0f };

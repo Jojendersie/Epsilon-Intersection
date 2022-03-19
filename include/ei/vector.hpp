@@ -592,7 +592,7 @@ namespace ei {
     EIAPI Matrix<bool, M, N> greatereq (const Matrix<T,M,N>& _mat, T1 _s) noexcept // TESTED
         EI_CODE_GEN_MAT_SCALAR_BOOL_OP(>=)
     template<typename T1, typename T, uint M, uint N>
-    Matrix<bool, M, N> greatereq (T1 _s, const Matrix<T,M,N>& _mat) noexcept // TESTED
+    EIAPI Matrix<bool, M, N> greatereq (T1 _s, const Matrix<T,M,N>& _mat) noexcept // TESTED
         EI_CODE_GEN_SCALAR_MAT_BOOL_OP(>=)
     template<typename T, uint M, uint N, typename T1>
     EIAPI Matrix<bool, M, N> greater (const Matrix<T,M,N>& _mat, T1 _s) noexcept // TESTED
@@ -1209,7 +1209,7 @@ namespace ei {
     /// \brief Generate the N x N diagonal matrix.
     /// \param [in] _v0 A vector with the diagonal entries.
     template<typename T, unsigned N>
-    constexpr EIAPI Matrix<T,N,N> diag( const Vec<T,N>& _v0 ) noexcept // TESTED
+    EIAPI Matrix<T,N,N> diag( const Vec<T,N>& _v0 ) noexcept // TESTED
     {
         Matrix<T,N,N> result { T(0) };
         for(uint n = 0; n < N; ++n)
@@ -1220,17 +1220,17 @@ namespace ei {
     // ********************************************************************* //
     /// \brief Generate the N x N identity matrix.
     template<typename T, unsigned N>
-    constexpr EIAPI Matrix<T,N,N> identity() noexcept // TESTED
+    EIAPI Matrix<T,N,N> identity() noexcept // TESTED
     {
         return diag(Vec<T,N>{1});
     }
 
     /// \brief Alias for identity<float,2>().
-    constexpr EIAPI Mat2x2 identity2x2() noexcept    { return identity<float,2>(); }
+    constexpr EIAPI Mat2x2 identity2x2() noexcept    { return Mat2x2{1.0f, 0.0f, 0.0f, 1.0f}; }
     /// \brief Alias for identity<float,3>().
-    constexpr EIAPI Mat3x3 identity3x3() noexcept    { return identity<float,3>(); } // TESTED
+    constexpr EIAPI Mat3x3 identity3x3() noexcept    { return Mat3x3{1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f}; } // TESTED
     /// \brief Alias for identity<float,4>().
-    constexpr EIAPI Mat4x4 identity4x4() noexcept    { return identity<float,4>(); } // TESTED
+    constexpr EIAPI Mat4x4 identity4x4() noexcept    { return Mat4x4{1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f}; } // TESTED
 
     // ********************************************************************* //
     /// \brief Convert a vector from Cartesian coordinates in spherical

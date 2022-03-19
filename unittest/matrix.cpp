@@ -542,8 +542,8 @@ bool test_matrix()
         TEST( m2 == identity4x4(), "4x4 identity matrix wrong." );
         TEST( (m3 == ei::identity<float,5>()), "5x5 identity matrix wrong." );
         TEST( m4 == m5, "3x3 diagonal matrix wrong." );
-        constexpr auto m61 = diag(Vec<float,6>{1});
-        constexpr auto m6 = ei::identity<float,6>();
+        auto m61 = diag(Vec<float,6>{1});
+        auto m6 = ei::identity<float,6>();
 
         /*// Test script used to optimize identity()
         Mat3x3 ret;
