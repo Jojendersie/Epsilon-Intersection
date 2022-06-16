@@ -1575,20 +1575,15 @@ namespace ei {
         // Get lengths for normalization
         eiAssert(approx(len(_from), 1.0f), "Expected a normalized direction vector '_from'.");
         eiAssert(approx(len(_to), 1.0f), "Expected a normalized direction vector '_from'.");
-        //float lf = len(_from);
-        //float lt = len(_to);
-        Vec3 axis = cross(_from, _to);
-        // Compute sin(alpha) from cross product lf * lt * sin(alpha) and normalize
-        const float l = len(axis);
-        const float sinA = clamp(l, 0.0f, 1.0f);
-        if(l != 0.0f) axis /= l;
-        //sinA /= lf * lt;
-        const float cosA = sqrt((1.0f - sinA) * (1.0f + sinA));
+        const Vec3 axis = cross(_from, _to);
+        // Compute sin(alpha)² from cross product len(_from) * len(_to) * sin(alpha)
+        const float lsq = lensq(axis);
+        const float cosA = dot(_from, _to);
         // Create axis-angle matrix
-        const float iCosA = 1.0f - cosA;
-        return Mat3x3(axis.x * axis.x * iCosA + cosA,          axis.x * axis.y * iCosA - axis.z * sinA, axis.x * axis.z * iCosA + axis.y * sinA,
-                      axis.x * axis.y * iCosA + axis.z * sinA, axis.y * axis.y * iCosA + cosA,          axis.y * axis.z * iCosA - axis.x * sinA,
-                      axis.x * axis.z * iCosA - axis.y * sinA, axis.y * axis.z * iCosA + axis.x * sinA, axis.z * axis.z * iCosA + cosA         );
+        const float iCosA = (1.0f - cosA) / (lsq != 0.0f ? lsq : 1.0f);
+        return Mat3x3(axis.x * axis.x * iCosA + cosA,   axis.x * axis.y * iCosA - axis.z, axis.x * axis.z * iCosA + axis.y,
+                      axis.x * axis.y * iCosA + axis.z, axis.y * axis.y * iCosA + cosA,   axis.y * axis.z * iCosA - axis.x,
+                      axis.x * axis.z * iCosA - axis.y, axis.y * axis.z * iCosA + axis.x, axis.z * axis.z * iCosA + cosA   );
     }
 
     // ********************************************************************* //
