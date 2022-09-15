@@ -338,28 +338,49 @@ namespace ei {
         return Vec<T,3>(_q.i, _q.j, _q.k) / std::sqrt(max(T(EPSILON), T(1)-_q.r*_q.r));
     }
 
-    /// \brief Get the x axis of the corresponding orthogonal system (rotation
-    ///     matrix)
+    /// \brief Get the first row of the corresponding rotation matrix
     template<typename T>
-    constexpr EIAPI Vec<T,3> xaxis(const TQuaternion<T>& _q) noexcept // TESTED
+    constexpr EIAPI Vec<T,3> xRow(const TQuaternion<T>& _q) noexcept // TESTED
     {
         return Vec<T,3>( T(1)-T(2)*(_q.j*_q.j+_q.k*_q.k), T(2)*(_q.i*_q.j-_q.k*_q.r), T(2)*(_q.i*_q.k+_q.j*_q.r) );
     }
 
-    /// \brief Get the y axis of the corresponding orthogonal system (rotation
-    ///     matrix)
+    /// \brief Get the second row of the corresponding rotation matrix
     template<typename T>
-    constexpr EIAPI Vec<T,3> yaxis(const TQuaternion<T>& _q) noexcept // TESTED
+    constexpr EIAPI Vec<T,3> yRow(const TQuaternion<T>& _q) noexcept // TESTED
     {
         return Vec<T,3>( T(2)*(_q.i*_q.j+_q.k*_q.r), T(1)-T(2)*(_q.i*_q.i+_q.k*_q.k), T(2)*(_q.j*_q.k-_q.i*_q.r) );
     }
 
-    /// \brief Get the z axis of the corresponding orthogonal system (rotation
-    ///     matrix)
+    /// \brief Get the third row of the corresponding rotation matrix
     template<typename T>
-    constexpr EIAPI Vec<T,3> zaxis(const TQuaternion<T>& _q) noexcept // TESTED
+    constexpr EIAPI Vec<T,3> zRow(const TQuaternion<T>& _q) noexcept // TESTED
     {
         return Vec<T,3>( T(2)*(_q.i*_q.k-_q.j*_q.r), T(2)*(_q.j*_q.k+_q.i*_q.r), T(1)-T(2)*(_q.i*_q.i+_q.j*_q.j) );
+    }
+
+    /// \brief Get the first column of the corresponding rotation matrix.
+    /// \details This is equivalent the x vector (1,0,0) transformed into the new space.
+    template<typename T>
+    constexpr EIAPI Vec<T,3> xCol(const TQuaternion<T>& _q) noexcept // TESTED
+    {
+        return Vec<T,3>( T(1)-T(2)*(_q.j*_q.j+_q.k*_q.k), T(2)*(_q.i*_q.j+_q.k*_q.r), T(2)*(_q.i*_q.k-_q.j*_q.r) );
+    }
+
+    /// \brief Get the second column of the corresponding rotation matrix.
+    /// \details This is equivalent the y vector (0,1,0) transformed into the new space.
+    template<typename T>
+    constexpr EIAPI Vec<T,3> yCol(const TQuaternion<T>& _q) noexcept // TESTED
+    {
+        return Vec<T,3>( T(2)*(_q.i*_q.j-_q.k*_q.r), T(1)-T(2)*(_q.i*_q.i+_q.k*_q.k), T(2)*(_q.j*_q.k+_q.i*_q.r) );
+    }
+
+    /// \brief Get the third column of the corresponding rotation matrix.
+    /// \details This is equivalent the z vector (0,0,1) transformed into the new space.
+    template<typename T>
+    constexpr EIAPI Vec<T,3> zCol(const TQuaternion<T>& _q) noexcept // TESTED
+    {
+        return Vec<T,3>( T(2)*(_q.i*_q.k+_q.j*_q.r), T(2)*(_q.j*_q.k-_q.i*_q.r), T(1)-T(2)*(_q.i*_q.i+_q.j*_q.j) );
     }
 
     /// \brief Get the angle (radians) from a TQuaternion
