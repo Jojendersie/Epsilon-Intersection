@@ -93,6 +93,7 @@ bool test_conversions()
         Vec3 v6 = normalize(Vec3{ 1.0f, 1.0f, 1.0f });
         Vec3 v7 = normalize(Vec3{ -1.0f, -1.0f, -1.0f });
         Vec3 v8 = normalize(Vec3{ 0.5f, 0.7f, -0.4f });
+        Vec3 v9 = Vec3 {0.0f, 0.0f, 0.0f};
         uint32 oct0 = packOctahedral32(v0);
         uint32 oct1 = packOctahedral32(v1);
         uint32 oct2 = packOctahedral32(v2);
@@ -102,6 +103,7 @@ bool test_conversions()
         uint32 oct6 = packOctahedral32(v6);
         uint32 oct7 = packOctahedral32(v7);
         uint32 oct8 = packOctahedral32(v8);
+        uint32 oct9 = packOctahedral32(v9);
         TEST(approx(v0, unpackOctahedral32(oct0)), "Octahedral packing of v0 invalid.");
         TEST(approx(v1, unpackOctahedral32(oct1)), "Octahedral packing of v1 invalid.");
         TEST(approx(v2, unpackOctahedral32(oct2)), "Octahedral packing of v2 invalid.");
@@ -111,6 +113,7 @@ bool test_conversions()
         TEST(approx(v6, unpackOctahedral32(oct6), 1e-4f), "Octahedral packing of v6 invalid.");
         TEST(approx(v7, unpackOctahedral32(oct7), 1e-4f), "Octahedral packing of v7 invalid.");
         TEST(approx(v8, unpackOctahedral32(oct8), 1e-4f), "Octahedral packing of v8 invalid.");
+        TEST(approx(v9, unpackOctahedral32(oct9)), "Octahedral packing of v9 invalid.");
     }
 
     { // Tangent space

@@ -421,10 +421,13 @@ namespace ei {
     }
 
     // Pack a direction vector into a 32 bit integer using octahedral mapping
+    // The direction vector must have length 1 or must be the zero vector.
     constexpr EIAPI uint32 packOctahedral32(const Vec3 & _d)  // TESTED
     {
-        eiAssertWeak(approx(len(_d), 1.0f), "Can only pack direction vectors using octahedral mapping");
         float l1norm = abs(_d.x) + abs(_d.y) + abs(_d.z);
+        if( l1norm < 1.192092896e-07f )
+            return 0x80000000;
+        eiAssertWeak(approx(len(_d), 1.0f), "Can only pack direction vectors using octahedral mapping");
         float u = (_d.z >= 0) ? _d.x / l1norm
                               : (1 - abs(_d.y) / l1norm) * (_d.x >= 0 ? 1 : -1);    // warp lower hemisphere
         float v = (_d.z >= 0) ? _d.y / l1norm
@@ -436,6 +439,8 @@ namespace ei {
     // Unpack a direction vector from octahedral mapping
     EIAPI Vec3 unpackOctahedral32(uint32 _code)  // TESTED
     {
+        if(_code == 0x80000000)
+            return Vec3 { 0.0f };
         float u = int16(_code & 0xffff) / 32767.0f;
         float v = int16(_code >> 16) / 32767.0f;
         //u = u * 2 - 1;
