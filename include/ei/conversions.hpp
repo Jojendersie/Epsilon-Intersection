@@ -184,7 +184,7 @@ namespace ei {
                     _yCbCr.x + 1.772 * _yCbCr.y};
     }
 
-    // Conversion of linear RGB to YCbCr.
+    // Conversion of sRGB to YCbCr.
     EIAPI Vec3 srgbToYCbCr(const Vec3 & _rgb)
     {
         constexpr Mat3x3 RGB_TO_YCBCR {
@@ -209,7 +209,7 @@ namespace ei {
 
 
 
-    // Converts an RGB value in [0,1]^2x[0,x] to HSV in [0,x]^3
+    // Converts an RGB value in [0,x]^3 to HSV in [0,1]^2x[0,x]
     // Yes, HSV is capable of HDR colors with greater values.
     EIAPI Vec3 rgbToHsv(const Vec3 & _rgb) // TESTED
     {
@@ -291,6 +291,84 @@ namespace ei {
             zCurt <= 0.206896554f ? (zCurt - 0.137931034f) / 7.787037037f : zCurt * zCurt * zCurt
         };
         return ratio * XYZn;
+    }
+
+    // Conversion from CIE XYZ to Oklab (White point D65).
+    // https://bottosson.github.io/posts/oklab/
+    // All possible LDR spectral colors fall into
+    //  [0.000000, -0.348329, -0.338077] x [1.003244, 0.337557, 0.235918]
+    // All three output values scales proportional to cbrt(Y) (cubic root of luminance)
+    EIAPI Vec3 xyzToOklab(const Vec3 & _xyz)
+    {
+        constexpr Mat3x3 XYZ_TO_LMS {
+            0.818933010f, 0.361866742f, -0.128859714f,
+            0.0329845436f, 0.929311872f, 0.0361456387f,
+            0.0482003018f, 0.264366269f, 0.633851707f
+        };
+        const Vec3 lms = XYZ_TO_LMS * _xyz;
+        const Vec3 lmsp = ei::sgn(lms) * Vec3(cbrtf(ei::abs(lms.x)), cbrtf(ei::abs(lms.y)), cbrtf(ei::abs(lms.z)));
+        constexpr Mat3x3 LMSP_TO_OKLAB {
+            0.210454255f, 0.793617785f, -0.00407204684f,
+            1.97799850f, -2.42859221f, 0.450593710f,
+            0.0259040371f, 0.782771766f, -0.808675766f
+        };
+        return LMSP_TO_OKLAB * lmsp;
+    }
+
+    constexpr EIAPI Vec3 oklabToXyz(const Vec3 & _oklab)
+    {
+        constexpr Mat3x3 OKLAB_TO_LMSP {
+            1.00000000f, 0.396337777f, 0.215803757f,
+            1.00000000f, -0.105561338f, -0.0638541728f,
+            1.00000000f, -0.0894841850f, -1.29148555f
+        };
+        const Vec3 lmsp = OKLAB_TO_LMSP * _oklab;
+        const Vec3 lms = lmsp * lmsp * lmsp; // Sign handles itself
+        constexpr Mat3x3 LMS_TO_XYZ {
+            1.22701383f, -0.557799995f, 0.281256139f,
+            -0.0405801795f, 1.11225688f, -0.0716766790f,
+            -0.0763812810f, -0.421481967f, 1.58616316f
+        };
+        return LMS_TO_XYZ * lms;
+    }
+
+    // Conversion between Oklab and linear RGB
+    // https://bottosson.github.io/posts/oklab/
+    // White point D65.
+    // Converting an HDR color in RGB will result in a proportional scaling in all channels.
+    // More precisely: multiplying the RGB value by X will result in a factor of cbrt(X).
+    EIAPI Vec3 rgbToOklab(const Vec3& _color) 
+    {
+        float l = 0.4122214708f * _color.r + 0.5363325363f * _color.g + 0.0514459929f * _color.b;
+        float m = 0.2119034982f * _color.r + 0.6806995451f * _color.g + 0.1073969566f * _color.b;
+        float s = 0.0883024619f * _color.r + 0.2817188376f * _color.g + 0.6299787005f * _color.b;
+
+        float l_ = cbrtf(l);
+        float m_ = cbrtf(m);
+        float s_ = cbrtf(s);
+
+        return {
+            0.2104542553f*l_ + 0.7936177850f*m_ - 0.0040720468f*s_,
+            1.9779984951f*l_ - 2.4285922050f*m_ + 0.4505937099f*s_,
+            0.0259040371f*l_ + 0.7827717662f*m_ - 0.8086757660f*s_,
+        };
+    }
+
+    constexpr EIAPI Vec3 oklabToRgb(const Vec3& _color)
+    {
+        float l_ = _color.x + 0.3963377774f * _color.y + 0.2158037573f * _color.z;
+        float m_ = _color.x - 0.1055613458f * _color.y - 0.0638541728f * _color.z;
+        float s_ = _color.x - 0.0894841775f * _color.y - 1.2914855480f * _color.z;
+
+        float l = l_*l_*l_;
+        float m = m_*m_*m_;
+        float s = s_*s_*s_;
+
+        return {
+            +4.0767416621f * l - 3.3077115913f * m + 0.2309699292f * s,
+            -1.2684380046f * l + 2.6097574011f * m - 0.3413193965f * s,
+            -0.0041960863f * l - 0.7034186147f * m + 1.7076147010f * s,
+        };
     }
 
     // Conversion from CIE XYZ to IPT (Intensity - Protan - Tritan).
