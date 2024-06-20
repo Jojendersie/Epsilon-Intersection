@@ -317,19 +317,18 @@ namespace ei {
 
     constexpr EIAPI Vec3 oklabToXyz(const Vec3 & _oklab)
     {
-        constexpr Mat3x3 OKLAB_TO_LMSP {
-            1.00000000f, 0.396337777f, 0.215803757f,
-            1.00000000f, -0.105561338f, -0.0638541728f,
-            1.00000000f, -0.0894841850f, -1.29148555f
+        const float l_ = _oklab.x + 0.396337777f * _oklab.y + 0.215803757f * _oklab.z;
+        const float m_ = _oklab.x - 0.105561338f * _oklab.y - 0.0638541728f * _oklab.z;
+        const float s_ = _oklab.x - 0.089484185f * _oklab.y - 1.29148555f * _oklab.z;
+        // Sign handles itself
+        const float l = l_ * l_ * l_;
+        const float m = m_ * m_ * m_;
+        const float s = s_ * s_ * s_;
+        return Vec3{
+             1.22701383f   * l - 0.557799995f * m + 0.281256139f * s,
+            -0.0405801795f * l +  1.11225688f * m - 0.0716766790f * s,
+            -0.0763812810f * l - 0.421481967f * m + 1.58616316f * s
         };
-        const Vec3 lmsp = OKLAB_TO_LMSP * _oklab;
-        const Vec3 lms = lmsp * lmsp * lmsp; // Sign handles itself
-        constexpr Mat3x3 LMS_TO_XYZ {
-            1.22701383f, -0.557799995f, 0.281256139f,
-            -0.0405801795f, 1.11225688f, -0.0716766790f,
-            -0.0763812810f, -0.421481967f, 1.58616316f
-        };
-        return LMS_TO_XYZ * lms;
     }
 
     // Conversion between Oklab and linear RGB
