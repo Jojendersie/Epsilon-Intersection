@@ -166,6 +166,21 @@ bool test_3dintersections()
         performance<Vec3,OEllipsoid>(intersects, "intersects");
     }
 
+    // Test ray <-> plane intersection
+    {
+        Plane pla0( Vec3(1.0f, 0.0f, 0.0f), 0.0f );
+        Plane pla1( Vec3(0.0f, 1.0f, 0.0f), 1.5f );
+        Plane pla2( normalize(Vec3(1.0f, -2.0f, 43.0f)), 82935.4f );
+        Ray ray0( Vec3(-1.0f, 0.0f, 0.0f), Vec3(1.0f, 0.0f, 0.0f) );
+        Ray ray1( Vec3(0.0f, 0.0f, 0.0f), normalize(Vec3(0.0f, 1.0f, 1.0f)) );
+        float t;
+        TEST( intersects(ray0, pla0, t) && t==1.0f, "ray0 should hit pla0!" );
+        TEST( !intersects(ray0, pla1, t), "ray0 should miss pla1!" );
+        TEST( intersects(ray1, pla0, t) && t==0.0f, "ray1 should hit pla0!" );
+        TEST( intersects(ray0, pla2, t) && t==-3571039.75f, "ray0 should hit pla2!" );
+        TEST( intersects(ray1, pla2, t) && t==-123175.961f, "ray1 should hit pla2!" );
+    }
+
     // Test sphere <-> ray intersection
     {
         Ray ray0( Vec3(0.0f, 1.0f, 2.0f), normalize(Vec3(0.2f, -0.9f, 0.0f)) ); // Starts inside sph1 and misses sph0

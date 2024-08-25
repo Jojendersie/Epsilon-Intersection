@@ -349,6 +349,29 @@ namespace ei {
 
     EIAPI bool intersects( const OBox& _obox, const Vec3& _point )          { return intersects(_point, _obox); }
 
+
+    /// \brief Get the intersection distance of a ray and a plane.
+    /// \param [out,opt] _distance The distance to the intersection
+    /// \return false if the ray is (near) parallel to the plane.
+    ///     The plane counts as parallel when the intersection is at +-inf.
+    ///     A ray inside the plane counts as intersecting at distance=0.
+    EIAPI bool intersects( const Ray& _ray, const Plane& _plane, float& _distance )
+    {
+        const float dist_perpendicular = dot(_ray.origin, _plane.n) + _plane.d;
+        // Origin in plane? Need to capture the special case to avoid NaN
+        // if the ray is parallel as well.
+        if (dist_perpendicular == 0.0f)
+        {
+            _distance = 0.0f;
+            return true;
+        }
+        _distance = -dist_perpendicular / dot(_ray.direction, _plane.n);
+        return isfinite(_distance);
+    }
+
+    EIAPI bool intersects( const Plane& _plane, const Ray& _ray, float& _distance ) { return intersects(_ray, _plane, _distance); }
+
+
     /// \brief Do a ray and a sphere intersect or touch?
     /// \param [out,opt] _distance The ray parameter (distance) for the first
     ///     intersection point in positive direction.
@@ -867,8 +890,6 @@ namespace ei {
         if(distance(_point, _frustum.t) < 0.0f) return false;
         return true;
     }
-
-    EIAPI bool intersects( const FastFrustum& _frustum, const Vec3& _point )  { return intersects(_point, _frustum); }
 
     /// \brief Intersection test between sphere and frustum.
     /// \return true if the sphere and the frustum have at least one point in common.

@@ -850,7 +850,7 @@ namespace ei {
         const Plane r;        ///< Right plane (normal points inward)
         const Plane b;        ///< Bottom plane (normal points inward)
         const Plane t;        ///< Top plane (normal points inward)
-        const Vec3 vertices[8]; ///< All vertices in the orderd: nlb, nlt, nrb, nlt, flb, flt, frb, frt
+        const Vec3 vertices[8]; ///< All vertices in the order of: nlb, nlt, nrb, nlt, flb, flt, frb, frt
 
         /// \brief Construction from dynamic variant
         EIAPI FastFrustum(const Frustum& _frustum) noexcept :                        // TESTED
