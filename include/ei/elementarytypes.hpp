@@ -66,6 +66,7 @@ namespace ei {
     constexpr float E = 2.718281828f;
     constexpr float GOLDEN_RATIO = 1.61803398875f;
     constexpr float PHYTAGORAS = 1.4142135623f;
+    constexpr float FMIN = std::numeric_limits<float>::min();
     // The cmath header has an ugly macro with name INFINITY -> name conflict
     constexpr float INF { std::numeric_limits<float>::infinity() };
     constexpr double INF_D { std::numeric_limits<double>::infinity() };
@@ -140,6 +141,19 @@ namespace ei {
     constexpr EIAPI T saturate(T _x) noexcept
     {
         return _x > static_cast<T>(1) ? static_cast<T>(1) : (_x < static_cast<T>(0) ? static_cast<T>(0) : _x);
+    }
+
+
+    // ********************************************************************* //
+    /// \brief Safe division x / y, prevents division by zero.
+    /// \details This always produces a finite result except _x is already
+    ///     infinite or _x or _y is nan.
+    template<typename T>
+    constexpr EIAPI T sdiv(T _x, T _y) noexcept
+    {
+        if (_y == static_cast<T>(0))
+            return _x < 0.0f ? -std::numeric_limits<T>::max() : (_x > 0.0f ? std::numeric_limits<T>::max() : 0.0f);
+        return _x / _y;
     }
 
     // ********************************************************************* //

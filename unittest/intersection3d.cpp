@@ -173,8 +173,12 @@ bool test_3dintersections()
         Plane pla2( normalize(Vec3(1.0f, -2.0f, 43.0f)), 82935.4f );
         Ray ray0( Vec3(-1.0f, 0.0f, 0.0f), Vec3(1.0f, 0.0f, 0.0f) );
         Ray ray1( Vec3(0.0f, 0.0f, 0.0f), normalize(Vec3(0.0f, 1.0f, 1.0f)) );
+        Ray ray2( Vec3(-1.0f, 0.0f, 0.0f), Vec3(-1.0f, 0.0f, 0.0f) );
+        Ray ray3( Vec3(9.0f, 0.0f, 0.0f), Vec3(-1.0f, 0.0f, 0.0f) );
         float t;
         TEST( intersects(ray0, pla0, t) && t==1.0f, "ray0 should hit pla0!" );
+        TEST( intersects(ray2, pla0, t) && t==-1.0f, "ray2 should hit pla0!" );
+        TEST( intersects(ray3, pla0, t) && t==9.0f, "ray3 should hit pla0!" );
         TEST( !intersects(ray0, pla1, t), "ray0 should miss pla1!" );
         TEST( intersects(ray1, pla0, t) && t==0.0f, "ray1 should hit pla0!" );
         TEST( intersects(ray0, pla2, t) && t==-3571039.75f, "ray0 should hit pla2!" );
@@ -387,6 +391,48 @@ bool test_3dintersections()
         TEST( !intersects( poi5, ffr1 ), "poi5 outside fru1!" );
 
         //performance<Vec3,Capsule>(intersects, "intersects");
+    }
+
+    // Test ray <-> frustum intersection
+    {
+        Frustum fru0( Vec3(0.0f), Vec3(0.0f, 0.0f, 1.0f), Vec3(0.0f, 1.0f, 0.0f), -1.0f, 0.9f, -0.5f, 1.5f, 0.1f, 1000.0f);
+        Ray ray0( Vec3(0.0f), Vec3(0.0f, 0.0f, 1.0f) ); // From apex, hitting
+        Ray ray1( Vec3(0.0f), normalize(Vec3(100.0f, 0.0f, 1.0f)) ); // From apex, missing
+        Ray ray2( Vec3(-0.03f, 0.07f, 50.0f), normalize(Vec3(-0.4f, 2.0f, 1.0f)) ); // From inside, hitting
+        Ray ray3( Vec3(-0.999f, 1.499f, 1.0f), Vec3(0.0f, 0.0f, 1.0f) ); // Hitting a corner
+        Ray ray4( ray3.origin, -ray3.direction ); // Missing
+        float tmin = 0.0f, tmax = 1e38f;
+        TEST( intersects( ray0, fru0, tmin, tmax ) && tmin == 0.1f && tmax == 1000.0f, "ray0 intersects fru0!" );
+        TEST( !intersects( ray1, fru0, tmin, tmax ), "ray1 outside fru0!" );
+        tmin = 0.0f, tmax = 1e38f;
+        TEST( intersects( ray2, fru0, tmin, tmax ) && tmin == 0.0f && tmax > 0.0f, "ray2 intersects fru0!" );
+        tmin = 0.0f, tmax = 1e38f;
+        TEST( intersects( ray3, fru0, tmin, tmax ) && approx(tmin, 998.3333f) && approx(tmax, 999.0f), "ray3 intersects fru0!" );
+        TEST( !intersects( ray4, fru0, tmin, tmax ), "ray4 outside fru0!" );
+        Frustum fru1( Vec3(-1.0f, 0.0f, 50.0f), normalize(Vec3(1.0f, 1.0f, 0.0f)), Vec3(0.0f, 0.0f, 1.0f), -PHYTAGORAS, PHYTAGORAS, -PHYTAGORAS, PHYTAGORAS, PHYTAGORAS, 2 * PHYTAGORAS);
+        // Missing rays
+        Ray rm0( Vec3(1.0f, 0.0f, 50.0f), normalize(Vec3(-1.0f, -0.01f, 0.0f)) );
+        Ray rm1( Vec3(1.0f, 0.0f, 50.0f), normalize(Vec3(1.0f, 0.95f, 0.0f)) );
+        Ray rm2( Vec3(1.5f, 1.6f, 50.0f), normalize(Vec3(-1.0f, 1.0f, 0.0f)) );
+        Ray rm3( Vec3(0.0f, 0.0f, 50.0f), normalize(Vec3(-1.0f, 1.0f, 0.0f)) );
+        Ray rm4( Vec3(1.5f, 0.5f, 40.0f), normalize(Vec3(0.2f, 1.0f, 0.0f)) );
+        Ray rm5( Vec3(2.5f, 2.0f, 50.0f), normalize(Vec3(1.0f, 0.2f, 0.0f)) );
+        tmin = 0.0f, tmax = 1000.0f; TEST( !intersects( rm0, fru1, tmin, tmax ), "rm0 <=> fru1!" );
+        tmin = 0.0f, tmax = 1000.0f; TEST( !intersects( rm1, fru1, tmin, tmax ), "rm1 <=> fru1!" );
+        tmin = 0.0f, tmax = 1000.0f; TEST( !intersects( rm2, fru1, tmin, tmax ), "rm2 <=> fru1!" );
+        tmin = 0.0f, tmax = 1000.0f; TEST( !intersects( rm3, fru1, tmin, tmax ), "rm3 <=> fru1!" );
+        tmin = 0.0f, tmax = 1000.0f; TEST( !intersects( rm4, fru1, tmin, tmax ), "rm4 <=> fru1!" );
+        tmin = 0.0f, tmax = 1000.0f; TEST( !intersects( rm5, fru1, tmin, tmax ), "rm5 <=> fru1!" );
+        tmin = -1000.0f, tmax = 1000.0f; TEST( intersects( rm5, fru1, tmin, tmax ), "rm5.2 <=> fru1!" );
+        // Hitting rays
+        Ray rh0( Vec3(1.0f, 1.0f, 50.0f), normalize(Vec3(-0.3f, -0.6f, 0.4f)) );
+        Ray rh1( Vec3(0.0f, 0.0f, 50.0f), normalize(Vec3(0.0f, 1.0f, 0.0f)) );
+        Ray rh2( Vec3(1.1f, 0.1f, 50.0f), normalize(Vec3(-1.0f, 1.0f, 0.01f)) );
+        Ray rh3( Vec3(1.0f, 1.0f, 0.0f), normalize(Vec3(0.0f, 0.0f, 1.0f)) );
+        tmin = 0.0f, tmax = 0.5f; TEST( intersects( rh0, fru1, tmin, tmax ), "rh0 <=> fru1!" );
+        tmin = 0.0f, tmax = 100.0f; TEST( intersects( rh1, fru1, tmin, tmax ), "rh1 <=> fru1!" );
+        tmin = 0.0f, tmax = 100.0f; TEST( intersects( rh2, fru1, tmin, tmax ), "rh2 <=> fru1!" );
+        tmin = 0.0f, tmax = 100.0f; TEST( intersects( rh3, fru1, tmin, tmax ), "rh3 <=> fru1!" );
     }
 
     // Test sphere <-> frustum intersection

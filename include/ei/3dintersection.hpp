@@ -355,7 +355,7 @@ namespace ei {
     /// \return false if the ray is (near) parallel to the plane.
     ///     The plane counts as parallel when the intersection is at +-inf.
     ///     A ray inside the plane counts as intersecting at distance=0.
-    EIAPI bool intersects( const Ray& _ray, const Plane& _plane, float& _distance )
+    EIAPI bool intersects( const Ray& _ray, const Plane& _plane, float& _distance ) // TESTED
     {
         const float dist_perpendicular = dot(_ray.origin, _plane.n) + _plane.d;
         // Origin in plane? Need to capture the special case to avoid NaN
@@ -890,6 +890,79 @@ namespace ei {
         if(distance(_point, _frustum.t) < 0.0f) return false;
         return true;
     }
+
+    EIAPI bool intersects( const FastFrustum& _frustum, const Vec3& _point )  { return intersects(_point, _frustum); }
+
+
+    /// \brief Intersection test between ray and frustum.
+    /// \param _tmin [in/out] Start of the ray at input. First intersection between
+    ///     the frustum and the ray or the ray's input tmin if the ray starts inside.
+    /// \param _tmax [in/out] End of the ray at input. Exit point from the frustum
+    ///     or the ray's input tmax if the ray interval ends inside.
+    /// \return true if the ray is inside the frustum or intersects the boundary.
+    EIAPI bool intersects( const Ray& _ray, const Frustum& _frustum, float& _tmin, float& _tmax ) // TESTED
+    {
+        // Test the near and far plane in 3D (the normal of both is "direction")
+        // Perpendicular distances:
+        const Vec3 local_origin = _ray.origin - _frustum.apex;
+        const float oz = dot(local_origin, _frustum.direction);
+        const float dz = dot(_ray.direction, _frustum.direction);
+        const float dn = oz - _frustum.n;
+        const float df = oz - _frustum.f;
+        // Projected distance on the ray.
+        const float tn = -sdiv(dn, dz);
+        const float tf = -sdiv(df, dz);
+        _tmin = max(_tmin, min(tn, tf));
+        _tmax = min(_tmax, max(tn, tf));
+        if(_tmin > _tmax)
+            return false;
+
+        // The segment is now between near and far plane.
+        // When we project the ray into the frustum space, we can do 2D line
+        // segment tests to get the distances to all other four planes.
+        // Note that oz and dz are origin and direction coordinates in local space along z.
+        const Vec3 right = cross(_frustum.up, _frustum.direction); // TODO: store with frustum?
+        const float ox = dot(local_origin, right);
+        const float dx = dot(_ray.direction, right);
+        const float oy = dot(local_origin, _frustum.up);
+        const float dy = dot(_ray.direction, _frustum.up);
+
+        // Looking at the yz-plane from the side, we have the two lines
+        // yzray = (oy,oz) + (dy,dz) * t and yzfrust = (0,0) + (b,f) * s.
+        // From yzray == yzfrust we get an equation system with 2 variables which we
+        // want to solve for t. The same goes for all other planes
+        const float detl = _frustum.f * dx - _frustum.l * dz;
+        const float detr = _frustum.f * dx - _frustum.r * dz;
+        const float detb = _frustum.f * dy - _frustum.b * dz;
+        const float dett = _frustum.f * dy - _frustum.t * dz;
+        const float tl = sdiv(_frustum.l * oz - _frustum.f * ox, detl);
+        const float tr = sdiv(_frustum.r * oz - _frustum.f * ox, detr);
+        const float tb = sdiv(_frustum.b * oz - _frustum.f * oy, detb);
+        const float tt = sdiv(_frustum.t * oz - _frustum.f * oy, dett);
+
+        // While it looks like we could, we cannot simply do an interval overlap test like
+        // in classic AABox szenarios. Because 4 planes go through one point and produce a
+        // negative frustum behind the apex again, the interval [tl,tr] or [tb,tt] could be
+        // outside, while the ray is still intersecting.
+        // 
+        // For each plane we can determine if we hit it from outside or inside.
+        // If we hit from the outside it is an entry point. Note that both intersections in
+        // each dimension can be entry or exit points, but those we can simply order and take
+        // the latest like in common AABox tests.
+        // To check for inside/outside we can compute the sign of the determinant for the
+        // two direction vectors (dx,dz) and (l,f) (example for left plane).
+        // Note that we already computed those determinants for the equations above!
+        if (detl >= 0.0f) _tmin = max(_tmin, tl);
+        else _tmax = min(_tmax, tl);
+        if (detr < 0.0f) _tmin = max(_tmin, tr);
+        else _tmax = min(_tmax, tr);
+        if (detb >= 0.0f) _tmin = max(_tmin, tb);
+        else _tmax = min(_tmax, tb);
+        if (dett < 0.0f) _tmin = max(_tmin, tt);
+        else _tmax = min(_tmax, tt);
+        return _tmin <= _tmax;
+    }
+
 
     /// \brief Intersection test between sphere and frustum.
     /// \return true if the sphere and the frustum have at least one point in common.
