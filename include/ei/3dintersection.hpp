@@ -883,7 +883,7 @@ namespace ei {
     /// \return true if the point and the frustum have at least one point in common.
     EIAPI bool intersects( const Vec3& _point, const FastFrustum& _frustum )  // TESTED
     {
-        if(distance(_point, _frustum.nf) > 0.0f) return false;
+        if(distance(_point, _frustum.nf) != 0.0f) return false;
         if(distance(_point, _frustum.l) < 0.0f) return false;
         if(distance(_point, _frustum.r) < 0.0f) return false;
         if(distance(_point, _frustum.b) < 0.0f) return false;

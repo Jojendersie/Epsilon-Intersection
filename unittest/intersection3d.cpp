@@ -374,12 +374,15 @@ bool test_3dintersections()
     {
         FastFrustum ffr0( Vec3(0.0f), Vec3(0.0f, 0.0f, 1.0f), Vec3(0.0f, 1.0f, 0.0f), 1.0f, 2.0f, 0.0f, 1.0f, 0.0f, 1.0f );
         FastFrustum ffr1( Vec3(1.0f, 2.0f, 3.0f), normalize(Vec3(1.0f, 0.0f, 1.0f)), Vec3(0.0f, 1.0f, 0.0f), -1.0f, 1.0f, -0.5f, 0.5f, 0.5f, 2.0f );
+        FastFrustum ffr2( Vec3(0.0f), Vec3(0.0f, 0.0f, 1.0f), Vec3(0.0f, 1.0f, 0.0f), -1.0f, 1.0f, -1.0f, 1.0f, 0.5f, 10.0f );
         Vec3 poi0( 0.0f, 0.0f, 0.0f );
         Vec3 poi1( 1.5f, 0.5f, 0.9f );
         Vec3 poi2( -1.0f, 1.5f, 0.0f );
         Vec3 poi3( 2.0f, 2.0f, 4.0f );
         Vec3 poi4( 2.414213562f, 2.5f, 4.414213562f );
         Vec3 poi5( 2.0f, 3.0f, 5.0f );
+        Vec3 poi6( 0.0f, 0.0f, 0.4f );
+        Vec3 poi7( 0.0f, 0.0f, 0.5f );
         TEST( intersects( poi0, ffr0 ), "poi0 touches fru0!" );
         TEST( intersects( poi1, ffr0 ), "poi1 inside fru0!" );
         TEST( !intersects( poi2, ffr0 ), "poi2 outside fru0!" );
@@ -389,6 +392,9 @@ bool test_3dintersections()
         TEST( intersects( poi3, ffr1 ), "poi3 inside fru1!" );
         TEST( intersects( poi4, ffr1 ), "poi4 touches fru1!" );
         TEST( !intersects( poi5, ffr1 ), "poi5 outside fru1!" );
+        TEST ( !intersects( poi0, ffr2 ), "poi0 should be outside ffr2" );
+        TEST ( !intersects( poi6, ffr2 ), "poi6 should be outside ffr2" );
+        TEST ( intersects( poi7, ffr2 ), "poi7 should touch ffr2" );
 
         //performance<Vec3,Capsule>(intersects, "intersects");
     }
