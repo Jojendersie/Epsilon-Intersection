@@ -332,10 +332,14 @@ namespace ei {
     }
 
     /// \brief Get the rotation axis from a TQuaternion
+    /// \details Returns the x-axis for the unit quaternion (any axis would be correct).
     template<typename T>
     constexpr EIAPI Vec<T,3> axis(const TQuaternion<T>& _q) noexcept // TESTED
     {
-        return Vec<T,3>(_q.i, _q.j, _q.k) / std::sqrt(max(T(EPSILON), T(1)-_q.r*_q.r));
+        const float l = len(_q.complex);
+        if (l == T(0))
+            return Vec<T,3>{T(1), T(0), T(0)};
+        return _q.complex / l;
     }
 
     /// \brief Get the first row of the corresponding rotation matrix
@@ -387,7 +391,7 @@ namespace ei {
     template<typename T>
     constexpr EIAPI T angle(const TQuaternion<T>& _q) noexcept // TESTED
     {
-        return acos(_q.r) * T(2);
+        return acos(clamp(_q.r, T(-1), T(1))) * T(2);
     }
 
     // ********************************************************************* //
@@ -472,6 +476,17 @@ namespace ei {
                               _q0.j * f0 + _q1.j * f1,
                               _q0.k * f0 + _q1.k * f1,
                               _q0.r * f0 + _q1.r * f1);
+    }
+
+    // ********************************************************************* //
+    /// \brief Cheaper linear interpolation with normalization in the end
+    template<typename T>
+    constexpr EIAPI TQuaternion<T> nlerp(const TQuaternion<T>& _q0, const TQuaternion<T>& _q1, T _t) noexcept
+    {
+        return normalize(TQuaternion<T>(_q0.i + (_q1.i - _q0.i) * _t,
+                                        _q0.j + (_q1.j - _q0.j) * _t,
+                                        _q0.k + (_q1.k - _q0.k) * _t,
+                                        _q0.r + (_q1.r - _q0.r) * _t));
     }
 
     // ********************************************************************* //
